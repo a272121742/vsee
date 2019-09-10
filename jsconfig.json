@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@": ["./"],
+      "@comp": ["components"],
+      "@lib": ["lib"],
+      "@mix": ["lib/mixins"],
+      "@util": ["lib/utils"],
+      "@dir": ["lib/directives"],
+      "@static": ["static"]
+    },
+    "target": "ES6",
+    "module": "es6",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules"]
+}

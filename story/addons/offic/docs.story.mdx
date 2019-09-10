@@ -1,0 +1,25 @@
+import { Story, Preview, Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="插件|官方/文档" />
+
+# MDX文档插件
+
+有关**MDX**的介绍，可以[参考这里](https://mdxjs.com/)。你可以理解它为一个超级扩展的`markdown`文档，我们可以在里面嵌入任何语言所编写的组件。
+
+## 展示代码
+
+```
+storiesOf('按钮', module)
+  .add('按钮', () => ({
+    template: '<button>A Button with rounded edges</button>',
+  }))
+```
+
+## 展示组件
+
+<Story name="普通按钮" height="60px">
+  {{
+    template: '<button>普通按钮</button>',
+  }}
+</Story>
+

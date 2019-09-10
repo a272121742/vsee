@@ -1,0 +1,66 @@
+import { Story, Preview, Meta } from '@storybook/addon-docs/blocks';
+
+import PreventButton from '@comp/button/PreventButton.vue';
+
+<Meta title="框架指引|组件/按钮/防二次提交按钮"/>
+
+# 防二次提交按钮
+
+在提交数据的场景下，按钮如果没有作条件限制，往往容易造成重复提交的问题，尤其对于某些服务端无法作幂等运算时，容易造成问题。**PreventButton**的目的就是为了解决这样的问题，通过简单配置来自动实现拦截二次提交。
+
+## 继承
+
+按钮继承至`<i-button>`，[点击查看详细API](https://www.antdv.com/components/button-cn/)。
+
+## 使用方法
+
+<Preview>
+  <Story name="基本用法" height="20">
+    {{
+      components: { PreventButton },
+      template: `
+        <div>
+          <a-button>普通按钮</a-button>
+          <prevent-button>防二次提交</prevent-button>
+        </div>
+      `
+    }}
+  </Story>
+</Preview>
+
+## 绑定状态
+
+<Preview>
+  <Story name="绑定状态" height="20">
+    {{
+      components: { PreventButton },
+      template: `
+        <div>
+          <prevent-button bind="disabled">绑定disabled</prevent-button>
+          <prevent-button bind="loading">绑定loading</prevent-button>
+          <prevent-button bind="both">绑定both</prevent-button>
+        </div>
+      `
+    }}
+  </Story>
+</Preview>
+
+## 状态还原
+
+<Preview>
+  <Story name="状态还原" height="20">
+    {{
+      components: { PreventButton },
+      template: `
+        <div>
+          <prevent-button bind="both" ref="pbtn">绑定both</prevent-button>
+        </div>
+      `,
+      methods: {
+        handleClick () {
+          this.$refs.pbtn.reset();
+        }
+      }
+    }}
+  </Story>
+</Preview>

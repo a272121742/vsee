@@ -1,0 +1,8 @@
+{
+  "presets": [
+    "@vue/babel-preset-app",
+  ],
+  "plugins": [
+  ],
+  "comments": false,
+}

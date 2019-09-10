@@ -1,0 +1,26 @@
+import mock from '@lib/mock.js';
+import cdb from '@lib/cdb.js';
+
+const list = mock({
+  "id": '@increment',
+  Standard: '标准要求',
+  reality: '实际情况',
+  conclusion:'结论',
+  file: '2',
+  'operation|1':['编辑','查看']
+}, 3);
+
+const db = cdb.link('analysis', list);
+
+
+
+mock.get('/analysisData/:id', (parameter) => {
+  const datas = db.find() || [];
+
+  return mock.result({
+    data: {
+      list: datas
+
+    }
+  });
+}, { timeout: 0 });
