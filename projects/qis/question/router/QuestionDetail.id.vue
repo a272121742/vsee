@@ -32,7 +32,6 @@
             <a-form-item :label="`id`">
               <a-textarea style="width:340px;height:56px;" placeholder="请输入" v-decorator="[
                 'id',
-
               ]"></a-textarea>
             </a-form-item>
           </a-col>
@@ -122,7 +121,6 @@
                     <img src="/static/question/file.png">
                     <span>{{ item }}</span>
                   </li>
-
                 </ul>
               </div>
             </a-form-item>
@@ -135,7 +133,6 @@
         <a-row v-show="false">
           <a-col :span="17">
             <a-form-item :label="`id`">
-
               <a-input placeholder="请输入" v-decorator="[
                       'id',
                 ]"/>
@@ -145,19 +142,16 @@
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-
               <a-radio-group
                  :options="updateRadio"   v-decorator=" [
                 'isUpdate',
               {rules: [{ required: true, message: '请选择是否更新' } ]}
                ]"  />
-
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-             
             <a-form-item
                :label="`更新内容`">
               <a-textarea
@@ -172,10 +166,8 @@
           <a-col :span="18">
             <a-form-item
                :label="`附件`">
-               
               <a-upload
                  name="file"  :multiple="true"  :headers="headers"  @change="handleChange">
-                   
                 <a-button>
                   <a-icon
                      type="upload"  />
@@ -185,8 +177,6 @@
             </a-form-item>
           </a-col>
         </a-row>
-
-
       </a-form>
     </a-modal>
     <div class="TopButton">
@@ -211,7 +201,6 @@
         </a-button>
       </div>
     </div>
-
     <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
       <a-card title="问题详情" class="cardTitle">
         <img src="/static/question/editIcon.png" class="editIcon" @click="editDetail" v-if="!editFlag">
@@ -871,8 +860,6 @@
             </div>
 
           </div>
-
-
           <div class="Dcontent D1back" v-if="stepCurrent!=1&&backCurrent==1&&backFlag">
             <div class="triangle_border_up">
               <span></span>
@@ -1260,7 +1247,6 @@
 
 
           </div>
-
           <div class="Dcontent D3back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
             <div class="triangle_border_up">
               <span></span>
@@ -1521,7 +1507,6 @@
     mapActions
   } = createNamespacedHelpers('question');
   const columns = [{
-
     title: '序号',
     dataIndex: 'no',
     scopedSlots: {
@@ -1553,9 +1538,7 @@
     },
     width: 80
   }];
-
   const columnsRecord = [{
-
     title: '操作记录',
     dataIndex: 'recode',
     scopedSlots: {
@@ -1840,7 +1823,6 @@
 
       };
     },
-
     created() {
       this.request();
       this.formDcontent = this.$form.createForm(this, {
@@ -1855,7 +1837,6 @@
         ], 'record'),
         onValuesChange: autoUpdateFileds(this, 'record')
       });
-
       this.rediStribution = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, ['dtfUser'], 'redistributionForm'),
         onValuesChange: autoUpdateFileds(this, 'redistributionForm')
@@ -1940,7 +1921,6 @@
       showUpdate(param) {
         this.visibleUpdate = true;
         this.updateForm = this.$form.createForm(this, {
-
           mapPropsToFields: () => {
             return {
               id: this.$form.createFormField({
@@ -1980,20 +1960,14 @@
       },
       //确定7钻分析弹框
       AnalysisOk() {
-
         this.AnalysisForm.validateFields((err, fieldsValue) => {
           if (!err) {
-
             const data = this.AnalysisForm.getFieldsValue();
             if (this.AnalysisForm === "") {
               data.id = this.AnalysisForm.id;
             }
-
-
             this.analysisData.forEach((item, index) => {
-
               if (item.id === data.id) {
-
                 item.id = data.id;
                 item.Standard = data.Standard;
                 item.reality = data.reality;
@@ -2006,7 +1980,6 @@
             this.visibleAnalysis = false;
           }
         });
-
       },
       AnalysisDetailOk() {
         this.visibleDetail = false;
@@ -2017,30 +1990,21 @@
       updateOk() {
         this.updateForm.validateFields((err, fieldsValue) => {
           if (!err) {
-
             this.visibleUpdate = false;
             const data = this.updateForm.getFieldsValue();
-
             this.updateData.forEach((item, index) => {
-
               if (item.id === data.id) {
-
                 item.id = data.id;
-
                 if (data.fileName) {
                   item.fileName = data.fileName
                 }
                 item.isUpdate = data.isUpdate;
                 item.updateContent = data.updateContent;
                 item.updatefile = data.updatefile;
-
               }
             })
-
           }
         });
-
-
       },
       updateCancel() {
         this.visibleUpdate = false;
@@ -2050,7 +2014,6 @@
         this.visibleAnalysis = false;
       },
       // 是否同意关闭
-
       CloseRadioChange(e) {
         if (e.target.value === '0') {
           this.disAgree = false;
@@ -2063,20 +2026,14 @@
           pageSize: 10,
           pageNo: 1,
         }
-
         //查看问题详情
-
         this.eidtQuestion(this.id).then(res => {
           this.detailList = res;
         })
-
         this.getAnalysis(this.id).then(res => {
-
           this.analysisData = res.list;
-
           if (this.analysisData.length == 0) {
             this.analysisData = [{
-
               "id": "8",
               Standard: '',
               reality: '',
@@ -2091,7 +2048,6 @@
                 conclusion: '',
                 file: '',
                 operation: '编辑'
-
               },
               {
                 "id": "10",
@@ -2100,13 +2056,10 @@
                 conclusion: '',
                 file: '',
                 operation: '编辑'
-
               },
             ];
           }
         })
-
-
         this.getFilePage().then(res => {
           this.dataFile = res.list;
         });
@@ -2115,9 +2068,7 @@
           this.dataRecord = res.list;
         });
         this.getQuestionStep(1).then(res => {
-
           this.stepDetail = res;
-
           this.updateData = res.updateList;
 
         });
@@ -2149,7 +2100,6 @@
       // 车型选择
       vehicleModelIdChange(value) {
         this.carTitle = value;
-
         if (value) {
           this.titleFlag = true;
         }
@@ -2157,7 +2107,6 @@
       // 回退到param步
       goto(param) {
         this.backCurrent = param;
-
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
         } else {
@@ -2166,13 +2115,11 @@
       },
       // tab栏切换
       callback(key) {
-
       },
       // 查看更多
       showMore() {
         this.showMoreFlag = !this.showMoreFlag;
       },
-
       // 所属功能选择
       functionChange(value) {
         this.functionTitle = value;
@@ -2189,15 +2136,12 @@
       handleSubmit(e) {
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
-
             const data = this.formDcontent.getFieldsValue();
             let name = 'submit';
             this.addQuestion(data).then(res => {
-
               this.$message.success('提交成功');
               //隐藏7钻责任人模块
               this.userFlag = false;
-
             });
           }
         });
@@ -2209,7 +2153,6 @@
             const data = this.rediStribution.getFieldsValue();
             this.redistribute(data).then(res => {
               this.ModalText = 'The modal will be closed after two seconds';
-
               setTimeout(() => {
                 this.visible = false;
               }, 2000);
