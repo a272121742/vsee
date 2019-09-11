@@ -5,15 +5,20 @@
       v-bind="$attrs"
       v-on="$listeners"
       ref="input"
-      @change="e => value = e.target.value"
+      :value="text"
+      @change="e => text = e.target.value"
     >
+       <!-- slot继承 -->
+      <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
+        <slot :name="slot" v-bind="scope"/>
+      </template>
     </a-textarea>
     <span
       v-if="allowClear"
       class="ant-input-suffix"
     >
       <a-icon
-        v-show="value"
+        v-show="text"
         slot="suffix"
         type="close-circle"
         theme="filled"
@@ -33,23 +38,30 @@
  */
 export default {
   props: {
+    value: {
+      type: String,
+      default: undefined,
+    },
     allowClear: {
       type: Boolean,
       default: false
     }
   },
   data () {
+    const value = this.value || '';
     return {
-      value: ''
+      text: value,
     }
   },
-  mounted () {
-    this.value = this.$refs.input.stateValue;
+  watch: {
+    value (value) {
+      this.text = value;
+    }
   },
   methods: {
     clear () {
-      this.$refs.input.stateValue = null;
-      this.value = null;
+      this.$emit('change', {target: {value: null}});
+      this.text = null;
     }
   }
 }

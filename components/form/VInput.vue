@@ -52,6 +52,11 @@ export default {
       text: value,
     }
   },
+  watch: {
+    value (value) {
+      this.text = value;
+    }
+  },
   methods: {
     clear () {
       this.$emit('change', {target: {value: null}});

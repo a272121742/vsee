@@ -6,24 +6,11 @@
       :pagination="{total: total, current: page}"
       v-on="$listeners"
     >
-      <a-table-column
-        key="serial"
-      >
-        <span slot="title">{{ $t('serial') }}</span>
-        <template slot-scope="text, record, index">
-          <span>
-            {{ index + 1 }}
-          </span>
-        </template>
-      </a-table-column>
-
       <template v-for="col in columns">
         <a-table-column
           v-if="!col.invisible"
           :key="col.title"
-          :data-index="col.dataIndex"
-          :sorter="col.sorter"
-          :scoped-slots="col.scopedSlots"
+          v-bind="filterTitle(col)"
         >
           <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
         </a-table-column>
@@ -53,51 +40,61 @@
 </template>
 
 <script>
+import {clone} from 'ramda';
 const columns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',
+  width: 136,
   scopedSlots: { customRender: 'code' }
 }, {
   // 标题
   title: 'title',
   dataIndex: 'title',
+  width: 200,
   scopedSlots: { customRender: 'title' }
 }, {
   // 所属系统
   title: 'faultTreeIds1',
   dataIndex: 'faultTreeIds1',
+  width: 80,
   scopedSlots: { customRender: 'faultTreeIds1' }
 }, {
   // 问题等级
   title: 'grade',
   dataIndex: 'grade',
+  width: 100,
   scopedSlots: { customRender: 'grade' },
   sorter: true
 }, {
   // 问题分类
   title: 'source',
   dataIndex: 'source',
+  width: 120,
   scopedSlots: { customRender: 'source' }
 }, {
   // 问题阶段
   title: 'projectPhase',
   dataIndex: 'projectPhase',
+  width: 160,
   scopedSlots: { customRender: 'projectPhase' }
 }, {
   // TODO: 目前取出来是草稿，后台修改后变为：D0、D1、D2....
   title: 'status',
   dataIndex: 'status',
+  width: 64,
   scopedSlots: { customRender: 'status' }
 }, {
   // TODO: 暂时没有这个字段，使用生产日期代替显示
   title: 'productDate',
   dataIndex: 'productDate',
+  width: 120,
   scopedSlots: { customRender: 'productDate' }
 }, {
   // 接受日期
   title: 'receiveDate',
   dataIndex: 'receiveDate',
+  width: 120,
   scopedSlots: { customRender: 'receiveDate' }
 }];
 export default {
@@ -154,6 +151,11 @@ export default {
     mapping (cols) {
       this.columns = cols;
     },
+    filterTitle (col) {
+      const newCol = clone(col);
+      delete newCol.title;
+      return newCol;
+    }
   }
 }
 </script>

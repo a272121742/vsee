@@ -52,6 +52,7 @@
   "search": {
     "search_button": "查询",
     "reset_button": "重置",
+    "cancel_button": "取消",
     "title_search": "标题搜索",
     "advance_search": "高级搜索",
     "please_input": "请输入",
