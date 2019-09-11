@@ -30,6 +30,7 @@
     "partId": "partId",
     "preliminaryInvestigation": "preliminaryInvestigation",
     "productDate": "productDate",
+    "projectDate": "projectDate",
     "projectPhase": "projectPhase",
     "receiveDate": "receiveDate",
     "relevanceIssuesId": "relevanceIssuesId",

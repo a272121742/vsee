@@ -42,7 +42,7 @@ export default {
   }
   .login_wrapper {
     height: -webkit-fill-available;
-    background-image: url(/static/portal/login_bg.png);
+    background-image: url('/static/portal/login_bg.png');
     background-repeat:no-repeat;
     background-size: cover;
     -webkit-font-smoothing: antialiased;
