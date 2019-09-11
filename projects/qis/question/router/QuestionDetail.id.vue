@@ -2100,6 +2100,9 @@
 
           this.dataRecord = res.list;
         });
+        this.getQuestionStepAll()
+      },
+      getQuestionStepAll(){
         this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
           this.updateData = res.updateList;
