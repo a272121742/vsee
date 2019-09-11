@@ -5,12 +5,12 @@ import moment from 'moment'
 const d = mock({
   id: '1',
   // D0
-  'satisfyRadio|1': ['0', '1'], //  是否满足立项条件
+  'isProject|1': ['0', '1'], //  是否满足立项条件
   dissatisfaction: '@string', // 不满理由
   Remarks: '不满足备注', // 备注
   Remarks: '', // 备注
-  'containmentAction|1': ['0', '1'], //是否需要围堵措施
-  Measures: '', //围堵措施
+  'isNeedIca|1': ['0', '1'], //是否需要围堵措施
+  icaDescription: '', //围堵措施
   // D1
   D1department: '质量部', //责任部门
   D1user: '张三', //责任人
@@ -22,9 +22,10 @@ const d = mock({
   sixthUser: '李六',
   seventhUser: '王七',
   //D2
-  rootcause: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
+  rootCauseDescription: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
   D2file: ['1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg'],
   // D3
+
   icaDescription: '短期措施',
   pcaDescription : '长期措施',
   pcaPlanTime: '2019-01-01 00:00:00',
@@ -39,6 +40,7 @@ const d = mock({
   pcaDescription  : 'D4长期措施实施',
   pcaExecTime : 'D4长期措施实施时间',
   fileList: ['D4.png', 'D3file.word'],
+
   // D5
   EffectVerification: '效果验证',
   breakPointVIN: '断点VIN',
@@ -120,7 +122,7 @@ const db = cdb.link('step', d);
 /**
  *
  */
-mock.get('/question/:id/step', (id) => {
+mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => {
   return mock.result({
     data: db.findById(id)
   });
