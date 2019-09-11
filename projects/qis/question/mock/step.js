@@ -5,12 +5,12 @@ import moment from 'moment'
 const d = mock({
   id: '1',
   // D0
-  'satisfyRadio|1': ['0', '1'], //  是否满足立项条件
+  'isProject|1': ['0', '1'], //  是否满足立项条件
   dissatisfaction: '@string', // 不满理由
   Remarks: '不满足备注', // 备注
   Remarks: '', // 备注
-  'containmentAction|1': ['0', '1'], //是否需要围堵措施
-  Measures: '', //围堵措施
+  'isNeedIca|1': ['0', '1'], //是否需要围堵措施
+  icaDescription: '', //围堵措施
   // D1
   D1department: '质量部', //责任部门
   D1user: '张三', //责任人
@@ -22,27 +22,29 @@ const d = mock({
   sixthUser: '李六',
   seventhUser: '王七',
   //D2
-  rootcause: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
+  rootCauseDescription: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
   D2file: ['1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg'],
   // D3
-  shortMeasures: '短期措施',
-  longMeasures: '长期措施',
-  longMeasuresTime: '2019-01-01 00:00:00',
-  VerificationTime: '2019-01-01 00:00:00',
-  D3DateTime: '2019-01-01 00:00:00',
-  D3file: ['D3file.png', 'D3file.word'],
-  Smallbatch: '小批量验证',
+
+  icaDescription: '短期措施',
+  pcaDescription : '长期措施',
+  pcaPlanTime: '2019-01-01 00:00:00',
+  pcaExecTime: '2019-01-01 00:00:00',
+  estimatedClosureTime: '2019-01-01 00:00:00',
+  fileList: ['D3file.png', 'D3file.word'],
+  smallBatchValidation: '小批量验证',
+
   // D4
-  ShortEffects: 'D4短期效果',
-  shortMeasuresTime: '短期措施实施时间',
-  D4longMeasures: 'D4长期措施实施',
-  D4LMeasuresTime: 'D4长期措施实施时间',
-  D4DateTime: '2019-9-30 00:00:00',
-  D4file: ['D4.png', 'D3file.word'],
+  icaExecDescription: 'D4短期效果',
+  icaExecTime : '短期措施实施时间',
+  pcaDescription  : 'D4长期措施实施',
+  pcaExecTime : 'D4长期措施实施时间',
+  fileList: ['D4.png', 'D3file.word'],
+
   // D5
-  EffectVerification: '效果验证',
-  breakPointVIN: '断点VIN',
-  breakPointTime: '2019-9-30 00:00:00',
+  description: '效果验证',
+  breakpointVin : '断点VIN',
+  breakpointDate : '2019-9-30 00:00:00',
   "updateList": [{
     //文件名称
     id:'1',
@@ -109,9 +111,9 @@ const d = mock({
     updatefile: ['d5.word', 'd5.png'],
   }],
   // D6
-  'PreventeRepository|1': ['是', '否'],
-  'AgreeClose|1': ['同意关闭', '不同意关闭'],
-  disagreeReason: '何莎不同意关闭'
+  'recurrencePrevention|1': ['是', '否'],
+  'isClose |1': ['同意关闭', '不同意关闭'],
+  reason : '何莎不同意关闭'
 });
 
 const db = cdb.link('step', d);
@@ -120,7 +122,7 @@ const db = cdb.link('step', d);
 /**
  *
  */
-mock.get('/question/:id/step', (id) => {
+mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => {
   return mock.result({
     data: db.findById(id)
   });

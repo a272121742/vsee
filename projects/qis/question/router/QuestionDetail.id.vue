@@ -32,7 +32,6 @@
             <a-form-item :label="`id`">
               <a-textarea style="width:340px;height:56px;" placeholder="请输入" v-decorator="[
                 'id',
-
               ]"></a-textarea>
             </a-form-item>
           </a-col>
@@ -122,7 +121,6 @@
                     <img src="/static/question/file.png">
                     <span>{{ item }}</span>
                   </li>
-
                 </ul>
               </div>
             </a-form-item>
@@ -135,9 +133,20 @@
         <a-row v-show="false">
           <a-col :span="17">
             <a-form-item :label="`id`">
+              <a-input placeholder="请输入" v-decorator="[
+                      'id',
+                ]"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row v-show="false">
+          <a-col :span="17">
+            <a-form-item :label="`文件名称`">
 
               <a-input placeholder="请输入" v-decorator="[
                       'id',
+                      {rules: [{ required: true, message: '请输入文件名称' } ]}
+
                 ]"/>
             </a-form-item>
           </a-col>
@@ -145,19 +154,16 @@
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-
               <a-radio-group
                  :options="updateRadio"   v-decorator=" [
                 'isUpdate',
               {rules: [{ required: true, message: '请选择是否更新' } ]}
                ]"  />
-
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-             
             <a-form-item
                :label="`更新内容`">
               <a-textarea
@@ -172,10 +178,8 @@
           <a-col :span="18">
             <a-form-item
                :label="`附件`">
-               
               <a-upload
                  name="file"  :multiple="true"  :headers="headers"  @change="handleChange">
-                   
                 <a-button>
                   <a-icon
                      type="upload"  />
@@ -185,8 +189,6 @@
             </a-form-item>
           </a-col>
         </a-row>
-
-
       </a-form>
     </a-modal>
     <div class="TopButton">
@@ -211,7 +213,6 @@
         </a-button>
       </div>
     </div>
-
     <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
       <a-card title="问题详情" class="cardTitle">
         <img src="/static/question/editIcon.png" class="editIcon" @click="editDetail" v-if="!editFlag">
@@ -240,18 +241,18 @@
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`所属系统`">
-                <p>{{ detailList.faultTreeIds1 }}</p>
+                <p>{{ detailList.faultTreeIds1Name }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`所属功能`">
-                <p>{{ detailList.faultTreeIds2 }}</p>
+                <p>{{ detailList.faultTreeIds2Name }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`故障代码`">
                 <p style="width:164px;">
-                  {{ detailList.faultTreeIds3 }}
+                  {{ detailList.faultTreeIds3Name }}
                 </p>
               </a-form-item>
             </a-col>
@@ -259,17 +260,17 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`问题分类`">
-                <p>{{ detailList.source }}</p>
+                <p>{{ detailList.sourceName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题等级`">
-                <p>{{ detailList.grade }}</p>
+                <p>{{ detailList.gradeName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题阶段`">
-                <p>{{ detailList.projectPhase }}</p>
+                <p>{{ detailList.projectPhaseName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -281,7 +282,7 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`生产基地`">
-                <p>{{ detailList.manufactureBase }}</p>
+                <p>{{ detailList.manufactureBaseName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -343,23 +344,23 @@
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`试验类型`">
-                  <p>{{ detailList.testType }}</p>
+                  <p>{{ detailList.testTypeName }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`祸首件`">
-                  <p>{{ detailList.firstCausePart }}</p>
+                  <p>{{ detailList.firstCausePartName  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`零件号`">
-                  <p>{{ detailList.partId }}</p>
+                  <p>{{ detailList.partName  }}</p>
                 </a-form-item>
               </a-col>
 
               <a-col :span="6">
                 <a-form-item :label="`供应商名称`">
-                  <p>{{ detailList.supplierName }}</p>
+                  <p>{{ detailList.supplierName  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -388,7 +389,7 @@
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`维修网点`">
-                  <p>{{ detailList.maintenanceStation }}</p>
+                  <p>{{ detailList.maintenanceStation  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
@@ -454,7 +455,7 @@
               <a-col :span="21">
                 <a-form-item :label="`是否立项`">
                   <a-radio-group :options="satisfy" @change="satisfyChange" v-decorator="[
-                        'satisfyRadio',
+                        'isProject',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
                       ]"/>
                 </a-form-item>
@@ -480,7 +481,7 @@
                   <a-form-item :label="`是否需要围堵措施`">
 
                     <a-radio-group :options="contActionOption" @change='conActionChange' v-decorator="[
-                        'containmentAction',
+                        'isNeedIca',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
                       ]"/>
                   </a-form-item>
@@ -490,7 +491,7 @@
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
                     <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'Measures',
+                      'icaDescription',
                       {rules: [{ required: true, message: '请输入围堵措施' }]}
                     ]"></a-textarea>
 
@@ -501,7 +502,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`">
-                  <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
+                  <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
                       <a-icon type="upload"/>
                       上传文件
@@ -518,27 +519,27 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`立项条件`">
-                  <p>{{ stepDetail.satisfyRadio==='0'?'是':'否' }}</p>
+                  <p>{{ stepDetail.isProject==='0'?'是':'否' }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
-            <div v-if="stepDetail.satisfyRadio==='0'">
+            <div v-if="stepDetail.isProject==='0'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`需要围堵措施`">
-                    <p>{{stepDetail.containmentAction}}</p>
+                    <p>{{stepDetail.isNeedIca}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row v-if="stepDetail.containmentAction==='0'">
+              <a-row v-if="stepDetail.isNeedIca==='0'">
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
-                    <p>{{stepDetail.Measures}}</p>
+                    <p>{{stepDetail.icaDescription}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
-            <div v-if="stepDetail.satisfyRadio==='1'">
+            <div v-if="stepDetail.isProject==='1'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`理由`">
@@ -871,8 +872,6 @@
             </div>
 
           </div>
-
-
           <div class="Dcontent D1back" v-if="stepCurrent!=1&&backCurrent==1&&backFlag">
             <div class="triangle_border_up">
               <span></span>
@@ -961,7 +960,7 @@
               <a-col :span="21">
                 <a-form-item :label="`根本原因（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'rootcause',
+                      'rootCauseDescription',
                        {rules: [{ required: true, message: '请输入根本原因' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -970,7 +969,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`">
-                  <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
+                  <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
                       'D2file' ]">
                     <a-button>
                       <a-icon type="upload"/>
@@ -989,7 +988,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`根本原因（中英文）`">
-                  <p>{{stepDetail.rootcause}}</p>
+                  <p>{{stepDetail.rootCauseDescription}}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1016,7 +1015,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'shortMeasures',
+                      'icaDescription',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1026,7 +1025,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'longMeasures',
+                      'pcaDescription',
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1036,7 +1035,7 @@
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
                   <a-input placeholder="请输入" style="width:572px;" v-decorator="[
-                      'Smallbatch',
+                      'smallBatchValidation',
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1058,8 +1057,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'longMeasuresTime',
-
+                      'pcaPlanTime',
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1068,7 +1066,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'VerificationTime',
+                      'pcaExecTime ',
 
                     ]"/>
                 </a-form-item>
@@ -1078,7 +1076,7 @@
               <a-col :span="21">
                 <a-form-item :label="`计划关闭日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'D3DateTime',
+                      'estimatedClosureTime',
 
                     ]"/>
                 </a-form-item>
@@ -1093,28 +1091,33 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-                  <p>{{ stepDetail.shortMeasures }}</p>
+
+                <p>{{ stepDetail.icaDescription }}</p>
+
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.longMeasures }}</p>
+                  <p>{{ stepDetail.pcaDescription  }}</p>
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
-                  <p>{{ stepDetail.longMeasuresTime }}</p>
+                  <p>{{ stepDetail.pcaPlanTime }}</p>
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
-                  <p>{{ stepDetail.VerificationTime }}</p>
+                  <p>{{ stepDetail.pcaExecTime  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1123,7 +1126,7 @@
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
                     <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D3file" :title="item" :key="index">
+                      <li v-for="(item,index) in stepDetail.fileList" :title="item" :key="index">
                         <img src="/static/question/file.png">
                         <span>{{ item }}</span>
                       </li>
@@ -1137,7 +1140,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
-                  <p>{{stepDetail.Smallbatch}}</p>
+                  <p>{{stepDetail.smallBatchValidation }}</p>
                 </a-form-item>
 
               </a-col>
@@ -1145,7 +1148,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`计划关闭日期`">
-                  <p>{{ stepDetail.D3DateTime }}</p>
+                  <p>{{ stepDetail.estimatedClosureTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1159,7 +1162,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期效果(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'ShortEffects',
+                      'icaExecDescription ',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1169,7 +1172,9 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'shortMeasuresTime'
+                      'icaExecTime '
+
+
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1178,7 +1183,8 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'D4longMeasures',
+                      'pcaDescription',
+
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1201,7 +1207,9 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'D4LMeasuresTime',
+
+                      'pcaExecTime ',
+
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                     ]"/>
                 </a-form-item>
@@ -1216,21 +1224,25 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期效果`">
-                  <p>{{ stepDetail.ShortEffects }}</p>
+                  <p>{{ stepDetail.icaExecDescription  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-                  <p>{{ stepDetail.shortMeasuresTime }}</p>
+              <p>{{ stepDetail.icaExecTime  }}</p>
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述`">
-                  <p>{{ stepDetail.D4longMeasures }}</p>
+
+                  <p>{{ stepDetail.pcaDescription}}</p>
+
+
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1239,7 +1251,7 @@
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
                     <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D4file" :title="item" :key="index">
+                      <li v-for="(item,index) in stepDetail.fileList" :title="item" :key="index">
                         <img src="/static/question/file.png">
                         <span>{{ item }}</span>
                       </li>
@@ -1253,7 +1265,9 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
-                  <p>{{ stepDetail.D4LMeasuresTime }}</p>
+
+                  <p>{{ stepDetail.pcaExecTime  }}</p>
+
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1261,26 +1275,28 @@
 
           </div>
 
-          <div class="Dcontent D3back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
+          <div class="Dcontent D5back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
+
+
             <div class="triangle_border_up">
               <span></span>
             </div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`效果验证`">
-                  <p>{{ stepDetail.EffectVerification }}</p>
+                  <p>{{ stepDetail.description }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row style="margin-left:220px;">
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
-                  <p>{{ stepDetail.breakPointVIN }}</p>
+                  <p>{{ stepDetail.breakpointVin  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
-                  <p>{{ stepDetail.breakPointTime }}</p>
+                  <p>{{ stepDetail.breakpointDate  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1371,7 +1387,7 @@
               <a-col :span="21">
                 <a-form-item :label="`效果验证`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'EffectVerification',
+                      'description',
                       {rules: [{ required: true, message: '请输入效果验证' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1393,7 +1409,7 @@
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
                   <a-input placeholder="请输入" v-decorator="[
-                      'breakPointVIN',
+                      'breakpointVin ',
                       {
                         rules: [{ required: true, message: '请输入断点VIN' }]}
                     ]"/>
@@ -1402,7 +1418,7 @@
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'breakPointTime',
+                      'breakpointDate ',
                       {rules: [{ required: true, message: '请选择断点时间' }]}
                     ]"/>
                 </a-form-item>
@@ -1417,8 +1433,8 @@
                         <a href="javascript:;" @click=showUpdate(record)>{{record.updateoperation}}</a>
                       </span>
                     </a-table>
-                    <div>
-                      添加新的更新文件
+                    <div style="text-align:center;">
+                      <a-icon type="plus-circle" /> 添加新的更新文件
                     </div>
                   </div>
                 </a-form-item>
@@ -1433,8 +1449,8 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
-                  <a-radio-group :options="PreventeRepositoryRadio" v-decorator="[
-                      'PreventeRepository',
+                  <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
+                      'recurrencePrevention',
                       {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
                     ]"/>
                 </a-form-item>
@@ -1443,8 +1459,8 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <a-radio-group :options="AgreeCloseRadio" @change="CloseRadioChange" v-decorator="[
-                      'AgreeClose',
+                  <a-radio-group :options="isCloseRadio" @change="CloseRadioChange" v-decorator="[
+                      'isClose ',
                       {rules: [{ required: true, message: '请选择是否同意关闭' }]}
                     ]"/>
                 </a-form-item>
@@ -1454,7 +1470,7 @@
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`" v-if="disAgree">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'disagreeReason',
+                      'reason ',
                       {rules: [{ required: true, message: '请输入不同意关闭理由' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1468,21 +1484,21 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
-                  <p>{{ stepDetail.PreventeRepository }}</p>
+                  <p>{{ stepDetail.recurrencePrevention }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <p>{{ stepDetail.AgreeClose }}</p>
+                  <p>{{ stepDetail.isClose  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`">
-                  <p>{{ stepDetail.disagreeReason }}</p>
+                  <p>{{ stepDetail.reason  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1521,7 +1537,6 @@
     mapActions
   } = createNamespacedHelpers('question');
   const columns = [{
-
     title: '序号',
     dataIndex: 'no',
     scopedSlots: {
@@ -1553,9 +1568,7 @@
     },
     width: 80
   }];
-
   const columnsRecord = [{
-
     title: '操作记录',
     dataIndex: 'recode',
     scopedSlots: {
@@ -1732,7 +1745,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 5, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 6, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1754,14 +1767,14 @@
           value: '1'
         }],
         // D6
-        PreventeRepositoryRadio: [{
+        recurrencePreventionRadio: [{
           label: '是',
           value: '0'
         }, {
           label: '否',
           value: '1'
         }],
-        AgreeCloseRadio: [{
+        isCloseRadio: [{
           label: '同意关闭',
           value: '0'
         }, {
@@ -1774,11 +1787,11 @@
         // 数据模板
         record: {
           //D0
-          satisfyRadio: '0', //  是否满足立项条件
+          isProject: '0', //  是否满足立项条件
           dissatisfaction: '', // 不满足理由
           Remarks: '', // 备注
-          containmentAction: '0', //是否需要围堵措施
-          Measures: '', //围堵措施
+          isNeedIca: '0', //是否需要围堵措施
+          icaDescription: '', //围堵措施
           // D1
           D1department: [], //责任部门
           D1user: [], //责任人
@@ -1790,31 +1803,32 @@
           sixthUser: [],
           seventhUser: [],
           //D2
-          rootcause: '',
+          rootCauseDescription: '',
           D2file: [],
           // D3
-          shortMeasures: '',
-          longMeasures: '',
-          longMeasuresTime: null,
-          VerificationTime: null,
-          D3DateTime: null,
-          D3file: '',
-          Smallbatch: '',
+          icaDescription: '',
+          pcaDescription : '',
+          pcaPlanTime: null,
+          pcaExecTime : null,
+          estimatedClosureTime: null,
+          fileList : '',
+          smallBatchValidation : '',
           // D4
-          ShortEffects: '',
-          shortMeasuresTime: null,
-          D4longMeasures: null,
-          D4LMeasuresTime: null,
+          icaExecDescription : '',
+          icaExecTime : null,
+          pcaDescription  : null,
+          pcaExecTime : null,
+
 
           // D5
-          EffectVerification: '',
-          breakPointVIN: '',
-          breakPointTime: null,
+          description: '',
+          breakpointVin : '',
+          breakpointDate : null,
 
           // D6
-          PreventeRepository: '1',
-          AgreeClose: '1',
-          disagreeReason: ''
+          recurrencePrevention: '1',
+          isClose : '1',
+          reason : ''
         },
         // 再分配
 
@@ -1840,22 +1854,22 @@
 
       };
     },
-
     created() {
       this.request();
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'satisfyRadio', 'containmentAction', 'Measures', 'dissatisfaction', 'Remarks', 'planTime',
+          'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
-          'seventhUser', 'rootcause', 'D2file', 'shortMeasures', 'longMeasures',
-          'longMeasuresTime', 'VerificationTime', 'D3DateTime', 'D3file', 'Smallbatch',
-          'ShortEffects', 'shortMeasuresTime', 'D4longMeasures', 'D4LMeasuresTime',
-          'EffectVerification', 'breakPointVIN', 'breakPointTime', 'PreventeRepository', 'AgreeClose',
-          'disagreeReason'
+
+          'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+          'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
+          'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
+
+          'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+          'reason'
         ], 'record'),
         onValuesChange: autoUpdateFileds(this, 'record')
       });
-
       this.rediStribution = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, ['dtfUser'], 'redistributionForm'),
         onValuesChange: autoUpdateFileds(this, 'redistributionForm')
@@ -1940,7 +1954,6 @@
       showUpdate(param) {
         this.visibleUpdate = true;
         this.updateForm = this.$form.createForm(this, {
-
           mapPropsToFields: () => {
             return {
               id: this.$form.createFormField({
@@ -1980,20 +1993,14 @@
       },
       //确定7钻分析弹框
       AnalysisOk() {
-
         this.AnalysisForm.validateFields((err, fieldsValue) => {
           if (!err) {
-
             const data = this.AnalysisForm.getFieldsValue();
             if (this.AnalysisForm === "") {
               data.id = this.AnalysisForm.id;
             }
-
-
             this.analysisData.forEach((item, index) => {
-
               if (item.id === data.id) {
-
                 item.id = data.id;
                 item.Standard = data.Standard;
                 item.reality = data.reality;
@@ -2006,7 +2013,6 @@
             this.visibleAnalysis = false;
           }
         });
-
       },
       AnalysisDetailOk() {
         this.visibleDetail = false;
@@ -2017,30 +2023,21 @@
       updateOk() {
         this.updateForm.validateFields((err, fieldsValue) => {
           if (!err) {
-
             this.visibleUpdate = false;
             const data = this.updateForm.getFieldsValue();
-
             this.updateData.forEach((item, index) => {
-
               if (item.id === data.id) {
-
                 item.id = data.id;
-
                 if (data.fileName) {
                   item.fileName = data.fileName
                 }
                 item.isUpdate = data.isUpdate;
                 item.updateContent = data.updateContent;
                 item.updatefile = data.updatefile;
-
               }
             })
-
           }
         });
-
-
       },
       updateCancel() {
         this.visibleUpdate = false;
@@ -2050,7 +2047,6 @@
         this.visibleAnalysis = false;
       },
       // 是否同意关闭
-
       CloseRadioChange(e) {
         if (e.target.value === '0') {
           this.disAgree = false;
@@ -2063,20 +2059,14 @@
           pageSize: 10,
           pageNo: 1,
         }
-
         //查看问题详情
-
         this.eidtQuestion(this.id).then(res => {
           this.detailList = res;
         })
-
         this.getAnalysis(this.id).then(res => {
-
           this.analysisData = res.list;
-
           if (this.analysisData.length == 0) {
             this.analysisData = [{
-
               "id": "8",
               Standard: '',
               reality: '',
@@ -2091,7 +2081,6 @@
                 conclusion: '',
                 file: '',
                 operation: '编辑'
-
               },
               {
                 "id": "10",
@@ -2100,13 +2089,10 @@
                 conclusion: '',
                 file: '',
                 operation: '编辑'
-
               },
             ];
           }
         })
-
-
         this.getFilePage().then(res => {
           this.dataFile = res.list;
         });
@@ -2114,10 +2100,11 @@
 
           this.dataRecord = res.list;
         });
-        this.getQuestionStep(1).then(res => {
-
+        this.getQuestionStepAll()
+      },
+      getQuestionStepAll(){
+        this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
-
           this.updateData = res.updateList;
 
         });
@@ -2149,7 +2136,6 @@
       // 车型选择
       vehicleModelIdChange(value) {
         this.carTitle = value;
-
         if (value) {
           this.titleFlag = true;
         }
@@ -2157,7 +2143,6 @@
       // 回退到param步
       goto(param) {
         this.backCurrent = param;
-
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
         } else {
@@ -2166,13 +2151,11 @@
       },
       // tab栏切换
       callback(key) {
-
       },
       // 查看更多
       showMore() {
         this.showMoreFlag = !this.showMoreFlag;
       },
-
       // 所属功能选择
       functionChange(value) {
         this.functionTitle = value;
@@ -2189,15 +2172,12 @@
       handleSubmit(e) {
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
-
             const data = this.formDcontent.getFieldsValue();
             let name = 'submit';
             this.addQuestion(data).then(res => {
-
               this.$message.success('提交成功');
               //隐藏7钻责任人模块
               this.userFlag = false;
-
             });
           }
         });
@@ -2209,7 +2189,6 @@
             const data = this.rediStribution.getFieldsValue();
             this.redistribute(data).then(res => {
               this.ModalText = 'The modal will be closed after two seconds';
-
               setTimeout(() => {
                 this.visible = false;
               }, 2000);
@@ -2257,7 +2236,7 @@
       // 是否满足立项条件切换
       satisfyChange(e) {
 
-        this.record.containmentAction = '0';
+        this.record.isNeedIca = '0';
         if (e.target.value === '0') {
           this.satisfyFlag = true;
         } else if (e.target.value === '1') {
