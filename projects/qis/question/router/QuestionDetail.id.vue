@@ -1015,11 +1015,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-<<<<<<< HEAD
                       'icaDescription',
-=======
-                      'shorticaDescription',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1029,11 +1025,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-<<<<<<< HEAD
                       'pcaDescription',
-=======
-                      'longicaDescription',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1065,12 +1057,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-<<<<<<< HEAD
                       'pcaPlanTime',
-=======
-                      'longicaDescriptionTime',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
-
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1104,33 +1091,26 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-<<<<<<< HEAD
-                  <p>{{ stepDetail.icaDescription }}</p>
-=======
-                  <p>{{ stepDetail.shorticaDescription }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
+                <p>{{ stepDetail.icaDescription }}</p>
+
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-<<<<<<< HEAD
                   <p>{{ stepDetail.pcaDescription  }}</p>
-=======
-                  <p>{{ stepDetail.longicaDescription }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
-<<<<<<< HEAD
                   <p>{{ stepDetail.pcaPlanTime }}</p>
-=======
-                  <p>{{ stepDetail.longicaDescriptionTime }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1192,11 +1172,9 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-<<<<<<< HEAD
                       'icaExecTime '
-=======
-                      'shorticaDescriptionTime'
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
+
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1205,11 +1183,8 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-<<<<<<< HEAD
                       'pcaDescription  ',
-=======
-                      'D4longicaDescription',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1232,11 +1207,9 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-<<<<<<< HEAD
+
                       'pcaExecTime ',
-=======
-                      'D4LicaDescriptionTime',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                     ]"/>
                 </a-form-item>
@@ -1258,22 +1231,18 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-<<<<<<< HEAD
-                  <p>{{ stepDetail.icaExecTime  }}</p>
-=======
-                  <p>{{ stepDetail.shorticaDescriptionTime }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+              <p>{{ stepDetail.icaExecTime  }}</p>
+
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述`">
-<<<<<<< HEAD
+
                   <p>{{ stepDetail.pcaDescription}}</p>
-=======
-                  <p>{{ stepDetail.D4longicaDescription }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
+
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1296,23 +1265,19 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
-<<<<<<< HEAD
+
                   <p>{{ stepDetail.pcaExecTime  }}</p>
-=======
-                  <p>{{ stepDetail.D4LicaDescriptionTime }}</p>
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
                 </a-form-item>
               </a-col>
             </a-row>
 
 
           </div>
-<<<<<<< HEAD
 
           <div class="Dcontent D4back" v-if="stepCurrent!=4&&backCurrent==4&&backFlag">
-=======
-          <div class="Dcontent D3back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
+
             <div class="triangle_border_up">
               <span></span>
             </div>
@@ -1841,7 +1806,6 @@
           rootCauseDescription: '',
           D2file: [],
           // D3
-<<<<<<< HEAD
           icaDescription: '',
           pcaDescription : '',
           pcaPlanTime: null,
@@ -1854,20 +1818,7 @@
           icaExecTime : null,
           pcaDescription  : null,
           pcaExecTime : null,
-=======
-          shorticaDescription: '',
-          longicaDescription: '',
-          longicaDescriptionTime: null,
-          VerificationTime: null,
-          D3DateTime: null,
-          D3file: '',
-          Smallbatch: '',
-          // D4
-          ShortEffects: '',
-          shorticaDescriptionTime: null,
-          D4longicaDescription: null,
-          D4LicaDescriptionTime: null,
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
 
           // D5
           EffectVerification: '',
@@ -1909,15 +1860,11 @@
         mapPropsToFields: () => createFormFields(this, [
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
-<<<<<<< HEAD
+
           'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription ',
           'pcaDescription Time', 'pcaExecTime ', 'estimatedClosureTime', 'fileList', 'smallBatchValidation ',
           'icaExecDescription ', 'icaExecTime ', 'pcaDescription  ', 'pcaExecTime ',
-=======
-          'seventhUser', 'rootCauseDescription', 'D2file', 'shorticaDescription', 'longicaDescription',
-          'longicaDescriptionTime', 'VerificationTime', 'D3DateTime', 'D3file', 'Smallbatch',
-          'ShortEffects', 'shorticaDescriptionTime', 'D4longicaDescription', 'D4LicaDescriptionTime',
->>>>>>> c916ddc54a8236cb9917ab5a3bb98347a9635ad1
+
           'EffectVerification', 'breakPointVIN', 'breakPointTime', 'PreventeRepository', 'AgreeClose',
           'disagreeReason'
         ], 'record'),
