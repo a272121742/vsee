@@ -180,7 +180,7 @@
     </a-modal>
     <div class="TopButton">
       <div class="backButton">
-        <a-button slot="tabBarExtraContent" class="backBtn">
+        <a-button slot="tabBarExtraContent" class="backBtn" @click="goBack">
           <img src="/static/question/back.png" />
           返回
         </a-button>
@@ -1868,6 +1868,11 @@
         } else {
           this.conActionFlag = false;
         }
+      },
+      goBack(){
+         this.$router.push({
+          path: this.$route.query.form || '/'
+        });
       },
       // 是否驳回选择
       RejectRadioChange(e) {

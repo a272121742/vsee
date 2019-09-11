@@ -49,7 +49,7 @@
                 <a-col :span="6">
                   <a-form-item :label="`所属系统`">
                     <net-select url="/issue/v1/faultcategory?p_id=0" show-search :transform="selectOption"
-                      :delay="!!record.faultTreeIds1" placeholder="请选择" @change="handleSystem"
+                      :delay="!isEdit || !record.faultTreeIds1" placeholder="请选择" @change="handleSystem"
                       :filterOption="filterOption" :allow-clear="true" v-decorator="[
                       'faultTreeIds1',
                       {rules:[{required:true, message:'请选择所属系统'}]}
@@ -62,8 +62,9 @@
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
                     <net-select showSearch placeholder="请选择" :filterOption="filterOption"
-                      :delay="!!record.faultTreeIds2" :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
-                      :transform="selectOption" @change="faultTreeIds2Change" :allow-clear="true" v-decorator="[
+                      :delay="!isEdit || !record.faultTreeIds2"
+                      :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`" :transform="selectOption"
+                      @change="faultTreeIds2Change" :allow-clear="true" v-decorator="[
                       'faultTreeIds2',
                       {rules:[{required:true, message:'请选择所属系统'}]}
                     ]">
@@ -73,7 +74,7 @@
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
-                    <net-select show-search  placeholder="请选择" :delay="!!record.faultTreeIds3"
+                    <net-select show-search  placeholder="请选择" :delay="!isEdit || !record.faultTreeIds3"
                       :filterOption="filterOption" @change="faultTreeIds3Change"
                       :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`" :transform="selectOption"
                       :allow-clear="true" v-decorator="[
@@ -180,7 +181,7 @@
                 <a-col :span="8">
                   <a-form-item :label="`附件`">
                     <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers" name="file"
-                      :multiple="true" @change="handleChange">
+                      :multiple="true" :fileList="fileList" @change="handleChange" :remove="removeFile">
                       <a-button>
                         <a-icon type="upload" /> 上传文件
                       </a-button>
@@ -358,6 +359,8 @@
       return {
         businessKey: '',
         businessTitle: '',
+        fileList: [], //上传附件列表
+        dataFileList: [], //存储到数据库的列表
         BaseContent: '',
         supplyContent: 'supplyContent',
         DetailBase: true, //基本信息是否展开标识
@@ -390,7 +393,7 @@
         },
         headers: {
           authorization: 'authorization-text',
-          token: $store.getters.getToken
+          token: $store.getters.getToken()
         },
         // 数据模板
         record: {
@@ -429,7 +432,11 @@
         }
       };
     },
-
+    computed: {
+      isEdit() {
+        return this.name !== 'create';
+      }
+    },
     created() {
       this.form = this.$form.createForm(this, {
         mapPropsToFields: this.mapPropsToFields,
@@ -446,7 +453,8 @@
         'getQuestionPage',
         'eidtQuestion',
         'saveQuestion',
-        'editSaveQuestion'
+        'editSaveQuestion',
+        'workFlowSubmit'
       ]),
       // 初始化
       init() {
@@ -586,7 +594,9 @@
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       goBack() {
-        this.$router.go(-1);
+        this.$router.push({
+          path: this.$route.query.form || '/'
+        });
       },
       // 车型选择
       vehicleModelIdChange(value, option) {
@@ -602,6 +612,7 @@
       },
       // 所属功能选择
       faultTreeIds2Change(value, option) {
+
         if (option != undefined) {
           if (option.componentOptions != undefined) {
             if (option.componentOptions.children[0].text != undefined) {
@@ -615,60 +626,68 @@
         if (option != undefined) {
           if (option.componentOptions != undefined) {
             if (option.componentOptions.children[0].text != undefined) {
-              this.faultTreeIds2Title = option.componentOptions.children[0].text;
+              this.codeTitle = option.componentOptions.children[0].text;
             }
           }
         }
 
       },
       handleSubmit(e) {
-        debugger;
-        this.form.validateFields((err, fieldsValue) => {
-          if (!err) {
-            const data = this.form.getFieldsValue();
+
+        // this.form.validateFields((err, fieldsValue) => {
+        // if (!err) {
+        const data = this.form.getFieldsValue();
 
 
-            let primaryKey = "所属系统-" + data.faultTreeIds1 + "," + "所属功能-" + data.faultTreeIds2 + "," + "故障代码-" +
-              data
-              .faultTreeIds3;
-            data.faultTreeIds = primaryKey;
-            let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
+        let primaryKey = "所属系统-" + data.faultTreeIds1 + "," + "所属功能-" + data.faultTreeIds2 + "," + "故障代码-" +
+          data
+          .faultTreeIds3;
+        data.faultTreeIds = primaryKey;
 
-            data.title = title;
-            //日期格式化
-            if (data.failureDate) {
-              let failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
-              data.failureDate = failureDate;
+        let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
+
+        data.title = title;
+        this.businessTitle = title;
+        //日期格式化
+        if (data.failureDate) {
+          let failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+          data.failureDate = failureDate;
+        }
+        if (data.productDate) {
+          let productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
+          data.productDate = productDate;
+
+        }
+
+        let id = this.$store.getters.getUser();
+        id = id.__ob__.dep.id;
+
+        this.saveQuestion(data).then(res => {
+          this.businessKey = res;
+          let name = 'submit'
+
+          let param = {
+            "businessKey": '1169814116058992642',
+            "businessTitle": this.businessTitle,
+            "processDefinitionKey": 'BJEV1',
+            "subSys": 'irs',
+            "taskId": null,
+            "userId": id,
+            "variables": {
+              "assigner": "1",
+              "issc": '0'
             }
-            if (data.productDate) {
-              let productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
-              data.productDate = productDate;
-
-            }
-
-            let id=this.$store.getters.getUser;
-            console.log("id   "+id);
-
-            // this.saveQuestion(data).then(res => {
-            //      this.businessKey=res;
-            // })
-            let name = 'submit'
-
-            // let param={
-            //        "businessKey":this.businessKey,
-            //        "businessTitle":this.businessTitle,
-            //        "processDefinitionKey":'BJEV1',
-            //        "subSys":'irs',
-            //        "taskId":null,
 
 
-            //   };
+          };
 
-            // this.workFlowSubmit(data).then(res => {
+          this.workFlowSubmit(param).then(res => {
 
-            // });
-          }
-        });
+          });
+        })
+
+        // }
+        // });
       },
       handleSave() {
 
@@ -678,7 +697,7 @@
           .faultTreeIds3;
         data.faultTreeIds = primaryKey;
         let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
-        this.businessTitle = title;
+
         data.title = title;
         //日期格式化
         if (data.failureDate) {
@@ -719,24 +738,31 @@
       },
       handleChange(info) {
         debugger;
-
         let fileList = [...info.fileList];
-
-        // 1. Limit the number of uploaded files
-        //    Only to show two recent uploaded files, and old ones will be replaced by the new
-        fileList = fileList.slice(-2);
-
-        // 2. read from response and show file link
         fileList = fileList.map((file) => {
           if (file.response) {
             // Component will show file.url as link
             file.url = file.response.url;
+
           }
           return file;
         });
+        this.fileList=fileList;
 
-        this.fileList = fileList
-        console.log(fileList);
+
+        if (!info.event) {
+          if (info.file.response != undefined) {
+
+            this.dataFileList.push(info.file.response.data)
+          }
+        }
+
+        console.log(this.dataFileList);
+
+      },
+      //删除文件
+      removeFile(info) {
+        debugger;
       },
       gradeChange(value) {
 

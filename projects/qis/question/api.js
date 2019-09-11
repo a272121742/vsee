@@ -14,6 +14,10 @@ export default {
   addQuestion: (data) => $.post('/activiti/running/completeTask', data),
   //创建保存某个问题
   saveQuestion:(data) => $.post('/issue/v1/issue', data),
+  /**
+ * 问题提交至工作流
+ */
+workFlowSubmit:(data)=> $.post('/activiti/running/completeTask', data),
   //修改保存某个问题
   editSaveQuestion:(data)=>$.put('/issue/v1/issue', data),
   // 再分配某个问题

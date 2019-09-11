@@ -14,7 +14,7 @@ export default {
     return {
       headers: {
         authorization: 'authorization-text',
-        token: $store.getters.getToken
+        token: $store.getters.getToken()
       },
     }
   },
@@ -23,7 +23,7 @@ export default {
       if (!info.event) {
         console.log(info.file.response);
       }
-      
+
       // let fileList = [...info.fileList];
       // // 1. Limit the number of uploaded files
       // //    Only to show two recent uploaded files, and old ones will be replaced by the new
