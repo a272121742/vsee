@@ -2,23 +2,23 @@
   <div class="container">
     <a-tabs :activeKey="activeKey" @change="changeTable">
       <a-tab-pane
-        key="1"
+        key="2"
       >
         <template slot="tab">
           待办事项
           <a-badge
-            :count="total"
+            :count="total2"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
           />
         </template>
       </a-tab-pane>
       <a-tab-pane
-        key="2"
+        key="0"
       >
         <span slot="tab">
           待发事项
           <a-badge
-            :count="total"
+            :count="total0"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
           />
         </span>
@@ -118,7 +118,7 @@ export default {
   },
   data () {
     return {
-      activeKey: '1',
+      activeKey: '2',
       hideForm: true,
       showSearch: true,
       /**
@@ -129,6 +129,8 @@ export default {
        * 表格总数
        */
       total: 0,
+      total0: 0,
+      total2: 0,
       /**
        * 当前页
        */
@@ -165,9 +167,16 @@ export default {
     request (config) {
       if (config) this.page = 1;
       const {page, limit, order, orderField} = this;
-      this.getIssuePage({...config, page, limit, order, orderField}).then(res => {
+      const type = Number(this.activeKey || 0);
+      this.getIssuePage({...config, page, limit, order, orderField, type}).then(res => {
         this.data = res.list;
         this.total = res.total;
+        if (this.activeKey === '0') {
+          this.total0 = res.total;
+        }
+        if (this.activeKey === '2') {
+          this.total2 = res.total;
+        }
       });
     },
     handleTableChange ({current = 1, pageSize = 10}, filters, {order = '', field = ''}) {
@@ -188,8 +197,8 @@ export default {
     },
     changeTable (activeKey) {
       this.activeKey = activeKey;
-      this.showSearch = this.activeKey === '1';
-      this.hideForm = this.activeKey !== '1' || this.showForm;
+      this.showSearch = this.activeKey === '2';
+      this.hideForm = this.activeKey !== '2' || this.showForm;
       this.page = 1;
       this.request();
     },

@@ -28,7 +28,7 @@
                 allow-clear
                 :placeholder="$t('search.please_select') + $t('issue.grade')" 
                 url="/sys/dict?dictType=issue_grade"
-                :transform="transformField"
+                :transform="transformGrade"
                 v-decorator="['grade']"
               />
             </a-form-item>
@@ -44,7 +44,7 @@
                 :cache="false"
                 :delay="!record.source"
                 :placeholder="$t('search.please_select') + $t('issue.source')"
-                :transform="transformField" 
+                :transform="transformSource" 
                 v-decorator="['source']"
               />
             </a-form-item>
@@ -171,6 +171,15 @@ export default {
         value: item.id,
         label: item.name
       }));
+    },
+    transformGrade (list) {
+      return list.map((item) => ({
+        value: item.id,
+        label: item.dictName
+      }));
+    },
+    transformSource (list) {
+      return this.transformGrade(list);
     },
   }
 }

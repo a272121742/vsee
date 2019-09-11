@@ -1,0 +1,26 @@
+{
+  "Home": "Home",
+  "MyQuestion": "My Question",
+  "AdvanceSearch": "AdvanceSearch",
+  "username": {
+    "label": "Username",
+    "placeholder": "please input username",
+    "required_message": "username is required"
+  },
+  "password": {
+    "label": "Password",
+    "placeholder": "please input password",
+    "required_message": "password is required"
+  },
+  "captcha": {
+    "label": "Captcha",
+    "placeholder": "please input captcha",
+    "required_message": "captcha id required"
+  },
+  "remember": {
+    "text": "remember username and password"
+  },
+  "login": {
+    "submit": "Login"
+  }
+}

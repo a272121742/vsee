@@ -141,10 +141,6 @@ export default {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
           this.login(loginInfo).then(res => {
-            if (res.code) {
-              this.$message.error(res.msg);
-              return;
-            }
             if (res.token) {
               this.$router.push({path: '/'});
               // window.location.href="/";
@@ -154,6 +150,10 @@ export default {
                 this.clean();
               }
             }
+          }).catch(err => {
+            this.$message.error(this.$t(err));
+          }).finally(_ => {
+            this.captchaChange();
           });
         }
       });
@@ -193,54 +193,3 @@ export default {
     }
   }
 </style>
-
-<i18n>
-{
-  "zh": {
-    "username": {
-      "label": "用户名",
-      "placeholder": "请输入用户名",
-      "required_message": "用户名不能为空"
-    },
-    "password": {
-      "label": "密码",
-      "placeholder": "请输入用户密码",
-      "required_message": "密码不能为空"
-    },
-    "captcha": {
-      "label": "验证码",
-      "placeholder": "请输入验证码",
-      "required_message": "验证码不能为空"
-    },
-    "remember": {
-      "text": "记住用户名和密码"
-    },
-    "login": {
-      "submit": "登录"
-    }
-  },
-  "en": {
-    "username": {
-      "label": "Username",
-      "placeholder": "please input username",
-      "required_message": "username is required"
-    },
-    "password": {
-      "label": "Password",
-      "placeholder": "please input password",
-      "required_message": "password is required"
-    },
-    "captcha": {
-      "label": "Captcha",
-      "placeholder": "please input captcha",
-      "required_message": "captcha id required"
-    },
-    "remember": {
-      "text": "remember username and password"
-    },
-    "login": {
-      "submit": "Login"
-    }
-  }
-}
-</i18n>

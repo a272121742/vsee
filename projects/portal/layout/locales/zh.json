@@ -1,5 +1,12 @@
 {
   "Home": "首页",
   "MyQuestion": "我的问题",
-  "AdvanceSearch": "高级检索"
+  "AdvanceSearch": "高级检索",
+  "SERVER": {
+    "ERROR": {
+      "-1": "错误代码未定义",
+      "0": "正常请求",
+      "10007": "验证码不正确"
+    }
+  }
 }

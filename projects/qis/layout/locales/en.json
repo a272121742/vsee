@@ -1,5 +1,12 @@
 {
   "Home": "Home",
   "List": "My Question",
-  "Search": "AdvanceSearch"
+  "Search": "AdvanceSearch",
+  "Server": {
+    "ERROR": {
+      "-1": "error code undefined",
+      "0": "success",
+      "10007": "captcha error"
+    }
+  }
 }

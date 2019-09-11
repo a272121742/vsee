@@ -41,6 +41,7 @@
 
 <script>
 import {clone} from 'ramda';
+import moment from 'moment';
 const columns = [{
   // 问题编号
   title: 'code',
@@ -61,17 +62,17 @@ const columns = [{
   scopedSlots: { customRender: 'faultTreeIds1' }
 }, {
   // 问题等级
-  title: 'grade',
-  dataIndex: 'grade',
+  title: 'gradeName',
+  dataIndex: 'gradeName',
   width: 100,
-  scopedSlots: { customRender: 'grade' },
+  scopedSlots: { customRender: 'gradeName' },
   sorter: true
 }, {
   // 问题分类
-  title: 'source',
-  dataIndex: 'source',
+  title: 'sourceName',
+  dataIndex: 'sourceName',
   width: 120,
-  scopedSlots: { customRender: 'source' }
+  scopedSlots: { customRender: 'sourceName' }
 }, {
   // 问题阶段
   title: 'projectPhase',
@@ -83,19 +84,26 @@ const columns = [{
   title: 'status',
   dataIndex: 'status',
   width: 64,
+  sorter: true,
   scopedSlots: { customRender: 'status' }
 }, {
   // 立项时间
   title: 'projectDate',
   dataIndex: 'projectDate',
   width: 120,
-  scopedSlots: { customRender: 'projectDate' }
+  scopedSlots: { customRender: 'projectDate' },
+  customRender (date) {
+    return date ? moment(date).format('YYYY-MM-DD') : '';
+  }
 }, {
   // 接受日期
   title: 'receiveDate',
   dataIndex: 'receiveDate',
   width: 120,
-  scopedSlots: { customRender: 'receiveDate' }
+  scopedSlots: { customRender: 'receiveDate' },
+  customRender (date) {
+    return date ? moment(date).format('YYYY-MM-DD') : '';
+  }
 }];
 export default {
   components: {
