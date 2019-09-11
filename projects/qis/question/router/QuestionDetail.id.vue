@@ -443,7 +443,7 @@
               <a-col :span="21">
                 <a-form-item :label="`是否立项`">
                   <a-radio-group :options="satisfy" @change="satisfyChange" v-decorator="[
-                        'satisfyRadio',
+                        'isProject',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
                       ]"/>
                 </a-form-item>
@@ -469,7 +469,7 @@
                   <a-form-item :label="`是否需要围堵措施`">
 
                     <a-radio-group :options="contActionOption" @change='conActionChange' v-decorator="[
-                        'containmentAction',
+                        'isNeedIca',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
                       ]"/>
                   </a-form-item>
@@ -479,7 +479,7 @@
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
                     <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'Measures',
+                      'icaDescription',
                       {rules: [{ required: true, message: '请输入围堵措施' }]}
                     ]"></a-textarea>
 
@@ -490,7 +490,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`">
-                  <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
+                  <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
                       <a-icon type="upload"/>
                       上传文件
@@ -507,27 +507,27 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`立项条件`">
-                  <p>{{ stepDetail.satisfyRadio==='0'?'是':'否' }}</p>
+                  <p>{{ stepDetail.isProject==='0'?'是':'否' }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
-            <div v-if="stepDetail.satisfyRadio==='0'">
+            <div v-if="stepDetail.isProject==='0'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`需要围堵措施`">
-                    <p>{{stepDetail.containmentAction}}</p>
+                    <p>{{stepDetail.isNeedIca}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row v-if="stepDetail.containmentAction==='0'">
+              <a-row v-if="stepDetail.isNeedIca==='0'">
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
-                    <p>{{stepDetail.Measures}}</p>
+                    <p>{{stepDetail.icaDescription}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
-            <div v-if="stepDetail.satisfyRadio==='1'">
+            <div v-if="stepDetail.isProject==='1'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`理由`">
@@ -948,7 +948,7 @@
               <a-col :span="21">
                 <a-form-item :label="`根本原因（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'rootcause',
+                      'rootCauseDescription',
                        {rules: [{ required: true, message: '请输入根本原因' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -957,7 +957,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`">
-                  <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
+                  <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
                       'D2file' ]">
                     <a-button>
                       <a-icon type="upload"/>
@@ -976,7 +976,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`根本原因（中英文）`">
-                  <p>{{stepDetail.rootcause}}</p>
+                  <p>{{stepDetail.rootCauseDescription}}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1003,7 +1003,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'shortMeasures',
+                      'shorticaDescription',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1013,7 +1013,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'longMeasures',
+                      'longicaDescription',
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1045,7 +1045,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'longMeasuresTime',
+                      'longicaDescriptionTime',
 
                     ]"/>
                 </a-form-item>
@@ -1080,21 +1080,21 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-                  <p>{{ stepDetail.shortMeasures }}</p>
+                  <p>{{ stepDetail.shorticaDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.longMeasures }}</p>
+                  <p>{{ stepDetail.longicaDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
-                  <p>{{ stepDetail.longMeasuresTime }}</p>
+                  <p>{{ stepDetail.longicaDescriptionTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1156,7 +1156,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'shortMeasuresTime'
+                      'shorticaDescriptionTime'
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1165,7 +1165,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'D4longMeasures',
+                      'D4longicaDescription',
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1188,7 +1188,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'D4LMeasuresTime',
+                      'D4LicaDescriptionTime',
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                     ]"/>
                 </a-form-item>
@@ -1210,14 +1210,14 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-                  <p>{{ stepDetail.shortMeasuresTime }}</p>
+                  <p>{{ stepDetail.shorticaDescriptionTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述`">
-                  <p>{{ stepDetail.D4longMeasures }}</p>
+                  <p>{{ stepDetail.D4longicaDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1240,7 +1240,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
-                  <p>{{ stepDetail.D4LMeasuresTime }}</p>
+                  <p>{{ stepDetail.D4LicaDescriptionTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1757,11 +1757,11 @@
         // 数据模板
         record: {
           //D0
-          satisfyRadio: '0', //  是否满足立项条件
+          isProject: '0', //  是否满足立项条件
           dissatisfaction: '', // 不满足理由
           Remarks: '', // 备注
-          containmentAction: '0', //是否需要围堵措施
-          Measures: '', //围堵措施
+          isNeedIca: '0', //是否需要围堵措施
+          icaDescription: '', //围堵措施
           // D1
           D1department: [], //责任部门
           D1user: [], //责任人
@@ -1773,21 +1773,21 @@
           sixthUser: [],
           seventhUser: [],
           //D2
-          rootcause: '',
+          rootCauseDescription: '',
           D2file: [],
           // D3
-          shortMeasures: '',
-          longMeasures: '',
-          longMeasuresTime: null,
+          shorticaDescription: '',
+          longicaDescription: '',
+          longicaDescriptionTime: null,
           VerificationTime: null,
           D3DateTime: null,
           D3file: '',
           Smallbatch: '',
           // D4
           ShortEffects: '',
-          shortMeasuresTime: null,
-          D4longMeasures: null,
-          D4LMeasuresTime: null,
+          shorticaDescriptionTime: null,
+          D4longicaDescription: null,
+          D4LicaDescriptionTime: null,
 
           // D5
           EffectVerification: '',
@@ -1827,11 +1827,11 @@
       this.request();
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'satisfyRadio', 'containmentAction', 'Measures', 'dissatisfaction', 'Remarks', 'planTime',
+          'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
-          'seventhUser', 'rootcause', 'D2file', 'shortMeasures', 'longMeasures',
-          'longMeasuresTime', 'VerificationTime', 'D3DateTime', 'D3file', 'Smallbatch',
-          'ShortEffects', 'shortMeasuresTime', 'D4longMeasures', 'D4LMeasuresTime',
+          'seventhUser', 'rootCauseDescription', 'D2file', 'shorticaDescription', 'longicaDescription',
+          'longicaDescriptionTime', 'VerificationTime', 'D3DateTime', 'D3file', 'Smallbatch',
+          'ShortEffects', 'shorticaDescriptionTime', 'D4longicaDescription', 'D4LicaDescriptionTime',
           'EffectVerification', 'breakPointVIN', 'breakPointTime', 'PreventeRepository', 'AgreeClose',
           'disagreeReason'
         ], 'record'),
@@ -2067,7 +2067,7 @@
 
           this.dataRecord = res.list;
         });
-        this.getQuestionStep(1).then(res => {
+        this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
           this.updateData = res.updateList;
 
@@ -2200,7 +2200,7 @@
       // 是否满足立项条件切换
       satisfyChange(e) {
 
-        this.record.containmentAction = '0';
+        this.record.isNeedIca = '0';
         if (e.target.value === '0') {
           this.satisfyFlag = true;
         } else if (e.target.value === '1') {

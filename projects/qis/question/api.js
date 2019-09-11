@@ -9,7 +9,7 @@ export default {
   getFilePage: () => ('/question/annex/page'),
   // 查看某个问题的操作记录
   getRecord: () => $.get('/question/action/page'),
-  getQuestionStep: (id) => $.get('/question/' + id + '/step'),
+  getQuestionStep: (id) => $.get('/issue/v1/workflow/problemDefinition?issue_id=' + id ),
   //新增某个问题
   addQuestion: (data) => $.post('/activiti/running/completeTask', data),
   //创建保存某个问题

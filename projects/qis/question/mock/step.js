@@ -5,12 +5,12 @@ import moment from 'moment'
 const d = mock({
   id: '1',
   // D0
-  'satisfyRadio|1': ['0', '1'], //  是否满足立项条件
+  'isProject|1': ['0', '1'], //  是否满足立项条件
   dissatisfaction: '@string', // 不满理由
   Remarks: '不满足备注', // 备注
   Remarks: '', // 备注
-  'containmentAction|1': ['0', '1'], //是否需要围堵措施
-  Measures: '', //围堵措施
+  'isNeedIca|1': ['0', '1'], //是否需要围堵措施
+  icaDescription: '', //围堵措施
   // D1
   D1department: '质量部', //责任部门
   D1user: '张三', //责任人
@@ -22,21 +22,21 @@ const d = mock({
   sixthUser: '李六',
   seventhUser: '王七',
   //D2
-  rootcause: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
+  rootCauseDescription: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
   D2file: ['1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg'],
   // D3
-  shortMeasures: '短期措施',
-  longMeasures: '长期措施',
-  longMeasuresTime: '2019-01-01 00:00:00',
+  shorticaDescription: '短期措施',
+  longicaDescription: '长期措施',
+  longicaDescriptionTime: '2019-01-01 00:00:00',
   VerificationTime: '2019-01-01 00:00:00',
   D3DateTime: '2019-01-01 00:00:00',
   D3file: ['D3file.png', 'D3file.word'],
   Smallbatch: '小批量验证',
   // D4
   ShortEffects: 'D4短期效果',
-  shortMeasuresTime: '短期措施实施时间',
-  D4longMeasures: 'D4长期措施实施',
-  D4LMeasuresTime: 'D4长期措施实施时间',
+  shorticaDescriptionTime: '短期措施实施时间',
+  D4longicaDescription: 'D4长期措施实施',
+  D4LicaDescriptionTime: 'D4长期措施实施时间',
   D4DateTime: '2019-9-30 00:00:00',
   D4file: ['D4.png', 'D3file.word'],
   // D5
@@ -120,7 +120,7 @@ const db = cdb.link('step', d);
 /**
  *
  */
-mock.get('/question/:id/step', (id) => {
+mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => {
   return mock.result({
     data: db.findById(id)
   });
