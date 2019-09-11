@@ -8,48 +8,48 @@
           <a-col
             :span="8"
           >
-            <a-form-item label="$t('issue.#车型')">
-              <!-- <a-input
-                v-decorator="[
-                  'TODO:0'
-                ]"
-                placeholder="$t('search.title')"
-              /> -->
+            <!-- 车型 -->
+            <a-form-item :label="$t('issue.vehicleModelName')">
               <net-select 
+                allow-clear
                 url="/masterdata/v1/vehiclemodel"
-                v-decorator="[
-                  'vehicleModelId'
-                ]"
-                placeholder="$t('search.title')"
-              >
-              </net-select>
-            </a-form-item>
-          </a-col>
-
-          <a-col
-            :span="8"
-          >
-            <a-form-item label="$t('#问题等级')">
-              <a-input
-                v-decorator="[
-                  'TODO:1'
-                ]"
-                placeholder="$t('search.title')"
+                :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+                :transform="transformField" 
+                v-decorator="['vehicleModelId']"
               />
             </a-form-item>
           </a-col>
           <a-col
             :span="8"
           >
-            <a-form-item label="$t('search.#问题涞源')">
-              <a-input
-                v-decorator="[
-                  'TODO:2'
-                ]"
-                placeholder="$t('search.title')"
+            <!-- 问题等级 -->
+            <a-form-item :label="$t('issue.grade')">
+              <net-select 
+                allow-clear
+                :placeholder="$t('search.please_select') + $t('issue.grade')" 
+                url="/sys/dict?dictType=issue_grade"
+                :transform="transformField"
+                v-decorator="['grade']"
               />
             </a-form-item>
           </a-col>
+          <a-col
+            :span="8"
+          >
+            <!-- 问题分类 -->
+            <a-form-item :label="$t('issue.source')">
+              <net-select 
+                allow-clear
+                url="/sys/dict?dictType=issue_source"
+                :cache="false"
+                :delay="!record.source"
+                :placeholder="$t('search.please_select') + $t('issue.source')"
+                :transform="transformField" 
+                v-decorator="['source']"
+              />
+            </a-form-item>
+          </a-col>
+          <!-- 
           <a-col
             :span="8"
           >
@@ -62,6 +62,7 @@
               />
             </a-form-item>
           </a-col>
+          -->
           <a-col
             :span="8"
             style="float: right;"
@@ -136,8 +137,7 @@ export default {
      */
     mapPropsToFields () {
       return createFormFields(this, [
-        'TODO:0', 
-        'TODO:1', 'TODO:2', 'TODO:3', 'TODO:4',
+        'vehicleModelId', 'grade', 'source'
         
       ], 'record');
     },
@@ -162,6 +162,15 @@ export default {
     cancelSearch () {
       console.log(1);
       this.$emit('hidden');
+    },
+    /**
+     * 转换net-select获取的参数
+     */
+    transformField(list) {
+      return list.map((item) => ({
+        value: item.id,
+        label: item.name
+      }));
     },
   }
 }

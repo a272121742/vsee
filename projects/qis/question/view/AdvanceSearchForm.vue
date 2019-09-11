@@ -173,7 +173,7 @@
           <net-select 
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.supplierId')" 
-            url="/masterdata/v1/supplier/page"
+            url="/masterdata/v1/supplier"
             :transform="transformField"
             v-decorator="['supplierId']"
           />
@@ -288,6 +288,7 @@ export default {
       this.$set(this, 'record', {});
       this.form.updateFields(this.mapPropsToFields());
       this.$emit('change', this.record);
+      console.log(this.record);
     },
     /**
      * 转换net-select获取的参数

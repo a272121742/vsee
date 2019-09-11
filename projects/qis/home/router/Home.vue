@@ -221,6 +221,19 @@ export default {
     box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
+    /deep/ .ant-table{
+      table {
+        width: 100%; /*必须设置，否则还是会拉长单元格*/
+        table-layout: fixed;/*只有定义表格的算法为fixed,th才有效果*/
+        word-wrap:break-all;
+      }
+      th > div, td {
+        overflow:hidden;/*超出长度的文字隐藏*/
+        text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
+        white-space:nowrap;/*强制不换行*/
+        word-break:keep-all;/*文字不换行*/
+      }
+    }
   }
   /deep/.ant-table-thead > tr > th, /deep/.ant-table-tbody > tr > td {
       padding: 16px 11px;
