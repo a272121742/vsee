@@ -709,7 +709,7 @@
           data.productDate = productDate;
 
         }
-
+        data.fileList=this.dataFileList;
 
         if (this.name === 'create') {
 
@@ -737,7 +737,7 @@
         });
       },
       handleChange(info) {
-        debugger;
+
         let fileList = [...info.fileList];
         fileList = fileList.map((file) => {
           if (file.response) {
@@ -748,9 +748,9 @@
           return file;
         });
         this.fileList=fileList;
+        const status=info.file.status;
 
-
-        if (!info.event) {
+        if (status==='done') {
           if (info.file.response != undefined) {
 
             this.dataFileList.push(info.file.response.data)
@@ -761,8 +761,16 @@
 
       },
       //删除文件
-      removeFile(info) {
-        debugger;
+      removeFile(file) {
+
+        const index = this.fileList.indexOf(file);
+      const newFileList = this.fileList.slice();
+      newFileList.splice(index, 1);
+      this.fileList = newFileList
+      const newDataList=this.dataFileList.slice();
+      newDataList.splice(index,1);
+      this.dataFileList=newDataList;
+      console.log(this.dataFileList);
       },
       gradeChange(value) {
 
