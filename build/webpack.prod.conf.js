@@ -22,6 +22,9 @@ if (process.env.npm_config_mock) {
   baseWebpackConfig.entry.push('@lib/inject-mock.js');
 }
 
+const unzip = Object.prototype.hasOwnProperty.call(process.env, 'npm_config_unzip');
+
+console.log(unzip ? '不压缩模式' : '压缩模式');
 
 const webpackConfig = merge(baseWebpackConfig, {
   mode: config.build.mode,
@@ -43,7 +46,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     publicPath: config.build.assetsPublicPath
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
-  optimization: {
+  optimization: unzip ? {} : {
     // 代码分片
     splitChunks: {
       chunks: 'all', // initial、async和all

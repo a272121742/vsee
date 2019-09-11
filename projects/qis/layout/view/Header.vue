@@ -29,7 +29,7 @@
             />
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a href="http://www.alipay.com/">编辑信息</a>
+                <a href="javascript:;">编辑信息</a>
               </a-menu-item>
               <a-menu-item key="1">
                 <a @click.stop.prevent="logoutHandle">退出系统</a>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 export default {
   name: 'Header',
   components: {
@@ -77,7 +78,7 @@ export default {
     },
     logoutHandle () {
       Cookies.remove('login_token');
-      window.location.href="/";
+      window.location.href="/portal";
     }
   }
 }

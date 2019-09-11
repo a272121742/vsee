@@ -30,5 +30,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  
+  /deep/ .ant-radio-button-wrapper:last-child span {
+    padding: 0 6px;
+  }
 </style>

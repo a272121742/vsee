@@ -26,8 +26,8 @@ if (process.env.NODE_ENV === 'production') {
   router.beforeEach((to, from, next) => {
     if (!token) {
       window.location.href = '/portal';
-      next();
     }
+    next();
   });
 }
 

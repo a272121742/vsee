@@ -1,15 +1,21 @@
 <template>
   <a-layout id="components-layout-top-side">
     <!-- 头部，固定 -->
-    <Header class="shadow-head"></Header>
+    <Header class="shadow-head" @refresh="refresh"></Header>
     <!-- 内容区域 -->
-    <a-layout-content style="width: 100%;">
-      <div style="margin: 0 auto; max-width: 1200px;">
-        <transition name="page-transition">
-          <router-view />
-        </transition>
-      </div>
-    </a-layout-content>
+    <a-spin :spinning="refreshing">
+      <a-layout-content
+        v-if="!refreshing"
+        style="width: 100%;"
+      >
+        <div style="margin: 0 auto; max-width: 1200px;">
+          <transition name="page-transition">
+            <router-view />
+          </transition>
+        </div>
+      </a-layout-content>
+    </a-spin>
+    
   </a-layout>
 </template>
 
@@ -20,9 +26,26 @@ export default {
   },
   data () {
     return {
+      refreshing: false
+    }
+  },
+  beforeCreate () {
+    if (this.$store && this.$store.state && this.$store.state.allowLogin) {
+      this.$store.dispatch('layout/getPermission');
     }
   },
   computed: {
+  },
+  methods: {
+    refresh (next) {
+      if (!this.refreshing) {
+        this.refreshing = true;
+        this.$nextTick(() => {
+          this.refreshing = false;
+          next && next();
+        });
+      }
+    },
   }
 };
 </script>

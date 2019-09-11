@@ -4,24 +4,12 @@
       <div class="header-index-left">
         <div class="logo">
         </div>
-        <a-menu
-          theme="dark"
-          mode="horizontal"
-        >
-          <a-menu-item
-            v-for="menu in menus"
-            :key="menu.key"
-            :title="$t(menu.key)"
-            @click="jump(menu.path)"
-          >
-            {{ $t(menu.key) }}
-          </a-menu-item>
-        </a-menu>
+        <a-divider type="vertical" style="height: 16px; margin: 24px 0; background: #0C9CE0"></a-divider>
+        <banner title="全面质量管理系统" desc="Total Quality Information System"></banner>
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">
-          <language-dropdown>
-          </language-dropdown>
+          <language-radio />
           <a-dropdown :trigger="['click', 'hover']">
             <a-button
               shape="circle"
@@ -29,10 +17,13 @@
             />
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a href="http://www.alipay.com/">编辑信息</a>
+                <a @click.stop.prevent="refresh">刷新</a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a href="http://www.taobao.com/">退出系统</a>
+                <a href="http://www.alipay.com/">编辑信息</a>
+              </a-menu-item>
+              <a-menu-item key="2">
+                <a @click="logoutHandle">退出系统</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -43,28 +34,20 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
-  name: 'Header',
   components: {
-    LanguageDropdown: () => import('@comp/i18n/LanguageDropdown.vue')
-  },
-  data () {
-    return {
-      menus: [{
-        key: 'Home',
-        path: '/'
-      }, {
-        key: 'MyQuestion',
-        path: '/question/list'
-      }, {
-        key: 'AdvanceSearch',
-        path: '/question/search'
-      }]
-    };
+    Banner: () => import('@comp/head/Banner.vue'),
+    LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
   },
   methods: {
-    jump (path) {
-      this.$router.push({ path });
+    refresh () {
+      this.$emit('refresh')
+    },
+    logoutHandle () {
+      Cookies.remove('login_token');
+      window.location.href = window.location.href;
     }
   }
 }
@@ -73,6 +56,8 @@ export default {
 <style lang="less" scoped>
   /* 重写头部 */
   .ant-layout-header {
+    background: #FFFFFF;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.06);
     /deep/ .ant-menu-item {
       height: 64px;
       line-height: 64px;
@@ -83,20 +68,18 @@ export default {
       padding-left: 0;
       display: flex;
       height: 64px;
+      
     }
 
     .header-index-left {
       flex: 0 1 1080px;
       display: flex;
-      .logo.top-nav-header {
-        flex: 0 0 165px;
-        width: 165px;
-        height: 64px;
-        position: relative;
-        line-height: 64px;
-        transition: all 0.3s;
-        overflow: hidden;
-
+      .logo {
+        width: 168px;
+        height: 32px;
+        margin: 16px 16px 16px 0;
+        float: left;
+        background-image: url("/static/logo.png");
         img,
         svg {
           display: inline-block;
@@ -135,3 +118,4 @@ export default {
     }
   }
 </style>
+

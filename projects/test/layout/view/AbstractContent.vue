@@ -9,18 +9,18 @@
 
 <script>
 export default {
-  data () {
-    return {
-      children: null
-    };
-  }
+  // data () {
+  //   return {
+  //     children: null
+  //   };
+  // },
   // beforeRouteEnter (to, from, next) {
   //   next((vm) => {
   //     const children = vm.$route.meta.children;
   //     if (children) {
-  //       vm.children = children;
+  //        vm.children = children;
   //     } else {
-  //       vm.children = null;
+  //        vm.children = null;
   //     }
   //   });
   // },
@@ -367,10 +367,7 @@ export default {
         color: #fff;
         font-size: 20px;
         margin: 0 0 0 12px;
-        font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont,
-        "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-        "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol";
+        font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
         font-weight: 600;
       }
     }
@@ -445,10 +442,6 @@ export default {
   }
   .content {
     height: 100%;
-    background: #FFFFFF;
-    box-shadow: 0 2px 6px 0 rgba(0,39,102,0.12);
-    border-radius: 4px;
-    border-radius: 4px;
     .table-operator {
       margin-bottom: 18px;
       button {

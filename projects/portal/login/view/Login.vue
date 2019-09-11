@@ -54,9 +54,6 @@ export default {
   .language-radio {
     float: right;
     margin-bottom: 108px;
-    /deep/ .ant-radio-button-wrapper:last-child span {
-      padding: 0 6px;
-    }
   }
   .login-form {
     margin: auto 48px;
