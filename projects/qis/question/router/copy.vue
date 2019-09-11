@@ -426,9 +426,9 @@
               <a-step title="问题关闭" @click="goto(6)" />
             </a-steps>
           </div>
-          <div>
+          <!-- <div>
             <D0Detail></D0Detail>
-          </div>
+          </div> -->
 <!--
           <div class="Dcontent D2content" v-if="stepCurrent===2&&backFlag===false">
             <div class="triangle_border_up">
@@ -1151,7 +1151,7 @@
     name: 'QuestionDetail',
     components: {
       EditableCell,
-      D0Detail:() => import('./D0Detail')
+      // D0Detail:() => import('./D0Detail')
 
     },
     props: ['id'],

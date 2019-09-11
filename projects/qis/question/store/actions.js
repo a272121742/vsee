@@ -19,6 +19,13 @@ export default {
   saveQuestion (store, data) {
     return api.saveQuestion(data);
   },
+   /**
+   * 问题提交至工作流
+   */
+  workFlowSubmit (store, data) {
+    return api.workFlowSubmit(data);
+  },
+
   /**
    * 修改保存问题
    */

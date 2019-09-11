@@ -356,6 +356,8 @@
         $store
       } = this;
       return {
+        businessKey: '',
+        businessTitle: '',
         BaseContent: '',
         supplyContent: 'supplyContent',
         DetailBase: true, //基本信息是否展开标识
@@ -588,27 +590,39 @@
       },
       // 车型选择
       vehicleModelIdChange(value, option) {
-
-        if (option.componentOptions.children[0].text != undefined) {
-          this.carTitle = option.componentOptions.children[0].text;
+        if (option != undefined) {
+          if (option.componentOptions.children[0].text != undefined) {
+            this.carTitle = option.componentOptions.children[0].text;
+          }
         }
+
+
 
         // this.carTitle = value;
       },
       // 所属功能选择
       faultTreeIds2Change(value, option) {
-
-        if (option.componentOptions.children[0].text != undefined) {
-          this.faultTreeIds2Title = option.componentOptions.children[0].text;
+        if (option != undefined) {
+          if (option.componentOptions != undefined) {
+            if (option.componentOptions.children[0].text != undefined) {
+              this.faultTreeIds2Title = option.componentOptions.children[0].text;
+            }
+          }
         }
+
       },
       faultTreeIds3Change(value, option) {
-
-        if (option.componentOptions.children[0].text != undefined) {
-          this.codeTitle = option.componentOptions.children[0].text;
+        if (option != undefined) {
+          if (option.componentOptions != undefined) {
+            if (option.componentOptions.children[0].text != undefined) {
+              this.faultTreeIds2Title = option.componentOptions.children[0].text;
+            }
+          }
         }
+
       },
       handleSubmit(e) {
+        debugger;
         this.form.validateFields((err, fieldsValue) => {
           if (!err) {
             const data = this.form.getFieldsValue();
@@ -632,24 +646,39 @@
 
             }
 
-            this.editSaveQuestion(data).then(res => {
+            let id=this.$store.getters.getUser;
+            console.log("id   "+id);
 
-            })
+            // this.saveQuestion(data).then(res => {
+            //      this.businessKey=res;
+            // })
             let name = 'submit'
-            this.addQuestion(data).then(res => {
 
-            });
+            // let param={
+            //        "businessKey":this.businessKey,
+            //        "businessTitle":this.businessTitle,
+            //        "processDefinitionKey":'BJEV1',
+            //        "subSys":'irs',
+            //        "taskId":null,
+
+
+            //   };
+
+            // this.workFlowSubmit(data).then(res => {
+
+            // });
           }
         });
       },
       handleSave() {
+
         const data = this.form.getFieldsValue();
 
         let primaryKey = "所属系统-" + data.faultTreeIds1 + "," + "所属功能-" + data.faultTreeIds2 + "," + "故障代码-" + data
           .faultTreeIds3;
         data.faultTreeIds = primaryKey;
         let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
-
+        this.businessTitle = title;
         data.title = title;
         //日期格式化
         if (data.failureDate) {
@@ -664,13 +693,20 @@
 
 
         if (this.name === 'create') {
-          this.saveQuestion(data).then(res => {});
+
+          this.saveQuestion(data).then(res => {
+            this.businessKey = res;
+
+          });
+
+
+
         } else if (this.name === 'edit') {
           data.id = this.id;
           data.optCounter = this.optCounter;
 
           this.editSaveQuestion(data).then(res => {
-
+            this.businessKey = res;
           })
         }
 
@@ -682,6 +718,7 @@
         });
       },
       handleChange(info) {
+        debugger;
 
         let fileList = [...info.fileList];
 

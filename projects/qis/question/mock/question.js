@@ -101,6 +101,14 @@ mock.post('/issue/v1/issue', (data) => {
   });
 });
 /**
+ * 问题提交至工作流
+ */
+mock.post('/activiti/running/completeTask', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
+/**
  * 问题修改保存至草稿
  */
 mock.put('/issue/v1/issue', (data) => {
