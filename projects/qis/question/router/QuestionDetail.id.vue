@@ -142,6 +142,18 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row v-show="false">
+          <a-col :span="17">
+            <a-form-item :label="`文件名称`">
+
+              <a-input placeholder="请输入" v-decorator="[
+                      'id',
+                      {rules: [{ required: true, message: '请输入文件名称' } ]}
+
+                ]"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
@@ -240,18 +252,18 @@
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`所属系统`">
-                <p>{{ detailList.faultTreeIds1 }}</p>
+                <p>{{ detailList.faultTreeIds1Name }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`所属功能`">
-                <p>{{ detailList.faultTreeIds2 }}</p>
+                <p>{{ detailList.faultTreeIds2Name }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`故障代码`">
                 <p style="width:164px;">
-                  {{ detailList.faultTreeIds3 }}
+                  {{ detailList.faultTreeIds3Name }}
                 </p>
               </a-form-item>
             </a-col>
@@ -259,17 +271,17 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`问题分类`">
-                <p>{{ detailList.source }}</p>
+                <p>{{ detailList.sourceName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题等级`">
-                <p>{{ detailList.grade }}</p>
+                <p>{{ detailList.gradeName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题阶段`">
-                <p>{{ detailList.projectPhase }}</p>
+                <p>{{ detailList.projectPhaseName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -281,7 +293,7 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`生产基地`">
-                <p>{{ detailList.manufactureBase }}</p>
+                <p>{{ detailList.manufactureBaseName  }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -343,23 +355,23 @@
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`试验类型`">
-                  <p>{{ detailList.testType }}</p>
+                  <p>{{ detailList.testTypeName }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`祸首件`">
-                  <p>{{ detailList.firstCausePart }}</p>
+                  <p>{{ detailList.firstCausePartName  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`零件号`">
-                  <p>{{ detailList.partId }}</p>
+                  <p>{{ detailList.partName  }}</p>
                 </a-form-item>
               </a-col>
 
               <a-col :span="6">
                 <a-form-item :label="`供应商名称`">
-                  <p>{{ detailList.supplierName }}</p>
+                  <p>{{ detailList.supplierName  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -388,7 +400,7 @@
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`维修网点`">
-                  <p>{{ detailList.maintenanceStation }}</p>
+                  <p>{{ detailList.maintenanceStation  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
@@ -1016,7 +1028,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'shortMeasures',
+                      'icaDescription',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1026,7 +1038,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施（中英文）`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'longMeasures',
+                      'pcaDescription',
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1036,7 +1048,7 @@
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
                   <a-input placeholder="请输入" style="width:572px;" v-decorator="[
-                      'Smallbatch',
+                      'smallBatchValidation',
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1058,7 +1070,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'longMeasuresTime',
+                      'pcaPlanTime',
 
                     ]"/>
                 </a-form-item>
@@ -1068,7 +1080,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'VerificationTime',
+                      'pcaExecTime ',
 
                     ]"/>
                 </a-form-item>
@@ -1078,7 +1090,7 @@
               <a-col :span="21">
                 <a-form-item :label="`计划关闭日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'D3DateTime',
+                      'estimatedClosureTime',
 
                     ]"/>
                 </a-form-item>
@@ -1093,28 +1105,28 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-                  <p>{{ stepDetail.shortMeasures }}</p>
+                  <p>{{ stepDetail.icaDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.longMeasures }}</p>
+                  <p>{{ stepDetail.pcaDescription  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
-                  <p>{{ stepDetail.longMeasuresTime }}</p>
+                  <p>{{ stepDetail.pcaPlanTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
-                  <p>{{ stepDetail.VerificationTime }}</p>
+                  <p>{{ stepDetail.pcaExecTime  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1123,7 +1135,7 @@
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
                     <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D3file" :title="item" :key="index">
+                      <li v-for="(item,index) in stepDetail.fileList" :title="item" :key="index">
                         <img src="/static/question/file.png">
                         <span>{{ item }}</span>
                       </li>
@@ -1137,7 +1149,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
-                  <p>{{stepDetail.Smallbatch}}</p>
+                  <p>{{stepDetail.smallBatchValidation }}</p>
                 </a-form-item>
 
               </a-col>
@@ -1145,7 +1157,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`计划关闭日期`">
-                  <p>{{ stepDetail.D3DateTime }}</p>
+                  <p>{{ stepDetail.estimatedClosureTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1159,7 +1171,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期效果(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'ShortEffects',
+                      'icaExecDescription ',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1169,7 +1181,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'shortMeasuresTime'
+                      'icaExecTime '
                     ]"/>
                 </a-form-item>
               </a-col>
@@ -1178,7 +1190,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'D4longMeasures',
+                      'pcaDescription  ',
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1201,7 +1213,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'D4LMeasuresTime',
+                      'pcaExecTime ',
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                     ]"/>
                 </a-form-item>
@@ -1216,21 +1228,21 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期效果`">
-                  <p>{{ stepDetail.ShortEffects }}</p>
+                  <p>{{ stepDetail.icaExecDescription  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-                  <p>{{ stepDetail.shortMeasuresTime }}</p>
+                  <p>{{ stepDetail.icaExecTime  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述`">
-                  <p>{{ stepDetail.D4longMeasures }}</p>
+                  <p>{{ stepDetail.pcaDescription}}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1239,7 +1251,7 @@
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
                     <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D4file" :title="item" :key="index">
+                      <li v-for="(item,index) in stepDetail.fileList" :title="item" :key="index">
                         <img src="/static/question/file.png">
                         <span>{{ item }}</span>
                       </li>
@@ -1253,7 +1265,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
-                  <p>{{ stepDetail.D4LMeasuresTime }}</p>
+                  <p>{{ stepDetail.pcaExecTime  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1261,7 +1273,7 @@
 
           </div>
 
-          <div class="Dcontent D3back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
+          <div class="Dcontent D4back" v-if="stepCurrent!=4&&backCurrent==4&&backFlag">
             <div class="triangle_border_up">
               <span></span>
             </div>
@@ -1417,8 +1429,8 @@
                         <a href="javascript:;" @click=showUpdate(record)>{{record.updateoperation}}</a>
                       </span>
                     </a-table>
-                    <div>
-                      添加新的更新文件
+                    <div style="text-align:center;">
+                      <a-icon type="plus-circle" /> 添加新的更新文件
                     </div>
                   </div>
                 </a-form-item>
@@ -1732,7 +1744,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 6, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 5, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1793,18 +1805,18 @@
           rootcause: '',
           D2file: [],
           // D3
-          shortMeasures: '',
-          longMeasures: '',
-          longMeasuresTime: null,
-          VerificationTime: null,
-          D3DateTime: null,
-          D3file: '',
-          Smallbatch: '',
+          icaDescription: '',
+          pcaDescription : '',
+          pcaPlanTime: null,
+          pcaExecTime : null,
+          estimatedClosureTime: null,
+          fileList : '',
+          smallBatchValidation : '',
           // D4
-          ShortEffects: '',
-          shortMeasuresTime: null,
-          D4longMeasures: null,
-          D4LMeasuresTime: null,
+          icaExecDescription : '',
+          icaExecTime : null,
+          pcaDescription  : null,
+          pcaExecTime : null,
 
           // D5
           EffectVerification: '',
@@ -1847,9 +1859,9 @@
         mapPropsToFields: () => createFormFields(this, [
           'satisfyRadio', 'containmentAction', 'Measures', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
-          'seventhUser', 'rootcause', 'D2file', 'shortMeasures', 'longMeasures',
-          'longMeasuresTime', 'VerificationTime', 'D3DateTime', 'D3file', 'Smallbatch',
-          'ShortEffects', 'shortMeasuresTime', 'D4longMeasures', 'D4LMeasuresTime',
+          'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription ',
+          'pcaDescription Time', 'pcaExecTime ', 'estimatedClosureTime', 'fileList', 'smallBatchValidation ',
+          'icaExecDescription ', 'icaExecTime ', 'pcaDescription  ', 'pcaExecTime ',
           'EffectVerification', 'breakPointVIN', 'breakPointTime', 'PreventeRepository', 'AgreeClose',
           'disagreeReason'
         ], 'record'),
