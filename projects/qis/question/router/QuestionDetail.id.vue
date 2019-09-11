@@ -415,18 +415,26 @@
       <a-card title="问题流程" class="cardTitle">
         <div class="ant-advanced-search-form">
           <div class="step">
-            <a-steps :current="stepCurrent" progressDot>
-
-              <a-step title="问题定义" @click="goto(0)" />
-              <a-step title="责任判定" @click="goto(1)" />
-              <a-step title="原因分析" @click="goto(2)" />
-              <a-step title="措施判定" @click="goto(3)" />
-              <a-step title="措施实施" @click="goto(4)" />
-              <a-step title="效果验证" @click="goto(5)" />
-              <a-step title="问题关闭" @click="goto(6)" />
+            <a-steps :current="stepCurrent">
+              <a-popover slot="progressDot" slot-scope="{index, status, prefixCls}">
+                <template slot="content">
+                  <span>step {{index}} status: {{status}}</span>
+                </template>
+                <span class="new-steps-icon">
+                  <img v-if="index < stepCurrent" src="/static/img/shixinyuan.png"/>
+                  <img v-if="index === stepCurrent" src="/static/img/kongxinyuan.png"/>
+                  <img v-if="stepCurrent < index" src="/static/img/huiseyuan.png"/>
+                </span>
+              </a-popover>
+              <a-step title="问题定义" @click="goto(0)"/>
+              <a-step title="责任判定" @click="goto(1)"/>
+              <a-step title="原因分析" @click="goto(2)"/>
+              <a-step title="措施判定" @click="goto(3)"/>
+              <a-step title="措施实施" @click="goto(4)"/>
+              <a-step title="效果验证" @click="goto(5)"/>
+              <a-step title="问题关闭" @click="goto(6)"/>
             </a-steps>
           </div>
-
           <div class="Dcontent D0content" v-if="stepCurrent===0&&backFlag===false">
             <div class="triangle_border_up">
               <span></span>
@@ -2252,6 +2260,13 @@
   }
 </style>
 <style lang="less" scoped>
+  .new-steps-icon {
+    line-height: 1;
+    top: -6px;
+    position: relative;
+    left: -3px;
+  }
+
   #components-form-demo-advanced-search {
 
     // .UserModal{
