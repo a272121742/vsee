@@ -85,11 +85,11 @@ const columns = [{
   width: 64,
   scopedSlots: { customRender: 'status' }
 }, {
-  // TODO: 暂时没有这个字段，使用生产日期代替显示
-  title: 'productDate',
-  dataIndex: 'productDate',
+  // 立项时间
+  title: 'projectDate',
+  dataIndex: 'projectDate',
   width: 120,
-  scopedSlots: { customRender: 'productDate' }
+  scopedSlots: { customRender: 'projectDate' }
 }, {
   // 接受日期
   title: 'receiveDate',

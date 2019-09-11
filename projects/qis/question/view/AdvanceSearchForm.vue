@@ -62,6 +62,7 @@
             allow-clear
             :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
             :cache="false"
+            :disabled="!record.faultTreeIds1"
             :delay="!record.faultTreeIds1"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
             :transform="transformField" 
@@ -80,6 +81,7 @@
             allow-clear
             :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds2}`"
             :cache="false"
+            :disabled="!record.faultTreeIds2"
             :delay="!record.faultTreeIds2"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
             :transform="transformField" 
@@ -99,7 +101,7 @@
             :cache="false"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
-            :transform="transformField" 
+            :transform="transformSource" 
             v-decorator="['source']"
           />
         </a-form-item>
@@ -114,7 +116,7 @@
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.grade')" 
             url="/sys/dict?dictType=issue_grade"
-            :transform="transformField"
+            :transform="transformGrade"
             v-decorator="['grade']"
           />
         </a-form-item>
@@ -129,7 +131,7 @@
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.projectPhase')" 
             url="/sys/dict?dictType=issue_phase"
-            :transform="transformField"
+            :transform="transformPhase"
             v-decorator="['projectPhase']"
           />
         </a-form-item>
@@ -144,7 +146,7 @@
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.manufactureBase')" 
             url="/masterdata/v1/manufactureBase"
-            :transform="transformField"
+            :transform="transformManufactureBase"
             v-decorator="['manufactureBase']"
           />
         </a-form-item>
@@ -288,7 +290,6 @@ export default {
       this.$set(this, 'record', {});
       this.form.updateFields(this.mapPropsToFields());
       this.$emit('change', this.record);
-      console.log(this.record);
     },
     /**
      * 转换net-select获取的参数
@@ -297,6 +298,24 @@ export default {
       return list.map((item) => ({
         value: item.id,
         label: item.name
+      }));
+    },
+    transformGrade (list) {
+      return list.map((item) => ({
+        value: item.id,
+        label: item.dictName
+      }));
+    },
+    transformPhase (list) {
+      return this.transformGrade(list);
+    },
+    transformSource (list) {
+      return this.transformGrade(list);
+    },
+    transformManufactureBase (list) {
+      return list.map((item) => ({
+        value: item.id,
+        label: item.nameZh
       }));
     },
     faultTreeIds1Change (value, option) {
@@ -309,7 +328,7 @@ export default {
       if (!value) {
         this.record.faultTreeIds3 = undefined;
       }
-    }
+    },
     // vehicleModelIdChange (value, option) {
     //   console.log(value, option);
     // }

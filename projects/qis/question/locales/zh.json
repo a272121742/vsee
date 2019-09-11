@@ -30,6 +30,7 @@
     "partId": "零件号",
     "preliminaryInvestigation": "初步排查情况",
     "productDate": "生产时间",
+    "projectDate": "立项时间",
     "projectPhase": "问题阶段",
     "receiveDate": "接收日期",
     "relevanceIssuesId": "重复关联问题",
