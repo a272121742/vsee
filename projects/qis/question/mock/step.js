@@ -42,9 +42,9 @@ const d = mock({
   fileList: ['D4.png', 'D3file.word'],
 
   // D5
-  EffectVerification: '效果验证',
-  breakPointVIN: '断点VIN',
-  breakPointTime: '2019-9-30 00:00:00',
+  description: '效果验证',
+  breakpointVin : '断点VIN',
+  breakpointDate : '2019-9-30 00:00:00',
   "updateList": [{
     //文件名称
     id:'1',
@@ -111,9 +111,9 @@ const d = mock({
     updatefile: ['d5.word', 'd5.png'],
   }],
   // D6
-  'PreventeRepository|1': ['是', '否'],
-  'AgreeClose|1': ['同意关闭', '不同意关闭'],
-  disagreeReason: '何莎不同意关闭'
+  'recurrencePrevention|1': ['是', '否'],
+  'isClose |1': ['同意关闭', '不同意关闭'],
+  reason : '何莎不同意关闭'
 });
 
 const db = cdb.link('step', d);

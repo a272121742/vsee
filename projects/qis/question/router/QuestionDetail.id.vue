@@ -1183,7 +1183,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'pcaDescription  ',
+                      'pcaDescription',
 
                       {rules: [{ required: true, message: '请输入长期措施' },{validator: languageVer}]}
                     ]"></a-textarea>
@@ -1275,7 +1275,7 @@
 
           </div>
 
-          <div class="Dcontent D4back" v-if="stepCurrent!=4&&backCurrent==4&&backFlag">
+          <div class="Dcontent D5back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
 
 
             <div class="triangle_border_up">
@@ -1284,19 +1284,19 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`效果验证`">
-                  <p>{{ stepDetail.EffectVerification }}</p>
+                  <p>{{ stepDetail.description }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row style="margin-left:220px;">
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
-                  <p>{{ stepDetail.breakPointVIN }}</p>
+                  <p>{{ stepDetail.breakpointVin  }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
-                  <p>{{ stepDetail.breakPointTime }}</p>
+                  <p>{{ stepDetail.breakpointDate  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1387,7 +1387,7 @@
               <a-col :span="21">
                 <a-form-item :label="`效果验证`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'EffectVerification',
+                      'description',
                       {rules: [{ required: true, message: '请输入效果验证' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1409,7 +1409,7 @@
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
                   <a-input placeholder="请输入" v-decorator="[
-                      'breakPointVIN',
+                      'breakpointVin ',
                       {
                         rules: [{ required: true, message: '请输入断点VIN' }]}
                     ]"/>
@@ -1418,7 +1418,7 @@
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'breakPointTime',
+                      'breakpointDate ',
                       {rules: [{ required: true, message: '请选择断点时间' }]}
                     ]"/>
                 </a-form-item>
@@ -1449,8 +1449,8 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
-                  <a-radio-group :options="PreventeRepositoryRadio" v-decorator="[
-                      'PreventeRepository',
+                  <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
+                      'recurrencePrevention',
                       {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
                     ]"/>
                 </a-form-item>
@@ -1459,8 +1459,8 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <a-radio-group :options="AgreeCloseRadio" @change="CloseRadioChange" v-decorator="[
-                      'AgreeClose',
+                  <a-radio-group :options="isCloseRadio" @change="CloseRadioChange" v-decorator="[
+                      'isClose ',
                       {rules: [{ required: true, message: '请选择是否同意关闭' }]}
                     ]"/>
                 </a-form-item>
@@ -1470,7 +1470,7 @@
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`" v-if="disAgree">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'disagreeReason',
+                      'reason ',
                       {rules: [{ required: true, message: '请输入不同意关闭理由' }]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1484,21 +1484,21 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
-                  <p>{{ stepDetail.PreventeRepository }}</p>
+                  <p>{{ stepDetail.recurrencePrevention }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <p>{{ stepDetail.AgreeClose }}</p>
+                  <p>{{ stepDetail.isClose  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`">
-                  <p>{{ stepDetail.disagreeReason }}</p>
+                  <p>{{ stepDetail.reason  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1745,7 +1745,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 5, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 6, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1767,14 +1767,14 @@
           value: '1'
         }],
         // D6
-        PreventeRepositoryRadio: [{
+        recurrencePreventionRadio: [{
           label: '是',
           value: '0'
         }, {
           label: '否',
           value: '1'
         }],
-        AgreeCloseRadio: [{
+        isCloseRadio: [{
           label: '同意关闭',
           value: '0'
         }, {
@@ -1821,14 +1821,14 @@
 
 
           // D5
-          EffectVerification: '',
-          breakPointVIN: '',
-          breakPointTime: null,
+          description: '',
+          breakpointVin : '',
+          breakpointDate : null,
 
           // D6
-          PreventeRepository: '1',
-          AgreeClose: '1',
-          disagreeReason: ''
+          recurrencePrevention: '1',
+          isClose : '1',
+          reason : ''
         },
         // 再分配
 
@@ -1861,12 +1861,12 @@
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
 
-          'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription ',
-          'pcaDescription Time', 'pcaExecTime ', 'estimatedClosureTime', 'fileList', 'smallBatchValidation ',
-          'icaExecDescription ', 'icaExecTime ', 'pcaDescription  ', 'pcaExecTime ',
+          'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+          'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
+          'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
 
-          'EffectVerification', 'breakPointVIN', 'breakPointTime', 'PreventeRepository', 'AgreeClose',
-          'disagreeReason'
+          'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+          'reason'
         ], 'record'),
         onValuesChange: autoUpdateFileds(this, 'record')
       });
