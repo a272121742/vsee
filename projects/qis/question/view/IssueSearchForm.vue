@@ -67,7 +67,7 @@
             :span="8"
             style="float: right;"
           >
-          <a-form-item
+          <a-form-item style="margin-top: 12px; margin-bottom: 16px;"
           >
             <span
               style="float: right; overflow: hidden;"
@@ -160,7 +160,6 @@ export default {
      * 取消搜索
      */
     cancelSearch () {
-      console.log(1);
       this.$emit('hidden');
     },
     /**

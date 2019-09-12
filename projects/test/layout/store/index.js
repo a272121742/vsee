@@ -11,9 +11,9 @@ export default {
    
   },
   actions: {
-    getPermission ({commit}) {
-      api.getPermission().then(permissions => {
-        commit('setPermission', permissions, {root: true})
+    getPermissions ({commit}) {
+      api.getPermissions().then(permissions => {
+        commit('setPermissions', permissions, {root: true})
       });
     }
   }

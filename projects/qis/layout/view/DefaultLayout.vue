@@ -34,9 +34,9 @@ export default {
   },
   created () {
     if (this.$store && this.$store.state) {
-      // this.$store.dispatch('layout/getPermission');
+      // this.$store.dispatch('layout/getPermissions');
       Promise.all([
-        this.$store.dispatch('layout/getPermission'),
+        this.$store.dispatch('layout/getPermissions'),
         this.$store.dispatch('layout/getUserInfo')
       ]);
     }
