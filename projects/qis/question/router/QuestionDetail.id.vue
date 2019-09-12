@@ -154,14 +154,8 @@
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-<<<<<<< HEAD
               <a-radio-group  :options="updateRadio"   v-decorator=" [
                 'isUpdae',
-=======
-              <a-radio-group
-                 :options="updateRadio"   v-decorator=" [
-                'isUpdate',
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
               {rules: [{ required: true, message: '请选择是否更新' } ]}
                ]"  />
             </a-form-item>
@@ -1106,14 +1100,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-<<<<<<< HEAD
                   <p>{{ stepMeasures.icaDescription }}</p>
-=======
-
-                  <p>{{ stepDetail.icaDescription }}</p>
-
-
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1250,13 +1237,9 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-<<<<<<< HEAD
 
                   <p>{{ stepImplementation.icaExecTime  }}</p>
 
-=======
-                  <p>{{ stepDetail.icaExecTime }}</p>
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
 
                 </a-form-item>
               </a-col>
@@ -1357,10 +1340,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-<<<<<<< HEAD
 
-            <!-- <a-row>
-=======
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`当前步骤计划完成日期`">
@@ -1369,7 +1349,6 @@
               </a-col>
             </a-row>
             <a-row>
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1546,7 +1525,6 @@
   const {
     mapActions
   } = createNamespacedHelpers('question');
-<<<<<<< HEAD
   const columns = [{
     title: '序号',
     dataIndex: 'no',
@@ -1582,43 +1560,6 @@
 
 
   const columnsRecord = [{
-=======
-  const columns = [
-    {
-      title: '序号',
-      dataIndex: 'no',
-      scopedSlots: {
-        customRender: 'no'
-      }
-    }, {
-      title: '附件名称',
-      dataIndex: 'name',
-      scopedSlots: {
-        customRender: 'name'
-      }
-    }, {
-      title: '上传时间',
-      dataIndex: 'uploadTime',
-      scopedSlots: {
-        customRender: 'uploadTime'
-      }
-    }, {
-      title: '上传人',
-      dataIndex: 'uploadUser',
-      scopedSlots: {
-        customRender: 'uploadUser'
-      }
-    }, {
-      title: '操作',
-      dataIndex: 'operation',
-      scopedSlots: {
-        customRender: 'operation'
-      },
-      width: 80
-    }];
-  const columnsRecord = [
-    {
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
       title: '操作记录',
       dataIndex: 'recode',
       scopedSlots: {
@@ -1745,11 +1686,7 @@
     data() {
       const that = this
       return {
-<<<<<<< HEAD
         userId: this.$store.getters.getUser(), //用户id
-=======
-        userId: that.$store.getters.getUser().id,
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         // 再分配弹框
         ModalText: 'Content of the modal',
         fileModalTitle: '添加更新文件',
@@ -1794,17 +1731,12 @@
         dataFile: [], // 附件
         dataRecord: [], // 操作记录
         stepDetail: [], // 某个问题的步骤详细信息
-<<<<<<< HEAD
         stepMeasures: [], //措施详细信息
         stepImplementation: [],
         stepEffect: [],
         problemDefinitionData: {},
         issueDefinitionData: {},
         stepClose:[],
-=======
-        problemDefinitionData: {},
-        issueDefinitionData: {},
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         editFlag: false,
         expand: false,
         form: null,
@@ -1838,11 +1770,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-<<<<<<< HEAD
         stepCurrent: 5, // 当前步骤状态   从数据库读取状态
-=======
-        stepCurrent: 0, // 当前步骤状态   从数据库读取状态
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1955,15 +1883,11 @@
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-<<<<<<< HEAD
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
           'pcaPlanTime',
           'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-=======
           'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
-
           'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
           'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
           'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
           'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
@@ -2003,7 +1927,6 @@
         'redistribute',
         'eidtQuestion',
         'getAnalysis',
-<<<<<<< HEAD
         'editFile',
         'effectSave',
         'effectDetail',
@@ -2011,8 +1934,6 @@
         'firstCreateFile',
         'updateFile',
         'MeasureDetail',
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         'issueDefinitionAdd',
         'closeSave',
         'closeDetail',
@@ -2296,13 +2217,8 @@
 
         });
         this.problemDefinition(id).then(res => {
-<<<<<<< HEAD
-          this.problemDefinitionData = res;
-          // this.updateData = res.updateList;
-=======
           this.problemDefinitionData = res ? res : {};
           this.updateData = res.updateList;
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         });
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res ? res : {};
@@ -2363,7 +2279,6 @@
         this.backCurrent = param;
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
-<<<<<<< HEAD
           if (param === 3) {
 
 
@@ -2389,8 +2304,6 @@
                this.stepClose=res;
             })
           }
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         } else {
           this.backFlag = false;
         }
@@ -2521,12 +2434,9 @@
 
           })
         }
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
 
       },
       handleSearch(e) {
