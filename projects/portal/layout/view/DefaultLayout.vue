@@ -31,7 +31,7 @@ export default {
   },
   beforeCreate () {
     if (this.$store && this.$store.state && this.$store.state.allowLogin) {
-      this.$store.dispatch('layout/getPermission');
+      this.$store.dispatch('layout/getPermissions');
     }
   },
   computed: {

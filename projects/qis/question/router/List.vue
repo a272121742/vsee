@@ -5,7 +5,8 @@
         key="2"
       >
         <template slot="tab">
-          待办事项
+          <!-- 待办事项 -->
+          {{ $t('issue_status.todo')}}
           <a-badge
             :count="total2"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
@@ -16,7 +17,8 @@
         key="0"
       >
         <span slot="tab">
-          待发事项
+          <!-- 待发事项（草稿） -->
+          {{ $t('issue_status.draft')}}
           <a-badge
             :count="total0"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
@@ -27,14 +29,16 @@
         key="1"
       >
         <span slot="tab">
-          已办事项
+          <!-- 已办事项（完成） -->
+          {{ $t('issue_status.done')}}
         </span>
       </a-tab-pane>
       <a-tab-pane
         key="3"
       >
         <span slot="tab">
-          已发事项
+          <!-- 已发事项（待审批） -->
+          {{ $t('issue_status.created')}}
         </span>
       </a-tab-pane>
       <template #tabBarExtraContent>
@@ -45,23 +49,17 @@
           :ghost="true"
           @click="() => hideForm = !hideForm"
         >
-          搜索
+          <!-- 搜索按钮 -->
+          {{ $t('search.search_button')}}
         </a-button>
-        <!-- <a-button
-          v-permission="'qis:list:create'"
+        <a-button
+          v-permission="'issue:owner:create'"
           icon="plus-circle"
           type="primary"
           @click="createQuestion"
         >
-          创建问题
-        </a-button> -->
-         <a-button
-
-          icon="plus-circle"
-          type="primary"
-          @click="createQuestion"
-        >
-          创建问题
+          <!-- 创建问题按钮 -->
+          {{ $t('issue_action.create')}}
         </a-button>
       </template>
     </a-tabs>
@@ -80,7 +78,10 @@
       @change="handleTableChange"
     >
      <span slot="action" slot-scope="record">
-        <a href="javascript:;" @click="goToDetail(record.id)">详情</a>
+        <a href="javascript:;" @click="goToDetail(record.id)">
+          <!-- 详情链接 -->
+          {{ $t('issue_action.detail') }}
+        </a>
       </span>
     </issue-table>
 

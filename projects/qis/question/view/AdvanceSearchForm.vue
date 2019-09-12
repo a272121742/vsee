@@ -24,7 +24,7 @@
         :span="6"
         v-if="advanced"
       >
-        <!-- 车型 -->
+        <!-- 车型名称 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select 
             allow-clear
@@ -44,7 +44,6 @@
           <net-select 
             allow-clear
             url="/issue/v1/faultcategory?p_id=0"
-            :cache="false"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
             :transform="transformField" 
             @change="faultTreeIds1Change"
@@ -202,7 +201,7 @@
         style="float: right;"
       >
       <a-form-item
-        :style="{'padding-top': advanced ? '0px': '28px'}"
+        :style="{'padding-top': advanced ? '12px': '28px'}"
       >
         <span
           style="float: right; overflow: hidden;"
@@ -211,7 +210,7 @@
             type="primary"
             @click="submitSearch"
           >
-            {{ $t('search.search_button')}}
+            {{ $t('search.find_button')}}
           </a-button>
           <a-button
             @click="resetSearch"
@@ -252,9 +251,6 @@ export default {
       if (value) {
         this.form.updateFields(this.mapPropsToFields());
         const record = this.form.getFieldsValue();
-        console.log(record);
-        console.log(this.record);
-        console.log(this.mapPropsToFields());
       }
     }
   },
@@ -271,7 +267,7 @@ export default {
     mapPropsToFields () {
       return createFormFields(this, [
         'title',
-        'vehicleModelId', 'daultTreeIds1', 'daultTreeIds2', 'daultTreeIds3',
+        'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
         'source', 'grade', 'projectPhase', 'manufactureBase', 'firstCausePart',
         'supplierId', 'failureDate'
       ], 'record');
