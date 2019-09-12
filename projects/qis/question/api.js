@@ -35,6 +35,10 @@ workFlowSubmit:(data)=> $.post('/activiti/running/completeTask', data),
  * 措施判定保存
  */
 MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),
+//措施判定详情查询
+MeasureDetail:(issueId)=>$.get('/issue/v1/workflow/actionDraft?type=0&issueId='+issueId),
+//措施实施详情查询
+
   //修改保存某个问题
   editSaveQuestion: (data) => $.put('/issue/v1/issue', data),
   // 再分配某个问题

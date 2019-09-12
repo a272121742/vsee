@@ -78,10 +78,14 @@
       @change="handleTableChange"
     >
      <span slot="action" slot-scope="record">
+<<<<<<< HEAD
+        <a href="javascript:;" @click="goToDetail(record)">详情</a>
+=======
         <a href="javascript:;" @click="goToDetail(record.id)">
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
         </a>
+>>>>>>> 9ac383517f124306e08f03d1e43bd0dba988adc8
       </span>
     </issue-table>
 
@@ -233,11 +237,12 @@ export default {
       this.hideForm = true;
     },
      //查看详情
-    goToDetail(idValue){
+    goToDetail(record){
+
       this.$router.push({
         name: 'QuestionDetail',
         params: {
-         id: idValue,
+         id: record.id,
         },
         query: {
           form: this.$route.path

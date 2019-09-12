@@ -71,7 +71,7 @@
             <a-form-item label="附件">
               <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                 <a-button>
-                  <a-icon type="upload"/>
+                  <a-icon type="upload" />
                   上传文件
                 </a-button>
               </a-upload>
@@ -81,7 +81,7 @@
       </a-form>
     </a-modal>
     <a-modal :title="AnalysisTitle" :visible="visibleDetail" wrapClassName="visibleDetail" @ok="AnalysisDetailOk"
-             @cancel="AnalysisDetailCancel" width="600px">
+      @cancel="AnalysisDetailCancel" width="600px">
       <a-form class="ant-advanced-search-form" :form="DetailForm">
         <a-row v-show="false">
           <a-col :span="10">
@@ -112,7 +112,7 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row>
+        <!-- <a-row>
           <a-col>
             <a-form-item label="附件" style="margin-bottom:0;color: rgba(0,0,0,0.45);font-size: 14px;height:auto;">
               <div class="stepFileList clearfix">
@@ -125,7 +125,7 @@
               </div>
             </a-form-item>
           </a-col>
-        </a-row>
+        </a-row> -->
       </a-form>
     </a-modal>
     <a-modal title="ECN" :visible="visibleUpdate" @ok="updateOk" @cancel="updateCancel" width="600px">
@@ -135,7 +135,7 @@
             <a-form-item :label="`id`">
               <a-input placeholder="请输入" v-decorator="[
                       'id',
-                ]"/>
+                ]" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -147,27 +147,24 @@
                       'id',
                       {rules: [{ required: true, message: '请输入文件名称' } ]}
 
-                ]"/>
+                ]" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-              <a-radio-group
-                 :options="updateRadio"   v-decorator=" [
+              <a-radio-group  :options="updateRadio"   v-decorator=" [
                 'isUpdate',
               {rules: [{ required: true, message: '请选择是否更新' } ]}
-               ]"  />
+               ]"   />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-            <a-form-item
-               :label="`更新内容`">
-              <a-textarea
-                 placeholder="请输入"  style="width:340px; height:56px;"  v-decorator="[
+            <a-form-item  :label="`更新内容`">
+              <a-textarea  placeholder="请输入"  style="width:340px; height:56px;"  v-decorator="[
             'updateContent',
                    {rules: [{ required: true, message: '请输入更新内容' }]}    ]">
               </a-textarea>
@@ -176,13 +173,10 @@
         </a-row>
         <a-row>
           <a-col :span="18">
-            <a-form-item
-               :label="`附件`">
-              <a-upload
-                 name="file"  :multiple="true"  :headers="headers"  @change="handleChange">
+            <a-form-item  :label="`附件`">
+              <a-upload  name="file"  :multiple="true"  :headers="headers"  @change="handleChange">
                 <a-button>
-                  <a-icon
-                     type="upload"  />
+                  <a-icon  type="upload"   />
                    上传文件
                 </a-button>
               </a-upload>
@@ -194,7 +188,7 @@
     <div class="TopButton">
       <div class="backButton">
         <a-button slot="tabBarExtraContent" class="backBtn" @click="goBack">
-          <img src="/static/question/back.png"/>
+          <img src="/static/question/back.png" />
           返回
         </a-button>
       </div>
@@ -434,18 +428,18 @@
                   <span>step {{index}} status: {{status}}</span>
                 </template>
                 <span class="new-steps-icon">
-                  <img v-if="index < stepCurrent" src="/static/img/shixinyuan.png"/>
-                  <img v-if="index === stepCurrent" src="/static/img/kongxinyuan.png"/>
-                  <img v-if="stepCurrent < index" src="/static/img/huiseyuan.png"/>
+                  <img v-if="index < stepCurrent" src="/static/img/shixinyuan.png" />
+                  <img v-if="index === stepCurrent" src="/static/img/kongxinyuan.png" />
+                  <img v-if="stepCurrent < index" src="/static/img/huiseyuan.png" />
                 </span>
               </a-popover>
-              <a-step title="问题定义" @click="goto(0)"/>
-              <a-step title="责任判定" @click="goto(1)"/>
-              <a-step title="原因分析" @click="goto(2)"/>
-              <a-step title="措施判定" @click="goto(3)"/>
-              <a-step title="措施实施" @click="goto(4)"/>
-              <a-step title="效果验证" @click="goto(5)"/>
-              <a-step title="问题关闭" @click="goto(6)"/>
+              <a-step title="问题定义" @click="goto(0)" />
+              <a-step title="责任判定" @click="goto(1)" />
+              <a-step title="原因分析" @click="goto(2)" />
+              <a-step title="措施判定" @click="goto(3)" />
+              <a-step title="措施实施" @click="goto(4)" />
+              <a-step title="效果验证" @click="goto(5)" />
+              <a-step title="问题关闭" @click="goto(6)" />
             </a-steps>
           </div>
           <div class="Dcontent D0content" v-if="stepCurrent===0&&backFlag===false">
@@ -458,7 +452,7 @@
                   <a-radio-group :options="satisfy" @change="satisfyChange" v-decorator="[
                         'isProject',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
-                      ]"/>
+                      ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -484,7 +478,7 @@
                     <a-radio-group :options="contActionOption" @change='conActionChange' v-decorator="[
                         'isNeedIca',
                          {rules: [{ required: true, message: '请选择是否立项' }]}
-                      ]"/>
+                      ]" />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -505,7 +499,7 @@
                 <a-form-item :label="`附件`">
                   <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
-                      <a-icon type="upload"/>
+                      <a-icon type="upload" />
                       上传文件
                     </a-button>
                   </a-upload>
@@ -549,7 +543,7 @@
                 </a-col>
               </a-row>
             </div>
-            <a-row>
+            <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -563,7 +557,7 @@
                   </div>
                 </a-form-item>
               </a-col>
-            </a-row>
+            </a-row> -->
           </div>
           <div class="Dcontent D1content" v-if="stepCurrent===1&&backFlag===false">
             <div class="triangle_border_up" style="left:216px;">
@@ -577,7 +571,7 @@
                   <a-form-item>
                     <a-radio-group :options="determineRadio" @change="determineChange" v-decorator="[
                     'determine'
-                    ]"/>
+                    ]" />
                   </a-form-item>
 
                 </a-col>
@@ -635,7 +629,7 @@
                     <a-form-item :label="`附件`">
                       <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                         <a-button>
-                          <a-icon type="upload"/>
+                          <a-icon type="upload" />
                           上传文件
                         </a-button>
                       </a-upload>
@@ -895,7 +889,7 @@
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row>
+              <!-- <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`附件`" style="height:auto;">
                     <div class="stepFileList clearfix">
@@ -909,7 +903,7 @@
                     </div>
                   </a-form-item>
                 </a-col>
-              </a-row>
+              </a-row> -->
             </div>
             <div v-if="issueDefinitionData.determine==='1'">
               <div class="processList clearfix">
@@ -973,7 +967,7 @@
                   <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
                       'D2file' ]">
                     <a-button>
-                      <a-icon type="upload"/>
+                      <a-icon type="upload" />
                       上传文件
                     </a-button>
                   </a-upload>
@@ -993,7 +987,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
+            <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1006,7 +1000,7 @@
                   </div>
                 </a-form-item>
               </a-col>
-            </a-row>
+            </a-row> -->
           </div>
           <div class="Dcontent D3content" v-if="stepCurrent===3&&backFlag===false">
             <div class="triangle_border_up">
@@ -1037,7 +1031,7 @@
                 <a-form-item :label="`小批量验证`">
                   <a-input placeholder="请输入" style="width:572px;" v-decorator="[
                       'smallBatchValidation',
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1046,7 +1040,7 @@
                 <a-form-item :label="`附件`">
                   <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
-                      <a-icon type="upload"/>
+                      <a-icon type="upload" />
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1059,7 +1053,7 @@
                 <a-form-item :label="`长期措施实施计划日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
                       'pcaPlanTime',
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1067,9 +1061,9 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'pcaExecTime ',
+                      'pcaExecTime',
 
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1079,7 +1073,7 @@
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
                       'estimatedClosureTime',
 
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1092,8 +1086,8 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
+                  <p>{{ stepMeasures.icaDescription }}</p>
 
-                  <p>{{ stepDetail.icaDescription }}</p>
 
 
                 </a-form-item>
@@ -1102,15 +1096,14 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.pcaDescription }}</p>
-
+                  <p>{{ stepMeasures.pcaDescription  }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施计划日期`">
-                  <p>{{ stepDetail.pcaPlanTime }}</p>
+                  <p>{{ stepMeasures.pcaPlanTime }}</p>
 
                 </a-form-item>
               </a-col>
@@ -1118,11 +1111,14 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
-                  <p>{{ stepDetail.pcaExecTime }}</p>
+
+                  <p>{{ stepMeasures.pcaExecTime  }}</p>
+
+
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
+            <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1137,11 +1133,11 @@
                   </div>
                 </a-form-item>
               </a-col>
-            </a-row>
+            </a-row> -->
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
-                  <p>{{stepDetail.smallBatchValidation }}</p>
+                  <p>{{stepMeasures.smallBatchValidation }}</p>
                 </a-form-item>
 
               </a-col>
@@ -1149,7 +1145,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`计划关闭日期`">
-                  <p>{{ stepDetail.estimatedClosureTime }}</p>
+                  <p>{{ stepMeasures.estimatedClosureTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1176,7 +1172,7 @@
                       'icaExecTime '
 
 
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1196,7 +1192,7 @@
                 <a-form-item :label="`附件`">
                   <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
-                      <a-icon type="upload"/>
+                      <a-icon type="upload" />
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1212,7 +1208,7 @@
                       'pcaExecTime',
 
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1232,7 +1228,9 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-                  <p>{{ stepDetail.icaExecTime }}</p>
+
+                  <p>{{ stepDetail.icaExecTime  }}</p>
+
 
                 </a-form-item>
               </a-col>
@@ -1247,7 +1245,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
+            <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1262,7 +1260,7 @@
                   </div>
                 </a-form-item>
               </a-col>
-            </a-row>
+            </a-row> -->
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
@@ -1363,7 +1361,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
+            <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1378,7 +1376,7 @@
                   </div>
                 </a-form-item>
               </a-col>
-            </a-row>
+            </a-row> -->
           </div>
           <div class="Dcontent D5content" v-if="stepCurrent===5&&backFlag===false">
             <div class="triangle_border_up">
@@ -1399,7 +1397,7 @@
                 <a-form-item :label="`附件`">
                   <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                     <a-button>
-                      <a-icon type="upload"/>
+                      <a-icon type="upload" />
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1413,7 +1411,7 @@
                       'breakpointVin ',
                       {
                         rules: [{ required: true, message: '请输入断点VIN' }]}
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
               <a-col :span="10">
@@ -1421,7 +1419,7 @@
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
                       'breakpointDate ',
                       {rules: [{ required: true, message: '请选择断点时间' }]}
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1454,7 +1452,7 @@
                   <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
                       'recurrencePrevention',
                       {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1464,7 +1462,7 @@
                   <a-radio-group :options="isCloseRadio" @change="CloseRadioChange" v-decorator="[
                       'isClose ',
                       {rules: [{ required: true, message: '请选择是否同意关闭' }]}
-                    ]"/>
+                    ]" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1514,7 +1512,7 @@
 
           <div id="fileAnchor">
             <a-table row-key="id" :data-source="dataRecord" :columns="columnsRecord"
-                     :pagination="{defaultPageSize: 10}">
+              :pagination="{defaultPageSize: 10}">
             </a-table>
           </div>
 
@@ -1571,8 +1569,9 @@
       },
       width: 80
     }];
-  const columnsRecord = [
-    {
+
+
+  const columnsRecord = [{
       title: '操作记录',
       dataIndex: 'recode',
       scopedSlots: {
@@ -1585,6 +1584,7 @@
         customRender: 'progress'
       }
     },
+
     {
       title: '变更人',
       dataIndex: 'user',
@@ -1721,8 +1721,10 @@
         dataFile: [], // 附件
         dataRecord: [], // 操作记录
         stepDetail: [], // 某个问题的步骤详细信息
+        stepMeasures: [], //措施详细信息
         problemDefinitionData: {},
         issueDefinitionData: {},
+
         editFlag: false,
         expand: false,
         form: null,
@@ -1754,7 +1756,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 0, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 4, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1869,6 +1871,7 @@
         mapPropsToFields: () => createFormFields(this, [
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
+          'pcaPlanTime',
 
           'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
           'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
@@ -1910,12 +1913,15 @@
         'redistribute',
         'eidtQuestion',
         'getAnalysis',
+
+        'MeasureDetail',
         'issueDefinitionAdd',
         'rootCauseAdd',
         'rootCause',
         'problemDefinitionAdd',
         'getAnalysis',
         'MeasureDecisionSave'
+
       ]),
       //是否需要围堵措施
       conActionChange(e) {
@@ -2084,13 +2090,13 @@
           this.analysisData = res.list;
           if (this.analysisData.length == 0) {
             this.analysisData = [{
-              "id": "8",
-              Standard: '',
-              reality: '',
-              conclusion: '',
-              file: '',
-              operation: '编辑'
-            },
+                "id": "8",
+                Standard: '',
+                reality: '',
+                conclusion: '',
+                file: '',
+                operation: '编辑'
+              },
               {
                 "id": "9",
                 Standard: '',
@@ -2119,6 +2125,7 @@
         });
         this.getQuestionStepAll(this.id)
       },
+
       getQuestionStepAll(id) {
         this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
@@ -2132,6 +2139,7 @@
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res;
         });
+
 
 
       },
@@ -2171,13 +2179,21 @@
         this.backCurrent = param;
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
+          if (param === 3) {
+
+            const data = this.formDcontent.getFieldsValue();
+
+            this.MeasureDetail(this.id).then(res => {
+              this.stepMeasures = res;
+            });
+
+          }
         } else {
           this.backFlag = false;
         }
       },
       // tab栏切换
-      callback(key) {
-      },
+      callback(key) {},
       // 查看更多
       showMore() {
         this.showMoreFlag = !this.showMoreFlag;
@@ -2242,7 +2258,6 @@
       },
       handleSave() {
         const data = this.formDcontent.getFieldsValue();
-        data.issueId = this.id;
         data.optCounter = this.detailList.optCounter ? this.detailList.optCounter : 1
         console.info(data)
         console.info(this.stepCurrent)
@@ -2251,21 +2266,35 @@
             console.info(res)
           })
         }
-        if (this.stepCurrent === "3") {
+        data.issueId = this.id;
+
+        if (data.estimatedClosureTime) {
+          data.estimatedClosureTime = data.estimatedClosureTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (data.pcaExecTime) {
+          data.pcaExecTime = data.pcaExecTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (data.pcaPlanTime) {
+          data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        if (this.stepCurrent === 3) {
           this.MeasureDecisionSave(data).then(res => {
 
           });
         }
+        else if(this.stepCurrent === 4){}
+
+
+
 
       },
       handleSearch(e) {
         e.preventDefault();
-        this.form.validateFields((error, values) => {
-        });
+        this.form.validateFields((error, values) => {});
       },
 
-      handleChange() {
-      },
+      handleChange() {},
       levelChange(value) {
         console.log(`selected ${value}`);
       },
@@ -2286,6 +2315,10 @@
           params: {
             name,
             id
+          },
+          query: {
+            form: this.$route.path
+
           }
         })
       },
@@ -2699,7 +2732,7 @@
     border-radius: 4px;
     margin-left: 65px;
 
-    /deep/ .ant-table-thead > tr > th {
+    /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
     }
 
@@ -2712,7 +2745,7 @@
     border-radius: 4px;
     margin-top: 5px;
 
-    /deep/ .ant-table-thead > tr > th {
+    /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
     }
   }

@@ -140,9 +140,20 @@ mock.post('/issue/v1/workflow/actionDraft', (data) => {
   });
 });
 
+mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});
+
+
+
 mock.get('/issue/v1/workflow/issueDefinition?issue_id=', (id) => {
   return mock.result({
     data: db.findById(id)
+
   });
 }, {
   timeout: 0
