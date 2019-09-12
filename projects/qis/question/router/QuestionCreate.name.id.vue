@@ -180,7 +180,7 @@
                 </a-col>
                 <a-col :span="8">
                   <a-form-item :label="`附件`">
-                    <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers" name="file"
+                    <a-upload action="/mojo-gateway/issue/v1/file/upload?recType=10021003" :headers="headers" name="file"
                       :multiple="true" :fileList="fileList" @change="handleChange" :remove="removeFile">
                       <a-button>
                         <a-icon type="upload" /> 上传文件

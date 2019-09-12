@@ -32,10 +32,10 @@ module.exports = {
     proxyTable: {
       '/api': {
 
-        target: 'http://106.75.63.69:8080',
+        target: 'http://106.75.63.69:8091/mojo-gateway',
         // target: 'http://106.75.63.69:8091',
 
-       
+
         changeOrigin: true,
         // 关闭https安全证书
         secure: false,
