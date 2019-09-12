@@ -46,7 +46,7 @@ const d = mock({
     //文件名称
     id:'1',
     fileName:'ECN',
-    isUpdate:'0',
+    isUpdae:'0',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -54,7 +54,7 @@ const d = mock({
     //文件名称
     id:'2',
     fileName:'DFMEA',
-    isUpdate: '1',
+    isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -62,7 +62,7 @@ const d = mock({
     //文件名称
     id:'3',
     fileName:'DV/PV 计划',
-    isUpdate: '0',
+    isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -70,7 +70,7 @@ const d = mock({
     //文件名称
     id:'4',
     fileName:'PFMEA',
-    isUpdate: '0',
+    isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -78,7 +78,7 @@ const d = mock({
     id:'5',
     //文件名称
     fileName:'控制计划',
-    isUpdate:'1',
+    isUpdae:'1',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -86,7 +86,7 @@ const d = mock({
     id:'6',
     //文件名称
     fileName:'过程流程图',
-    isUpdate: '1',
+    isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -94,7 +94,7 @@ const d = mock({
     id:'7',
     //文件名称
     fileName:'操作指导书',
-    isUpdate: '0',
+    isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -102,7 +102,7 @@ const d = mock({
     id:'8',
     //文件名称
     fileName:'新的操作指导书',
-    isUpdate: '1',
+    isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
     updatefile: ['d5.word', 'd5.png'],
@@ -139,7 +139,7 @@ mock.post('/issue/v1/workflow/actionDraft', (data) => {
     data: db.insert(data)
   });
 });
-
+//措施判定详情
 mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => {
   return mock.result({
     data: db.findById(issueId)
@@ -147,13 +147,77 @@ mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => {
 }, {
   timeout: 0
 });
+//措施实施详情
+mock.get('/issue/v1/workflow/actionDraft?type=1&issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});
+//文件更新
+mock.get('/issue/v1/workflow/fileUpdatesList?issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});
 
+//文件首次创建
+mock.post('/issue/v1/workflow/fileUpdatesList', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
+//文件添加
+mock.post('/issue/v1/workflow/fileUpdates', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
 
-
+//文件编辑
+mock.put('/issue/v1/workflow/fileUpdates', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
 mock.get('/issue/v1/workflow/issueDefinition?issue_id=', (id) => {
   return mock.result({
     data: db.findById(id)
 
+  });
+}, {
+  timeout: 0
+});
+//效果验证保存
+mock.post('/issue/v1/workflow/validation', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
+
+//效果验证详情
+mock.get('/issue/v1/workflow/validation?issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});
+
+//问题关闭保存
+mock.post('/issue/v1/workflow/issueClose', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
+
+//问题关闭查询
+mock.get('/issue/v1/workflow/issueClose?issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
   });
 }, {
   timeout: 0

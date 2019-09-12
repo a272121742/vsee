@@ -128,7 +128,7 @@
         </a-row> -->
       </a-form>
     </a-modal>
-    <a-modal title="ECN" :visible="visibleUpdate" @ok="updateOk" @cancel="updateCancel" width="600px">
+    <a-modal :title="fileModalTitle" :visible="visibleUpdate" @ok="updateOk" @cancel="updateCancel" width="600px">
       <a-form class="ant-advanced-search-form" :form="updateForm">
         <a-row v-show="false">
           <a-col :span="17">
@@ -139,12 +139,12 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row v-show="false">
+        <a-row v-show="fileNameFlag">
           <a-col :span="17">
             <a-form-item :label="`文件名称`">
 
               <a-input placeholder="请输入" v-decorator="[
-                      'id',
+                      'fileName',
                       {rules: [{ required: true, message: '请输入文件名称' } ]}
 
                 ]" />
@@ -155,7 +155,7 @@
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
               <a-radio-group  :options="updateRadio"   v-decorator=" [
-                'isUpdate',
+                'isUpdae',
               {rules: [{ required: true, message: '请选择是否更新' } ]}
                ]"   />
             </a-form-item>
@@ -199,6 +199,7 @@
         <a-button type="primary" html-type="submit" @click="handleSubmit" class="submitBtn">
           提交
         </a-button>
+
         <a-button :style="{ marginLeft: '8px' }" @click="handleSave" class="saveBtn">
           保存
         </a-button>
@@ -1083,13 +1084,18 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
+            <div class="examine">
+              <div>审核结果</div>
+                <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
+                      'recurrencePrevention',
+                      {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
+                    ]" />
+            </div>
+            <div>措施判定</div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
                   <p>{{ stepMeasures.icaDescription }}</p>
-
-
-
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1159,7 +1165,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期效果(中英文)`">
                   <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'icaExecDescription ',
+                      'icaExecDescription',
                       {rules: [{validator: languageVer}]}
                     ]"></a-textarea>
                 </a-form-item>
@@ -1169,7 +1175,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'icaExecTime '
+                      'icaExecTime'
 
 
                     ]" />
@@ -1221,7 +1227,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期效果`">
-                  <p>{{ stepDetail.icaExecDescription }}</p>
+                  <p>{{ stepImplementation.icaExecDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1229,7 +1235,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
 
-                  <p>{{ stepDetail.icaExecTime  }}</p>
+                  <p>{{ stepImplementation.icaExecTime  }}</p>
 
 
                 </a-form-item>
@@ -1239,7 +1245,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述`">
 
-                  <p>{{ stepDetail.pcaDescription}}</p>
+                  <p>{{ stepImplementation.pcaDescription}}</p>
 
 
                 </a-form-item>
@@ -1265,7 +1271,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
 
-                  <p>{{ stepDetail.pcaExecTime }}</p>
+                  <p>{{ stepImplementation.pcaExecTime }}</p>
 
                 </a-form-item>
               </a-col>
@@ -1275,63 +1281,40 @@
           </div>
 
           <div class="Dcontent D5back" v-if="stepCurrent!=5&&backCurrent==5&&backFlag">
-
-
             <div class="triangle_border_up">
               <span></span>
             </div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`效果验证`">
-                  <p>{{ stepDetail.description }}</p>
+                  <p>{{ stepEffect.description }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row style="margin-left:220px;">
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
-                  <p>{{ stepDetail.breakpointVin }}</p>
+                  <p>{{ stepEffect.breakpointVin }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
-                  <p>{{ stepDetail.breakpointDate }}</p>
+                  <p>{{ stepEffect.breakpointDate }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`是否有ECN`">
-                  <p>{{ stepDetail.ECN }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`FMEA是否更新`">
-                  <p>{{ stepDetail.FMEA }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`控制计划是否更新`">
-                  <p>{{ stepDetail.controlPlan }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row style="margin-left:220px;">
-              <a-col :span="8">
-                <a-form-item :label="`ECN号码`">
-                  <p>{{ stepDetail.ECNtelphone }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="10">
-                <a-form-item :label="`ECN状态`">
-                  <p>{{ stepDetail.ECNStatus }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
+            <a-form-item :label="`涉及文件更新:`">
+              <div class="updateTable">
+                <a-table row-key="id" :data-source="updateData" :columns="columnsUpdate" :pagination="false">
+
+                  <span slot="id" slot-scope="text, record">
+                    <a href="javascript:;" @click=showUpdate(record)>查看</a>
+                  </span>
+                </a-table>
+              </div>
+            </a-form-item>
+
+
 
             <a-row>
               <a-col :span="21">
@@ -1354,13 +1337,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`当前步骤计划完成日期`">
-                  <p>{{ stepDetail.D5planTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
+
             <!-- <a-row>
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
@@ -1428,12 +1405,13 @@
                 <a-form-item :label="`涉及文件更新:`">
                   <div class="updateTable">
                     <a-table row-key="id" :data-source="updateData" :columns="columnsUpdate" :pagination="false">
-                      <span slot="updateoperation" slot-scope="text, record">
-                        <a href="javascript:;" @click=showUpdate(record)>{{record.updateoperation}}</a>
+
+                      <span slot="id" slot-scope="text, record">
+                        <a href="javascript:;" @click=showUpdate(record)>查看</a>
                       </span>
                     </a-table>
-                    <div style="text-align:center;">
-                      <a-icon type="plus-circle"/>
+                    <div style="text-align:center;" @click="showUpdate()">
+                      <a-icon type="plus-circle" />
                       添加新的更新文件
                     </div>
                   </div>
@@ -1460,7 +1438,7 @@
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
                   <a-radio-group :options="isCloseRadio" @change="CloseRadioChange" v-decorator="[
-                      'isClose ',
+                      'isClose',
                       {rules: [{ required: true, message: '请选择是否同意关闭' }]}
                     ]" />
                 </a-form-item>
@@ -1477,28 +1455,29 @@
               </a-col>
             </a-row>
           </div>
-          <div class="Dcontent D3back" v-if="stepCurrent!=6&&backCurrent==6&&backFlag">
+          <div class="Dcontent D6back" v-if="stepCurrent!=6&&backCurrent==6&&backFlag">
             <div class="triangle_border_up">
               <span></span>
             </div>
+
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
-                  <p>{{ stepDetail.recurrencePrevention }}</p>
+                  <p>{{ stepClose.recurrencePrevention }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <p>{{ stepDetail.isClose }}</p>
+                  <p>{{ stepClose.isClose }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`">
-                  <p>{{ stepDetail.reason }}</p>
+                  <p>{{ stepClose.reason }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1536,39 +1515,38 @@
   const {
     mapActions
   } = createNamespacedHelpers('question');
-  const columns = [
-    {
-      title: '序号',
-      dataIndex: 'no',
-      scopedSlots: {
-        customRender: 'no'
-      }
-    }, {
-      title: '附件名称',
-      dataIndex: 'name',
-      scopedSlots: {
-        customRender: 'name'
-      }
-    }, {
-      title: '上传时间',
-      dataIndex: 'uploadTime',
-      scopedSlots: {
-        customRender: 'uploadTime'
-      }
-    }, {
-      title: '上传人',
-      dataIndex: 'uploadUser',
-      scopedSlots: {
-        customRender: 'uploadUser'
-      }
-    }, {
-      title: '操作',
-      dataIndex: 'operation',
-      scopedSlots: {
-        customRender: 'operation'
-      },
-      width: 80
-    }];
+  const columns = [{
+    title: '序号',
+    dataIndex: 'no',
+    scopedSlots: {
+      customRender: 'no'
+    }
+  }, {
+    title: '附件名称',
+    dataIndex: 'name',
+    scopedSlots: {
+      customRender: 'name'
+    }
+  }, {
+    title: '上传时间',
+    dataIndex: 'uploadTime',
+    scopedSlots: {
+      customRender: 'uploadTime'
+    }
+  }, {
+    title: '上传人',
+    dataIndex: 'uploadUser',
+    scopedSlots: {
+      customRender: 'uploadUser'
+    }
+  }, {
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: {
+      customRender: 'operation'
+    },
+    width: 80
+  }];
 
 
   const columnsRecord = [{
@@ -1608,8 +1586,7 @@
       width: 80
     }
   ];
-  const columnsAnalysis = [
-    {
+  const columnsAnalysis = [{
 
       title: '标准要求',
       dataIndex: 'Standard',
@@ -1650,8 +1627,7 @@
       width: 80
     }
   ];
-  const columnsUpdate = [
-    {
+  const columnsUpdate = [{
 
       title: '文件名称',
       dataIndex: 'fileName',
@@ -1661,10 +1637,10 @@
       }
     }, {
       title: '是否更新',
-      dataIndex: 'isUpdate',
+      dataIndex: 'isUpdae',
       align: 'center',
       scopedSlots: {
-        customRender: 'isUpdate'
+        customRender: 'isUpdae'
       }
     },
     {
@@ -1677,17 +1653,17 @@
     },
     {
       title: '附件',
-      dataIndex: 'updatefile',
+      dataIndex: 'fileList',
       align: 'center',
       scopedSlots: {
-        customRender: 'updatefile'
+        customRender: 'fileList'
       }
     },
     {
       title: '操作',
-      dataIndex: 'updateoperation',
+      dataIndex: 'id',
       scopedSlots: {
-        customRender: 'updateoperation'
+        customRender: 'id'
       },
       width: 80
     }
@@ -1700,10 +1676,12 @@
     props: ['id'],
     data() {
       return {
-        userId: this.$store.getters.getUser(),//用户id
+        userId: this.$store.getters.getUser(), //用户id
         // 再分配弹框
         ModalText: 'Content of the modal',
+        fileModalTitle: '添加更新文件',
         RejectTrue: true,
+        fileNameFlag: true,
         visible: false,
         visibleAnalysis: false, //7钻编辑弹框
         visibleDetail: false, //7钻详情
@@ -1722,9 +1700,11 @@
         dataRecord: [], // 操作记录
         stepDetail: [], // 某个问题的步骤详细信息
         stepMeasures: [], //措施详细信息
+        stepImplementation: [],
+        stepEffect: [],
         problemDefinitionData: {},
         issueDefinitionData: {},
-
+        stepClose:[],
         editFlag: false,
         expand: false,
         form: null,
@@ -1756,7 +1736,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 4, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 5, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1858,25 +1838,22 @@
         recordUpdate: {
           id: '',
           fileName: '',
-          isUpdate: '0',
+          isUpdae: '0',
           updateContent: '',
-          updatefile: '',
+          fileList: '',
         }
 
       };
     },
     created() {
-      this.request();
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
           'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
           'pcaPlanTime',
-
           'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
           'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
           'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
-
           'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
           'reason'
         ], 'record'),
@@ -1894,10 +1871,11 @@
       });
       this.updateForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'id', 'fileName', 'isUpdate', 'updateContent', 'updatefile'
+          'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
         ], 'recordUpdate'),
         onValuesChange: autoUpdateFileds(this, 'recordUpdate')
       });
+      this.request();
     },
     methods: {
       moment,
@@ -1913,9 +1891,17 @@
         'redistribute',
         'eidtQuestion',
         'getAnalysis',
-
+        'editFile',
+        'effectSave',
+        'effectDetail',
+        'ImplementationDetail',
+        'firstCreateFile',
+        'updateFile',
         'MeasureDetail',
         'issueDefinitionAdd',
+        'closeSave',
+        'closeDetail',
+        'addFile',
         'rootCauseAdd',
         'rootCause',
         'problemDefinitionAdd',
@@ -1975,31 +1961,38 @@
 
       },
       showUpdate(param) {
+
         this.visibleUpdate = true;
-        this.updateForm = this.$form.createForm(this, {
-          mapPropsToFields: () => {
-            return {
-              id: this.$form.createFormField({
-                value: param.id,
-              }),
-              fileName: this.$form.createFormField({
-                value: param.fileName,
-              }),
-              isUpdate: this.$form.createFormField({
-                value: param.isUpdate,
-              }),
-              updateContent: this.$form.createFormField({
-                value: param.updateContent,
-              }),
-              updatefile: this.$form.createFormField({
-                value: param.updatefile,
-              })
+        if (param) {
+          this.fileNameFlag = false;
+          this.fileModalTitle = param.fileName;
+          this.updateForm = this.$form.createForm(this, {
+            mapPropsToFields: () => {
+              return {
+                id: this.$form.createFormField({
+                  value: param.id,
+                }),
+                fileName: this.$form.createFormField({
+                  value: param.fileName,
+                }),
+                isUpdae: this.$form.createFormField({
+                  value: param.isUpdae,
+                }),
+                updateContent: this.$form.createFormField({
+                  value: param.updateContent,
+                }),
+                fileList: this.$form.createFormField({
+                  value: param.fileList != null ? param.fileList.length : 0,
+                })
+              };
+            }
+          });
+        } else {
+          this.fileNameFlag = true;
 
-            };
-          }
+        }
 
-        });
-        console.log(this.updateForm);
+
       },
       //校验中英文
       languageVer(rule, value, callback) {
@@ -2044,23 +2037,54 @@
         this.visibleDetail = false;
       },
       updateOk() {
+
+
         this.updateForm.validateFields((err, fieldsValue) => {
+
           if (!err) {
             this.visibleUpdate = false;
             const data = this.updateForm.getFieldsValue();
-            this.updateData.forEach((item, index) => {
-              if (item.id === data.id) {
-                item.id = data.id;
-                if (data.fileName) {
-                  item.fileName = data.fileName
-                }
-                item.isUpdate = data.isUpdate;
-                item.updateContent = data.updateContent;
-                item.updatefile = data.updatefile;
+
+            if (this.fileNameFlag === true) {
+              const data = this.updateForm.getFieldsValue();
+              data.issueId = this.id;
+              if (!data.id) {
+                this.addFile(data).then(res => {
+
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+
+              } else {
+                this.editFile(data).then(res => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
               }
-            })
+
+            } else {
+              const data = this.updateForm.getFieldsValue();
+              data.issueId = this.id;
+              data.fileName = this.fileModalTitle;
+              if (!data.id) {
+                this.addFile(data).then(res => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              } else {
+                this.editFile(data).then(res => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              }
+            }
           }
         });
+
       },
       updateCancel() {
         this.visibleUpdate = false;
@@ -2123,23 +2147,39 @@
 
           this.dataRecord = res.list;
         });
-        this.getQuestionStepAll(this.id)
+        this.getQuestionStepAll(this.id);
       },
 
       getQuestionStepAll(id) {
         this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
-          this.updateData = res.updateList;
+          // this.updateData = res.updateList;
 
         });
         this.problemDefinition(id).then(res => {
           this.problemDefinitionData = res;
-          this.updateData = res.updateList;
+          // this.updateData = res.updateList;
         });
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res;
         });
 
+        this.updateFile(this.id).then(res => {
+
+          if (res.length == 0) {
+            let param = {
+              "issueId": this.id
+            };
+            this.firstCreateFile(param).then(res => {
+
+              this.updateData = res;
+            });
+          } else {
+            this.updateData = res;
+          }
+
+        });
+        this.updateFile(this.id).then(res => {});
 
 
       },
@@ -2156,7 +2196,6 @@
         }, 2000);
       },
       handleCancel(e) {
-        console.log('Clicked cancel button');
         this.visible = false
       },
       //是否需要7钻分析
@@ -2176,17 +2215,34 @@
       },
       // 回退到param步
       goto(param) {
+
         this.backCurrent = param;
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
           if (param === 3) {
 
-            const data = this.formDcontent.getFieldsValue();
 
             this.MeasureDetail(this.id).then(res => {
               this.stepMeasures = res;
             });
 
+          } else if (param === 4) {
+
+
+            this.ImplementationDetail(this.id).then(res => {
+              this.stepImplementation = res;
+            });
+          } else if (param === 5) {
+            this.effectDetail(this.id).then(res => {
+              this.stepEffect = res;
+            })
+          }
+
+          else if(param===6){
+
+            this.closeDetail(this.id).then(res=>{
+               this.stepClose=res;
+            })
           }
         } else {
           this.backFlag = false;
@@ -2217,12 +2273,12 @@
           if (!err) {
             const data = this.formDcontent.getFieldsValue();
             let transData = {
-              businessKey: this.id,//问题id
-              businessTitle: data.title,//问题title
-              processDefinitionKey: "BJEV1",//BJEV1  固定值
-              subSys: "irs",  //  子系统编号
-              taskId: null,//  任务id
-              userId: this.userId,//  当前用户id
+              businessKey: this.id, //问题id
+              businessTitle: data.title, //问题title
+              processDefinitionKey: "BJEV1", //BJEV1  固定值
+              subSys: "irs", //  子系统编号
+              taskId: null, //  任务id
+              userId: this.userId, //  当前用户id
               variables: {
                 isDirectSerious: '0',
                 isPass: '0',
@@ -2257,6 +2313,7 @@
         });
       },
       handleSave() {
+
         const data = this.formDcontent.getFieldsValue();
         data.optCounter = this.detailList.optCounter ? this.detailList.optCounter : 1
         console.info(data)
@@ -2280,10 +2337,27 @@
 
         if (this.stepCurrent === 3) {
           this.MeasureDecisionSave(data).then(res => {
-
+            this.MeasureDetail(this.id).then(res => {
+              this.stepMeasures = res;
+            });
           });
+        } else if (this.stepCurrent === 4) {
+          this.MeasureDecisionSave(data).then(res => {
+            this.ImplementationDetail(this.id).then(res => {
+              this.stepImplementation = res;
+            });
+          });
+
+        } else if (this.stepCurrent === 5) {
+          this.effectSave(data).then(res => {
+
+          })
         }
-        else if(this.stepCurrent === 4){}
+        else if(this.stepCurrent===6){
+          this.closeSave(data).then(res=>{
+
+          })
+        }
 
 
 
