@@ -26,9 +26,44 @@ export default {
 MeasureDecisionSave(store,data){
   return api.MeasureDecisionSave(data);
 },
-//措施详情查询
+//措施判定详情查询
 MeasureDetail(store,issueId){
   return api.MeasureDetail(issueId);
+},
+//措施实施详情查询
+ImplementationDetail(store,issueId){
+  return api.ImplementationDetail(issueId);
+},
+//文件更新表格
+updateFile(store,issueId){
+   return api.updateFile(issueId);
+},
+//文件首次创建
+firstCreateFile(store,data){
+  return api.firstCreateFile(data);
+},
+//添加文件
+addFile(store,data){
+  return api.addFile(data);
+},
+editFile(store,data){
+  return api.editFile(data);
+},
+//效果验证保存
+effectSave(store,data){
+  return api.effectSave(data);
+},
+//效果验证查询
+effectDetail(store,issueId){
+  return api.effectDetail(issueId);
+},
+//问题关闭保存
+closeSave(store,data){
+  return api.closeSave(data);
+},
+//问题关闭详情
+closeDetail(store,issueId){
+  return api.closeDetail(issueId);
 },
    /**
    * 问题提交至工作流
@@ -107,6 +142,14 @@ MeasureDetail(store,issueId){
   //根本原因保存
   rootCauseAdd(store, data) {
     return api.rootCauseAdd(data);
+  },
+  //获取系统用户
+  getSysUser(store, issueSource,type) {
+    return api.getSysUser(issueSource,type);
+  },
+  //存七钻
+  sevenDiamonds(store, data) {
+    return api.getSysUser(data);
   },
   /**
    * 获取问题分页列表
