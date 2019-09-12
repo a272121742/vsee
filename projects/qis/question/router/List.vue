@@ -78,12 +78,10 @@
       @change="handleTableChange"
     >
      <span slot="action" slot-scope="record">
-
         <a href="javascript:;" @click="goToDetail(record.id)">
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
         </a>
-
       </span>
     </issue-table>
 
