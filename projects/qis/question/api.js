@@ -27,6 +27,7 @@ export default {
   addQuestion: (data) => $.post('/activiti/running/completeTask', data),
   //创建保存某个问题
   saveQuestion: (data) => $.post('/issue/v1/issue', data),
+  getSysUser: (issueSource,type)=>$.get('/issue/v1/workflow/getSysUser',{issueSource, type}),
   /**
  * 问题提交至工作流
  */
@@ -38,7 +39,8 @@ MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),
 //措施判定详情查询
 MeasureDetail:(issueId)=>$.get('/issue/v1/workflow/actionDraft?type=0&issueId='+issueId),
 //措施实施详情查询
-
+  //保存七钻
+  sevenDiamonds:(data)=>$.get('/v1/workflow/sevenDiamonds',data),
   //修改保存某个问题
   editSaveQuestion: (data) => $.put('/issue/v1/issue', data),
   // 再分配某个问题

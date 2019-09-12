@@ -40,7 +40,7 @@
           <a-col :span="22">
             <a-form-item :label="`标准要求`">
               <a-textarea style="width:340px;height:56px;" placeholder="请输入" v-decorator="[
-                'Standard',
+                'standard',
                 {rules: [{ required: true, message: '请输入标准要求' }]}
               ]"></a-textarea>
             </a-form-item>
@@ -50,7 +50,7 @@
           <a-col :span="22">
             <a-form-item :label="`实际情况`">
               <a-textarea style="width:340px;height:56px;" placeholder="请输入" v-decorator="[
-                'reality',
+                'actualSituation',
                 {rules: [{ required: true, message: '请输入实际情况' }]}
               ]"></a-textarea>
             </a-form-item>
@@ -71,7 +71,7 @@
             <a-form-item label="附件">
               <a-upload name="file" :multiple="true" :headers="headers" @change="handleChange">
                 <a-button>
-                  <a-icon type="upload" />
+                  <a-icon type="upload"/>
                   上传文件
                 </a-button>
               </a-upload>
@@ -81,7 +81,7 @@
       </a-form>
     </a-modal>
     <a-modal :title="AnalysisTitle" :visible="visibleDetail" wrapClassName="visibleDetail" @ok="AnalysisDetailOk"
-      @cancel="AnalysisDetailCancel" width="600px">
+             @cancel="AnalysisDetailCancel" width="600px">
       <a-form class="ant-advanced-search-form" :form="DetailForm">
         <a-row v-show="false">
           <a-col :span="10">
@@ -94,14 +94,14 @@
         <a-row>
           <a-col :span="10">
             <a-form-item :label="`标准要求`" style="margin-bottom:0;">
-              <p>{{DetailForm.Standard}}</p>
+              <p>{{DetailForm.standard}}</p>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="10">
             <a-form-item :label="`实际情况`" style="margin-bottom:0;">
-              <p>{{DetailForm.reality}}</p>
+              <p>{{DetailForm.actualSituation}}</p>
             </a-form-item>
           </a-col>
         </a-row>
@@ -973,7 +973,7 @@
                   <a-upload name="files" :multiple="true" :headers="headers" @change="handleChange" v-decorator="[
                       'D2file' ]">
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1612,17 +1612,17 @@
     {
 
       title: '标准要求',
-      dataIndex: 'Standard',
+      dataIndex: 'standard',
       align: 'center',
       scopedSlots: {
-        customRender: 'Standard'
+        customRender: 'standard'
       }
     }, {
       title: '实际情况',
-      dataIndex: 'reality',
+      dataIndex: 'actualSituation',
       align: 'center',
       scopedSlots: {
-        customRender: 'reality'
+        customRender: 'actualSituation'
       }
     },
     {
@@ -1699,8 +1699,9 @@
     },
     props: ['id'],
     data() {
+      const that = this
       return {
-        userId:this.$store.getters.getUser().__ob__.dep.id,
+        userId: that.$store.getters.getUser().id,
         // 再分配弹框
         ModalText: 'Content of the modal',
         RejectTrue: true,
@@ -1714,7 +1715,29 @@
         columnsUpdate,
         AnalysisTitle: '1钻-过程是否正确',
         data: [],
-        analysisData: [], //7钻分析表格
+        analysisData: [
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          },
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          },
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          }
+        ], //7钻分析表格
         updateData: [], //文件更新表格
         DetailForm: [], //7钻查看表格
         updateForm: null, //文件更新弹框表单
@@ -1726,6 +1749,8 @@
         editFlag: false,
         expand: false,
         form: null,
+        coChair: null,
+        monitor: null,
         visibleUpdate: false,
         formDcontent: null, // 步骤表单
         rediStribution: null, // 再分配
@@ -1847,8 +1872,8 @@
         //7钻分析弹框数据绑定
         recordAnalysis: {
           id: '',
-          Standard: '',
-          reality: '',
+          standard: '',
+          actualSituation: '',
           conclusion: '',
           file: ''
         },
@@ -1885,7 +1910,7 @@
       });
       this.AnalysisForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'id', 'Standard', 'reality', 'conclusion', 'file'
+          'id', 'standard', 'actualSituation', 'conclusion', 'file'
         ], 'recordAnalysis'),
         onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
       });
@@ -1916,7 +1941,9 @@
         'problemDefinitionAdd',
         'getAnalysis',
         'MeasureDecisionSave',
-        'workFlowSubmit'
+        'workFlowSubmit',
+        'getSysUser',
+        'sevenDiamonds'
       ]),
       //是否需要围堵措施
       conActionChange(e) {
@@ -1941,8 +1968,29 @@
         }
       },
       showAnalysis(param) {
+
         this.visibleAnalysis = true;
         this.DetailForm = param
+       /* if (index === 2) {
+          this.AnalysisTitle ='2钻-工具是否正确'
+        }
+        if (index === 3) {
+          this.AnalysisTitle ='3钻-物料是否正确'
+        }
+        if (index === 4) {
+          this.AnalysisTitle ='4钻-物料规则检测'
+        }
+        if (index === 5) {
+          this.AnalysisTitle ='5钻-过程变更'
+        }
+        if (index === 6) {
+          this.AnalysisTitle ='6钻-部件变更'
+        }
+        if (index === 7) {
+          this.AnalysisTitle ='7钻-是否是极端复杂问题'
+        }*/
+
+
         this.AnalysisForm = this.$form.createForm(this, {
 
           mapPropsToFields: () => {
@@ -1950,11 +1998,11 @@
               id: this.$form.createFormField({
                 value: param.id,
               }),
-              Standard: this.$form.createFormField({
-                value: param.Standard,
+              standard: this.$form.createFormField({
+                value: param.standard,
               }),
-              reality: this.$form.createFormField({
-                value: param.reality,
+              actualSituation: this.$form.createFormField({
+                value: param.actualSituation,
               }),
               conclusion: this.$form.createFormField({
                 value: param.conclusion,
@@ -2017,17 +2065,19 @@
             if (this.AnalysisForm === "") {
               data.id = this.AnalysisForm.id;
             }
-            this.analysisData.forEach((item, index) => {
+            this.sevenDiamonds(data).then(res => {
+              console.info(res)
+            })
+            /*this.analysisData.forEach((item, index) => {
               if (item.id === data.id) {
                 item.id = data.id;
-                item.Standard = data.Standard;
-                item.reality = data.reality;
+                item.standard = data.standard;
+                item.actualSituation = data.actualSituation;
                 item.conclusion = data.conclusion;
                 item.file = data.file;
                 console.log(item);
               }
-            })
-            console.log(this.analysisData)
+            })*/
             this.visibleAnalysis = false;
           }
         });
@@ -2086,24 +2136,24 @@
           if (this.analysisData.length == 0) {
             this.analysisData = [{
               "id": "8",
-              Standard: '',
-              reality: '',
+              standard: '',
+              actualSituation: '',
               conclusion: '',
               file: '',
               operation: '编辑'
             },
               {
                 "id": "9",
-                Standard: '',
-                reality: '',
+                standard: '',
+                actualSituation: '',
                 conclusion: '',
                 file: '',
                 operation: '编辑'
               },
               {
                 "id": "10",
-                Standard: '',
-                reality: '',
+                standard: '',
+                actualSituation: '',
                 conclusion: '',
                 file: '',
                 operation: '编辑'
@@ -2132,6 +2182,7 @@
         });
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res ? res : {};
+          //this.analysisData = res.sevenDiamondsVos
         });
 
 
@@ -2197,8 +2248,10 @@
         }
       },
       handleSubmit(e) {
-        this.handleSave()
+        //this.handleSave()
         let _this = this
+        _this.coChair = _this.coChair ? _this.coChair : _this.getSysUser(_this.detailList.sourceName, 'coChairStepMonitor').id;
+        _this.monitor = _this.monitor ? _this.monitor : _this.getSysUser(_this.detailList.sourceName, 'stepMonitor').id;
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
             const data = this.formDcontent.getFieldsValue();
@@ -2210,7 +2263,9 @@
               taskId: null,//  任务id
               userId: this.userId,//  当前用户id
               variables: {
-                assigner:'',
+                assigner: data.zuanUser1,
+                coChair: _this.coChair,
+                monitor: _this.monitor,
                 isDirectSerious: '0',
                 isPass: '0',
                 isQZEnd: '0',
@@ -2219,12 +2274,11 @@
                 isCheckError: '0',
                 isLeaderSign: '0',
                 isItem: data.isProject,
-                zuanUser1:data.zuanUser1,
-                zuanUser4:data.zuanUser4,
-                zuanUser5:data.zuanUser5,
-                zuanUser6:data.zuanUser6,
-                zuanUser7:data.zuanUser7,
-                //monitor:
+                zuanUser1: data.zuanUser1,
+                zuanUser4: data.zuanUser4,
+                zuanUser5: data.zuanUser5,
+                zuanUser6: data.zuanUser6,
+                zuanUser7: data.zuanUser7,
               }
             }
             _this.workFlowSubmit(transData).then(res => {
@@ -2284,10 +2338,12 @@
       },
       handleSearch(e) {
         e.preventDefault();
-        this.form.validateFields((error, values) => {});
+        this.form.validateFields((error, values) => {
+        });
       },
 
-      handleChange() {},
+      handleChange() {
+      },
       levelChange(value) {
         console.log(`selected ${value}`);
       },
