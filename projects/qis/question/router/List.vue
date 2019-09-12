@@ -80,7 +80,7 @@
       @change="handleTableChange"
     >
      <span slot="action" slot-scope="record">
-        <a href="javascript:;" @click="goToDetail(record.id)">详情</a>
+        <a href="javascript:;" @click="goToDetail(record)">详情</a>
       </span>
     </issue-table>
 
@@ -232,11 +232,12 @@ export default {
       this.hideForm = true;
     },
      //查看详情
-    goToDetail(idValue){
+    goToDetail(record){
+
       this.$router.push({
         name: 'QuestionDetail',
         params: {
-         id: idValue,
+         id: record.id,
         },
         query: {
           form: this.$route.path

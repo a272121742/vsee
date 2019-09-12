@@ -135,3 +135,17 @@ mock.post('/issue/v1/workflow/actionDraft', (data) => {
     data: db.insert(data)
   });
 });
+mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});
+mock.get('/issue/v1/workflow/actionDraft?type=1&issueId=', (issueId) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+}, {
+  timeout: 0
+});

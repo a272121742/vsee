@@ -25,7 +25,10 @@ export default {
 MeasureDecisionSave(store,data){
   return api.MeasureDecisionSave(data);
 },
-
+//措施详情查询
+MeasureDetail(store,issueId){
+  return api.MeasureDetail(issueId);
+},
    /**
    * 问题提交至工作流
    */
