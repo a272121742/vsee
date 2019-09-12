@@ -216,7 +216,10 @@ export default {
         name: 'QuestionCreate',
         params: {
          name
-        }
+        },
+         query: {
+          form: this.$route.path
+        }
       })
     },
     changeTable (activeKey) {

@@ -22,7 +22,7 @@
     <a-card :title="questionTitle" class="cardTitle">
       <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
         <div>
-          <div class="collapse-title" @click="BaseOpen">
+          <div class="collapse-title">
             <a-icon :type="BaseIcon" style="margin-right:10px" />基本信息</div>
           <div>
             <div :class="[BaseContent]">
@@ -49,7 +49,7 @@
                 <a-col :span="6">
                   <a-form-item :label="`所属系统`">
                     <net-select url="/issue/v1/faultcategory?p_id=0" show-search :transform="selectOption"
-                      :delay="!isEdit || !record.faultTreeIds1" placeholder="请选择" @change="handleSystem"
+                      :delay="!isEdit" placeholder="请选择" @change="handleSystem"
                       :filterOption="filterOption" :allow-clear="true" v-decorator="[
                       'faultTreeIds1',
                       {rules:[{required:true, message:'请选择所属系统'}]}
@@ -62,8 +62,9 @@
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
                     <net-select showSearch placeholder="请选择" :filterOption="filterOption"
-                      :delay="!isEdit || !record.faultTreeIds2"
-                      :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`" :transform="selectOption"
+                      :delay="!isEdit"
+                      :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
+                      :cache="false" :transform="selectOption"
                       @change="faultTreeIds2Change" :allow-clear="true" v-decorator="[
                       'faultTreeIds2',
                       {rules:[{required:true, message:'请选择所属系统'}]}
@@ -74,9 +75,11 @@
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
-                    <net-select show-search  placeholder="请选择" :delay="!isEdit || !record.faultTreeIds3"
+                    <net-select show-search  placeholder="请选择" :delay="!isEdit"
                       :filterOption="filterOption" @change="faultTreeIds3Change"
-                      :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`" :transform="selectOption"
+                      :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+                       :cache="false"
+                      :transform="selectOption"
                       :allow-clear="true" v-decorator="[
                       'faultTreeIds3',
                       {rules:[{required:true, message:'请选择故障代码'}]}
@@ -180,8 +183,8 @@
                 </a-col>
                 <a-col :span="8">
                   <a-form-item :label="`附件`">
-                    <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers" name="file"
-                      :multiple="true" :fileList="fileList" @change="handleChange" :remove="removeFile">
+                    <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers"
+                      name="file" :multiple="true" :fileList="fileList" @change="handleChange" :remove="removeFile">
                       <a-button>
                         <a-icon type="upload" /> 上传文件
                       </a-button>
@@ -252,7 +255,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="6">
-                <a-form-item :label="`故障里程`">
+                <a-form-item :label="`故障里程（Km）`">
                   <v-input allow-clear placeholder="请输入                                       Km" v-decorator="[
                       'milage',
                     ]" />
@@ -362,11 +365,11 @@
         fileList: [], //上传附件列表
         dataFileList: [], //存储到数据库的列表
         BaseContent: '',
-        supplyContent: 'supplyContent',
+        supplyContent: 'ContentDiv',
         DetailBase: true, //基本信息是否展开标识
         DetailSuppely: false, //补充信息是否展开标识
         BaseIcon: "down",
-        SuppelyIcon: "right",
+        SuppelyIcon: "down",
         questionTitle: '创建问题',
         optCounter: '',
         expand: false,
@@ -434,6 +437,7 @@
     },
     computed: {
       isEdit() {
+
         return this.name !== 'create';
       }
     },
@@ -535,12 +539,13 @@
       SuppelyOpen() {
 
         if (this.DetailSuppely) {
-          this.DetailSuppely = false;
-          this.supplyContent = 'supplyContent'
-          this.SuppelyIcon = "right";
-        } else {
-          this.SuppelyIcon = "down";
+
           this.supplyContent = 'ContentDiv'
+          this.SuppelyIcon = "down";
+          this.DetailSuppely = false;
+        } else {
+          this.SuppelyIcon = "right";
+          this.supplyContent = 'supplyContent'
           this.DetailSuppely = true;
         }
       },
@@ -594,6 +599,7 @@
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
       goBack() {
+
         this.$router.push({
           path: this.$route.query.form || '/'
         });
@@ -634,8 +640,8 @@
       },
       handleSubmit(e) {
 
-        // this.form.validateFields((err, fieldsValue) => {
-        // if (!err) {
+        this.form.validateFields((err, fieldsValue) => {
+        if (!err) {
         const data = this.form.getFieldsValue();
 
 
@@ -667,7 +673,7 @@
           let name = 'submit'
 
           let param = {
-            "businessKey": '1169814116058992642',
+            "businessKey": this.businessKey,
             "businessTitle": this.businessTitle,
             "processDefinitionKey": 'BJEV1',
             "subSys": 'irs',
@@ -686,8 +692,8 @@
           });
         })
 
-        // }
-        // });
+        }
+        });
       },
       handleSave() {
 
@@ -709,7 +715,7 @@
           data.productDate = productDate;
 
         }
-        data.fileList=this.dataFileList;
+        data.fileList = this.dataFileList;
 
         if (this.name === 'create') {
 
@@ -747,10 +753,10 @@
           }
           return file;
         });
-        this.fileList=fileList;
-        const status=info.file.status;
+        this.fileList = fileList;
+        const status = info.file.status;
 
-        if (status==='done') {
+        if (status === 'done') {
           if (info.file.response != undefined) {
 
             this.dataFileList.push(info.file.response.data)
@@ -764,13 +770,13 @@
       removeFile(file) {
 
         const index = this.fileList.indexOf(file);
-      const newFileList = this.fileList.slice();
-      newFileList.splice(index, 1);
-      this.fileList = newFileList
-      const newDataList=this.dataFileList.slice();
-      newDataList.splice(index,1);
-      this.dataFileList=newDataList;
-      console.log(this.dataFileList);
+        const newFileList = this.fileList.slice();
+        newFileList.splice(index, 1);
+        this.fileList = newFileList
+        const newDataList = this.dataFileList.slice();
+        newDataList.splice(index, 1);
+        this.dataFileList = newDataList;
+        console.log(this.dataFileList);
       },
       gradeChange(value) {
 
