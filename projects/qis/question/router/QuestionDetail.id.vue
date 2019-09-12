@@ -215,13 +215,13 @@
     </div>
     <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
       <a-card title="问题详情" class="cardTitle">
-        <img src="/static/question/editIcon.png" class="editIcon" @click="editDetail" v-if="!editFlag">
+        <img src="/static/question/editIcon.png" class="editIcon" @click="editDetail">
         <!-- <div class="baseMessage">
           基本信息
         </div> -->
-        <div class="edit" v-if="editFlag">
-        </div>
-        <div class="detailText clearfix" v-if="!editFlag">
+        <!-- <div class="edit" v-if="editFlag">
+        </div> -->
+        <div class="detailText clearfix" >
           <div class="baseMessage">
             基本信息
           </div>
@@ -313,7 +313,7 @@
               </a-form-item>
             </a-col>
             <a-col :span="6">
-              <a-form-item :label="`问题提报日期`">
+              <a-form-item :label="`问题提报日期:`">
                 <p>{{ detailList.createDate }}</p>
               </a-form-item>
             </a-col>
@@ -1066,7 +1066,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'pcaExecTime ',
+                      'pcaExecTime',
 
                     ]"/>
                 </a-form-item>
@@ -1208,7 +1208,7 @@
                 <a-form-item :label="`长期措施实施日期`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
 
-                      'pcaExecTime ',
+                      'pcaExecTime',
 
                      {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                     ]"/>
@@ -1745,7 +1745,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 6, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 3, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1809,7 +1809,7 @@
           icaDescription: '',
           pcaDescription : '',
           pcaPlanTime: null,
-          pcaExecTime : null,
+          pcaExecTime: null,
           estimatedClosureTime: null,
           fileList : '',
           smallBatchValidation : '',
@@ -1898,7 +1898,8 @@
         'getQuestionStep',
         'redistribute',
         'eidtQuestion',
-        'getAnalysis'
+        'getAnalysis',
+        'MeasureDecisionSave'
       ]),
       //是否需要围堵措施
       conActionChange(e) {
@@ -2197,10 +2198,15 @@
         });
       },
       handleSave() {
-        const data = this.form.getFieldsValue();
-        this.addQuestion(data).then(res => {
+
+        const data = this.formDcontent.getFieldsValue();
+        data.issueId=this.id;
+        if(this.stepCurrent==="3"){
+             this.MeasureDecisionSave(data).then(res => {
 
         });
+        }
+
       },
       handleSearch(e) {
         e.preventDefault();
@@ -2230,7 +2236,11 @@
           params: {
             name,
             id
+          },
+          query:{
+             form: this.$route.path
           }
+
         })
       },
       // 是否满足立项条件切换

@@ -19,6 +19,13 @@ export default {
   saveQuestion (store, data) {
     return api.saveQuestion(data);
   },
+  /**
+ * 措施判定保存
+ */
+MeasureDecisionSave(store,data){
+  return api.MeasureDecisionSave(data);
+},
+
    /**
    * 问题提交至工作流
    */

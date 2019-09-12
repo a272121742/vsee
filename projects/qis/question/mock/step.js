@@ -129,3 +129,9 @@ mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => {
 }, {
   timeout: 0
 });
+//措施判定保存
+mock.post('/issue/v1/workflow/actionDraft', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
