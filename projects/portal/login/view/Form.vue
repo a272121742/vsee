@@ -45,10 +45,13 @@
     </a-form-item>
     <!-- 验证码 -->
     <a-form-item>
-      <v-input
+      <captcha-input
         autocomplete="false"
+        allow-clear
         size="large"
+        :url="`/auth/captcha?uuid=${record.uuid}`"
         :placeholder="$t('captcha.placeholder')"
+        @click-captcha="captchaChange"
         v-decorator="['captcha', {
           rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
         }]"
@@ -59,14 +62,7 @@
           type="lock"
           style="color: rgba(0,0,0,.25)"
         />
-        <!-- 验证码组件 -->
-        <captcha 
-          class="captcha"
-          slot="suffix"
-          :url="`/auth/captcha?uuid=${record.uuid}`"
-          @click="captchaChange"
-        />
-      </v-input>
+      </captcha-input>
     </a-form-item>
     <a-form-item>
       <a-checkbox 
@@ -105,6 +101,7 @@ const { mapActions, mapMutations, mapGetters } = createNamespacedHelpers('login'
 export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
+    CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
     Password: () => import('@comp/form/Password.vue'),
     Captcha: () => import('@comp/image/Captcha.vue'),
   },
@@ -175,18 +172,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .ant-spin-nested-loading {
-    margin-right: -12px;
-    /deep/ img {
-      border: 1px solid transparent!important;
-      border-radius: 0 4px 4px 0;
-    }
-  }
-  .captcha {
-    /deep/ img {
-      height: 40px;
-    }
-  }
   .background-white-50 {
     /deep/ input {
       background: rgba(255, 255, 255, 0.5);

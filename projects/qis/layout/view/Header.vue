@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
 export default {
   name: 'Header',
   components: {
@@ -77,7 +76,7 @@ export default {
       this.$store.dispatch('refresh', this);
     },
     logoutHandle () {
-      Cookies.remove('login_token');
+      this.$store && this.$store.dispatch('login/logout');
       window.location.href="/portal";
     }
   }

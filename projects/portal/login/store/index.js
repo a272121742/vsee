@@ -16,7 +16,7 @@ export default {
   },
   mutations: {
     cache (store, userInfo) {
-      Cookies.set('cache_login_info', Base64.encode(JSON.stringify(userInfo)));
+      Cookies.set('cache_login_info', Base64.encode(JSON.stringify(userInfo)), { expires: 7 });
     },
     clean () {
       Cookies.remove('cache_login_info');
@@ -26,5 +26,12 @@ export default {
     login (store, loginInfo) {
       return api.login(loginInfo);
     },
+    logout (store) {
+      /**
+       * TODO: 登出后移除一些关键信息
+       */
+      Cookies.remove('login_token');
+      return api.logout();
+    }
   }
 };

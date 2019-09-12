@@ -30,8 +30,10 @@ export default {
     }
   },
   beforeCreate () {
-    if (this.$store && this.$store.state && this.$store.state.allowLogin) {
+    if (this.$store) {
+      this.$store.dispatch('layout/getMenus');
       this.$store.dispatch('layout/getPermissions');
+      this.$store.dispatch('layout/getUserInfo');
     }
   },
   computed: {

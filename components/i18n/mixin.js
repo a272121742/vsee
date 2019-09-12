@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 export default {
   data () {
     return {
@@ -36,12 +35,13 @@ export default {
   },
   methods: {
     changeLanguage ({ key }, { name }) {
+      // 调用统一接口设置语言
+      this.$store && this.$store.commit('setLanguage', name);
       // 变更i18n的国际化
       this.$i18n && (this.$i18n.locale = key);
       // 变更ant-design UI组件的国际化
       import('ant-design-vue/lib/locale-provider/' + name).then(res => {
         this.$root && this.$root.locale && (this.$root.locale = res.default);
-        Cookies.set('locale', name);
       });
     }
   }

@@ -33,12 +33,10 @@ export default {
     }
   },
   created () {
-    if (this.$store && this.$store.state) {
-      // this.$store.dispatch('layout/getPermissions');
-      Promise.all([
-        this.$store.dispatch('layout/getPermissions'),
-        this.$store.dispatch('layout/getUserInfo')
-      ]);
+    if (this.$store) {
+      this.$store.dispatch('layout/getMenus');
+      this.$store.dispatch('layout/getPermissions');
+      this.$store.dispatch('layout/getUserInfo');
     }
   },
   methods: {

@@ -13,6 +13,9 @@
           v-bind="filterTitle(col)"
         >
           <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
+          <template slot-scope="text, record">
+            {{ text }}
+          </template>
         </a-table-column>
       </template>
 
@@ -83,14 +86,14 @@ const columns = [{
   // TODO: 目前取出来是草稿，后台修改后变为：D0、D1、D2....
   title: 'status',
   dataIndex: 'status',
-  width: 64,
+  width: 100,
   sorter: true,
   scopedSlots: { customRender: 'status' }
 }, {
   // 立项时间
   title: 'projectDate',
   dataIndex: 'projectDate',
-  width: 120,
+  width: 108,
   scopedSlots: { customRender: 'projectDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '';
@@ -99,7 +102,7 @@ const columns = [{
   // 接受日期
   title: 'receiveDate',
   dataIndex: 'receiveDate',
-  width: 120,
+  width: 108,
   scopedSlots: { customRender: 'receiveDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '';

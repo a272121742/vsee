@@ -15,9 +15,6 @@ import i18n from '@lib/auto-i18n.js';
 // 加载权限控制
 // import('@dir/v-permission.js');
 
-import Cookies from 'js-cookie';
-const locale = Cookies.get('locale') || 'zh_CN';
-
 Vue.config.productionTip = false;
 Vue.use(Antd);
 
@@ -65,8 +62,10 @@ new Vue({
     };
   },
   beforeCreate() {
-    import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-      this.$root && this.$root.locale && (this.$root.locale = res.default);
+    this.$store && this.$store.dispatch('loadLanguage').then(locale => {
+      import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
+        this.$set(this, 'locale', res.default)
+      });
     });
   },
   render () {

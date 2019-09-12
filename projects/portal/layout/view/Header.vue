@@ -34,8 +34,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
-
 export default {
   components: {
     Banner: () => import('@comp/head/Banner.vue'),
@@ -46,7 +44,7 @@ export default {
       this.$emit('refresh')
     },
     logoutHandle () {
-      Cookies.remove('login_token');
+      this.$store && this.$store.dispatch('login/logout');
       window.location.href = window.location.href;
     }
   }

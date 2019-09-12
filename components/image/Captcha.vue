@@ -11,13 +11,11 @@ import fetch from '@mix/fetch.js';
 export default {
   mixins: [fetch],
   props: {
-    // 请求弟子
+    // 请求地址
     url: {
       type: String,
       default: ''
     },
-    // 自动刷新时间
-    // 
   },
   data () {
     return {
