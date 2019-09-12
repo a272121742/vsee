@@ -8,7 +8,6 @@ const d = mock({
   'isProject|1': ['0', '1'], //  是否满足立项条件
   dissatisfaction: '@string', // 不满理由
   Remarks: '不满足备注', // 备注
-  Remarks: '', // 备注
   'isNeedIca|1': ['0', '1'], //是否需要围堵措施
   icaDescription: '', //围堵措施
   // D1
@@ -31,7 +30,6 @@ const d = mock({
   pcaPlanTime: '2019-01-01 00:00:00',
   pcaExecTime: '2019-01-01 00:00:00',
   estimatedClosureTime: '2019-01-01 00:00:00',
-  fileList: ['D3file.png', 'D3file.word'],
   smallBatchValidation: '小批量验证',
 
   // D4
@@ -39,7 +37,6 @@ const d = mock({
   icaExecTime : '短期措施实施时间',
   pcaDescription  : 'D4长期措施实施',
   pcaExecTime : 'D4长期措施实施时间',
-  fileList: ['D4.png', 'D3file.word'],
 
   // D5
   description: '效果验证',
@@ -118,6 +115,13 @@ const d = mock({
 
 const db = cdb.link('step', d);
 
+mock.get('/getAll/mock', (id) => {
+  return mock.result({
+    data: db.findById(id)
+  });
+}, {
+  timeout: 0
+});
 
 /**
  *
@@ -134,4 +138,12 @@ mock.post('/issue/v1/workflow/actionDraft', (data) => {
   return mock.result({
     data: db.insert(data)
   });
+});
+
+mock.get('/issue/v1/workflow/issueDefinition?issue_id=', (id) => {
+  return mock.result({
+    data: db.findById(id)
+  });
+}, {
+  timeout: 0
 });

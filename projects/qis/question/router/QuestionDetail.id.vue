@@ -260,17 +260,17 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`问题分类`">
-                <p>{{ detailList.sourceName  }}</p>
+                <p>{{ detailList.sourceName }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题等级`">
-                <p>{{ detailList.gradeName  }}</p>
+                <p>{{ detailList.gradeName }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
               <a-form-item :label="`问题阶段`">
-                <p>{{ detailList.projectPhaseName  }}</p>
+                <p>{{ detailList.projectPhaseName }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -282,7 +282,7 @@
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item :label="`生产基地`">
-                <p>{{ detailList.manufactureBaseName  }}</p>
+                <p>{{ detailList.manufactureBaseName }}</p>
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -425,6 +425,7 @@
     </a-form>
     <a-form class="ant-advanced-search-form" :form="formDcontent">
       <a-card title="问题流程" class="cardTitle">
+        <a-input-number v-model="stepCurrent"></a-input-number>
         <div class="ant-advanced-search-form">
           <div class="step">
             <a-steps :current="stepCurrent">
@@ -519,22 +520,22 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`立项条件`">
-                  <p>{{ stepDetail.isProject==='0'?'是':'否' }}</p>
+                  <p>{{ problemDefinitionData.isProject==='0'?'是':'否' }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
-            <div v-if="stepDetail.isProject==='0'">
+            <div v-if="problemDefinitionData.isProject==='0'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`需要围堵措施`">
-                    <p>{{stepDetail.isNeedIca}}</p>
+                    <p>{{problemDefinitionData.isNeedIca}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row v-if="stepDetail.isNeedIca==='0'">
+              <a-row v-if="problemDefinitionData.isNeedIca==='0'">
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
-                    <p>{{stepDetail.icaDescription}}</p>
+                    <p>{{problemDefinitionData.icaDescription}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -877,20 +878,20 @@
               <span></span>
             </div>
             <div class="backTitle">
-              <p>{{stepDetail.determine==='0'?'直接判定':'需要7钻分析'}}</p>
+              <p>{{issueDefinitionData.determine==='0'?'直接判定':'需要7钻分析'}}</p>
             </div>
-            <div v-if="stepDetail.determine==='0'">
+            <div v-if="issueDefinitionData.determine==='0'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`责任部门`">
-                    <p>{{stepDetail.D1department}}</p>
+                    <p>{{issueDefinitionData.D1department}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`责任人`">
-                    <p>{{stepDetail.D1user}}</p>
+                    <p>{{issueDefinitionData.D1user}}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -899,7 +900,7 @@
                   <a-form-item :label="`附件`" style="height:auto;">
                     <div class="stepFileList clearfix">
                       <ul class="fileList clearfix">
-                        <li v-for="(item,index) in stepDetail.fileList" :title="item" :key="index">
+                        <li v-for="(item,index) in issueDefinitionData.fileList" :title="item" :key="index">
                           <img src="/static/question/file.png">
                           <span>{{ item }}</span>
                         </li>
@@ -910,7 +911,7 @@
                 </a-col>
               </a-row>
             </div>
-            <div v-if="stepDetail.determine==='1'">
+            <div v-if="issueDefinitionData.determine==='1'">
               <div class="processList clearfix">
                 <div class="processTitle">7钻分析责任人:</div>
                 <div class="processUl">
@@ -921,31 +922,31 @@
                     </li>
                     <li class="clearfix">
                       <span>第1钻： 过程是否正确？</span>
-                      <span>{{stepDetail.firstUser}}</span>
+                      <span>{{issueDefinitionData.firstUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第2钻： 工具是否正确？</span>
-                      <span>{{stepDetail.firstUser}}</span>
+                      <span>{{issueDefinitionData.firstUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第3钻： 物料是否正确？</span>
-                      <span>{{stepDetail.firstUser}}</span>
+                      <span>{{issueDefinitionData.firstUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第4钻： 物料规格检测？</span>
-                      <span>{{stepDetail.fourthUser}}</span>
+                      <span>{{issueDefinitionData.fourthUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第5钻： 过程变更？</span>
-                      <span>{{stepDetail.FifthUser}}</span>
+                      <span>{{issueDefinitionData.FifthUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第6钻： 部件变更？</span>
-                      <span>{{stepDetail.sixthUser}}</span>
+                      <span>{{issueDefinitionData.sixthUser}}</span>
                     </li>
                     <li class="clearfix">
                       <span>第7钻： 是否是极端复杂问题？</span>
-                      <span>{{stepDetail.seventhUser}}</span>
+                      <span>{{issueDefinitionData.seventhUser}}</span>
                     </li>
                   </ul>
                 </div>
@@ -1066,7 +1067,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
                   <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'pcaExecTime',
+                      'pcaExecTime ',
 
                     ]"/>
                 </a-form-item>
@@ -1092,7 +1093,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
 
-                <p>{{ stepDetail.icaDescription }}</p>
+                  <p>{{ stepDetail.icaDescription }}</p>
 
 
                 </a-form-item>
@@ -1101,7 +1102,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.pcaDescription  }}</p>
+                  <p>{{ stepDetail.pcaDescription }}</p>
 
                 </a-form-item>
               </a-col>
@@ -1117,7 +1118,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施验证计划日期:`">
-                  <p>{{ stepDetail.pcaExecTime  }}</p>
+                  <p>{{ stepDetail.pcaExecTime }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1224,14 +1225,14 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期效果`">
-                  <p>{{ stepDetail.icaExecDescription  }}</p>
+                  <p>{{ stepDetail.icaExecDescription }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-              <p>{{ stepDetail.icaExecTime  }}</p>
+                  <p>{{ stepDetail.icaExecTime }}</p>
 
                 </a-form-item>
               </a-col>
@@ -1266,7 +1267,7 @@
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施日期`">
 
-                  <p>{{ stepDetail.pcaExecTime  }}</p>
+                  <p>{{ stepDetail.pcaExecTime }}</p>
 
                 </a-form-item>
               </a-col>
@@ -1291,12 +1292,12 @@
             <a-row style="margin-left:220px;">
               <a-col :span="8">
                 <a-form-item :label="`断点VIN`">
-                  <p>{{ stepDetail.breakpointVin  }}</p>
+                  <p>{{ stepDetail.breakpointVin }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="10">
                 <a-form-item :label="`断点时间`">
-                  <p>{{ stepDetail.breakpointDate  }}</p>
+                  <p>{{ stepDetail.breakpointDate }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1434,7 +1435,8 @@
                       </span>
                     </a-table>
                     <div style="text-align:center;">
-                      <a-icon type="plus-circle" /> 添加新的更新文件
+                      <a-icon type="plus-circle"/>
+                      添加新的更新文件
                     </div>
                   </div>
                 </a-form-item>
@@ -1536,51 +1538,53 @@
   const {
     mapActions
   } = createNamespacedHelpers('question');
-  const columns = [{
-    title: '序号',
-    dataIndex: 'no',
-    scopedSlots: {
-      customRender: 'no'
-    }
-  }, {
-    title: '附件名称',
-    dataIndex: 'name',
-    scopedSlots: {
-      customRender: 'name'
-    }
-  }, {
-    title: '上传时间',
-    dataIndex: 'uploadTime',
-    scopedSlots: {
-      customRender: 'uploadTime'
-    }
-  }, {
-    title: '上传人',
-    dataIndex: 'uploadUser',
-    scopedSlots: {
-      customRender: 'uploadUser'
-    }
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {
-      customRender: 'operation'
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'no',
+      scopedSlots: {
+        customRender: 'no'
+      }
+    }, {
+      title: '附件名称',
+      dataIndex: 'name',
+      scopedSlots: {
+        customRender: 'name'
+      }
+    }, {
+      title: '上传时间',
+      dataIndex: 'uploadTime',
+      scopedSlots: {
+        customRender: 'uploadTime'
+      }
+    }, {
+      title: '上传人',
+      dataIndex: 'uploadUser',
+      scopedSlots: {
+        customRender: 'uploadUser'
+      }
+    }, {
+      title: '操作',
+      dataIndex: 'operation',
+      scopedSlots: {
+        customRender: 'operation'
+      },
+      width: 80
+    }];
+  const columnsRecord = [
+    {
+      title: '操作记录',
+      dataIndex: 'recode',
+      scopedSlots: {
+        customRender: 'recode'
+      }
+    }, {
+      title: '解决进度',
+      dataIndex: 'progress',
+      scopedSlots: {
+        customRender: 'progress'
+      }
     },
-    width: 80
-  }];
-  const columnsRecord = [{
-    title: '操作记录',
-    dataIndex: 'recode',
-    scopedSlots: {
-      customRender: 'recode'
-    }
-  }, {
-    title: '解决进度',
-    dataIndex: 'progress',
-    scopedSlots: {
-      customRender: 'progress'
-    }
-  },
     {
       title: '变更人',
       dataIndex: 'user',
@@ -1604,22 +1608,23 @@
       width: 80
     }
   ];
-  const columnsAnalysis = [{
+  const columnsAnalysis = [
+    {
 
-    title: '标准要求',
-    dataIndex: 'Standard',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'Standard'
-    }
-  }, {
-    title: '实际情况',
-    dataIndex: 'reality',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'reality'
-    }
-  },
+      title: '标准要求',
+      dataIndex: 'Standard',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'Standard'
+      }
+    }, {
+      title: '实际情况',
+      dataIndex: 'reality',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'reality'
+      }
+    },
     {
       title: '结论',
       dataIndex: 'conclusion',
@@ -1645,22 +1650,23 @@
       width: 80
     }
   ];
-  const columnsUpdate = [{
+  const columnsUpdate = [
+    {
 
-    title: '文件名称',
-    dataIndex: 'fileName',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'fileName'
-    }
-  }, {
-    title: '是否更新',
-    dataIndex: 'isUpdate',
-    align: 'center',
-    scopedSlots: {
-      customRender: 'isUpdate'
-    }
-  },
+      title: '文件名称',
+      dataIndex: 'fileName',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'fileName'
+      }
+    }, {
+      title: '是否更新',
+      dataIndex: 'isUpdate',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'isUpdate'
+      }
+    },
     {
       title: '更新内容',
       dataIndex: 'updateContent',
@@ -1694,6 +1700,7 @@
     props: ['id'],
     data() {
       return {
+        userId: this.$store.getters.getUser(),//用户id
         // 再分配弹框
         ModalText: 'Content of the modal',
         RejectTrue: true,
@@ -1714,6 +1721,8 @@
         dataFile: [], // 附件
         dataRecord: [], // 操作记录
         stepDetail: [], // 某个问题的步骤详细信息
+        problemDefinitionData: {},
+        issueDefinitionData: {},
         editFlag: false,
         expand: false,
         form: null,
@@ -1745,7 +1754,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 3, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 0, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1807,28 +1816,28 @@
           D2file: [],
           // D3
           icaDescription: '',
-          pcaDescription : '',
+          pcaDescription: '',
           pcaPlanTime: null,
           pcaExecTime: null,
           estimatedClosureTime: null,
-          fileList : '',
-          smallBatchValidation : '',
+          fileList: '',
+          smallBatchValidation: '',
           // D4
-          icaExecDescription : '',
-          icaExecTime : null,
-          pcaDescription  : null,
-          pcaExecTime : null,
+          icaExecDescription: '',
+          icaExecTime: null,
+          pcaDescription: null,
+          pcaExecTime: null,
 
 
           // D5
           description: '',
-          breakpointVin : '',
-          breakpointDate : null,
+          breakpointVin: '',
+          breakpointDate: null,
 
           // D6
           recurrencePrevention: '1',
-          isClose : '1',
-          reason : ''
+          isClose: '1',
+          reason: ''
         },
         // 再分配
 
@@ -1895,9 +1904,16 @@
         'updateQuestion',
         'getFilePage',
         'getRecord',
+        'problemDefinition',
+        'issueDefinition',
         'getQuestionStep',
         'redistribute',
         'eidtQuestion',
+        'getAnalysis',
+        'issueDefinitionAdd',
+        'rootCauseAdd',
+        'rootCause',
+        'problemDefinitionAdd',
         'getAnalysis',
         'MeasureDecisionSave'
       ]),
@@ -2101,14 +2117,23 @@
 
           this.dataRecord = res.list;
         });
-        this.getQuestionStepAll()
+        this.getQuestionStepAll(this.id)
       },
-      getQuestionStepAll(){
+      getQuestionStepAll(id) {
         this.getQuestionStep(this.id).then(res => {
           this.stepDetail = res;
           this.updateData = res.updateList;
 
         });
+        this.problemDefinition(id).then(res => {
+          this.problemDefinitionData = res;
+          this.updateData = res.updateList;
+        });
+        this.issueDefinition(id).then(res => {
+          this.issueDefinitionData = res;
+        });
+
+
       },
       // 再分配弹框
       showModal() {
@@ -2171,11 +2196,29 @@
         }
       },
       handleSubmit(e) {
+        this.handleSave()
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
             const data = this.formDcontent.getFieldsValue();
-            let name = 'submit';
-            this.addQuestion(data).then(res => {
+            let transData = {
+              businessKey: this.id,//问题id
+              businessTitle: data.title,//问题title
+              processDefinitionKey: "BJEV1",//BJEV1  固定值
+              subSys: "irs",  //  子系统编号
+              taskId: null,//  任务id
+              userId: this.userId,//  当前用户id
+              variables: {
+                isDirectSerious: '0',
+                isPass: '0',
+                isQZEnd: '0',
+                isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
+                isQZ: '0',
+                isCheckError: '0',
+                isLeaderSign: '0',
+                isItem: data.isProject
+              }
+            }
+            this.workFlowSubmit(transData).then(res => {
               this.$message.success('提交成功');
               //隐藏7钻责任人模块
               this.userFlag = false;
@@ -2236,11 +2279,7 @@
           params: {
             name,
             id
-          },
-          query:{
-             form: this.$route.path
           }
-
         })
       },
       // 是否满足立项条件切换
