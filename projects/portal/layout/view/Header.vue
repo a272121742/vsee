@@ -20,7 +20,7 @@
                 <a @click.stop.prevent="refresh">刷新</a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a href="http://www.alipay.com/">编辑信息</a>
+                <a href="javascript:;">编辑信息</a>
               </a-menu-item>
               <a-menu-item key="2">
                 <a @click="logoutHandle">退出系统</a>

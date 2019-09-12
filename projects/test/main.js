@@ -11,7 +11,7 @@ import Vue from 'vue';
 
 // 加载皮肤组件
 import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css'
+import 'ant-design-vue/dist/antd.less'
 
 // 加载本地路由
 import { router } from '@lib/auto-router.js';
