@@ -221,7 +221,7 @@
         </div> -->
         <!-- <div class="edit" v-if="editFlag">
         </div> -->
-        <div class="detailText clearfix" >
+        <div class="detailText clearfix">
           <div class="baseMessage">
             基本信息
           </div>
@@ -349,18 +349,18 @@
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`祸首件`">
-                  <p>{{ detailList.firstCausePartName  }}</p>
+                  <p>{{ detailList.firstCausePartName }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`零件号`">
-                  <p>{{ detailList.partName  }}</p>
+                  <p>{{ detailList.partName }}</p>
                 </a-form-item>
               </a-col>
 
               <a-col :span="6">
                 <a-form-item :label="`供应商名称`">
-                  <p>{{ detailList.supplierName  }}</p>
+                  <p>{{ detailList.supplierName }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -389,7 +389,7 @@
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`维修网点`">
-                  <p>{{ detailList.maintenanceStation  }}</p>
+                  <p>{{ detailList.maintenanceStation }}</p>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
@@ -1493,14 +1493,14 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否同意关闭`">
-                  <p>{{ stepDetail.isClose  }}</p>
+                  <p>{{ stepDetail.isClose }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`不同意关闭理由`">
-                  <p>{{ stepDetail.reason  }}</p>
+                  <p>{{ stepDetail.reason }}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -2241,13 +2241,20 @@
         });
       },
       handleSave() {
-
         const data = this.formDcontent.getFieldsValue();
-        data.issueId=this.id;
-        if(this.stepCurrent==="3"){
-             this.MeasureDecisionSave(data).then(res => {
+        data.issueId = this.id;
+        data.optCounter = this.detailList.optCounter ? this.detailList.optCounter : 1
+        console.info(data)
+        console.info(this.stepCurrent)
+        if (this.stepCurrent === 0) {
+          this.problemDefinitionAdd(data).then(res => {
+            console.info(res)
+          })
+        }
+        if (this.stepCurrent === "3") {
+          this.MeasureDecisionSave(data).then(res => {
 
-        });
+          });
         }
 
       },
