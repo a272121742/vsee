@@ -1,7 +1,9 @@
 <template>
   <a-layout id="components-layout-top-side">
     <!-- 头部，固定 -->
-    <Header class="shadow-head"></Header>
+    <a-affix>
+      <Header class="shadow-head"></Header>
+    </a-affix>
     <!-- 内容区域 -->
     <a-spin :spinning="refreshing">
       <a-layout-content

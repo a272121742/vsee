@@ -62,6 +62,11 @@
     "please_input": "请输入",
     "please_select": "请选择"
   },
+  "pagination": {
+    "total": "共",
+    "item": "项",
+    "page": "页"
+  },
   "issue_entity": {
     "name1": "问题",
     "name2": "问题管理"

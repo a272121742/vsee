@@ -1,44 +1,42 @@
 <template>
-  <div>
-    <a-table
-      row-key="id"
-      :data-source="data"
-      :pagination="{total: total, current: page}"
-      v-on="$listeners"
-    >
-      <template v-for="col in columns">
-        <a-table-column
-          v-if="!col.invisible"
-          :key="col.title"
-          v-bind="filterTitle(col)"
-        >
-          <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
-          <template slot-scope="text, record">
-            {{ text }}
-          </template>
-        </a-table-column>
-      </template>
-
+  <a-table
+    row-key="id"
+    :data-source="[...data, ...fill]"
+    :pagination="{total: total, current: page, showSizeChanger: true, pageSizeOptions: ['10', '20', '50'], showTotal}"
+    v-on="$listeners"
+  >
+    <template v-for="col in columns">
       <a-table-column
-        key="action"
+        v-if="!col.invisible"
+        :key="col.title"
+        v-bind="filterTitle(col)"
       >
-        <template #title>
-          <col-provider
-            v-if="url && id"
-            :url="url"
-            :id="id"
-            :columns="columns"
-            :transform="$t.bind(_self)"
-            :mapping="mapping"
-            locale-path="issue"
-          ></col-provider>
-        </template>
-        <template slot-scope="text, record, index">
-          <slot name="action" v-bind="record"></slot>
+        <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
+        <template slot-scope="text, record">
+          {{ text }}
         </template>
       </a-table-column>
-    </a-table>
-  </div>
+    </template>
+
+    <a-table-column
+      key="action"
+    >
+      <template #title>
+        <col-provider
+          v-if="url && id"
+          :url="url"
+          :id="id"
+          :columns="columns"
+          :transform="$t.bind(_self)"
+          :mapping="mapping"
+          locale-path="issue"
+        ></col-provider>
+      </template>
+      <template slot-scope="text, record, index">
+        <slot name="action" v-bind="record"></slot>
+      </template>
+    </a-table-column>
+  </a-table>
   
 </template>
 
@@ -134,6 +132,9 @@ export default {
       type: Number,
       default: 1
     },
+    /**
+     * 列更新地址
+     */
     colUpdateUrl: {
       type: String,
       default: ''
@@ -145,6 +146,10 @@ export default {
        * 列信息
        */
       columns,
+      /**
+       * 自填充信息
+       */
+      fill: [],
     }
   },
   computed: {
@@ -155,10 +160,14 @@ export default {
       return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
     }
   },
+  // updated () {
+  //   const pageSize = this.$refs.table.$children[0].$children[0].$children[1].pageSize;
+  //   console.log(this.$refs.table.$children[0].$children[0].$children[1].pageSize);
+  //   if (this.data.length < pageSize) {
+  //     this.$set(this, 'fill', new Array(pageSize - this.data.length).map(_ => ({id: Date.now()})));
+  //   }
+  // },
   methods: {
-    // handleTableChange ({current = 1, pageSize = 10}, filters, {order = '', field = ''}) {
-    //   this.$emit('change', {page: current, limit: pageSize, order, orderField: field});
-    // },
     mapping (cols) {
       this.columns = cols;
     },
@@ -166,11 +175,35 @@ export default {
       const newCol = clone(col);
       delete newCol.title;
       return newCol;
-    }
+    },
+    showTotal (total) {
+      if (this.data.length) {
+        const totalText = this.$t('pagination.total');
+        const pageCount = Math.ceil(total / this.data.length);
+        const pageText = this.$t('pagination.page')
+        return [totalText, pageCount, pageText].join(' ');
+      }
+      return '';
+    },
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+  /deep/ .ant-pagination {
+    display: inline-flex;
+    li.ant-pagination-item,  
+    li.ant-pagination-prev, 
+    li.ant-pagination-next,
+    li.ant-pagination-jump-next {
+      order: 1;
+    }
+    li.ant-pagination-total-text {
+      order: 2;
+      margin: 0 -6px 0 12px;
+    }
+    li.ant-pagination-options {
+      order: 3;
+    }
+  }
 </style>
