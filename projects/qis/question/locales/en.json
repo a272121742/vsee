@@ -62,6 +62,11 @@
     "please_input": "please input ",
     "please_select": "please select "
   },
+  "pagination": {
+    "total": "total",
+    "item": "items",
+    "page": "pages"
+  },
   "issue_entity": {
     "name1": "issue",
     "name2": "issue"
