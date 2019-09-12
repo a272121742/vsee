@@ -11,15 +11,15 @@ const d = mock({
   'isNeedIca|1': ['0', '1'], //是否需要围堵措施
   icaDescription: '', //围堵措施
   // D1
-  D1department: '质量部', //责任部门
-  D1user: '张三', //责任人
-  "determine|1": ['0','1'], //判定
+  owerDeptLv1: '质量部', //责任部门
+  champion: '张三', //责任人
+  "type|1": ['0','1'], //判定
   fileList: ['1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg', '1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg'],
-  firstUser: '张三',
-  fourthUser: '李四',
-  FifthUser: '王五',
-  sixthUser: '李六',
-  seventhUser: '王七',
+  zuanUser1: '张三',
+  zuanUser4: '李四',
+  zuanUser5: '王五',
+  zuanUser6: '李六',
+  zuanUser7: '王七',
   //D2
   rootCauseDescription: '根本原因根本原因根本原因根本原因根本原因根本原因根本原因',
   D2file: ['1.jpg', '附件一.excel', '附件附件附件附件2.word', '2.jpg'],
