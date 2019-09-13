@@ -235,10 +235,11 @@ export default {
      //查看详情
     goToDetail(record){
 
+
       this.$router.push({
         name: 'QuestionDetail',
         params: {
-         id: record.id,
+         id: record,
         },
         query: {
           form: this.$route.path
