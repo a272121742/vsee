@@ -11,6 +11,7 @@ import { router } from '@lib/auto-router.js';
 import store from '@lib/auto-store.js';
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
+import moment from 'moment';
 
 // 加载权限控制
 import('@dir/v-permission.js');
@@ -23,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
   const token = store.getters.getToken();
   router.beforeEach((to, from, next) => {
     if (!token) {
-      window.location.href = '/portal';
+      window.location.href = `/${process.env.project}`;
     }
     next();
   });
@@ -43,8 +44,13 @@ if (process.env.NODE_ENV === 'production') {
     beforeCreate () {
       this.$store && this.$store.dispatch('loadLanguage').then(locale => {
         import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-          this.$set(this, 'locale', res.default)
+          this.$set(this, 'locale', res.default);
         });
+        if (locale !== 'zh_CN') {
+          moment.locale('en');
+        } else {
+          moment.locale('zh-cn');
+        }
       });
     },
     render () {

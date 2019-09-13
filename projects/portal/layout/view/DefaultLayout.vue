@@ -26,9 +26,9 @@ export default {
   components: {
     Header: () => import('./Header.vue')
   },
-  data () {
-    return {
-      refreshing: false
+  computed: {
+    refreshing () {
+      return this.$store.state.refresh;
     }
   },
   beforeCreate () {
@@ -38,19 +38,6 @@ export default {
       this.$store.dispatch('layout/getUserInfo');
     }
   },
-  computed: {
-  },
-  methods: {
-    refresh (next) {
-      if (!this.refreshing) {
-        this.refreshing = true;
-        this.$nextTick(() => {
-          this.refreshing = false;
-          next && next();
-        });
-      }
-    },
-  }
 };
 </script>
 

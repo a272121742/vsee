@@ -41,11 +41,10 @@ export default {
   },
   methods: {
     refresh () {
-      this.$emit('refresh')
+      this.$store.dispatch('refresh');
     },
     logoutHandle () {
-      this.$store && this.$store.dispatch('login/logout');
-      window.location.href = window.location.href;
+      this.$store.dispatch('login/logout');
     }
   }
 }

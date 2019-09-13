@@ -2,10 +2,16 @@
   "Home": "Home",
   "List": "My Question",
   "Search": "AdvanceSearch",
+  "user_action": {
+    "refresh": "refresh",
+    "editinfo": "edit info",
+    "logout": "logout"
+  },
   "Server": {
     "ERROR": {
       "-1": "error code undefined",
       "0": "success",
+      "401": "Unauthorized",
       "10007": "captcha error"
     }
   }

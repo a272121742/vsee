@@ -28,11 +28,20 @@
               icon="user"
             />
             <a-menu slot="overlay">
+              <a-menu-item key="2">
+                <a @click.stop.prevent="refresh">
+                  {{ $t('user_action.refresh')}}
+                </a>
+              </a-menu-item>
               <a-menu-item key="0">
-                <a href="javascript:;">编辑信息</a>
+                <a href="javascript:;">
+                  {{ $t('user_action.editinfo')}}
+                </a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a @click.stop.prevent="logoutHandle">退出系统</a>
+                <a @click.stop.prevent="logoutHandle">
+                  {{ $t('user_action.logout')}}
+                </a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -72,11 +81,11 @@ export default {
       this.$router.push({ path });
     },
     refresh () {
-      // this.$emit('refresh')
-      this.$store.dispatch('refresh', this);
+      this.$store.dispatch('refresh');
     },
     logoutHandle () {
       this.$store && this.$store.dispatch('login/logout');
+      // TODO: 做好多应用重定向
       window.location.href="/portal";
     }
   }

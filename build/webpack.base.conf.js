@@ -50,6 +50,7 @@ const exportConfig = {
       '@': resolve('./'),
       // 当前项目路径
       '@@': resolve('projects/' + utils.project),
+      '@@cmd': resolve('projects/' + utils.project + '/commond'),
       '@comp': resolve('components'),
       '@lib': resolve('lib'),
       '@mix': resolve('lib/mixins'),

@@ -1,6 +1,6 @@
 <template>
   <a-form
-    v-if="!hide"
+    v-show="!hide"
     :form="form"
         layout="inline"
       >
@@ -97,6 +97,7 @@
 
 <script>
 import {createFormFields, autoUpdateFileds} from '@util/formhelper.js';
+import {transform1, transform2} from '@@cmd/model.js';
 
 export default {
   components: {
@@ -110,18 +111,14 @@ export default {
   },
   data () {
     return {
-      advanced: false,
       form: null,
-      record: {
-
-      }
+      record: {}
     }
   },
   watch: {
-    advanced (value) {
+    hide (value) {
       if (value) {
-        this.form.updateFields(this.mapPropsToFields());
-        const record = this.form.getFieldsValue();
+        this.resetSearch();
       }
     }
   },
@@ -138,7 +135,6 @@ export default {
     mapPropsToFields () {
       return createFormFields(this, [
         'vehicleModelId', 'grade', 'source'
-        
       ], 'record');
     },
     /**
@@ -160,26 +156,15 @@ export default {
      * 取消搜索
      */
     cancelSearch () {
+      this.resetSearch();
       this.$emit('hidden');
     },
     /**
      * 转换net-select获取的参数
      */
-    transformField(list) {
-      return list.map((item) => ({
-        value: item.id,
-        label: item.name
-      }));
-    },
-    transformGrade (list) {
-      return list.map((item) => ({
-        value: item.id,
-        label: item.dictName
-      }));
-    },
-    transformSource (list) {
-      return this.transformGrade(list);
-    },
+    transformField: transform1,
+    transformGrade: transform2,
+    transformSource: transform2,
   }
 }
 </script>

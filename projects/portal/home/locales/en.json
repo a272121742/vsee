@@ -1,5 +1,5 @@
 {
-  "Home": "Home",
-  "MyQuestion": "My Question",
-  "AdvanceSearch": "AdvanceSearch"
+  "link": {
+    "more": "more"
+  }
 }
