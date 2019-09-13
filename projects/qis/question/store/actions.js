@@ -157,5 +157,16 @@ closeDetail(store,issueId){
    */
   getIssuePage(store, param) {
     return api.getIssuePage(param);
-  }
+  },
+  //原因分析保存
+ //问题定义保存
+ analysisSave(store, data) {
+  return api.analysisSave(data);
+},
+//原因分析详情
+analysisDetail(store, id){
+  return api.analysisDetail(id);
+}
 };
+
+
