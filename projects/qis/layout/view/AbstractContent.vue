@@ -41,6 +41,7 @@ export default {
   // 头部阴影
   .shadow-head {
     box-shadow: 0 0 5px #888;
+    border-bottom: 1px solid #e8e8e8;
   }
   .shadow-box {
     background: #FFF;

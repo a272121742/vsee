@@ -8,6 +8,21 @@
   <title>BEJV</title>
   <link rel="icon" href="./logo-symbol.png" type="image/x-icon">
   <style>
+    @font-face {
+      font-family: "SYHT";
+      /* src: url('static/font/SourceHanSansCN-Bold.otf'); 太重 */
+      /* src: url('/static/font/SourceHanSansCN-ExtraLight.otf');  太亮*/
+      /* src: url('/static/font/SourceHanSansCN-Heavy.otf');太重 */
+      /* src: url('/static/font/SourceHanSansCN-Light.otf');太亮 */
+      src: url('/static/font/SourceHanSansCN-Medium.otf'); // 正常
+      /* src: url('/static/font/SourceHanSansCN-Normal.otf');略微细 */
+      /* src: url('/static/font/SourceHanSansCN-Regular.otf');普通 */
+      font-weight: normal;
+      font-style: normal;
+    }
+    * {
+      font-family: "SYHT"
+    }
     #loader-wrapper {
       position: fixed;
       top: 0;
@@ -123,9 +138,9 @@
     #loader-wrapper .loader-section {
       position: fixed;
       top: 0;
-      width: 51%;
+      width: 50%;
       height: 100%;
-      background: #7171C6;
+      background: rgba(0,151,224, 0.9);
       /* Old browsers */
       z-index: 1000;
       -webkit-transform: translateX(0);

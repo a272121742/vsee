@@ -2486,7 +2486,10 @@
           params: {
             name,
             id
-          }
+          },
+          query: {
+          form: this.$route.path
+        }
         })
       },
       // 是否满足立项条件切换
