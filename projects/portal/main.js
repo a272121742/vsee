@@ -23,7 +23,7 @@ if (store.state.allowLogin) {
     // 是否跳转到登陆界面
     const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
     // 是否已经登陆
-    const isLogin = (store.state.login && store.state.login.isLogin);
+    const isLogin = store.state.isLogin;
     // 已经通过登陆时，如果进入的不是登陆，直接放行
     if (isLogin && !toLogin) {
       next();

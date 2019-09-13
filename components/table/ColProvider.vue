@@ -28,6 +28,7 @@
     <a-popover
       placement="bottom"
       trigger="click"
+      v-model="visible"
       :auto-adjust-overflow="false"
       :arrow-point-at-center="true"
     >
@@ -147,6 +148,7 @@ export default {
   },
   data () {
     return {
+      visible: false,
       /**
        * 时间触发器
        */
@@ -215,6 +217,7 @@ export default {
      */
     hide () {
       this.tc = Date.now();
+      this.visible = false;
     },
     /**
      * 切换列是否显示

@@ -69,4 +69,7 @@ effectDetail:(issueId)=>$.get('/issue/v1/workflow/validation?issueId='+issueId),
   closeSave:(data)=>$.post('/issue/v1/workflow/issueClose',data),
  //问题关闭查询
  closeDetail:(issueId)=>$.get('/issue/v1/workflow/issueClose?issueId='+issueId),
+ //原因分析保存
+ analysisSave:(data)=>$.post('/issue/v1/workflow/rootCause',data),
+ analysisDetail:(issueId)=>$.get('/issue/v1/workflow/rootCause?issue_id='+issueId)
 };

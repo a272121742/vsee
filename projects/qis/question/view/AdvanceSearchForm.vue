@@ -30,7 +30,7 @@
             allow-clear
             url="/masterdata/v1/vehiclemodel"
             :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
-            :transform="transformField" 
+            :transform="transformVehicleModelName" 
             v-decorator="['vehicleModelId']"
           />
         </a-form-item>
@@ -45,7 +45,7 @@
             allow-clear
             url="/issue/v1/faultcategory?p_id=0"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
-            :transform="transformField" 
+            :transform="transformFaultTreeIds1" 
             @change="faultTreeIds1Change"
             v-decorator="['faultTreeIds1']"
           />
@@ -64,7 +64,7 @@
             :disabled="!record.faultTreeIds1"
             :delay="!record.faultTreeIds1"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
-            :transform="transformField" 
+            :transform="transformFaultTreeIds2" 
             @change="faultTreeIds2Change"
             v-decorator="['faultTreeIds2']"
           />
@@ -83,7 +83,7 @@
             :disabled="!record.faultTreeIds2"
             :delay="!record.faultTreeIds2"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
-            :transform="transformField" 
+            :transform="transformFaultTreeIds3" 
             v-decorator="['faultTreeIds3']"
           />
         </a-form-item>
@@ -160,7 +160,7 @@
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.firstCausePart')" 
             url="/masterdata/v1/part"
-            :transform="transformField"
+            :transform="transformFirstCausePart"
             v-decorator="['firstCausePart']"
           />
         </a-form-item>
@@ -175,7 +175,7 @@
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.supplierId')" 
             url="/masterdata/v1/supplier"
-            :transform="transformField"
+            :transform="transformSupplierId"
             v-decorator="['supplierId']"
           />
         </a-form-item>
@@ -232,6 +232,7 @@
 
 <script>
 import {createFormFields, autoUpdateFileds} from '@util/formhelper.js';
+import {transform1, transform2, transform3} from '@@cmd/model.js';
 
 export default {
   components: {
@@ -287,33 +288,6 @@ export default {
       this.form.updateFields(this.mapPropsToFields());
       this.$emit('change', this.record);
     },
-    /**
-     * 转换net-select获取的参数
-     */
-    transformField(list) {
-      return list.map((item) => ({
-        value: item.id,
-        label: item.name
-      }));
-    },
-    transformGrade (list) {
-      return list.map((item) => ({
-        value: item.id,
-        label: item.dictName
-      }));
-    },
-    transformPhase (list) {
-      return this.transformGrade(list);
-    },
-    transformSource (list) {
-      return this.transformGrade(list);
-    },
-    transformManufactureBase (list) {
-      return list.map((item) => ({
-        value: item.id,
-        label: item.nameZh
-      }));
-    },
     faultTreeIds1Change (value, option) {
       if (!value) {
         this.record.faultTreeIds2 = undefined;
@@ -325,9 +299,20 @@ export default {
         this.record.faultTreeIds3 = undefined;
       }
     },
-    // vehicleModelIdChange (value, option) {
-    //   console.log(value, option);
-    // }
+    /**
+     * 转换net-select获取的参数
+     */
+    transformVehicleModelName: transform1,
+    transformFaultTreeIds1: transform1,
+    transformFaultTreeIds2: transform1,
+    transformFaultTreeIds3: transform1,
+    transformFirstCausePart: transform1,
+    transformSupplierId: transform1,
+    transformGrade: transform2,
+    transformPhase: transform2,
+    transformSource: transform2,
+    transformManufactureBase: transform3,
+    
   }
 }
 </script>

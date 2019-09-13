@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     refreshing () {
-      return this.$store.state.contentRefresh;
+      return this.$store.state.refresh;
     }
   },
   created () {

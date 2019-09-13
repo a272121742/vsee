@@ -1,13 +1,13 @@
 <template>
   <a-form
     :form="form"
-    @submit.stop.prevent="handleSubmit"
+    @submit.stop.self.prevent="handleSubmit"
   >
     <!-- 用户名 -->
     <a-form-item>
       <v-input
         allow-clear
-        autocomplete="false"
+        autocomplete="off"
         size="large"
         :placeholder="$t('username.placeholder')"
         v-decorator="['username', {
@@ -26,7 +26,7 @@
     <!-- 密码 -->
     <a-form-item>
       <password 
-        autocomplete="false"
+        autocomplete="off"
         allow-clear
         size="large"
         :placeholder="$t('password.placeholder')"
@@ -46,7 +46,7 @@
     <!-- 验证码 -->
     <a-form-item>
       <captcha-input
-        autocomplete="false"
+        autocomplete="off"
         allow-clear
         size="large"
         :url="`/auth/captcha?uuid=${record.uuid}`"
@@ -96,7 +96,7 @@ import { getUUID } from '@util/datahelper.js';
 import { createNamespacedHelpers } from 'vuex';
 import { createFormFields } from '@util/formhelper.js';
 
-const { mapActions, mapMutations, mapGetters } = createNamespacedHelpers('login');
+const { mapActions } = createNamespacedHelpers('login');
 
 export default {
   components: {
@@ -106,15 +106,23 @@ export default {
     Captcha: () => import('@comp/image/Captcha.vue'),
   },
   data () {
-    const vm = this;
     return {
+      /**
+       * 表单
+       */
       form: null,
+      /**
+       * 表单数据
+       */
       record: {
         username: null,
         password: null,
         captcha: null,
         uuid: getUUID(),
       },
+      /**
+       * 是否记住密码
+       */
       remember: false,
     }
   },
@@ -124,34 +132,44 @@ export default {
   },
   methods: {
     ...mapActions(['login']),
-    ...mapMutations(['cache', 'clean']),
-    ...mapGetters(['getCache']),
+    /**
+     * 还原用户缓存
+     */
     recovery () {
-      const cache = this.getCache();
+      const cache = this.$store.getters.getLoginCache();
       if (cache) {
         this.remember = true;
         this.record.username = cache.username;
         this.record.password = cache.password;
       }
     },
+    /**
+     * 提交数据
+     */
     handleSubmit (e) {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
           this.login(loginInfo).then(res => {
             if (res.token) {
-              this.$router.push({path: '/'});
+              console.log(this.$route, this.$router);
+              const goPage = this.$route.query.redirect || '/';
+              if (this.$router.matcher.match(goPage).name === '404') {
+                this.$router.push({path: '/'});
+              } else {
+                this.$router.push({path: this.$route.query.redirect});
+              }
+              // this.$router.push({path: '/'});
               // window.location.href="/";
               if (this.remember) {
-                this.cache(loginInfo);
+                this.$store.commit('cacheLoginInfo', loginInfo);
               } else {
-                this.clean();
+                this.$store.commit('cleanLoginInfo', loginInfo);
               }
             }
           }).catch(err => {
             this.$message.error(this.$t(err));
-          }).finally(_ => {
             this.captchaChange();
-          });
+          })
         }
       });
     },

@@ -1,8 +1,8 @@
 <template>
   <a-table
     row-key="id"
-    :data-source="[...data, ...fill]"
-    :pagination="{total: total, current: page, showSizeChanger: true, pageSizeOptions: ['10', '20', '50'], showTotal}"
+    :data-source="data"
+    :pagination="{total: total, current: page, pageSize, showSizeChanger: true, pageSizeOptions: ['10', '20', '50'], showTotal}"
     v-on="$listeners"
   >
     <template v-for="col in columns">
@@ -42,70 +42,8 @@
 
 <script>
 import {clone} from 'ramda';
-import moment from 'moment';
-const columns = [{
-  // 问题编号
-  title: 'code',
-  dataIndex: 'code',
-  width: 136,
-  scopedSlots: { customRender: 'code' }
-}, {
-  // 标题
-  title: 'title',
-  dataIndex: 'title',
-  width: 200,
-  scopedSlots: { customRender: 'title' }
-}, {
-  // 所属系统
-  title: 'faultTreeIds1',
-  dataIndex: 'faultTreeIds1',
-  width: 80,
-  scopedSlots: { customRender: 'faultTreeIds1' }
-}, {
-  // 问题等级
-  title: 'gradeName',
-  dataIndex: 'gradeName',
-  width: 100,
-  scopedSlots: { customRender: 'gradeName' },
-  sorter: true
-}, {
-  // 问题分类
-  title: 'sourceName',
-  dataIndex: 'sourceName',
-  width: 120,
-  scopedSlots: { customRender: 'sourceName' }
-}, {
-  // 问题阶段
-  title: 'projectPhase',
-  dataIndex: 'projectPhase',
-  width: 160,
-  scopedSlots: { customRender: 'projectPhase' }
-}, {
-  // TODO: 目前取出来是草稿，后台修改后变为：D0、D1、D2....
-  title: 'status',
-  dataIndex: 'status',
-  width: 100,
-  sorter: true,
-  scopedSlots: { customRender: 'status' }
-}, {
-  // 立项时间
-  title: 'projectDate',
-  dataIndex: 'projectDate',
-  width: 108,
-  scopedSlots: { customRender: 'projectDate' },
-  customRender (date) {
-    return date ? moment(date).format('YYYY-MM-DD') : '';
-  }
-}, {
-  // 接受日期
-  title: 'receiveDate',
-  dataIndex: 'receiveDate',
-  width: 108,
-  scopedSlots: { customRender: 'receiveDate' },
-  customRender (date) {
-    return date ? moment(date).format('YYYY-MM-DD') : '';
-  }
-}];
+import {issue_columns} from '@@cmd/model.js';
+
 export default {
   components: {
     ColProvider: () => import('@comp/table/ColProvider.vue')
@@ -133,6 +71,13 @@ export default {
       default: 1
     },
     /**
+     * 分页数量
+     */
+    pageSize: {
+      type: Number,
+      default: 10
+    },
+    /**
      * 列更新地址
      */
     colUpdateUrl: {
@@ -145,41 +90,41 @@ export default {
       /**
        * 列信息
        */
-      columns,
-      /**
-       * 自填充信息
-       */
-      fill: [],
+      columns: issue_columns,
     }
   },
   computed: {
+    // 计算「更新列配置」的api
     url () {
       return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
     },
+    // 计算「更新列配置」传过来的id值
     id () {
       return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
     }
   },
-  // updated () {
-  //   const pageSize = this.$refs.table.$children[0].$children[0].$children[1].pageSize;
-  //   console.log(this.$refs.table.$children[0].$children[0].$children[1].pageSize);
-  //   if (this.data.length < pageSize) {
-  //     this.$set(this, 'fill', new Array(pageSize - this.data.length).map(_ => ({id: Date.now()})));
-  //   }
-  // },
   methods: {
+    /**
+     * 当列配置更新时，重新映射
+     */
     mapping (cols) {
       this.columns = cols;
     },
+    /**
+     * 过滤掉标题
+     */
     filterTitle (col) {
       const newCol = clone(col);
       delete newCol.title;
       return newCol;
     },
+    /**
+     * 显示总数
+     */
     showTotal (total) {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
-        const pageCount = Math.ceil(total / this.data.length);
+        const pageCount = Math.ceil(total / this.pageSize);
         const pageText = this.$t('pagination.page')
         return [totalText, pageCount, pageText].join(' ');
       }
@@ -190,6 +135,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  // TODO: 通过flex布局重新更改元素位置，但是点击时好像会有串位置的情况
   /deep/ .ant-pagination {
     display: inline-flex;
     li.ant-pagination-item,  

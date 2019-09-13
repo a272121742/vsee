@@ -11,6 +11,7 @@
       :data="data"
       :total="total"
       :page="page"
+      :page-size.async="limit"
       @change="handleTableChange"
     >
       <span slot="action" slot-scope="record">
