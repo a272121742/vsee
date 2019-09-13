@@ -39,7 +39,6 @@ MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),
 //措施判定详情查询
 MeasureDetail:(issueId)=>$.get('/issue/v1/workflow/actionDraft?type=0&issueId='+issueId),
 //措施实施详情查询
-<<<<<<< HEAD
 ImplementationDetail:(issueId)=>$.get('/issue/v1/workflow/actionDraft?type=1&issueId='+issueId),
 //文件更新表格
 updateFile:(issueId)=>$.get('/issue/v1/workflow/fileUpdatesList?issueId='+issueId),
@@ -53,10 +52,8 @@ editFile:(data)=>$.put('/issue/v1/workflow/fileUpdates',data),
 effectSave:(data)=>$.post('/issue/v1/workflow/validation',data),
 //效果验证查询
 effectDetail:(issueId)=>$.get('/issue/v1/workflow/validation?issueId='+issueId),
-=======
   //保存七钻
   sevenDiamonds:(data)=>$.get('/v1/workflow/sevenDiamonds',data),
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
   //修改保存某个问题
   editSaveQuestion: (data) => $.put('/issue/v1/issue', data),
   // 再分配某个问题
@@ -72,4 +69,7 @@ effectDetail:(issueId)=>$.get('/issue/v1/workflow/validation?issueId='+issueId),
   closeSave:(data)=>$.post('/issue/v1/workflow/issueClose',data),
  //问题关闭查询
  closeDetail:(issueId)=>$.get('/issue/v1/workflow/issueClose?issueId='+issueId),
+ //原因分析保存
+ analysisSave:(data)=>$.post('/issue/v1/workflow/rootCause',data),
+ analysisDetail:(issueId)=>$.get('/issue/v1/workflow/rootCause?issue_id='+issueId)
 };

@@ -222,3 +222,15 @@ mock.get('/issue/v1/workflow/issueClose?issueId=', (issueId) => {
 }, {
   timeout: 0
 });
+//原因分析保存
+mock.post('/issue/v1/workflow/rootCause', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});
+//原因分析查询
+mock.get('/issue/v1/workflow/rootCause?issue_id=', (id) => {
+  return mock.result({
+    data: db.findById(issueId)
+  });
+});

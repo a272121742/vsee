@@ -154,14 +154,8 @@
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-<<<<<<< HEAD
               <a-radio-group  :options="updateRadio"   v-decorator=" [
                 'isUpdae',
-=======
-              <a-radio-group
-                 :options="updateRadio"   v-decorator=" [
-                'isUpdate',
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
               {rules: [{ required: true, message: '请选择是否更新' } ]}
                ]"  />
             </a-form-item>
@@ -592,46 +586,27 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任部门`">
-                      <a-select placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
+                      <net-select  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT" :transform="selectOption" :delay="true" placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
                           'owerDeptLv1',
                           {rules: [{ required: true, message: '请选择责任部门' }]}
                         ]">
-                        <a-select-option value="123123123">
-                          D0
-                        </a-select-option>
-                        <a-select-option value="12312312">
-                          D1
-                        </a-select-option>
-                        <a-select-option value="12312319">
-                          D2
-                        </a-select-option>
-                        <a-select-option value="12312317">
-                          D3
-                        </a-select-option>
-                      </a-select>
+
+                      </net-select>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任人`">
-                      <a-select placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
+                       <net-select
+                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+                      :transform="selectOption" :delay="true" placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
                           'champion',
-                          {rules: [{ required: true, message: '请选择责任人' }]}
+                          {rules: [{ required: true, message: '请选择责任部门' }]}
                         ]">
-                        <a-select-option value="12312312">
-                          D0
-                        </a-select-option>
-                        <a-select-option value="12312317">
-                          D1
-                        </a-select-option>
-                        <a-select-option value="123123126">
-                          D2
-                        </a-select-option>
-                        <a-select-option value="12312315">
-                          D3
-                        </a-select-option>
-                      </a-select>
+
+                      </net-select>
+
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1106,14 +1081,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-<<<<<<< HEAD
                   <p>{{ stepMeasures.icaDescription }}</p>
-=======
-
-                  <p>{{ stepDetail.icaDescription }}</p>
-
-
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1250,13 +1218,9 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
-<<<<<<< HEAD
 
                   <p>{{ stepImplementation.icaExecTime  }}</p>
 
-=======
-                  <p>{{ stepDetail.icaExecTime }}</p>
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
 
                 </a-form-item>
               </a-col>
@@ -1357,19 +1321,8 @@
                 </a-form-item>
               </a-col>
             </a-row>
-<<<<<<< HEAD
 
             <!-- <a-row>
-=======
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`当前步骤计划完成日期`">
-                  <p>{{ stepDetail.D5planTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
               <a-col :span="21">
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
@@ -1385,6 +1338,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
+             -->
           </div>
           <div class="Dcontent D5content" v-if="stepCurrent===5&&backFlag===false">
             <div class="triangle_border_up">
@@ -1546,43 +1500,6 @@
   const {
     mapActions
   } = createNamespacedHelpers('question');
-<<<<<<< HEAD
-  const columns = [{
-    title: '序号',
-    dataIndex: 'no',
-    scopedSlots: {
-      customRender: 'no'
-    }
-  }, {
-    title: '附件名称',
-    dataIndex: 'name',
-    scopedSlots: {
-      customRender: 'name'
-    }
-  }, {
-    title: '上传时间',
-    dataIndex: 'uploadTime',
-    scopedSlots: {
-      customRender: 'uploadTime'
-    }
-  }, {
-    title: '上传人',
-    dataIndex: 'uploadUser',
-    scopedSlots: {
-      customRender: 'uploadUser'
-    }
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {
-      customRender: 'operation'
-    },
-    width: 80
-  }];
-
-
-  const columnsRecord = [{
-=======
   const columns = [
     {
       title: '序号',
@@ -1618,7 +1535,6 @@
     }];
   const columnsRecord = [
     {
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
       title: '操作记录',
       dataIndex: 'recode',
       scopedSlots: {
@@ -1739,26 +1655,25 @@
   export default {
     name: 'QuestionDetail',
     components: {
-      EditableCell
+      EditableCell,
+      NetSelect: () => import('@comp/form/NetSelect.vue'),
     },
     props: ['id'],
     data() {
       const that = this
       return {
-<<<<<<< HEAD
-        userId: this.$store.getters.getUser(), //用户id
-=======
         userId: that.$store.getters.getUser().id,
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         // 再分配弹框
         ModalText: 'Content of the modal',
         fileModalTitle: '添加更新文件',
         RejectTrue: true,
+        analysisId:'',
         fileNameFlag: true,
         visible: false,
         visibleAnalysis: false, //7钻编辑弹框
         visibleDetail: false, //7钻详情
         confirmLoading: false,
+        optCounter:'',
         columns,
         columnsRecord,
         columnsAnalysis,
@@ -1794,17 +1709,12 @@
         dataFile: [], // 附件
         dataRecord: [], // 操作记录
         stepDetail: [], // 某个问题的步骤详细信息
-<<<<<<< HEAD
         stepMeasures: [], //措施详细信息
         stepImplementation: [],
         stepEffect: [],
         problemDefinitionData: {},
         issueDefinitionData: {},
         stepClose:[],
-=======
-        problemDefinitionData: {},
-        issueDefinitionData: {},
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         editFlag: false,
         expand: false,
         form: null,
@@ -1838,11 +1748,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-<<<<<<< HEAD
         stepCurrent: 5, // 当前步骤状态   从数据库读取状态
-=======
-        stepCurrent: 0, // 当前步骤状态   从数据库读取状态
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1955,15 +1861,9 @@
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
           'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-<<<<<<< HEAD
-          'D1department', 'D1user', 'determine', 'firstUser', 'fourthUser', 'FifthUser', 'sixthUser',
-          'pcaPlanTime',
-          'seventhUser', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-=======
           'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
 
           'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
           'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
           'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
           'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
@@ -2003,7 +1903,6 @@
         'redistribute',
         'eidtQuestion',
         'getAnalysis',
-<<<<<<< HEAD
         'editFile',
         'effectSave',
         'effectDetail',
@@ -2011,8 +1910,6 @@
         'firstCreateFile',
         'updateFile',
         'MeasureDetail',
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         'issueDefinitionAdd',
         'closeSave',
         'closeDetail',
@@ -2024,7 +1921,9 @@
         'MeasureDecisionSave',
         'workFlowSubmit',
         'getSysUser',
-        'sevenDiamonds'
+        'sevenDiamonds',
+        'analysisSave',
+        'analysisDetail'
       ]),
       //是否需要围堵措施
       conActionChange(e) {
@@ -2047,6 +1946,20 @@
         } else {
           this.RejectTrue = false;
         }
+      },
+      selectOption(input, option) {
+
+        let optionArray = [];
+
+        input.forEach((item) => {
+
+          optionArray.push({
+            value: item.code,
+            label: item.name
+          })
+        })
+
+        return optionArray;
       },
       showAnalysis(param) {
 
@@ -2296,13 +2209,8 @@
 
         });
         this.problemDefinition(id).then(res => {
-<<<<<<< HEAD
-          this.problemDefinitionData = res;
-          // this.updateData = res.updateList;
-=======
           this.problemDefinitionData = res ? res : {};
           this.updateData = res.updateList;
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         });
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res ? res : {};
@@ -2324,8 +2232,23 @@
           }
 
         });
-        this.updateFile(this.id).then(res => {});
 
+        this.MeasureDetail(this.id).then(res => {
+             this.stepMeasures = res;
+        })
+       this.ImplementationDetail(this.id).then(res => {
+             this.stepImplementation = res;
+        })
+        this.effectDetail(this.id).then(res => {
+             this.stepEffect = res;
+        })
+        this.analysisDetail(this.id).then(res => {
+
+            if(res){
+                 this.analysisId=res.id;
+            }
+
+        })
       },
       // 再分配弹框
       showModal() {
@@ -2363,7 +2286,6 @@
         this.backCurrent = param;
         if (this.backCurrent < this.stepCurrent) {
           this.backFlag = true;
-<<<<<<< HEAD
           if (param === 3) {
 
 
@@ -2389,8 +2311,6 @@
                this.stepClose=res;
             })
           }
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
         } else {
           this.backFlag = false;
         }
@@ -2475,15 +2395,25 @@
 
         const data = this.formDcontent.getFieldsValue();
         data.issueId = this.id;
-        data.optCounter = this.problemDefinitionData.optCounter
+        data.optCounter= this.optCounter;
+        // data.optCounter = this.problemDefinitionData.optCounter
         if (this.stepCurrent === 0) {
           this.problemDefinitionAdd(data).then(res => {
             this.problemDefinitionData = res
+            this.optCounter=res.optCounter;
           })
         }
         if (this.stepCurrent === 1) {
           this.issueDefinitionAdd(data).then(res => {
-            console.info(res)
+
+              this.optCounter=res.optCounter;
+          })
+        }
+        if(this.stepCurrent === 2){
+           data.id=this.analysisId;
+           this.analysisSave(data).then(res => {
+
+                this.optCounter=res.optCounter;
           })
         }
         data.issueId = this.id;
@@ -2502,31 +2432,30 @@
           this.MeasureDecisionSave(data).then(res => {
             this.MeasureDetail(this.id).then(res => {
               this.stepMeasures = res;
+              //  data.optCounter=res.optCounter;
             });
           });
         } else if (this.stepCurrent === 4) {
           this.MeasureDecisionSave(data).then(res => {
             this.ImplementationDetail(this.id).then(res => {
               this.stepImplementation = res;
+              //  data.optCounter=res.optCounter;
             });
           });
 
         } else if (this.stepCurrent === 5) {
           this.effectSave(data).then(res => {
-
+                //  data.optCounter=res.optCounter;
           })
         }
         else if(this.stepCurrent===6){
           this.closeSave(data).then(res=>{
-
+              // data.optCounter=res.optCounter;
           })
         }
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> b0618db75d7f0ed1285540ac1655963c77c755ec
 
       },
       handleSearch(e) {
