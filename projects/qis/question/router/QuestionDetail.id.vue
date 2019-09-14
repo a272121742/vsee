@@ -154,10 +154,8 @@
         <a-row>
           <a-col :span="17">
             <a-form-item :label="`是否更新`" style="margin-bottom:0;">
-              <a-radio-group  :options="updateRadio"   v-decorator=" [
-                'isUpdae',
-              {rules: [{ required: true, message: '请选择是否更新' } ]}
-               ]"  />
+              <a-radio-group :options="updateRadio"  
+                             v-decorator=" ['isUpdae',{rules: [{ required: true, message: '请选择是否更新' } ]}]"  />
             </a-form-item>
           </a-col>
         </a-row>
@@ -570,8 +568,7 @@
               <span></span>
             </div>
             <div v-if="userFlag">
-              <a-row style="margin-left:340px;
-          ">
+              <a-row style="margin-left:340px;">
                 <a-col :span="21">
 
                   <a-form-item>
@@ -844,12 +841,98 @@
                 </ul>
               </div>
               <div class="analysisTable">
+                <div>
+                  <a-row>
+                   <span>审核结果：</span>
+                  </a-row>
+                  <a-row>
+                    <a-form-item :label="'审批：'">
+                      <label>不通过</label>
+                    </a-form-item>
+                  </a-row>
+                  <a-row>
+                    <a-form-item :label="'不通过原因：'">
+                      <label>不通过</label>
+                    </a-form-item>
+                  </a-row>
+                </div>
+                <div>
+                  <a-row>
+                    <a-form-item>
+                      <span>6钻分析</span>
+                    </a-form-item>
+
+                  </a-row>
+                </div>
                 <a-table row-key="id" :data-source="analysisData" :columns="columnsAnalysis" :pagination="false">
                   <span slot="operation" slot-scope="text, record">
                     <a href="javascript:;" @click=showAnalysis(record)>{{record.operation}}</a>
                   </span>
 
                 </a-table>
+                <div >
+                  <a-form-item>
+                    <span>
+                      审核
+                    </span>
+                  </a-form-item>
+                  <a-row >
+                    <a-col :span="21">
+                      <a-form-item :label="'审核：'">
+                        <a-radio-group :options="verifyRadio"
+                                       v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"/>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <div v-if=" record.verifySeven==='0' ">
+                    <a-row >
+                      <a-col :span="21">
+                        <a-form-item :label="'结束7钻分析：'">
+                          <a-radio-group :options="endSevenRadio"
+                                         v-decorator="[ 'endSeven',{rules: [{ required: true, message: '请选择是否结束7钻' }]}]"/>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row >
+                      <a-col :span="21">
+                        <a-form-item :label="'责任部门：'">
+                          <net-select  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                                       :transform="selectOption"
+                                       :delay="true"
+                                       placeholder="请选择"
+                                       :allow-clear="true"
+                                       style="width:272px;height:32px;"
+                                       v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]}]">
+                          </net-select>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row >
+                      <a-col :span="21">
+                        <a-form-item :label="'责任人：'">
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+                            :transform="selectOption"
+                            :delay="true" placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:272px;height:32px;"
+                            v-decorator="['champion',{rules: [{ required: true, message: '请选择责任部门' }]} ]">
+                          </net-select>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                  </div>
+
+                  <a-row  v-if="record.verifySeven==='1'">
+                    <a-col :span="21">
+                      <a-form-item :label="'不通过原因：'">
+                        <a-textarea placeholder="请输入"
+                                    v-decorator="['icaDescription',{rules: [{ required: true, message: '请输不通过原因' }]} ]">
+                        </a-textarea>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                </div>
               </div>
             </div>
 
@@ -1761,6 +1844,20 @@
           label: '需要7钻分析',
           value: '1'
         }],
+        verifyRadio: [{
+          label: '通过',
+          value: '0'
+        }, {
+          label: '不通过',
+          value: '1'
+        }],
+        endSevenRadio: [{
+          label: '是',
+          value: '0'
+        }, {
+          label: '否',
+          value: '1'
+        }],
         // D5
         updateRadio: [{
           label: '是',
@@ -1799,6 +1896,8 @@
           owerDeptLv1: [], //责任部门
           champion: [], //责任人
           type: '0', //判定
+          verifySeven: '2',//7钻审核
+          sevenFailReason:'',//不通过原因
           //7钻责任人
           zuanUser1: [],
           zuanUser4: [],
