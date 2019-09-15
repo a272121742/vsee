@@ -10,7 +10,7 @@
     "unit": "cross-env NODE_ENV=testing jest --config test/unit/jest.conf.js --coverage",
     "e2e": "cross-env NODE_ENV=testing node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue,.jsx src test/unit test/e2e/specs",
+    "lint": "eslint --ext .js,.vue,.jsx projects test/unit test/e2e/specs",
     "build": "cross-env NODE_ENV=production node build/build.js",
     "serve": "node ./server/server.js",
     "sb": "start-storybook -p 6006",
