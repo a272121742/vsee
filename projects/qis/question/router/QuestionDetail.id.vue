@@ -479,21 +479,18 @@
                 <a-col :span="21">
                   <a-form-item :label="`是否需要围堵措施`">
 
-                    <a-radio-group :options="contActionOption" @change='conActionChange' v-decorator="[
-                        'isNeedIca',
-                         {rules: [{ required: true, message: '请选择是否立项' }]}
-                      ]"/>
+                    <a-radio-group :options="contActionOption"
+                                   @change='conActionChange'
+                                   v-decorator="['isNeedIca',{rules: [{ required: true, message: '请选择是否立项' }]}]"/>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row v-if="conActionFlag">
                 <a-col :span="21">
                   <a-form-item :label="`围堵措施`">
-                    <a-textarea placeholder="请输入" style="width:572px;height:88px;" v-decorator="[
-                      'icaDescription',
-                      {rules: [{ required: true, message: '请输入围堵措施' }]}
-                    ]"></a-textarea>
-
+                    <a-textarea placeholder="请输入"
+                                style="width:572px;height:88px;"
+                                v-decorator="[ 'icaDescription',{rules: [{ required: true, message: '请输入围堵措施' }]}]"></a-textarea>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -570,24 +567,22 @@
             <div v-if="userFlag">
               <a-row style="margin-left:340px;">
                 <a-col :span="21">
-
                   <a-form-item>
-                    <a-radio-group :options="determineRadio" @change="determineChange" v-decorator="[
-                    'determine'
-                    ]"/>
+                    <a-radio-group :options="determineRadio" @change="determineChange" v-decorator="[ 'determine']"/>
                   </a-form-item>
-
                 </a-col>
               </a-row>
               <div v-if="!NeedFlage">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任部门`">
-                      <net-select  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT" :transform="selectOption" :delay="true" placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
-                          'owerDeptLv1',
-                          {rules: [{ required: true, message: '请选择责任部门' }]}
-                        ]">
-
+                      <net-select url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                                  :transform="selectOption"
+                                  :delay="true"
+                                  placeholder="请选择"
+                                  :allow-clear="true"
+                                  style="width:272px;height:32px;"
+                                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]">
                       </net-select>
                     </a-form-item>
                   </a-col>
@@ -595,15 +590,15 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任人`">
-                       <net-select
-                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
-                      :transform="selectOption" :delay="true" placeholder="请选择" :allow-clear="true" style="width:272px;height:32px;" v-decorator="[
-                          'champion',
-                          {rules: [{ required: true, message: '请选择责任部门' }]}
-                        ]">
-
+                      <net-select
+                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                        :transform="selectOptionChampion"
+                        :delay="true"
+                        placeholder="请选择"
+                        :allow-clear="true"
+                        style="width:272px;height:32px;"
+                        v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]">
                       </net-select>
-
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -632,158 +627,99 @@
                       </li>
                       <li class="clearfix">
                         <span>第1钻： 过程是否正确？</span>
-
-
-                        <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser1',
-
-                              ]">
-                          <a-select-option value="D0">
-                            D0
-                          </a-select-option>
-                          <a-select-option value="D1">
-                            D1
-                          </a-select-option>
-                          <a-select-option value="D2">
-                            D2
-                          </a-select-option>
-                          <a-select-option value="D3">
-                            D3
-                          </a-select-option>
-                        </a-select>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
+                            :transform="selectOptionChampion"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
 
                       </li>
                       <li class="clearfix">
                         <span>第2钻： 工具是否正确？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser1',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
+                            :transform="selectOptionChampion"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                       <li class="clearfix">
                         <span>第3钻： 物料是否正确？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser1',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
+                            :transform="selectOptionChampion"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                       <li class="clearfix">
                         <span>第4钻： 物料规格检测？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser4',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=SQE`"
+                            :transform="selectOptionChampion"
+                            :delay="true"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser4',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                       <li class="clearfix">
                         <span>第5钻： 过程变更？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser5',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=ME`"
+                            :transform="selectOptionChampion"
+                            :delay="true"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser5',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                       <li class="clearfix">
                         <span>第6钻： 部件变更？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser6',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TC`"
+                            :transform="selectOptionChampion"
+                            :delay="true"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser6',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                       <li class="clearfix">
                         <span>第7钻： 是否是极端复杂问题？</span>
-                        <span>
-                          <a-select placeholder="请选择" :allow-clear="true" style="width:200px;height:32px" v-decorator="[
-                               'zuanUser7',
-
-                              ]">
-                            <a-select-option value="D0">
-                              D0
-                            </a-select-option>
-                            <a-select-option value="D1">
-                              D1
-                            </a-select-option>
-                            <a-select-option value="D2">
-                              D2
-                            </a-select-option>
-                            <a-select-option value="D3">
-                              D3
-                            </a-select-option>
-                          </a-select>
-                        </span>
+                        <a-form-item>
+                          <net-select
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TFT`"
+                            :transform="selectOptionChampion"
+                            :delay="true"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:200px;height:32px"
+                            v-decorator="['zuanUser7',{rules: [{ required: true, message: '请选择责任人' }]} ]">
+                          </net-select>
+                        </a-form-item>
                       </li>
                     </ul>
                   </div>
@@ -843,7 +779,7 @@
               <div class="analysisTable">
                 <div>
                   <a-row>
-                   <span>审核结果：</span>
+                    <span>审核结果：</span>
                   </a-row>
                   <a-row>
                     <a-form-item :label="'审批：'">
@@ -870,13 +806,13 @@
                   </span>
 
                 </a-table>
-                <div >
+                <div>
                   <a-form-item>
                     <span>
                       审核
                     </span>
                   </a-form-item>
-                  <a-row >
+                  <a-row>
                     <a-col :span="21">
                       <a-form-item :label="'审核：'">
                         <a-radio-group :options="verifyRadio"
@@ -885,7 +821,7 @@
                     </a-col>
                   </a-row>
                   <div v-if=" record.verifySeven==='0' ">
-                    <a-row >
+                    <a-row>
                       <a-col :span="21">
                         <a-form-item :label="'结束7钻分析：'">
                           <a-radio-group :options="endSevenRadio"
@@ -893,37 +829,39 @@
                         </a-form-item>
                       </a-col>
                     </a-row>
-                    <a-row >
-                      <a-col :span="21">
-                        <a-form-item :label="'责任部门：'">
-                          <net-select  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                                       :transform="selectOption"
-                                       :delay="true"
-                                       placeholder="请选择"
-                                       :allow-clear="true"
-                                       style="width:272px;height:32px;"
-                                       v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]}]">
-                          </net-select>
-                        </a-form-item>
-                      </a-col>
-                    </a-row>
-                    <a-row >
-                      <a-col :span="21">
-                        <a-form-item :label="'责任人：'">
-                          <net-select
-                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
-                            :transform="selectOption"
-                            :delay="true" placeholder="请选择"
-                            :allow-clear="true"
-                            style="width:272px;height:32px;"
-                            v-decorator="['champion',{rules: [{ required: true, message: '请选择责任部门' }]} ]">
-                          </net-select>
-                        </a-form-item>
-                      </a-col>
-                    </a-row>
+                    <div v-if=" record.endSeven==='0' ">
+                      <a-row>
+                        <a-col :span="21">
+                          <a-form-item :label="'责任部门：'">
+                            <net-select url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                                        :transform="selectOption"
+                                        :delay="true"
+                                        placeholder="请选择"
+                                        :allow-clear="true"
+                                        style="width:272px;height:32px;"
+                                        v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]}]">
+                            </net-select>
+                          </a-form-item>
+                        </a-col>
+                      </a-row>
+                      <a-row>
+                        <a-col :span="21">
+                          <a-form-item :label="'责任人：'">
+                            <net-select
+                              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                              :transform="selectOptionChampion"
+                              :delay="true" placeholder="请选择"
+                              :allow-clear="true"
+                              style="width:272px;height:32px;"
+                              v-decorator="['champion',{rules: [{ required: true, message: '请选择责任部门' }]} ]">
+                            </net-select>
+                          </a-form-item>
+                        </a-col>
+                      </a-row>
+                    </div>
                   </div>
 
-                  <a-row  v-if="record.verifySeven==='1'">
+                  <a-row v-if="record.verifySeven==='1'">
                     <a-col :span="21">
                       <a-form-item :label="'不通过原因：'">
                         <a-textarea placeholder="请输入"
@@ -1053,7 +991,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`根本原因（中英文）`">
-                  <p>{{stepDetail.rootCauseDescription}}</p>
+                  <p>{{rootCauseData.rootCauseDescription}}</p>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1062,7 +1000,7 @@
                 <a-form-item :label="`附件`" style="height:auto;">
                   <div class="stepFileList clearfix">
                     <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D2file" :title="item" :key="index">
+                      <li v-for="(item,index) in rootCauseData.D2file" :title="item" :key="index">
                         <img src="/static/question/file.png">
                         <span>{{ item }}</span>
                       </li>
@@ -1155,10 +1093,10 @@
             </div>
             <div class="examine">
               <div>审核结果</div>
-                <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
+              <a-radio-group :options="recurrencePreventionRadio" v-decorator="[
                       'recurrencePrevention',
                       {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
-                    ]" />
+                    ]"/>
             </div>
             <div>措施判定</div>
             <a-row>
@@ -1302,7 +1240,7 @@
               <a-col :span="21">
                 <a-form-item :label="`短期措施实施日期`">
 
-                  <p>{{ stepImplementation.icaExecTime  }}</p>
+                  <p>{{ stepImplementation.icaExecTime }}</p>
 
 
                 </a-form-item>
@@ -1380,7 +1318,6 @@
                 </a-table>
               </div>
             </a-form-item>
-
 
 
             <a-row>
@@ -1479,7 +1416,7 @@
                       </span>
                     </a-table>
                     <div style="text-align:center;" @click="showUpdate()">
-                      <a-icon type="plus-circle" />
+                      <a-icon type="plus-circle"/>
                       添加新的更新文件
                     </div>
                   </div>
@@ -1570,15 +1507,11 @@
   </div>
 </template>
 <script>
-  import {
-    createFormFields,
-    autoUpdateFileds
-  } from '@util/formhelper.js';
-  import {
-    createNamespacedHelpers
-  } from 'vuex';
+  import {autoUpdateFileds, createFormFields} from '@util/formhelper.js';
+  import {createNamespacedHelpers} from 'vuex';
   import moment from 'moment';
   import EditableCell from '@@/question/view/EditableCell'
+  import AFormItem from "ant-design-vue/es/form/FormItem";
 
   const {
     mapActions
@@ -1655,20 +1588,20 @@
   ];
   const columnsAnalysis = [{
 
-      title: '标准要求',
-      dataIndex: 'standard',
-      align: 'center',
-      scopedSlots: {
-        customRender: 'standard'
-      }
-    }, {
-      title: '实际情况',
-      dataIndex: 'actualSituation',
-      align: 'center',
-      scopedSlots: {
-        customRender: 'actualSituation'
-      }
-    },
+    title: '标准要求',
+    dataIndex: 'standard',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'standard'
+    }
+  }, {
+    title: '实际情况',
+    dataIndex: 'actualSituation',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'actualSituation'
+    }
+  },
     {
       title: '结论',
       dataIndex: 'conclusion',
@@ -1696,20 +1629,20 @@
   ];
   const columnsUpdate = [{
 
-      title: '文件名称',
-      dataIndex: 'fileName',
-      align: 'center',
-      scopedSlots: {
-        customRender: 'fileName'
-      }
-    }, {
-      title: '是否更新',
-      dataIndex: 'isUpdae',
-      align: 'center',
-      scopedSlots: {
-        customRender: 'isUpdae'
-      }
-    },
+    title: '文件名称',
+    dataIndex: 'fileName',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'fileName'
+    }
+  }, {
+    title: '是否更新',
+    dataIndex: 'isUpdae',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'isUpdae'
+    }
+  },
     {
       title: '更新内容',
       dataIndex: 'updateContent',
@@ -1738,6 +1671,7 @@
   export default {
     name: 'QuestionDetail',
     components: {
+      AFormItem,
       EditableCell,
       NetSelect: () => import('@comp/form/NetSelect.vue'),
     },
@@ -1750,13 +1684,13 @@
         ModalText: 'Content of the modal',
         fileModalTitle: '添加更新文件',
         RejectTrue: true,
-        analysisId:'',
+        analysisId: '',
         fileNameFlag: true,
         visible: false,
         visibleAnalysis: false, //7钻编辑弹框
         visibleDetail: false, //7钻详情
         confirmLoading: false,
-        optCounter:'',
+        optCounter: '',
         columns,
         columnsRecord,
         columnsAnalysis,
@@ -1797,7 +1731,8 @@
         stepEffect: [],
         problemDefinitionData: {},
         issueDefinitionData: {},
-        stepClose:[],
+        rootCauseData: {},
+        stepClose: [],
         editFlag: false,
         expand: false,
         form: null,
@@ -1831,7 +1766,7 @@
         carTitle: '', // 车型标题
         functionTitle: '', // 功能标题，
         codeTitle: '', // 故障代码标题，
-        stepCurrent: 5, // 当前步骤状态   从数据库读取状态
+        stepCurrent: 1, // 当前步骤状态   从数据库读取状态
         backCurrent: 7, // 回退到的步骤数
         backFlag: false, // 是否点击回退
         disAgree: true, // 是否需要输入不同意关闭理由
@@ -1897,7 +1832,8 @@
           champion: [], //责任人
           type: '0', //判定
           verifySeven: '2',//7钻审核
-          sevenFailReason:'',//不通过原因
+          endSeven: '2',//是否结束7钻
+          sevenFailReason: '',//不通过原因
           //7钻责任人
           zuanUser1: [],
           zuanUser4: [],
@@ -2053,35 +1989,46 @@
         input.forEach((item) => {
 
           optionArray.push({
-            value: item.code,
+            value: item.id,
             label: item.name
           })
         })
 
         return optionArray;
       },
+      selectOptionChampion(input, option) {
+        let optionArray = [];
+        input.forEach((item) => {
+          optionArray.push({
+            value: item.userId,
+            label: item.username
+          })
+        })
+        return optionArray;
+      },
+
       showAnalysis(param) {
 
         this.visibleAnalysis = true;
         this.DetailForm = param
-       /* if (index === 2) {
-          this.AnalysisTitle ='2钻-工具是否正确'
-        }
-        if (index === 3) {
-          this.AnalysisTitle ='3钻-物料是否正确'
-        }
-        if (index === 4) {
-          this.AnalysisTitle ='4钻-物料规则检测'
-        }
-        if (index === 5) {
-          this.AnalysisTitle ='5钻-过程变更'
-        }
-        if (index === 6) {
-          this.AnalysisTitle ='6钻-部件变更'
-        }
-        if (index === 7) {
-          this.AnalysisTitle ='7钻-是否是极端复杂问题'
-        }*/
+        /* if (index === 2) {
+           this.AnalysisTitle ='2钻-工具是否正确'
+         }
+         if (index === 3) {
+           this.AnalysisTitle ='3钻-物料是否正确'
+         }
+         if (index === 4) {
+           this.AnalysisTitle ='4钻-物料规则检测'
+         }
+         if (index === 5) {
+           this.AnalysisTitle ='5钻-过程变更'
+         }
+         if (index === 6) {
+           this.AnalysisTitle ='6钻-部件变更'
+         }
+         if (index === 7) {
+           this.AnalysisTitle ='7钻-是否是极端复杂问题'
+         }*/
 
 
         this.AnalysisForm = this.$form.createForm(this, {
@@ -2307,15 +2254,24 @@
           // this.updateData = res.updateList;
 
         });
+        //问题定义
         this.problemDefinition(id).then(res => {
           this.problemDefinitionData = res ? res : {};
           this.updateData = res.updateList;
         });
+        //责任判定
         this.issueDefinition(id).then(res => {
           this.issueDefinitionData = res ? res : {};
+          console.info('issueDefinitionData:责任判定')
+          console.info(res)
           //this.analysisData = res.sevenDiamondsVos
         });
-
+        //原因分析
+        this.rootCause(id).then(res => {
+          this.rootCauseData = res ? res : {};
+          this.optCounter = res.optCounter
+          console.info(res)
+        })
         this.updateFile(this.id).then(res => {
 
           if (res.length == 0) {
@@ -2333,21 +2289,21 @@
         });
 
         this.MeasureDetail(this.id).then(res => {
-             this.stepMeasures = res;
+          this.stepMeasures = res;
         })
-       this.ImplementationDetail(this.id).then(res => {
-             this.stepImplementation = res;
+        this.ImplementationDetail(this.id).then(res => {
+          this.stepImplementation = res;
         })
         this.effectDetail(this.id).then(res => {
-             this.stepEffect = res;
+          this.stepEffect = res;
         })
-        this.analysisDetail(this.id).then(res => {
+        /*this.analysisDetail(this.id).then(res => {
 
-            if(res){
-                 this.analysisId=res.id;
-            }
+          if (res) {
+            this.analysisId = res.id;
+          }
 
-        })
+        })*/
       },
       // 再分配弹框
       showModal() {
@@ -2404,10 +2360,10 @@
             })
           }
 
-          else if(param===6){
+          else if (param === 6) {
 
-            this.closeDetail(this.id).then(res=>{
-               this.stepClose=res;
+            this.closeDetail(this.id).then(res => {
+              this.stepClose = res;
             })
           }
         } else {
@@ -2435,10 +2391,10 @@
         }
       },
       handleSubmit(e) {
-        //this.handleSave()
+        this.handleSave()
         let _this = this
-        _this.coChair = _this.coChair ? _this.coChair : _this.getSysUser(_this.detailList.sourceName, 'coChairStepMonitor').id;
-        _this.monitor = _this.monitor ? _this.monitor : _this.getSysUser(_this.detailList.sourceName, 'stepMonitor').id;
+        _this.coChair = _this.coChair ? _this.coChair : _this.getSysUser(_this.detailList.source, 'coChairStepMonitor').id;
+        _this.monitor = _this.monitor ? _this.monitor : _this.getSysUser(_this.detailList.source, 'stepMonitor').id;
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
             const data = this.formDcontent.getFieldsValue();
@@ -2450,12 +2406,12 @@
               taskId: null, //  任务id
               userId: this.userId, //  当前用户id
               variables: {
-                assigner: data.zuanUser1,
+                assigner: data.champion ? data.champion : data.zuanUser1,
                 coChair: _this.coChair,
                 monitor: _this.monitor,
                 isDirectSerious: '0',
-                isPass: '0',
-                isQZEnd: '0',
+                isPass: data.verifySeven,
+                isQZEnd: data.endSeven,
                 isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
                 isQZ: '0',
                 isCheckError: '0',
@@ -2494,25 +2450,26 @@
 
         const data = this.formDcontent.getFieldsValue();
         data.issueId = this.id;
-        data.optCounter= this.optCounter;
-        // data.optCounter = this.problemDefinitionData.optCounter
+        const _this = this
+        //data.optCounter = this.issueDefinitionData.optCounter
         if (this.stepCurrent === 0) {
+          data.optCounter = _this.problemDefinitionData.optCounter
           this.problemDefinitionAdd(data).then(res => {
             this.problemDefinitionData = res
-            this.optCounter=res.optCounter;
           })
         }
         if (this.stepCurrent === 1) {
+          data.optCounter = _this.issueDefinitionData.optCounter
           this.issueDefinitionAdd(data).then(res => {
-
-              this.optCounter=res.optCounter;
+            this.optCounter = res.optCounter;
           })
         }
-        if(this.stepCurrent === 2){
-           data.id=this.analysisId;
-           this.analysisSave(data).then(res => {
-
-                this.optCounter=res.optCounter;
+        if (this.stepCurrent === 2) {
+          data.id = this.analysisId;
+          data.optCounter = _this.rootCauseData.optCounter
+          console.info(data)
+          this.analysisSave(data).then(res => {
+            this.optCounter = res.optCounter;
           })
         }
         data.issueId = this.id;
@@ -2544,16 +2501,14 @@
 
         } else if (this.stepCurrent === 5) {
           this.effectSave(data).then(res => {
-                //  data.optCounter=res.optCounter;
+            //  data.optCounter=res.optCounter;
           })
         }
-        else if(this.stepCurrent===6){
-          this.closeSave(data).then(res=>{
-              // data.optCounter=res.optCounter;
+        else if (this.stepCurrent === 6) {
+          this.closeSave(data).then(res => {
+            // data.optCounter=res.optCounter;
           })
         }
-
-
 
 
       },
@@ -2587,8 +2542,8 @@
             id
           },
           query: {
-          form: this.$route.path
-        }
+            form: this.$route.path
+          }
         })
       },
       // 是否满足立项条件切换
