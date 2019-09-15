@@ -1,3 +1,5 @@
+/* eslint-disable vue/attribute-hyphenation */
+/* eslint-disable vue/attribute-hyphenation */
 <template>
   <div id="components-form-demo-advanced-search">
     <div class="TopButton">
@@ -13,10 +15,10 @@
       </div>
       <div class="rightButton">
         <a-button
+          v-if="submitBtn"
           type="primary"
           html-type="submit"
           class="submitBtn"
-          v-if="submitBtn"
           @click="handleSubmit"
         >
           提交
@@ -71,6 +73,10 @@
                 <a-col :span="6">
                   <a-form-item :label="`车型`">
                     <net-select
+                      v-decorator="[
+                        'vehicleModelId',
+                        {rules:[{required:true, message:'请选择车型'}]}
+                      ]"
                       url="/masterdata/v1/vehiclemodel"
                       show-search
                       :transform="selectOption"
@@ -78,16 +84,16 @@
                       placeholder="请选择"
                       :allow-clear="true"
                       @change="vehicleModelIdChange"
-                      v-decorator="[
-                        'vehicleModelId',
-                        {rules:[{required:true, message:'请选择车型'}]}
-                      ]"
                     ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属系统`">
                     <net-select
+                      v-decorator="[
+                        'faultTreeIds1',
+                        {rules:[{required:true, message:'请选择所属系统'}]}
+                      ]"
                       url="/issue/v1/faultcategory?p_id=0"
                       show-search
                       :transform="selectOption"
@@ -96,10 +102,6 @@
                       :filter-option="filterOption"
                       :allow-clear="true"
                       @change="handleSystem"
-                      v-decorator="[
-                        'faultTreeIds1',
-                        {rules:[{required:true, message:'请选择所属系统'}]}
-                      ]"
                     >
                     </net-select>
                   </a-form-item>
@@ -107,6 +109,10 @@
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
                     <net-select
+                      v-decorator="[
+                        'faultTreeIds2',
+                        {rules:[{required:true, message:'请选择所属系统'}]}
+                      ]"
                       show-search
                       placeholder="请选择"
                       :filter-option="filterOption"
@@ -115,10 +121,6 @@
                       :cache="false"
                       :transform="selectOption"
                       :allow-clear="true"
-                      v-decorator="[
-                        'faultTreeIds2',
-                        {rules:[{required:true, message:'请选择所属系统'}]}
-                      ]"
                       @change="faultTreeIds2Change"
                     >
                     </net-select>
@@ -127,19 +129,21 @@
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
                     <net-select
-                      show-search
-                      placeholder="请选择"
-                      :delay="!isEdit"
-                      :filter-option="filterOption"
-                      :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
-                      :cache="false"
-                      @change="faultTreeIds3Change"
-                      :transform="selectOption"
-                      :allow-clear="true"
                       v-decorator="[
                         'faultTreeIds3',
                         {rules:[{required:true, message:'请选择故障代码'}]}
                       ]"
+                      show-search
+                      placeholder="请选择"
+                      :delay="!isEdit"
+                      :filter-option="filterOption"
+
+                      :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+                      :cache="false"
+                      :transform="selectOption"
+
+                      :allow-clear="true"
+                      @change="faultTreeIds3Change"
                     >
                     </net-select>
                   </a-form-item>
@@ -149,14 +153,14 @@
                 <a-col :span="6">
                   <a-form-item :label="`问题分类`">
                     <net-select
-                      show-search
-                      placeholder="请选择"
-                      :filter-option="filterOption"
-                      url="/sys/dict?dictType=issue_source"
                       v-decorator="[
                         'source',
                         {rules:[{required:true, message:'请选择问题分类'}]}
                       ]"
+                      show-search
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_source"
                       :transform="selectOptiondict"
                       :allow-clear="true"
                     >
@@ -166,14 +170,14 @@
                 <a-col :span="6">
                   <a-form-item :label="`严重等级`">
                     <net-select
-                      show-search
-                      placeholder="请选择"
-                      :filter-option="filterOption"
-                      url="/sys/dict?dictType=issue_grade"
                       v-decorator="[
                         'grade',
                         {rules:[{required:true, message:'请选择严重等级'}]}
                       ]"
+                      show-search
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_grade"
                       :transform="selectOptiondict"
                       :allow-clear="true"
                     >
@@ -183,14 +187,14 @@
                 <a-col :span="6">
                   <a-form-item :label="`问题阶段`">
                     <net-select
-                      show-search-
-                      placeholder="请选择"
-                      :filter-option="filterOption"
-                      url="/sys/dict?dictType=issue_phase"
                       v-decorator="[
                         'projectPhase',
                         {rules:[{required:true, message:'请选择问题阶段'}]}
                       ]"
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_phase"
                       :transform="selectOptiondict"
                       :allow-clear="true"
                     >
@@ -200,10 +204,10 @@
                 <a-col :span="6">
                   <a-form-item :label="`故障发生日期`">
                     <a-date-picker
-                      format="YYYY-MM-DD HH:mm:ss"
                       v-decorator="[
                         'failureDate'
                       ]"
+                      format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
                     />
@@ -215,14 +219,14 @@
                   <a-form-item :label="`生产基地`">
                     <!-- TODO:  何莎 回显数据的时候下拉框无法匹配数据 -->
                     <net-select
-                      show-search-
-                      placeholder="请选择"
-                      :filter-option="filterOption"
-                      url="/masterdata/v1/manufactureBase"
                       v-decorator="[
                         'manufactureBaseId',
                         {rules:[{required:true, message:'请选择生产基地'}]}
                       ]"
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/masterdata/v1/manufactureBase"
                       :transform="selectOptionBase"
                       :allow-clear="true"
                     />
@@ -231,13 +235,13 @@
                 <a-col :span="6">
                   <a-form-item :label="`责任部门`">
                     <net-select
-                      show-search-
-                      placeholder="请选择"
-                      :filter-option="filterOption"
-                      :url="`/issue/faultTree?fault_category_id=${record.faultTreeIds2}`"
                       v-decorator="[
                         'responsibleDepartmentId',
                       ]"
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                       :transform="selectOption"
                       :allow-clear="true"
                     >
@@ -335,13 +339,13 @@
               <a-col :span="6">
                 <a-form-item :label="`祸首件`">
                   <net-select
+                    v-decorator="[
+                      'firstCausePart',
+                    ]"
                     show-search-
                     :filter-option="filterOption"
                     url="/masterdata/v1/part"
                     placeholder="请选择"
-                    v-decorator="[
-                      'firstCausePart',
-                    ]"
                     :transform="selectOption"
                     :allow-clear="true"
                   ></net-select>
@@ -350,13 +354,13 @@
               <a-col :span="6">
                 <a-form-item :label="`零件号`">
                   <net-select
+                    v-decorator="[
+                      'partId',
+                    ]"
                     show-search-
                     :filter-option="filterOption"
                     url="/masterdata/v1/part"
                     placeholder="请选择"
-                    v-decorator="[
-                      'partId',
-                    ]"
                     :transform="selectOption"
                     :allow-clear="true"
                   ></net-select>
@@ -365,13 +369,13 @@
               <a-col :span="6">
                 <a-form-item :label="`供应商名称`">
                   <net-select
+                    v-decorator="[
+                      'supplierId',
+                    ]"
                     show-search-
                     :filter-option="filterOption"
                     url="/masterdata/v1/supplier"
                     placeholder="请选择"
-                    v-decorator="[
-                      'supplierId',
-                    ]"
                     :transform="selectOption"
                     :allow-clear="true"
                   ></net-select>
@@ -382,10 +386,10 @@
               <a-col :span="6">
                 <a-form-item :label="`生产时间`">
                   <a-date-picker
-                    format="YYYY-MM-DD HH:mm:ss"
                     v-decorator="[
                       'productDate'
                     ]"
+                    format="YYYY-MM-DD HH:mm:ss"
                     show-time
                     style="width:231px;"
                   />
@@ -394,16 +398,16 @@
               <a-col :span="6">
                 <a-form-item :label="`试验类型`">
                   <net-select
+                    v-decorator="[
+                      'testType',
+                    ]"
                     show-search-
+
                     :filter-option="filterOption"
 
                     url="/sys/dict?dictType=issue_test_type"
 
                     placeholder="请选择"
-
-                    v-decorator="[
-                      'testType',
-                    ]"
 
                     :transform="selectOptiondict"
 
@@ -526,7 +530,7 @@ import {
   createFormFields,
   autoUpdateFileds
 } from '@util/formhelper.js';
-import Axios from 'axios';
+
 import {
   createNamespacedHelpers
 } from 'vuex';
@@ -662,7 +666,20 @@ export default {
 
         this.eidtQuestion(this.id).then(res => {
           this.record = res;
+          // 附件
+          const fileListArray = [];
 
+
+          res.fileList.forEach((item) => {
+            const fileObject = {
+              uid: item.id,
+              name: item.originalFilename,
+              status: 'done',
+              url: item.path
+            };
+            fileListArray.push(fileObject);
+          })
+          this.fileList = fileListArray;
           this.optCounter = res.optCounter;
           // 日期格式回显
           if (res.failureDate) {
@@ -730,7 +747,7 @@ export default {
         this.DetailSuppely = true;
       }
     },
-    selectOption (input, option) {
+    selectOption (input) {
       const optionArray = [];
 
       input.forEach((item) => {
@@ -742,7 +759,7 @@ export default {
 
       return optionArray;
     },
-    selectOptionBase (input, option) {
+    selectOptionBase (input) {
       const optionArray = [];
 
       input.forEach((item) => {
@@ -754,7 +771,7 @@ export default {
 
       return optionArray;
     },
-    selectOptiondict (input, option) {
+    selectOptiondict (input) {
       const optionArray = [];
 
       input.forEach((item) => {
@@ -809,8 +826,8 @@ export default {
         }
       }
     },
-    handleSubmit (e) {
-      this.form.validateFields((err, fieldsValue) => {
+    handleSubmit () {
+      this.form.validateFields((err) => {
         if (!err) {
           const data = this.form.getFieldsValue();
           const primaryKey = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
@@ -834,7 +851,6 @@ export default {
 
           this.saveQuestion(data).then(res => {
             this.businessKey = res;
-            const name = 'submit';
 
             const param = {
               businessKey: this.businessKey,
@@ -851,8 +867,12 @@ export default {
 
             };
 
-            this.workFlowSubmit(param).then(() => {
-              // @何莎 TODO: 这里你还要做什么处理？
+            this.workFlowSubmit(param).then(res2 => {
+              if (res2) {
+                this.$router.push({
+                  path: this.$route.query.form || '/'
+                });
+              }
             });
           })
         }
@@ -887,14 +907,20 @@ export default {
 
         this.editSaveQuestion(data).then(res => {
           this.businessKey = res;
+          this.$router.push({
+            name: 'QuestionDetail',
+            params: {
+              id: this.id
+            },
+            query: {
+              form: this.$route.path
+            }
+          })
         })
       }
     },
     handleSearch (e) {
       e.preventDefault();
-      this.form.validateFields((error, values) => {
-
-      });
     },
     handleChange (info) {
       let fileList = [...info.fileList];

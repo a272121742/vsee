@@ -101,6 +101,7 @@
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
 
+// eslint-disable-next-line no-unused-vars
 const columns = [
   {
     title: 'no',

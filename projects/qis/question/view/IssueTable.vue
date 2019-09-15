@@ -24,8 +24,8 @@
       <template #title>
         <col-provider
           v-if="url && id"
-          :url="url"
           :id="id"
+          :url="url"
           :columns="columns"
           :transform="$t.bind(_self)"
           :mapping="mapping"

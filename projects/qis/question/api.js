@@ -19,9 +19,9 @@ export default {
   issueDefinition: (id) => $.get('/issue/v1/workflow/issueDefinition?issue_id=' + id),
   // 责任判定保存
   issueDefinitionAdd: (data) => $.post('/issue/v1/workflow/issueDefinition', data),
-  //根本原因查询
-  rootCause: (id) => $.get('/issue/v1/workflow/rootCause?issue_id='+ id),
-  //根本原因保存
+  // 根本原因查询
+  rootCause: (id) => $.get('/issue/v1/workflow/rootCause?issue_id=' + id),
+  // 根本原因保存
   rootCauseAdd: (data) => $.post('/issue/v1/workflow/rootCause', data),
   // 新增某个问题
   addQuestion: (data) => $.post('/activiti/running/completeTask', data),

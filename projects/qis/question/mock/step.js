@@ -1,6 +1,6 @@
 import mock from '@lib/mock.js';
 import cdb from '@lib/cdb.js';
-import moment from 'moment'
+
 
 const d = mock({
   id: '1',

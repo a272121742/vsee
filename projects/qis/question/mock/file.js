@@ -21,7 +21,6 @@ mock.get('/question/annex/page', (parameter) => {
   const pageNo = parameter.pageNo;
   const pageSize = parameter.pageSize;
   const totalCount = datas.length;
-  const totalPage = (totalCount % pageSize) + 1;
   const start = pageSize * (pageNo - 1);
   const end = start + pageSize;
   return mock.result({

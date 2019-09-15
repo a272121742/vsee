@@ -105,7 +105,7 @@ const list = mock({
 const db = cdb.link('issue', list);
 
 mock.get('/issue/v1/issue/page', ({
-  order, orderField, page = 1, limit = 10, _t = Date.now(), ...query
+  order, orderField, page = 1, limit = 10, ...query
 }) => {
   const datas = db.find(query);
   const begin = limit * (page - 1);

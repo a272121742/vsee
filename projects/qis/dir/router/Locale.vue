@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { attr } from '@util/datahelper.js';
+
 
 const isObject = val => val && typeof val === 'object';
 function reduceTree (tree1, tree2, arr = [], bef = '') {

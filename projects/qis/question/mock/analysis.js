@@ -13,7 +13,7 @@ const list = mock({
 const db = cdb.link('analysis', list);
 
 
-mock.get('/analysisData/:id', (parameter) => {
+mock.get('/analysisData/:id', () => {
   const datas = db.find() || [];
 
   return mock.result({
