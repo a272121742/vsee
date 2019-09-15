@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 // 问题列配置
-export const issue_columns = [{
+export const issueColumns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',

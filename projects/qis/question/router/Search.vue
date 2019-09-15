@@ -11,7 +11,7 @@
       :data="data"
       :total="total"
       :page="page"
-      :page-size.async="limit"
+      :page-size.sync="limit"
       @change="handleTableChange"
     >
       <span
