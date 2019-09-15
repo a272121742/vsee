@@ -701,12 +701,6 @@
                       :options="contActionOption"
                       @change="conActionChange"
                     />
-
-                    <a-radio-group
-                      v-decorator="['isNeedIca',{rules: [{ required: true, message: '请选择是否立项' }]}]"
-                      :options="contActionOption"
-                      @change="conActionChange"
-                    />
                   </a-form-item>
                 </a-col>
               </a-row>
