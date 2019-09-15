@@ -17,8 +17,8 @@ const db = cdb.link('operationRecord', list);
  */
 mock.get('/question/action/page', (parameter) => {
   const datas = db.find() || [];
-  const pageNo = parameter.pageNo|| 1;;
-  const pageSize = parameter.pageSize||10;
+  const pageNo = parameter.pageNo || 1;
+  const pageSize = parameter.pageSize || 10;
   const totalCount = datas.length;
   const totalPage = (totalCount % pageSize) + 1;
   const start = pageSize * (pageNo - 1);

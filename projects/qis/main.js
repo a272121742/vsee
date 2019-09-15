@@ -24,45 +24,42 @@ if (process.env.NODE_ENV === 'production') {
   const token = store.getters.getToken();
   router.beforeEach((to, from, next) => {
     if (!token) {
-      window.location.href = `/${process.env.project}`;
+      window.location.href = `/portal`;
     }
     next();
   });
-} else {
-  // eslint-disable-next-line no-new
-  new Vue({
-    router,
-    store,
-    i18n,
-    el: '#app',
-    name: 'App',
-    data () {
-      return {
-        locale: null
-      };
-    },
-    beforeCreate () {
-      this.$store && this.$store.dispatch('loadLanguage').then(locale => {
-        import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-          this.$set(this, 'locale', res.default);
-        });
-        if (locale !== 'zh_CN') {
-          moment.locale('en');
-        } else {
-          moment.locale('zh-cn');
-        }
-      });
-    },
-    render () {
-      return (
-        <div id="app">
-          <a-locale-provider locale={this.locale}>
-            <router-view />
-          </a-locale-provider>
-        </div>
-      )
-    }
-  });
 }
-
-
+// eslint-disable-next-line no-new
+new Vue({
+  router,
+  store,
+  i18n,
+  el: '#app',
+  name: 'App',
+  data () {
+    return {
+      locale: null
+    };
+  },
+  beforeCreate () {
+    this.$store && this.$store.dispatch('loadLanguage').then(locale => {
+      import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
+        this.$set(this, 'locale', res.default);
+      });
+      if (locale !== 'zh_CN') {
+        moment.locale('en');
+      } else {
+        moment.locale('zh-cn');
+      }
+    });
+  },
+  render () {
+    return (
+      <div id="app">
+        <a-locale-provider locale={this.locale}>
+          <router-view />
+        </a-locale-provider>
+      </div>
+    )
+  }
+});

@@ -2,16 +2,15 @@ import mock from '@lib/mock.js';
 import cdb from '@lib/cdb.js';
 
 const list = mock({
-  "id": '@increment',
+  id: '@increment',
   standard: '标准要求',
   actualSituation: '实际情况',
-  conclusion:'结论',
+  conclusion: '结论',
   file: '2',
-  'operation|1':['编辑','查看']
+  'operation|1': ['编辑', '查看']
 }, 3);
 
 const db = cdb.link('analysis', list);
-
 
 
 mock.get('/analysisData/:id', (parameter) => {

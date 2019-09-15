@@ -2,7 +2,7 @@
   <a-layout id="components-layout-top-side">
     <!-- 头部，固定 -->
     <a-affix>
-      <Header class="shadow-head"></Header>
+      <layout-header class="shadow-head"></layout-header>
     </a-affix>
     <!-- 内容区域 -->
     <a-spin :spinning="refreshing">
@@ -17,14 +17,13 @@
         </div>
       </a-layout-content>
     </a-spin>
-    
   </a-layout>
 </template>
 
 <script>
 export default {
   components: {
-    Header: () => import('./Header.vue')
+    LayoutHeader: () => import('./Header.vue')
   },
   computed: {
     refreshing () {
@@ -37,7 +36,7 @@ export default {
       this.$store.dispatch('layout/getPermissions');
       this.$store.dispatch('layout/getUserInfo');
     }
-  },
+  }
 };
 </script>
 

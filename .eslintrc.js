@@ -31,7 +31,7 @@ module.exports = {
     'standard',
     'airbnb-base/legacy',
     'eslint:recommended',
-    'plugin:vue/strongly-recommended',
+    'plugin:vue/recommended',
   ],
   // required to lint *.vue files
   plugins: [
@@ -51,7 +51,7 @@ module.exports = {
     "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     // 单行最大字符数
     "max-len": 0,
-    "no-bitwise": ["error", { "allow": ["~"] }],
+    "no-bitwise": 0,
     "no-use-before-define": ["error", { "functions": false }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "no-void": 0,
@@ -61,7 +61,7 @@ module.exports = {
     // 打印语句和调试语句在生产环境报错，其他环境关闭检查
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-unused-vars': 0,
+    'no-unused-vars': 1,
     // vue文件的template约束
     "vue/html-indent": ["error", 2],
     "import/no-extraneous-dependencies": 0,
@@ -97,6 +97,7 @@ module.exports = {
     'vue/require-prop-types': 'off',
     // v-for 指令的元素必须有 v-bind:key
     'vue/require-v-for-key': 'error',
+    "vue/component-name-in-template-casing": ["error", "kebab-case"]
     // "no-alert": 0,//禁止使用alert confirm prompt
     // "no-array-constructor": 2,//禁止使用数组构造器
     // "no-bitwise": 0,//禁止使用按位运算符

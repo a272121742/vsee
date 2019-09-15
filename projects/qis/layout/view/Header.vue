@@ -4,10 +4,16 @@
       <div class="header-index-left">
         <div class="logo">
         </div>
-        <a-divider type="vertical" style="height: 17px; margin: 25px 0; background: #0C9CE0"></a-divider>
-        <banner title="质量管理系统" desc="Total Quality Information System"></banner>
+        <a-divider
+          type="vertical"
+          style="height: 17px; margin: 25px 0; background: #0C9CE0"
+        ></a-divider>
+        <banner
+          title="质量管理系统"
+          desc="Total Quality Information System"
+        ></banner>
         <a-menu
-          :selectedKeys="custMenu"
+          :selected-keys="custMenu"
           mode="horizontal"
         >
           <a-menu-item
@@ -30,17 +36,17 @@
             <a-menu slot="overlay">
               <a-menu-item key="2">
                 <a @click.stop.prevent="refresh">
-                  {{ $t('user_action.refresh')}}
+                  {{ $t('user_action.refresh') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="0">
                 <a href="javascript:;">
-                  {{ $t('user_action.editinfo')}}
+                  {{ $t('user_action.editinfo') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
                 <a @click.stop.prevent="logoutHandle">
-                  {{ $t('user_action.logout')}}
+                  {{ $t('user_action.logout') }}
                 </a>
               </a-menu-item>
             </a-menu>
@@ -86,7 +92,7 @@ export default {
     logoutHandle () {
       this.$store && this.$store.dispatch('login/logout');
       // TODO: 做好多应用重定向
-      window.location.href="/portal";
+      window.location.href = '/portal';
     }
   }
 }
@@ -112,7 +118,7 @@ export default {
       padding-left: 0;
       display: flex;
       height: 64px;
-      
+
     }
 
     .header-index-left {

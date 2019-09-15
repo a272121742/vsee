@@ -1,2 +1,3 @@
-**/*
-!projects/*
+.storybook/**
+dist/**
+node_modules/**

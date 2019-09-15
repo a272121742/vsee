@@ -23,7 +23,7 @@
 <script>
 export default {
   name: 'QuestionSuccess',
-  props:['name'],
+  props: ['name'],
   data () {
     return {
       successText: '保存成功',
@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     init () {
-
       if (this.name === 'save') {
         this.successText = '保存成功';
         this.successInfo = '您创建的内容已经提交成功，可在“我的问题 - 草稿”中查看。'
@@ -45,7 +44,7 @@ export default {
         this.successInfo = '您创建的内容已经提交成功，可在“我的问题 - 已创建”中查看。'
       }
     },
-    goBack(){
+    goBack () {
       this.$router.go(-1);
     }
   }

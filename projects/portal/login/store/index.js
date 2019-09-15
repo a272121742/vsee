@@ -6,8 +6,8 @@ export default {
     login (store, loginInfo) {
       return api.login(loginInfo);
     },
-    logout ({dispatch}) {
-      dispatch('logout', void 0, {root: true})
+    logout ({ dispatch }) {
+      dispatch('logout', void 0, { root: true })
       return api.logout();
     }
   }

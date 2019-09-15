@@ -7,19 +7,22 @@
         <a-list
           size="small"
           :split="false"
-          :dataSource="data"
+          :data-source="data"
         >
-          <a-list-item slot="renderItem" slot-scope="item, index">
-            <a-list-item-meta >
-              <a 
-                slot="title" 
+          <a-list-item
+            slot="renderItem"
+            slot-scope="item"
+          >
+            <a-list-item-meta>
+              <a
+                slot="title"
                 :href="item.href"
                 @click.self.prevent="loadAnnouncement(item.id)"
               >
-                {{item.title}}
+                {{ item.title }}
               </a>
             </a-list-item-meta>
-            {{format(item.createDate)}}
+            {{ format(item.createDate) }}
           </a-list-item>
         </a-list>
       </a-col>
@@ -54,7 +57,7 @@ export default {
   methods: {
     ...mapActions(['getAnnouncementPage', 'getAnnouncement']),
     request () {
-      this.getAnnouncementPage({limit: 15}).then(res => {
+      this.getAnnouncementPage({ limit: 15 }).then(res => {
         this.data = res.list;
         this.total = res.total;
       })
@@ -91,8 +94,8 @@ export default {
       }
       .ant-list-item-meta-title {
         max-width: 172px;
-        white-space:nowrap; 
-        overflow:hidden; 
+        white-space:nowrap;
+        overflow:hidden;
         text-overflow:ellipsis;
         a:before {
           content: '●';

@@ -69,7 +69,7 @@ module.exports = {
     // 是否启用Eslint的检查
     useEslint: true,
     // 是否全局显示Eslint的错误提示
-    showEslintErrorsInOverlay: false,
+    showEslintErrorsInOverlay: true,
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,

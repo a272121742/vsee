@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-table
-      :dataSource="data"
+      :data-source="data"
       :columns="columns"
       :pagination="false"
       size="small"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {attr} from '@util/datahelper.js';
+import { attr } from '@util/datahelper.js';
 
 const isObject = val => val && typeof val === 'object';
 function reduceTree (tree1, tree2, arr = [], bef = '') {
@@ -22,9 +22,9 @@ function reduceTree (tree1, tree2, arr = [], bef = '') {
     const cn = tree1[key];
     const en = tree2[key];
     const isObj = isObject(cn);
-    arr.push({key: (bef?bef+'.':bef) +  key, zh: isObj ? '' : cn, en: isObj ? '' : en});
+    arr.push({ key: (bef ? bef + '.' : bef) + key, zh: isObj ? '' : cn, en: isObj ? '' : en });
     if (isObj) {
-      arr.push(...reduceTree(cn, en, [], (bef?bef+'.':bef) +  key));
+      arr.push(...reduceTree(cn, en, [], (bef ? bef + '.' : bef) + key));
     }
   });
   return arr;
@@ -38,7 +38,7 @@ export default {
         dataIndex: 'key',
         scopedSlots: { customRender: 'key' },
         width: 600
-        
+
       }, {
         title: '中文',
         dataIndex: 'zh',
@@ -56,6 +56,6 @@ export default {
     const msg = this.$i18n.messages;
     const d = reduceTree(msg.zh, msg.en);
     this.$set(this, 'data', d);
-  },
+  }
 }
 </script>

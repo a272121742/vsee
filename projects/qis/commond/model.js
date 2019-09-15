@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 // 问题列配置
-export const issue_columns = [{
+export const issueColumns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',
@@ -76,7 +76,6 @@ const transformField = mapping => list => {
   });
 };
 
-export const transform1 = transformField({value: 'id', label: 'name'});
-export const transform2 = transformField({value: 'id', label: 'dictName'});
-export const transform3 = transformField({value: 'id', label: 'nameZh'});
-
+export const transform1 = transformField({ value: 'id', label: 'name' });
+export const transform2 = transformField({ value: 'id', label: 'dictName' });
+export const transform3 = transformField({ value: 'id', label: 'nameZh' });

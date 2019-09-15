@@ -12,7 +12,7 @@
         v-bind="filterTitle(col)"
       >
         <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
-        <template slot-scope="text, record">
+        <template slot-scope="text">
           {{ text }}
         </template>
       </a-table-column>
@@ -32,17 +32,19 @@
           locale-path="issue"
         ></col-provider>
       </template>
-      <template slot-scope="text, record, index">
-        <slot name="action" v-bind="record"></slot>
+      <template slot-scope="text, record">
+        <slot
+          name="action"
+          v-bind="record"
+        ></slot>
       </template>
     </a-table-column>
   </a-table>
-  
 </template>
 
 <script>
-import {clone} from 'ramda';
-import {issue_columns} from '@@cmd/model.js';
+import { clone } from 'ramda';
+import { issueColumns } from '@@cmd/model.js';
 
 export default {
   components: {
@@ -54,7 +56,7 @@ export default {
      */
     data: {
       type: Array,
-      default: []
+      default: () => []
     },
     /**
      * 总数，从上层组件获取，上层组件通过服务端获取
@@ -83,14 +85,14 @@ export default {
     colUpdateUrl: {
       type: String,
       default: ''
-    },
+    }
   },
   data () {
     return {
       /**
        * 列信息
        */
-      columns: issue_columns,
+      columns: issueColumns
     }
   },
   computed: {
@@ -129,7 +131,7 @@ export default {
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
-    },
+    }
   }
 }
 </script>
@@ -138,8 +140,8 @@ export default {
   // TODO: 通过flex布局重新更改元素位置，但是点击时好像会有串位置的情况
   /deep/ .ant-pagination {
     display: inline-flex;
-    li.ant-pagination-item,  
-    li.ant-pagination-prev, 
+    li.ant-pagination-item,
+    li.ant-pagination-prev,
     li.ant-pagination-next,
     li.ant-pagination-jump-next {
       order: 1;

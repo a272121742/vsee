@@ -3,51 +3,82 @@
     <a-row :gutter="16">
       <a-col :span="18">
         <a-card class="banner-card">
-          <img slot="cover" src="/static/portal/portal_banner.png">
+          <img
+            slot="cover"
+            src="/static/portal/portal_banner.png"
+          >
         </a-card>
         <a-card
           class="module-card"
           title="快捷入口"
         >
           <a-row :gutter="16">
-            <a-col class="module-center" :span="8">
-              <div class="module-wrapper" @click.stop.prevent="jumpToModule('qis')">
+            <a-col
+              class="module-center"
+              :span="8"
+            >
+              <div
+                class="module-wrapper"
+                @click.stop.prevent="jumpToModule('qis')"
+              >
                 <div class="module-container">
                   <img src="/static/portal/zhiliang.png">
                 </div>
-                <div class="module-link">质量问题分析</div>
+                <div class="module-link">
+                  质量问题分析
+                </div>
               </div>
             </a-col>
-            <a-col class="module-center" :span="8">
+            <a-col
+              class="module-center"
+              :span="8"
+            >
               <div class="module-wrapper">
                 <div class="module-container">
                   <img src="/static/portal/dashuju.png">
                 </div>
-                <div class="module-link">大数据平台</div>
+                <div class="module-link">
+                  大数据平台
+                </div>
               </div>
             </a-col>
-            <a-col class="module-center" :span="8">
+            <a-col
+              class="module-center"
+              :span="8"
+            >
               <div class="module-wrapper">
                 <div class="module-container">
                   <img src="/static/portal/zhuisu.png">
                 </div>
-                <div class="module-link">整车追溯</div>
+                <div class="module-link">
+                  整车追溯
+                </div>
               </div>
             </a-col>
-            <a-col class="module-center" :span="8">
+            <a-col
+              class="module-center"
+              :span="8"
+            >
               <div class="module-wrapper">
                 <div class="module-container">
                   <img src="/static/portal/shouhou.png">
                 </div>
-                <div class="module-link">售后质量</div>
+                <div class="module-link">
+                  售后质量
+                </div>
               </div>
             </a-col>
-            <a-col class="module-center" :span="8">
+            <a-col
+              class="module-center"
+              :span="8"
+            >
               <div class="module-wrapper">
                 <div class="module-container">
                   <img src="/static/portal/guocheng.png">
                 </div>
-                <div class="module-link">过程质量</div>
+                <div class="module-link">
+                  过程质量
+                </div>
               </div>
             </a-col>
           </a-row>
@@ -79,7 +110,7 @@ export default {
 <style lang="less" scoped>
   /* 门户首页banner和公告*/
   .banner-card, .announcement-card, .module-card, .todo-card {
-    margin: 16px 0; 
+    margin: 16px 0;
     box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
@@ -93,7 +124,7 @@ export default {
     text-align: center;
     .module-wrapper {
       display: inline-block;
-      
+
       &:hover {
         cursor: pointer;
         .module-container {

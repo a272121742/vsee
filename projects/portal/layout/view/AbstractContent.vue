@@ -458,28 +458,28 @@ export default {
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     background: #89CDDA;
   }
   &::-webkit-scrollbar-track {
-    -webkit-box-shadow: 0;
+    box-shadow: 0;
     border-radius: 4px;
     background: transparent;
   }
   &::-webkit-scrollbar-thumb:horizontal { /*水平滚动条的样式*/
     width: 4px;
     background-color: transparent;
-    -webkit-border-radius: 6px;
+    border-radius: 6px;
   }
   &::-webkit-scrollbar-track-piece {
     background-color: transparent; /*滚动条的背景颜色*/
-    -webkit-border-radius: 0; /*滚动条的圆角宽度*/
+    border-radius: 0; /*滚动条的圆角宽度*/
   }
 
   &::-webkit-scrollbar-thumb:vertical { /*垂直滚动条的样式*/
     height: 50px;
     background-color: #e6f7ff;
-    -webkit-border-radius: 4px;
+    border-radius: 4px;
     outline: 2px solid #fff;
     outline-offset: -2px;
     border: 2px solid #FFF;
@@ -487,7 +487,7 @@ export default {
   &::-webkit-scrollbar-thumb:hover { /*滚动条的hover样式*/
     height: 50px;
     background-color: #40a9ff;
-    -webkit-border-radius: 4px;
+    border-radius: 4px;
   }
 
 </style>

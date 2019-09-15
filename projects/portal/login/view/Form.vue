@@ -6,14 +6,14 @@
     <!-- 用户名 -->
     <a-form-item>
       <v-input
-        allow-clear
-        autocomplete="off"
-        size="large"
-        :placeholder="$t('username.placeholder')"
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
         }]"
+        allow-clear
+        autocomplete="off"
+        size="large"
+        :placeholder="$t('username.placeholder')"
         class="background-white-50"
       >
         <a-icon
@@ -25,15 +25,15 @@
     </a-form-item>
     <!-- 密码 -->
     <a-form-item>
-      <password 
-        autocomplete="off"
-        allow-clear
-        size="large"
-        :placeholder="$t('password.placeholder')"
+      <password
         v-decorator="['password', {
           initialValue: record.password,
           rules: [{type: 'string', required: true, message: $t('password.required_message')}]
         }]"
+        autocomplete="off"
+        allow-clear
+        size="large"
+        :placeholder="$t('password.placeholder')"
         class="background-white-50"
       >
         <a-icon
@@ -46,16 +46,16 @@
     <!-- 验证码 -->
     <a-form-item>
       <captcha-input
+        v-decorator="['captcha', {
+          rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
+        }]"
         autocomplete="off"
         allow-clear
         size="large"
         :url="`/auth/captcha?uuid=${record.uuid}`"
         :placeholder="$t('captcha.placeholder')"
-        @click-captcha="captchaChange"
-        v-decorator="['captcha', {
-          rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
-        }]"
         class="background-white-50"
+        @click-captcha="captchaChange"
       >
         <a-icon
           slot="prefix"
@@ -65,19 +65,19 @@
       </captcha-input>
     </a-form-item>
     <a-form-item>
-      <a-checkbox 
-        :checked="remember" 
+      <a-checkbox
+        :checked="remember"
         @change="e => remember = e.target.checked"
       >
-        {{ $t('remember.text')}}
+        {{ $t('remember.text') }}
       </a-checkbox>
     </a-form-item>
     <a-form-item>
       <a-input
-        type="hidden"
         v-decorator="['uuid', {initialValue: record.uuid}]"
+        type="hidden"
       >
-    </a-input>
+      </a-input>
     </a-form-item>
     <a-form-item>
       <a-button
@@ -85,7 +85,7 @@
         block
         html-type="submit"
       >
-        {{ $t('login.submit')}}
+        {{ $t('login.submit') }}
       </a-button>
     </a-form-item>
   </a-form>
@@ -102,8 +102,7 @@ export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
     CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
-    Password: () => import('@comp/form/Password.vue'),
-    Captcha: () => import('@comp/image/Captcha.vue'),
+    Password: () => import('@comp/form/Password.vue')
   },
   data () {
     return {
@@ -118,17 +117,17 @@ export default {
         username: null,
         password: null,
         captcha: null,
-        uuid: getUUID(),
+        uuid: getUUID()
       },
       /**
        * 是否记住密码
        */
-      remember: false,
+      remember: false
     }
   },
   created () {
     this.recovery();
-    this.form = this.$form.createForm(this, createFormFields(this, ['username','password', 'captcha', 'uuid'], 'record'));
+    this.form = this.$form.createForm(this, createFormFields(this, ['username', 'password', 'captcha', 'uuid'], 'record'));
   },
   methods: {
     ...mapActions(['login']),
@@ -146,7 +145,7 @@ export default {
     /**
      * 提交数据
      */
-    handleSubmit (e) {
+    handleSubmit () {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
           this.login(loginInfo).then(res => {
@@ -154,20 +153,18 @@ export default {
               console.log(this.$route, this.$router);
               const goPage = this.$route.query.redirect || '/';
               if (this.$router.matcher.match(goPage).name === '404') {
-                this.$router.push({path: '/'});
+                this.$router.push({ path: '/' });
               } else {
-                this.$router.push({path: this.$route.query.redirect});
+                this.$router.push({ path: this.$route.query.redirect });
               }
-              // this.$router.push({path: '/'});
-              // window.location.href="/";
               if (this.remember) {
                 this.$store.commit('cacheLoginInfo', loginInfo);
               } else {
                 this.$store.commit('cleanLoginInfo', loginInfo);
               }
             }
-          }).catch(err => {
-            this.$message.error(this.$t(err));
+          }).catch(errCode => {
+            this.$message.error(this.$t(errCode));
             this.captchaChange();
           })
         }
