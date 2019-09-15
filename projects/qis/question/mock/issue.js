@@ -85,7 +85,7 @@ const list = mock({
   // 43. string 试验类型
   testType: '试验类型@string("number", 1)',
   // 44. string 标题：北汽新能源规则：车型-所属功能-故障名称
-  title: function () {
+  title () {
     return [this.vehicleModelName, this.faultTreeIds2, this.faultTreeIds3].join('-')
   },
   // 45. string 修改时间

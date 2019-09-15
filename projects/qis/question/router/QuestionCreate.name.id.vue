@@ -2,88 +2,145 @@
   <div id="components-form-demo-advanced-search">
     <div class="TopButton">
       <div class="backButton">
-        <a-button slot="tabBarExtraContent" class="backBtn" @click="goBack">
+        <a-button
+          slot="tabBarExtraContent"
+          class="backBtn"
+          @click="goBack"
+        >
           <img src="/static/question/back.png" />
           返回
         </a-button>
       </div>
       <div class="rightButton">
-        <a-button type="primary" html-type="submit" @click="handleSubmit" class="submitBtn" v-if="submitBtn">
+        <a-button
+          type="primary"
+          html-type="submit"
+          @click="handleSubmit"
+          class="submitBtn"
+          v-if="submitBtn"
+        >
           提交
         </a-button>
-        <a-button :style="{ marginLeft: '8px' }" @click="handleSave" type="primary" :class="[actiive]">
+        <a-button
+          :style="{ marginLeft: '8px' }"
+          @click="handleSave"
+          type="primary"
+          :class="[actiive]"
+        >
           保存
         </a-button>
-        <a-button :style="{ marginLeft: '8px' }" @click="handleReset" class="cancelBtn">
+        <a-button
+          :style="{ marginLeft: '8px' }"
+          @click="handleReset"
+          class="cancelBtn"
+        >
           取消
         </a-button>
       </div>
     </div>
-    <a-card :title="questionTitle" class="cardTitle">
-      <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
+    <a-card
+      :title="questionTitle"
+      class="cardTitle"
+    >
+      <a-form
+        class="ant-advanced-search-form"
+        :form="form"
+        @submit="handleSearch"
+      >
         <div>
           <div class="collapse-title">
-            <a-icon :type="BaseIcon" style="margin-right:10px" />基本信息</div>
+            <a-icon
+              :type="BaseIcon"
+              style="margin-right:10px"
+            />基本信息
+          </div>
           <div>
             <div :class="[BaseContent]">
               <div class="pageTitle">
                 <span>问题标题：</span>
-                <div v-if="carTitle||faultTreeIds2Title||codeTitle" style="display:inline-block;">
+                <div
+                  v-if="carTitle||faultTreeIds2Title||codeTitle"
+                  style="display:inline-block;"
+                >
                   <span class="carTitle">{{ carTitle }}</span>
                   <span class="faultTreeIds2Title"> {{ faultTreeIds2Title }}</span>
                   <span class="codeTitle">{{ codeTitle }}</span>
                 </div>
-
               </div>
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`车型`">
-                    <net-select url="/masterdata/v1/vehiclemodel" showSearch :transform="selectOption"  
-                      :filterOption="filterOption" @change="vehicleModelIdChange" placeholder="请选择" :allow-clear="true"
+                    <net-select
+                      url="/masterdata/v1/vehiclemodel"
+                      show-search
+                      :transform="selectOption"
+                      :filter-option="filterOption"
+                      @change="vehicleModelIdChange"
+                      placeholder="请选择"
+                      :allow-clear="true"
                       v-decorator="[
-                      'vehicleModelId',
-                      {rules:[{required:true, message:'请选择车型'}]}
-                  ]"></net-select>
+                        'vehicleModelId',
+                        {rules:[{required:true, message:'请选择车型'}]}
+                      ]"
+                    ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属系统`">
-                    <net-select url="/issue/v1/faultcategory?p_id=0" show-search :transform="selectOption"
-                      :delay="!isEdit" placeholder="请选择" @change="handleSystem"
-                      :filterOption="filterOption" :allow-clear="true" v-decorator="[
-                      'faultTreeIds1',
-                      {rules:[{required:true, message:'请选择所属系统'}]}
-                    ]">
-
+                    <net-select
+                      url="/issue/v1/faultcategory?p_id=0"
+                      show-search
+                      :transform="selectOption"
+                      :delay="!isEdit"
+                      placeholder="请选择"
+                      @change="handleSystem"
+                      :filter-option="filterOption"
+                      :allow-clear="true"
+                      v-decorator="[
+                        'faultTreeIds1',
+                        {rules:[{required:true, message:'请选择所属系统'}]}
+                      ]"
+                    >
                     </net-select>
-
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
-                    <net-select showSearch placeholder="请选择" :filterOption="filterOption"
+                    <net-select
+                      show-search
+                      placeholder="请选择"
+                      :filter-option="filterOption"
                       :delay="!isEdit"
                       :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
-                      :cache="false" :transform="selectOption"
-                      @change="faultTreeIds2Change" :allow-clear="true" v-decorator="[
-                      'faultTreeIds2',
-                      {rules:[{required:true, message:'请选择所属系统'}]}
-                    ]">
-
+                      :cache="false"
+                      :transform="selectOption"
+                      @change="faultTreeIds2Change"
+                      :allow-clear="true"
+                      v-decorator="[
+                        'faultTreeIds2',
+                        {rules:[{required:true, message:'请选择所属系统'}]}
+                      ]"
+                    >
                     </net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
-                    <net-select show-search  placeholder="请选择" :delay="!isEdit"
-                      :filterOption="filterOption" @change="faultTreeIds3Change"
+                    <net-select
+                      show-search
+                      placeholder="请选择"
+                      :delay="!isEdit"
+                      :filter-option="filterOption"
+                      @change="faultTreeIds3Change"
                       :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
-                       :cache="false"
+                      :cache="false"
                       :transform="selectOption"
-                      :allow-clear="true" v-decorator="[
-                      'faultTreeIds3',
-                      {rules:[{required:true, message:'请选择故障代码'}]}
-                    ]">
+                      :allow-clear="true"
+                      v-decorator="[
+                        'faultTreeIds3',
+                        {rules:[{required:true, message:'请选择故障代码'}]}
+                      ]"
+                    >
                     </net-select>
                   </a-form-item>
                 </a-col>
@@ -91,43 +148,65 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`问题分类`">
-                    <net-select show-search  placeholder="请选择" :filterOption="filterOption"
-                      url="/sys/dict?dictType=issue_source" :transform="selectOptiondict" :allow-clear="true"
+                    <net-select
+                      show-search
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_source"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                       v-decorator="[
-                      'source',
-                      {rules:[{required:true, message:'请选择问题分类'}]}
-                    ]">
+                        'source',
+                        {rules:[{required:true, message:'请选择问题分类'}]}
+                      ]"
+                    >
                     </net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`严重等级`">
-                    <net-select showSearch  placeholder="请选择" :filterOption="filterOption"
-                      url="/sys/dict?dictType=issue_grade" :transform="selectOptiondict" :allow-clear="true"
+                    <net-select
+                      show-search
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_grade"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                       v-decorator="[
-                      'grade',
-                      {rules:[{required:true, message:'请选择严重等级'}]}
-                    ]">
+                        'grade',
+                        {rules:[{required:true, message:'请选择严重等级'}]}
+                      ]"
+                    >
                     </net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题阶段`">
-                    <net-select showSearch  placeholder="请选择" :filterOption="filterOption"
-                      url="/sys/dict?dictType=issue_phase" :transform="selectOptiondict" :allow-clear="true"
+                    <net-select
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/sys/dict?dictType=issue_phase"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                       v-decorator="[
-                      'projectPhase',
-                      {rules:[{required:true, message:'请选择问题阶段'}]}
-                    ]">
+                        'projectPhase',
+                        {rules:[{required:true, message:'请选择问题阶段'}]}
+                      ]"
+                    >
                     </net-select>
-
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障发生日期`">
-                    <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
-                      'failureDate'
-                    ]" />
+                    <a-date-picker
+                      format="YYYY-MM-DD HH:mm:ss"
+                      show-time
+                      style="width:231px;"
+                      v-decorator="[
+                        'failureDate'
+                      ]"
+                    />
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -135,191 +214,304 @@
                 <a-col :span="6">
                   <a-form-item :label="`生产基地`">
                     <!-- TODO:  何莎 回显数据的时候下拉框无法匹配数据 -->
-                    <net-select showSearch  placeholder="请选择" :filterOption="filterOption"
-                      url="/masterdata/v1/manufactureBase" :transform="selectOptionBase" :allow-clear="true"
+                    <net-select
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      url="/masterdata/v1/manufactureBase"
+                      :transform="selectOptionBase"
+                      :allow-clear="true"
                       v-decorator="[
-                      'manufactureBaseId',
-                      {rules:[{required:true, message:'请选择生产基地'}]}
-                    ]" />
-
+                        'manufactureBaseId',
+                        {rules:[{required:true, message:'请选择生产基地'}]}
+                      ]"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`责任部门`">
-                    <net-select showSearch  placeholder="请选择" :filterOption="filterOption"
-                      :url="`/issue/faultTree?fault_category_id=${record.faultTreeIds2}`" :transform="selectOption"
-                      :allow-clear="true" v-decorator="[
-                      'responsibleDepartmentId',
-                    ]">
+                    <net-select
+                      show-search-
+                      placeholder="请选择"
+                      :filter-option="filterOption"
+                      :url="`/issue/faultTree?fault_category_id=${record.faultTreeIds2}`"
+                      :transform="selectOption"
+                      :allow-clear="true"
+                      v-decorator="[
+                        'responsibleDepartmentId',
+                      ]"
+                    >
                     </net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题频次`">
-                    <v-input allow-clear placeholder="请输入" v-decorator="[
-                      'frequency',
-                    ]" />
+                    <v-input
+                      allow-clear
+                      placeholder="请输入"
+                      v-decorator="[
+                        'frequency',
+                      ]"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`相关人手机`" class="quesetionContact">
-                    <!-- TODO: 何莎  v-input  回显数据绑定数据源失败-->
-                    <v-input allow-clear placeholder="请输入" v-decorator="[
-                      'contact',
-                    ]" />
-
+                  <a-form-item
+                    :label="`相关人手机`"
+                    class="quesetionContact"
+                  >
+                    <v-input
+                      allow-clear
+                      placeholder="请输入"
+                      v-decorator="[
+                        'contact',
+                      ]"
+                    />
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="16">
-                  <a-form-item class="form-item-flex-2" :label="`问题描述`">
-                    <v-textarea placeholder="输入" allow-clear v-decorator="[
-                      'description',
-                      {rules: [{ required: true, message: '请输入问题描述' }]}
-                    ]" />
-
+                  <a-form-item
+                    class="form-item-flex-2"
+                    :label="`问题描述`"
+                  >
+                    <v-textarea
+                      placeholder="输入"
+                      allow-clear
+                      v-decorator="[
+                        'description',
+                        {rules: [{ required: true, message: '请输入问题描述' }]}
+                      ]"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :span="8">
                   <a-form-item :label="`附件`">
-                    <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers"
-                      name="file" :multiple="true" :fileList="fileList" @change="handleChange" :remove="removeFile">
+                    <a-upload
+                      action="/api/issue/v1/file/upload?recType=10021003"
+                      :headers="headers"
+                      name="file"
+                      :multiple="true"
+                      :file-list="fileList"
+                      @change="handleChange"
+                      :remove="removeFile"
+                    >
                       <a-button>
                         <a-icon type="upload" /> 上传文件
                       </a-button>
                     </a-upload>
                   </a-form-item>
-
                 </a-col>
               </a-row>
             </div>
           </div>
         </div>
         <div>
-          <div class="collapse-title" @click="SuppelyOpen">           
-            <a-icon :type="SuppelyIcon" style="margin-right:10px"  />
+          <div
+            class="collapse-title"
+
+            @click="SuppelyOpen"
+          >
+            <a-icon
+              :type="SuppelyIcon"
+              style="margin-right:10px"
+            />
             补充信息
           </div>
-           <div :class="supplyContent">
+          <div :class="supplyContent">
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`VIN`">
-                  <v-input allow-clear placeholder="请输入" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'vinNo',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`祸首件`">
-                  <net-select showSearch  :filterOption="filterOption" url="/masterdata/v1/part" placeholder="请选择"
-                    :transform="selectOption" :allow-clear="true" v-decorator="[
+                  <net-select
+                    show-search-
+                    :filter-option="filterOption"
+                    url="/masterdata/v1/part"
+                    placeholder="请选择"
+                    :transform="selectOption"
+                    :allow-clear="true"
+                    v-decorator="[
                       'firstCausePart',
-
-                  ]"></net-select>
-
+                    ]"
+                  ></net-select>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`零件号`">
-                  <net-select showSearch  :filterOption="filterOption" url="/masterdata/v1/part" placeholder="请选择"
-                    :transform="selectOption" :allow-clear="true" v-decorator="[
+                  <net-select
+                    show-search-
+                    :filter-option="filterOption"
+                    url="/masterdata/v1/part"
+                    placeholder="请选择"
+                    :transform="selectOption"
+                    :allow-clear="true"
+                    v-decorator="[
                       'partId',
-
-                  ]"></net-select>
+                    ]"
+                  ></net-select>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`供应商名称`">
-                  <net-select showSearch  :filterOption="filterOption" url="/masterdata/v1/supplier" placeholder="请选择"
-                    :transform="selectOption" :allow-clear="true" v-decorator="[
+                  <net-select
+                    show-search-
+                    :filter-option="filterOption"
+                    url="/masterdata/v1/supplier"
+                    placeholder="请选择"
+                    :transform="selectOption"
+                    :allow-clear="true"
+                    v-decorator="[
                       'supplierId',
-
-                  ]"></net-select>
-
+                    ]"
+                  ></net-select>
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`生产时间`">
-                  <a-date-picker format="YYYY-MM-DD HH:mm:ss" show-time style="width:231px;" v-decorator="[
+                  <a-date-picker
+                    format="YYYY-MM-DD HH:mm:ss"
+                    show-time
+                    style="width:231px;"
+                    v-decorator="[
                       'productDate'
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`试验类型`">
-                  <net-select showSearch  :filterOption="filterOption" url="/sys/dict?dictType=issue_test_type" placeholder="请选择"  :transform="selectOptiondict" :allow-clear="true" v-decorator="[
-                                          'testType',                   ]"></net-select>
+                  <net-select
+                    show-search-
+                    :filter-option="filterOption"
+
+                    url="/sys/dict?dictType=issue_test_type"
+
+                    placeholder="请选择"
+
+                    :transform="selectOptiondict"
+
+                    :allow-clear="true"
+
+                    v-decorator="[
+                      'testType',
+                    ]"
+                  ></net-select>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`故障里程（Km）`">
-                  <v-input allow-clear placeholder="请输入                                       Km" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入                                       Km"
+                    v-decorator="[
                       'milage',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`维修网点`">
-                  <v-input allow-clear placeholder="请输入" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'maintenanceStation',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row :gutter="24">
-
               <a-col :span="6">
                 <a-form-item :label="`软件版本号`">
-                  <v-input allow-clear placeholder="请输入" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'softwareVersion',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`标定版本号`">
-                  <v-input allow-clear placeholder="请输入" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'calibrationVersion',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`硬件版本号`">
-                  <v-input allow-clear placeholder="请输入" v-decorator="[
+                  <v-input
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'hardwareVersion',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`配置字版本号`">
-                  <v-input placeholder="请输入" allow-clear v-decorator="[
+                  <v-input
+                    placeholder="请输入"
+                    allow-clear
+                    v-decorator="[
                       'confirmationVersion',
-                    ]" />
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row :gutter="24">
               <a-col :span="6">
                 <a-form-item :label="`工况信息`">
-                  <v-textarea allow-clear placeholder="请输入" v-decorator="[
+                  <v-textarea
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'workConditionInfo',
-                    ]"></v-textarea>
+                    ]"
+                  ></v-textarea>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`初步排查情况`">
-                  <v-textarea allow-clear placeholder="请输入" v-decorator="[
+                  <v-textarea
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'preliminaryInvestigation',
-                    ]"></v-textarea>
+                    ]"
+                  ></v-textarea>
                 </a-form-item>
               </a-col>
               <a-col :span="12">
                 <a-form-item :label="`备注`">
-                  <v-textarea allow-clear placeholder="请输入" v-decorator="[
+                  <v-textarea
+                    allow-clear
+                    placeholder="请输入"
+                    v-decorator="[
                       'remark',
-                    ]"></v-textarea>
+                    ]"
+                  ></v-textarea>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -330,480 +522,438 @@
   </div>
 </template>
 <script>
-  import {
-    createFormFields,
-    autoUpdateFileds
-  } from '@util/formhelper.js';
-  import Axios from 'axios';
-  import {
-    createNamespacedHelpers
-  } from 'vuex';
-  import moment from 'moment';
+import {
+  createFormFields,
+  autoUpdateFileds
+} from '@util/formhelper.js';
+import Axios from 'axios';
+import {
+  createNamespacedHelpers
+} from 'vuex';
+import moment from 'moment';
 
-  const {
-    mapActions
-  } = createNamespacedHelpers('question');
+const {
+  mapActions
+} = createNamespacedHelpers('question');
 
-  export default {
-    name: 'QuestionCreate',
-    components: {
-      NetSelect: () => import('@comp/form/NetSelect.vue'),
-      VInput: () => import('@comp/form/VInput.vue'),
-      VTextarea: () => import('@comp/form/VTextarea.vue'),
-      NetButton: () => import('@comp/button/NetButton.vue'),
-      PreventButton: () => import('@comp/button/PreventButton.vue'),
-    },
+export default {
+  name: 'QuestionCreate',
+  components: {
+    NetSelect: () => import('@comp/form/NetSelect.vue'),
+    VInput: () => import('@comp/form/VInput.vue'),
+    VTextarea: () => import('@comp/form/VTextarea.vue')
+  },
 
-    props: ['name', 'id'],
-    data() {
-      const {
-        $store
-      } = this;
-      return {
-        businessKey: '',
-        businessTitle: '',
-        fileList: [], //上传附件列表
-        dataFileList: [], //存储到数据库的列表
-        BaseContent: '',
-        supplyContent: 'ContentDiv',
-        DetailBase: true, //基本信息是否展开标识
-        DetailSuppely: false, //补充信息是否展开标识
-        BaseIcon: "down",
-        SuppelyIcon: "down",
-        questionTitle: '创建问题',
-        optCounter: '',
-        expand: false,
-        form: null,
-        functionUrl: '', //所属功能请求地址
-        actiive: '',
-        detailList: [], // 编辑显示
-        submitBtn: false, // 是否显示提交按钮
-        titleFlag: false, // 问题标题是否显示
-        carTitle: '', // 车型标题
-        faultTreeIds2Title: '', // 功能标题，
-        codeTitle: '', // 故障代码标题
-        labelCol: {
-          // xs: { span: 24 },
-          sm: {
-            span: 8
-          }
-        },
-        wrapperCol: {
-          // xs: { span: 24 },
-          sm: {
-            span: 16
-          }
-        },
-        headers: {
-          authorization: 'authorization-text',
-          token: $store.getters.getToken()
-        },
-        // 数据模板
-        record: {
-          "faultTreeIds1": "", // 所属系统
-          "faultTreeIds2": "", // 所属功能
-          "faultTreeIds3": "", // 故障代码
-          "grade": "", // 严重等级
-          "source": "", // 问题分类
-          "vehicleModelId": "", // 车型
-          "projectPhase": "", // 问题阶段
-          "manufactureBaseId": "", // 生产基地
-          "failureDate": null, // 故障发生日期
-          "frequency": '', // 问题频次
-          "responsibleDepartmentId": "", // 责任部门
-          "description": '', // 问题描述
-          "file": '', // 文件上传
-          "contact": '', // 问题相关人员联系方式
-          /**
+  props: ['name', 'id'],
+  data () {
+    const {
+      $store
+    } = this;
+    return {
+      businessKey: '',
+      businessTitle: '',
+      fileList: [], // 上传附件列表
+      dataFileList: [], // 存储到数据库的列表
+      BaseContent: '',
+      supplyContent: 'ContentDiv',
+      DetailBase: true, // 基本信息是否展开标识
+      DetailSuppely: false, // 补充信息是否展开标识
+      BaseIcon: 'down',
+      SuppelyIcon: 'down',
+      questionTitle: '创建问题',
+      optCounter: '',
+      expand: false,
+      form: null,
+      functionUrl: '', // 所属功能请求地址
+      actiive: '',
+      detailList: [], // 编辑显示
+      submitBtn: false, // 是否显示提交按钮
+      titleFlag: false, // 问题标题是否显示
+      carTitle: '', // 车型标题
+      faultTreeIds2Title: '', // 功能标题，
+      codeTitle: '', // 故障代码标题
+      labelCol: {
+        // xs: { span: 24 },
+        sm: {
+          span: 8
+        }
+      },
+      wrapperCol: {
+        // xs: { span: 24 },
+        sm: {
+          span: 16
+        }
+      },
+      headers: {
+        authorization: 'authorization-text',
+        token: $store.getters.getToken()
+      },
+      // 数据模板
+      record: {
+        faultTreeIds1: '', // 所属系统
+        faultTreeIds2: '', // 所属功能
+        faultTreeIds3: '', // 故障代码
+        grade: '', // 严重等级
+        source: '', // 问题分类
+        vehicleModelId: '', // 车型
+        projectPhase: '', // 问题阶段
+        manufactureBaseId: '', // 生产基地
+        failureDate: null, // 故障发生日期
+        frequency: '', // 问题频次
+        responsibleDepartmentId: '', // 责任部门
+        description: '', // 问题描述
+        file: '', // 文件上传
+        contact: '', // 问题相关人员联系方式
+        /**
            * 补充信息
            */
-          "testType": "", // 试验类型
-          "firstCausePart": "", // 祸首件
-          "partId": "", // 零件号
-          "supplierId": "", // 供应商名称
-          "softwareVersion": '', // 软件版本号
-          "calibrationVersion": '', // 标定版本号
-          "hardwareVersion": '', // 硬件版本号
-          "confirmationVersion": '', // 配置字版本号
-          "vinNo": '', // Vin
-          "productDate": null, // 生产时间
-          "maintenanceStation": '', // 维修网点
-          "milage": '',
-          "remark": '',
-          "workConditionInfo": '', //工况信息
+        testType: '', // 试验类型
+        firstCausePart: '', // 祸首件
+        partId: '', // 零件号
+        supplierId: '', // 供应商名称
+        softwareVersion: '', // 软件版本号
+        calibrationVersion: '', // 标定版本号
+        hardwareVersion: '', // 硬件版本号
+        confirmationVersion: '', // 配置字版本号
+        vinNo: '', // Vin
+        productDate: null, // 生产时间
+        maintenanceStation: '', // 维修网点
+        milage: '',
+        remark: '',
+        workConditionInfo: '' // 工况信息
 
-        }
-      };
-    },
-    computed: {
-      isEdit() {
+      }
+    };
+  },
+  computed: {
+    isEdit () {
+      return this.name !== 'create';
+    }
+  },
+  created () {
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+    // 初始化
+    this.init();
+  },
+  methods: {
+    ...mapActions([
+      'addQuestion',
+      'commitQuestion',
+      'updateQuestion',
+      'getQuestionPage',
+      'eidtQuestion',
+      'saveQuestion',
+      'editSaveQuestion',
+      'workFlowSubmit'
+    ]),
+    // 初始化
+    init () {
+      if (this.name === 'create') {
+        this.questionTitle = '创建问题';
+        this.submitBtn = true;
+        this.actiive = 'saveBtn';
+      } else if (this.name === 'edit') {
+        this.questionTitle = '编辑问题';
+        this.submitBtn = false;
+        this.actiive = 'activeClass';
 
-        return this.name !== 'create';
+        this.eidtQuestion(this.id).then(res => {
+          this.record = res;
+
+          this.optCounter = res.optCounter;
+          // 日期格式回显
+          if (res.failureDate) {
+            const failureDate = moment(res.failureDate);
+            this.record.failureDate = failureDate;
+          }
+          if (res.productDate) {
+            const productDate = moment(res.productDate);
+            this.record.productDate = productDate;
+          }
+
+
+          this.form.updateFields(this.mapPropsToFields());
+
+          this.carTitle = this.record.vehicleModelName; // 车型标题
+          this.faultTreeIds2Title = this.record.faultTreeIds2Name; // 功能标题，
+          this.codeTitle = this.record.faultTreeIds3Name; // 故障代码标题
+        });
       }
     },
-    created() {
-      this.form = this.$form.createForm(this, {
-        mapPropsToFields: this.mapPropsToFields,
-        onValuesChange: autoUpdateFileds(this, 'record')
-      });
-      // 初始化
-      this.init();
+    // //自定义文件上传
+    // customRequest(data) {
+
+    //   const formData = new FormData()
+    //   formData.append('file', data.file)
+    //   formData.append('token', data.headers.token) //随便写一个token示例
+    //   this.saveFile(formData)
+    // },
+    // saveFile(formData) {
+    //   debugger;
+
+    //   Axios({
+    //     url: "http://106.75.63.69:8080/issue/v1/file/upload?recType=10021003",
+    //     method: 'post',
+    //     data: formData
+    //   }) .then((response) => {
+    //       console.log(response)
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error)
+    //     })
+
+
+    // },
+    // 基本信息是否展开
+    BaseOpen () {
+      if (this.DetailBase) {
+        this.DetailBase = false;
+        this.BaseContent = 'BaseContent';
+        this.BaseIcon = 'right';
+      } else {
+        this.DetailBase = true;
+        this.BaseIcon = 'down';
+        this.BaseContent = 'ContentDiv';
+      }
     },
-    methods: {
-      ...mapActions([
-        'addQuestion',
-        'commitQuestion',
-        'updateQuestion',
-        'getQuestionPage',
-        'eidtQuestion',
-        'saveQuestion',
-        'editSaveQuestion',
-        'workFlowSubmit'
-      ]),
-      // 初始化
-      init() {
+    SuppelyOpen () {
+      if (this.DetailSuppely) {
+        this.supplyContent = 'ContentDiv'
+        this.SuppelyIcon = 'down';
+        this.DetailSuppely = false;
+      } else {
+        this.SuppelyIcon = 'right';
+        this.supplyContent = 'supplyContent'
+        this.DetailSuppely = true;
+      }
+    },
+    selectOption (input, option) {
+      const optionArray = [];
 
-        if (this.name === 'create') {
-          this.questionTitle = '创建问题';
-          this.submitBtn = true;
-          this.actiive = 'saveBtn';
-        } else if (this.name === 'edit') {
-          this.questionTitle = '编辑问题';
-          this.submitBtn = false;
-          this.actiive = 'activeClass';
-
-          this.eidtQuestion(this.id).then(res => {
-
-            this.record = res;
-
-            this.optCounter = res.optCounter;
-            //日期格式回显
-            if (res.failureDate) {
-              let failureDate = moment(res.failureDate);
-              this.record.failureDate = failureDate;
-            }
-            if (res.productDate) {
-              let productDate = moment(res.productDate);
-              this.record.productDate = productDate;
-            }
-
-
-            this.form.updateFields(this.mapPropsToFields());
-
-            this.carTitle = this.record.vehicleModelName; // 车型标题
-            this.faultTreeIds2Title = this.record.faultTreeIds2Name; // 功能标题，
-            this.codeTitle = this.record.faultTreeIds3Name; // 故障代码标题
-          });
-
-
-        }
-      },
-      // //自定义文件上传
-      // customRequest(data) {
-
-      //   const formData = new FormData()
-      //   formData.append('file', data.file)
-      //   formData.append('token', data.headers.token) //随便写一个token示例
-      //   this.saveFile(formData)
-      // },
-      // saveFile(formData) {
-      //   debugger;
-
-      //   Axios({
-      //     url: "http://106.75.63.69:8080/issue/v1/file/upload?recType=10021003",
-      //     method: 'post',
-      //     data: formData
-      //   }) .then((response) => {
-      //       console.log(response)
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error)
-      //     })
-
-
-      // },
-      //基本信息是否展开
-      BaseOpen() {
-
-        if (this.DetailBase) {
-          this.DetailBase = false;
-          this.BaseContent = "BaseContent";
-          this.BaseIcon = "right";
-        } else {
-          this.DetailBase = true;
-          this.BaseIcon = "down";
-          this.BaseContent = "ContentDiv";
-        }
-
-      },
-      SuppelyOpen() {
-
-        if (this.DetailSuppely) {
-
-          this.supplyContent = 'ContentDiv'
-          this.SuppelyIcon = "down";
-          this.DetailSuppely = false;
-        } else {
-          this.SuppelyIcon = "right";
-          this.supplyContent = 'supplyContent'
-          this.DetailSuppely = true;
-        }
-      },
-      selectOption(input, option) {
-
-        let optionArray = [];
-
-        input.forEach((item) => {
-
-          optionArray.push({
-            value: item.id,
-            label: item.name
-          })
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.name
         })
+      })
 
-        return optionArray;
-      },
-      selectOptionBase(input, option) {
-        let optionArray = [];
+      return optionArray;
+    },
+    selectOptionBase (input, option) {
+      const optionArray = [];
 
-        input.forEach((item) => {
-
-          optionArray.push({
-            value: item.id,
-            label: item.nameZh + " " + item.nameEn
-          })
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.nameZh + ' ' + item.nameEn
         })
+      })
 
-        return optionArray;
-      },
-      selectOptiondict(input, option) {
-        let optionArray = [];
+      return optionArray;
+    },
+    selectOptiondict (input, option) {
+      const optionArray = [];
 
-        input.forEach((item) => {
-
-          optionArray.push({
-            value: item.dictValue,
-            label: item.dictName
-          })
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.dictValue,
+          label: item.dictName
         })
+      })
 
-        return optionArray;
-      },
-      //所属系统选择
-      handleSystem(value) {
-        //  this.functionUrl='/issue/v1/faultcategory?p_id'+value;
-        this.record.faultTreeIds1 = value;
-      },
-      filterOption(input, option) {
+      return optionArray;
+    },
+    // 所属系统选择
+    handleSystem (value) {
+      //  this.functionUrl='/issue/v1/faultcategory?p_id'+value;
+      this.record.faultTreeIds1 = value;
+    },
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    goBack () {
+      this.$router.push({
+        path: this.$route.query.form || '/'
+      });
+    },
+    // 车型选择
+    vehicleModelIdChange (value, option) {
+      if (option !== undefined) {
+        if (option.componentOptions.children[0].text !== undefined) {
+          this.carTitle = option.componentOptions.children[0].text;
+        }
+      }
 
-        return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      },
-      goBack() {
 
-        this.$router.push({
-          path: this.$route.query.form || '/'
-        });
-      },
-      // 车型选择
-      vehicleModelIdChange(value, option) {
-        if (option != undefined) {
-          if (option.componentOptions.children[0].text != undefined) {
-            this.carTitle = option.componentOptions.children[0].text;
+      // this.carTitle = value;
+    },
+    // 所属功能选择
+    faultTreeIds2Change (value, option) {
+      if (option !== undefined) {
+        if (option.componentOptions !== undefined) {
+          if (option.componentOptions.children[0].text !== undefined) {
+            this.faultTreeIds2Title = option.componentOptions.children[0].text;
           }
         }
-
-
-
-        // this.carTitle = value;
-      },
-      // 所属功能选择
-      faultTreeIds2Change(value, option) {
-
-        if (option != undefined) {
-          if (option.componentOptions != undefined) {
-            if (option.componentOptions.children[0].text != undefined) {
-              this.faultTreeIds2Title = option.componentOptions.children[0].text;
-            }
+      }
+    },
+    faultTreeIds3Change (value, option) {
+      if (option !== undefined) {
+        if (option.componentOptions !== undefined) {
+          if (option.componentOptions.children[0].text !== undefined) {
+            this.codeTitle = option.componentOptions.children[0].text;
           }
         }
-
-      },
-      faultTreeIds3Change(value, option) {
-        if (option != undefined) {
-          if (option.componentOptions != undefined) {
-            if (option.componentOptions.children[0].text != undefined) {
-              this.codeTitle = option.componentOptions.children[0].text;
-            }
-          }
-        }
-
-      },
-      handleSubmit(e) {
-
-        this.form.validateFields((err, fieldsValue) => {
+      }
+    },
+    handleSubmit (e) {
+      this.form.validateFields((err, fieldsValue) => {
         if (!err) {
-        const data = this.form.getFieldsValue();
+          const data = this.form.getFieldsValue();
+          const primaryKey = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
+          data.faultTreeIds = primaryKey;
 
+          const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
 
-        let primaryKey = "所属系统-" + data.faultTreeIds1 + "," + "所属功能-" + data.faultTreeIds2 + "," + "故障代码-" +
-          data
-          .faultTreeIds3;
-        data.faultTreeIds = primaryKey;
+          data.title = title;
+          this.businessTitle = title;
+          // 日期格式化
+          if (data.failureDate) {
+            const failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+            data.failureDate = failureDate;
+          }
+          if (data.productDate) {
+            const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
+            data.productDate = productDate;
+          }
 
-        let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
-
-        data.title = title;
-        this.businessTitle = title;
-        //日期格式化
-        if (data.failureDate) {
-          let failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
-          data.failureDate = failureDate;
-        }
-        if (data.productDate) {
-          let productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
-          data.productDate = productDate;
-
-        }
-
-        let id = this.$store.getters.getUser();
-        id = id.__ob__.dep.id;
-
-        this.saveQuestion(data).then(res => {
-          this.businessKey = res;
-          let name = 'submit'
-
-          let param = {
-            "businessKey": this.businessKey,
-            "businessTitle": this.businessTitle,
-            "processDefinitionKey": 'BJEV1',
-            "subSys": 'irs',
-            "taskId": null,
-            "userId": id,
-            "variables": {
-              "assigner": "1",
-              "issc": '0'
-            }
-
-
-          };
-
-          this.workFlowSubmit(param).then(res => {
-
-          });
-        })
-
-        }
-        });
-      },
-      handleSave() {
-
-        const data = this.form.getFieldsValue();
-
-        let primaryKey = "所属系统-" + data.faultTreeIds1 + "," + "所属功能-" + data.faultTreeIds2 + "," + "故障代码-" + data
-          .faultTreeIds3;
-        data.faultTreeIds = primaryKey;
-        let title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
-
-        data.title = title;
-        //日期格式化
-        if (data.failureDate) {
-          let failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
-          data.failureDate = failureDate;
-        }
-        if (data.productDate) {
-          let productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
-          data.productDate = productDate;
-
-        }
-        data.fileList = this.dataFileList;
-
-        if (this.name === 'create') {
+          const id = this.$store.getters.getUser().id;
 
           this.saveQuestion(data).then(res => {
             this.businessKey = res;
+            const name = 'submit'
 
-          });
+            const param = {
+              businessKey: this.businessKey,
+              businessTitle: this.businessTitle,
+              processDefinitionKey: 'BJEV1',
+              subSys: 'irs',
+              taskId: null,
+              userId: id,
+              variables: {
+                assigner: '1',
+                issc: '0'
+              }
 
 
+            };
 
-        } else if (this.name === 'edit') {
-          data.id = this.id;
-          data.optCounter = this.optCounter;
-
-          this.editSaveQuestion(data).then(res => {
-            this.businessKey = res;
+            this.workFlowSubmit(param).then(() => {
+              // @何莎 TODO: 这里你还要做什么处理？
+            });
           })
         }
+      });
+    },
+    handleSave () {
+      const data = this.form.getFieldsValue();
 
-      },
-      handleSearch(e) {
-        e.preventDefault();
-        this.form.validateFields((error, values) => {
+      const primaryKey = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
+      data.faultTreeIds = primaryKey;
+      const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
 
+      data.title = title;
+      // 日期格式化
+      if (data.failureDate) {
+        const failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+        data.failureDate = failureDate;
+      }
+      if (data.productDate) {
+        const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
+        data.productDate = productDate;
+      }
+      data.fileList = this.dataFileList;
+
+      if (this.name === 'create') {
+        this.saveQuestion(data).then(res => {
+          this.businessKey = res;
         });
-      },
-      handleChange(info) {
+      } else if (this.name === 'edit') {
+        data.id = this.id;
+        data.optCounter = this.optCounter;
 
-        let fileList = [...info.fileList];
-        fileList = fileList.map((file) => {
-          if (file.response) {
-            // Component will show file.url as link
-            file.url = file.response.url;
-
-          }
-          return file;
-        });
-        this.fileList = fileList;
-        const status = info.file.status;
-
-        if (status === 'done') {
-          if (info.file.response != undefined) {
-
-            this.dataFileList.push(info.file.response.data)
-          }
-        }
-
-        console.log(this.dataFileList);
-
-      },
-      //删除文件
-      removeFile(file) {
-
-        const index = this.fileList.indexOf(file);
-        const newFileList = this.fileList.slice();
-        newFileList.splice(index, 1);
-        this.fileList = newFileList
-        const newDataList = this.dataFileList.slice();
-        newDataList.splice(index, 1);
-        this.dataFileList = newDataList;
-        console.log(this.dataFileList);
-      },
-      gradeChange(value) {
-
-      },
-      handleReset() {
-        this.form.resetFields();
-      },
-
-      toggle() {
-        this.expand = !this.expand;
-      },
-      /**
-       * 映射表单组件到模型字段
-       */
-      mapPropsToFields() {
-        return createFormFields(this, [
-          'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3', 'grade', 'source', 'vehicleModelId',
-          'projectPhase',
-          'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'description', 'file',
-          'contact', 'testType',
-          'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
-          'hardwareVersion', 'confirmationVersion', 'vinNo', 'productDate', 'maintenanceStation', 'milage',
-          'remark', 'workConditionInfo', 'preliminaryInvestigation'
-        ], 'record')
+        this.editSaveQuestion(data).then(res => {
+          this.businessKey = res;
+        })
       }
     },
-  };
+    handleSearch (e) {
+      e.preventDefault();
+      this.form.validateFields((error, values) => {
+
+      });
+    },
+    handleChange (info) {
+      let fileList = [...info.fileList];
+      fileList = fileList.map((file) => {
+        const result = file;
+        if (file.response) {
+          // Component will show file.url as link
+          result.url = file.response.url;
+        }
+        return result;
+      });
+      this.fileList = fileList;
+      const status = info.file.status;
+
+      if (status === 'done') {
+        if (info.file.response !== undefined) {
+          this.dataFileList.push(info.file.response.data)
+        }
+      }
+
+      console.log(this.dataFileList);
+    },
+    // 删除文件
+    removeFile (file) {
+      const index = this.fileList.indexOf(file);
+      const newFileList = this.fileList.slice();
+      newFileList.splice(index, 1);
+      this.fileList = newFileList
+      const newDataList = this.dataFileList.slice();
+      newDataList.splice(index, 1);
+      this.dataFileList = newDataList;
+      console.log(this.dataFileList);
+    },
+    gradeChange (value) {
+
+    },
+    handleReset () {
+      this.form.resetFields();
+    },
+
+    toggle () {
+      this.expand = !this.expand;
+    },
+    /**
+       * 映射表单组件到模型字段
+       */
+    mapPropsToFields () {
+      return createFormFields(this, [
+        'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3', 'grade', 'source', 'vehicleModelId',
+        'projectPhase',
+        'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'description', 'file',
+        'contact', 'testType',
+        'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
+        'hardwareVersion', 'confirmationVersion', 'vinNo', 'productDate', 'maintenanceStation', 'milage',
+        'remark', 'workConditionInfo', 'preliminaryInvestigation'
+      ], 'record')
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>

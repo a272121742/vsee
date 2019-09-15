@@ -12,7 +12,7 @@
         v-bind="filterTitle(col)"
       >
         <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
-        <template slot-scope="text, record">
+        <template slot-scope="text">
           {{ text }}
         </template>
       </a-table-column>
@@ -32,7 +32,7 @@
           locale-path="issue"
         ></col-provider>
       </template>
-      <template slot-scope="text, record, index">
+      <template slot-scope="text, record">
         <slot
           name="action"
           v-bind="record"
@@ -92,7 +92,7 @@ export default {
       /**
        * 列信息
        */
-      columns: issue_columns
+      columns: issueColumns
     }
   },
   computed: {
