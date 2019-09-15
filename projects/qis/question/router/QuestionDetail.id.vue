@@ -114,7 +114,7 @@
                 @change="handleChange"
               >
                 <a-button>
-                  <a-icon type="upload" />
+                  <a-icon type="upload"/>
                   上传文件
                 </a-button>
               </a-upload>
@@ -310,7 +310,7 @@
           class="backBtn"
           @click="goBack"
         >
-          <img src="/static/question/back.png" />
+          <img src="/static/question/back.png"/>
           返回
         </a-button>
       </div>
@@ -724,7 +724,7 @@
                     @change="handleChange"
                   >
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -850,7 +850,7 @@
                         @change="handleChange"
                       >
                         <a-button>
-                          <a-icon type="upload" />
+                          <a-icon type="upload"/>
                           上传文件
                         </a-button>
                       </a-upload>
@@ -1022,7 +1022,7 @@
               <div class="analysisTable">
                 <div>
                   <a-row>
-                   <span>审核结果：</span>
+                    <span>审核结果：</span>
                   </a-row>
                   <a-row>
                     <a-form-item :label="'审批：'">
@@ -1234,7 +1234,7 @@
                     ]"
                   >
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1339,7 +1339,7 @@
                     @change="handleChange"
                   >
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1532,7 +1532,7 @@
                     @change="handleChange"
                   >
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1732,7 +1732,7 @@
                     @change="handleChange"
                   >
                     <a-button>
-                      <a-icon type="upload" />
+                      <a-icon type="upload"/>
                       上传文件
                     </a-button>
                   </a-upload>
@@ -1789,7 +1789,7 @@
                       style="text-align:center;"
                       @click="showUpdate()"
                     >
-                      <a-icon type="plus-circle" />
+                      <a-icon type="plus-circle"/>
                       添加新的更新文件
                     </div>
                   </div>
@@ -1903,482 +1903,478 @@
   </div>
 </template>
 <script>
-import {
-  createFormFields,
-  autoUpdateFileds
-} from '@util/formhelper.js';
-import {
-  createNamespacedHelpers
-} from 'vuex';
-import moment from 'moment';
+  import {autoUpdateFileds, createFormFields} from '@util/formhelper.js';
+  import {createNamespacedHelpers} from 'vuex';
+  import moment from 'moment';
 
-const {
-  mapActions
-} = createNamespacedHelpers('question');
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'no',
-    scopedSlots: {
-      customRender: 'no'
-    }
-  }, {
-    title: '附件名称',
-    dataIndex: 'name',
-    scopedSlots: {
-      customRender: 'name'
-    }
-  }, {
-    title: '上传时间',
-    dataIndex: 'uploadTime',
-    scopedSlots: {
-      customRender: 'uploadTime'
-    }
-  }, {
-    title: '上传人',
-    dataIndex: 'uploadUser',
-    scopedSlots: {
-      customRender: 'uploadUser'
-    }
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {
-      customRender: 'operation'
-    },
-    width: 80
-  }];
-const columnsRecord = [
-  {
-    title: '操作记录',
-    dataIndex: 'recode',
-    scopedSlots: {
-      customRender: 'recode'
-    }
-  }, {
-    title: '解决进度',
-    dataIndex: 'progress',
-    scopedSlots: {
-      customRender: 'progress'
-    }
-  },
-  {
-    title: '变更人',
-    dataIndex: 'user',
-    scopedSlots: {
-      customRender: 'user'
-    }
-  },
-  {
-    title: '操作时间',
-    dataIndex: 'operateTime',
-    scopedSlots: {
-      customRender: 'operateTime'
-    }
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
-    scopedSlots: {
-      customRender: 'remark'
-    },
-    width: 80
-  }
-];
-const columnsAnalysis = [{
-
-  title: '标准要求',
-  dataIndex: 'standard',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'standard'
-  }
-}, {
-  title: '实际情况',
-  dataIndex: 'actualSituation',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'actualSituation'
-  }
-},
-{
-  title: '结论',
-  dataIndex: 'conclusion',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'conclusion'
-  }
-},
-{
-  title: '附件',
-  dataIndex: 'file',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'file'
-  }
-},
-{
-  title: '操作',
-  dataIndex: 'operation',
-  scopedSlots: {
-    customRender: 'operation'
-  },
-  width: 80
-}
-];
-const columnsUpdate = [{
-
-  title: '文件名称',
-  dataIndex: 'fileName',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'fileName'
-  }
-}, {
-  title: '是否更新',
-  dataIndex: 'isUpdae',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'isUpdae'
-  }
-},
-{
-  title: '更新内容',
-  dataIndex: 'updateContent',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'updateContent'
-  }
-},
-{
-  title: '附件',
-  dataIndex: 'fileList',
-  align: 'center',
-  scopedSlots: {
-    customRender: 'fileList'
-  }
-},
-{
-  title: '操作',
-  dataIndex: 'id',
-  scopedSlots: {
-    customRender: 'id'
-  },
-  width: 80
-}
-];
-export default {
-  name: 'QuestionDetail',
-  components: {
-    // EditableCell: () => import('@@/question/view/EditableCell'),
-    NetSelect: () => import('@comp/form/NetSelect.vue')
-  },
-  props: ['id'],
-  data () {
-    const that = this
-    return {
-      userId: that.$store.getters.getUser().id,
-      // 再分配弹框
-      ModalText: 'Content of the modal',
-      fileModalTitle: '添加更新文件',
-      RejectTrue: true,
-      analysisId: '',
-      fileNameFlag: true,
-      visible: false,
-      visibleAnalysis: false, // 7钻编辑弹框
-      visibleDetail: false, // 7钻详情
-      confirmLoading: false,
-      optCounter: '',
-      columns,
-      columnsRecord,
-      columnsAnalysis,
-      columnsUpdate,
-      AnalysisTitle: '1钻-过程是否正确',
-      data: [],
-      analysisData: [
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        },
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        },
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        }
-      ], // 7钻分析表格
-      updateData: [], // 文件更新表格
-      DetailForm: [], // 7钻查看表格
-      updateForm: null, // 文件更新弹框表单
-      dataFile: [], // 附件
-      dataRecord: [], // 操作记录
-      stepDetail: [], // 某个问题的步骤详细信息
-      stepMeasures: [], // 措施详细信息
-      stepImplementation: [],
-      stepEffect: [],
-      problemDefinitionData: {},
-      issueDefinitionData: {},
-      stepClose: [],
-      editFlag: false,
-      expand: false,
-      form: null,
-      coChair: null,
-      monitor: null,
-      visibleUpdate: false,
-      formDcontent: null, // 步骤表单
-      rediStribution: null, // 再分配
-      NeedFlage: false, // 需要7钻标识
-      userFlag: true, // 7钻责任人列表显示标识
-      AnalysisForm: null, // 7钻分析表单
-      satisfy: [{
-        label: '是',
-        value: '0'
-      }, {
-        label: '否',
-        value: '1'
-      }],
-      contActionOption: [{
-        label: '需要',
-        value: '0'
-      }, {
-        label: '不需要',
-        value: '1'
-      }],
-      conActionFlag: true, // 围堵措施是否显示表示
-      satisfyFlag: true, // 是否满足标识
-      showMoreFlag: false, // 查看更多
-      detailList: [],
-      titleFlag: false, // 问题标题是否显示
-      carTitle: '', // 车型标题
-      functionTitle: '', // 功能标题，
-      codeTitle: '', // 故障代码标题，
-      stepCurrent: 5, // 当前步骤状态   从数据库读取状态
-      backCurrent: 7, // 回退到的步骤数
-      backFlag: false, // 是否点击回退
-      disAgree: true, // 是否需要输入不同意关闭理由
-      // D2
-      radioDefault: 'Yes',
-      determineRadio: [{
-        label: '直接判定',
-        value: '0'
-      }, {
-        label: '需要7钻分析',
-        value: '1'
-      }],
-      verifyRadio: [{
-        label: '通过',
-        value: '0'
-      }, {
-        label: '不通过',
-        value: '1'
-      }],
-      endSevenRadio: [{
-        label: '是',
-        value: '0'
-      }, {
-        label: '否',
-        value: '1'
-      }],
-      // D5
-      updateRadio: [{
-        label: '是',
-        value: '0'
-      }, {
-        label: '否',
-        value: '1'
-      }],
-      // D6
-      recurrencePreventionRadio: [{
-        label: '是',
-        value: '0'
-      }, {
-        label: '否',
-        value: '1'
-      }],
-      isCloseRadio: [{
-        label: '同意关闭',
-        value: '0'
-      }, {
-        label: '不同意关闭',
-        value: '1'
-      }],
-      headers: {
-        authorization: 'authorization-text'
+  const {
+    mapActions
+  } = createNamespacedHelpers('question');
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'no',
+      scopedSlots: {
+        customRender: 'no'
+      }
+    }, {
+      title: '附件名称',
+      dataIndex: 'name',
+      scopedSlots: {
+        customRender: 'name'
+      }
+    }, {
+      title: '上传时间',
+      dataIndex: 'uploadTime',
+      scopedSlots: {
+        customRender: 'uploadTime'
+      }
+    }, {
+      title: '上传人',
+      dataIndex: 'uploadUser',
+      scopedSlots: {
+        customRender: 'uploadUser'
+      }
+    }, {
+      title: '操作',
+      dataIndex: 'operation',
+      scopedSlots: {
+        customRender: 'operation'
       },
-      // 数据模板
-      record: {
-        // D0
-        isProject: '0', //  是否满足立项条件
-        dissatisfaction: '', // 不满足理由
-        Remarks: '', // 备注
-        isNeedIca: '0', // 是否需要围堵措施
-        icaDescription: '', // 围堵措施
-        // D1
-        owerDeptLv1: [], // 责任部门
-        champion: [], // 责任人
-        type: '0', // 判定
-        verifySeven: '2', // 7钻审核
-        sevenFailReason: '', // 不通过原因
-        // 7钻责任人
-        zuanUser1: [],
-        zuanUser4: [],
-        zuanUser5: [],
-        zuanUser6: [],
-        zuanUser7: [],
+      width: 80
+    }];
+  const columnsRecord = [
+    {
+      title: '操作记录',
+      dataIndex: 'recode',
+      scopedSlots: {
+        customRender: 'recode'
+      }
+    }, {
+      title: '解决进度',
+      dataIndex: 'progress',
+      scopedSlots: {
+        customRender: 'progress'
+      }
+    },
+    {
+      title: '变更人',
+      dataIndex: 'user',
+      scopedSlots: {
+        customRender: 'user'
+      }
+    },
+    {
+      title: '操作时间',
+      dataIndex: 'operateTime',
+      scopedSlots: {
+        customRender: 'operateTime'
+      }
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      scopedSlots: {
+        customRender: 'remark'
+      },
+      width: 80
+    }
+  ];
+  const columnsAnalysis = [{
+
+    title: '标准要求',
+    dataIndex: 'standard',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'standard'
+    }
+  }, {
+    title: '实际情况',
+    dataIndex: 'actualSituation',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'actualSituation'
+    }
+  },
+    {
+      title: '结论',
+      dataIndex: 'conclusion',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'conclusion'
+      }
+    },
+    {
+      title: '附件',
+      dataIndex: 'file',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'file'
+      }
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      scopedSlots: {
+        customRender: 'operation'
+      },
+      width: 80
+    }
+  ];
+  const columnsUpdate = [{
+
+    title: '文件名称',
+    dataIndex: 'fileName',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'fileName'
+    }
+  }, {
+    title: '是否更新',
+    dataIndex: 'isUpdae',
+    align: 'center',
+    scopedSlots: {
+      customRender: 'isUpdae'
+    }
+  },
+    {
+      title: '更新内容',
+      dataIndex: 'updateContent',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'updateContent'
+      }
+    },
+    {
+      title: '附件',
+      dataIndex: 'fileList',
+      align: 'center',
+      scopedSlots: {
+        customRender: 'fileList'
+      }
+    },
+    {
+      title: '操作',
+      dataIndex: 'id',
+      scopedSlots: {
+        customRender: 'id'
+      },
+      width: 80
+    }
+  ];
+  export default {
+    name: 'QuestionDetail',
+    components: {
+      // EditableCell: () => import('@@/question/view/EditableCell'),
+      NetSelect: () => import('@comp/form/NetSelect.vue')
+    },
+    props: ['id'],
+    data() {
+      const that = this
+      return {
+        userId: that.$store.getters.getUser().id,
+        // 再分配弹框
+        ModalText: 'Content of the modal',
+        fileModalTitle: '添加更新文件',
+        RejectTrue: true,
+        analysisId: '',
+        fileNameFlag: true,
+        visible: false,
+        visibleAnalysis: false, // 7钻编辑弹框
+        visibleDetail: false, // 7钻详情
+        confirmLoading: false,
+        optCounter: '',
+        columns,
+        columnsRecord,
+        columnsAnalysis,
+        columnsUpdate,
+        AnalysisTitle: '1钻-过程是否正确',
+        data: [],
+        analysisData: [
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          },
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          },
+          {
+            standard: '标准',
+            actualSituation: '实际情况',
+            conclusion: '结论',
+            file: '文件',
+            operation: '编辑'
+          }
+        ], // 7钻分析表格
+        updateData: [], // 文件更新表格
+        DetailForm: [], // 7钻查看表格
+        updateForm: null, // 文件更新弹框表单
+        dataFile: [], // 附件
+        dataRecord: [], // 操作记录
+        stepDetail: [], // 某个问题的步骤详细信息
+        stepMeasures: [], // 措施详细信息
+        stepImplementation: [],
+        stepEffect: [],
+        problemDefinitionData: {},
+        issueDefinitionData: {},
+        rootCauseData: {},//根本原因
+        stepClose: [],
+        editFlag: false,
+        expand: false,
+        form: null,
+        coChair: null,
+        monitor: null,
+        visibleUpdate: false,
+        formDcontent: null, // 步骤表单
+        rediStribution: null, // 再分配
+        NeedFlage: false, // 需要7钻标识
+        userFlag: true, // 7钻责任人列表显示标识
+        AnalysisForm: null, // 7钻分析表单
+        satisfy: [{
+          label: '是',
+          value: '0'
+        }, {
+          label: '否',
+          value: '1'
+        }],
+        contActionOption: [{
+          label: '需要',
+          value: '0'
+        }, {
+          label: '不需要',
+          value: '1'
+        }],
+        conActionFlag: true, // 围堵措施是否显示表示
+        satisfyFlag: true, // 是否满足标识
+        showMoreFlag: false, // 查看更多
+        detailList: [],
+        titleFlag: false, // 问题标题是否显示
+        carTitle: '', // 车型标题
+        functionTitle: '', // 功能标题，
+        codeTitle: '', // 故障代码标题，
+        stepCurrent: 1, // 当前步骤状态   从数据库读取状态
+        backCurrent: 7, // 回退到的步骤数
+        backFlag: false, // 是否点击回退
+        disAgree: true, // 是否需要输入不同意关闭理由
         // D2
-        rootCauseDescription: '',
-        D2file: [],
-        // D3
-        // icaDescription: '',
-        pcaDescription: '',
-        pcaPlanTime: null,
-        pcaExecTime: null,
-        estimatedClosureTime: null,
-        fileList: '',
-        smallBatchValidation: '',
-        // D4
-        icaExecDescription: '',
-        icaExecTime: null,
-        // pcaDescription: null,
-        // pcaExecTime: null,
-
-
+        radioDefault: 'Yes',
+        determineRadio: [{
+          label: '直接判定',
+          value: '0'
+        }, {
+          label: '需要7钻分析',
+          value: '1'
+        }],
+        verifyRadio: [{
+          label: '通过',
+          value: '0'
+        }, {
+          label: '不通过',
+          value: '1'
+        }],
+        endSevenRadio: [{
+          label: '是',
+          value: '0'
+        }, {
+          label: '否',
+          value: '1'
+        }],
         // D5
-        description: '',
-        breakpointVin: '',
-        breakpointDate: null,
-
+        updateRadio: [{
+          label: '是',
+          value: '0'
+        }, {
+          label: '否',
+          value: '1'
+        }],
         // D6
-        recurrencePrevention: '1',
-        isClose: '1',
-        reason: ''
-      },
-      // 再分配
+        recurrencePreventionRadio: [{
+          label: '是',
+          value: '0'
+        }, {
+          label: '否',
+          value: '1'
+        }],
+        isCloseRadio: [{
+          label: '同意关闭',
+          value: '0'
+        }, {
+          label: '不同意关闭',
+          value: '1'
+        }],
+        headers: {
+          authorization: 'authorization-text'
+        },
+        // 数据模板
+        record: {
+          // D0
+          isProject: '0', //  是否满足立项条件
+          dissatisfaction: '', // 不满足理由
+          Remarks: '', // 备注
+          isNeedIca: '0', // 是否需要围堵措施
+          icaDescription: '', // 围堵措施
+          // D1
+          owerDeptLv1: [], // 责任部门
+          champion: [], // 责任人
+          type: '0', // 判定
+          verifySeven: '2', // 7钻审核
+          sevenFailReason: '', // 不通过原因
+          // 7钻责任人
+          zuanUser1: [],
+          zuanUser4: [],
+          zuanUser5: [],
+          zuanUser6: [],
+          zuanUser7: [],
+          // D2
+          rootCauseDescription: '',
+          D2file: [],
+          // D3
+          // icaDescription: '',
+          pcaDescription: '',
+          pcaPlanTime: null,
+          pcaExecTime: null,
+          estimatedClosureTime: null,
+          fileList: '',
+          smallBatchValidation: '',
+          // D4
+          icaExecDescription: '',
+          icaExecTime: null,
+          // pcaDescription: null,
+          // pcaExecTime: null,
 
-      redistributionForm: {
-        dtfUser: ''
-      },
-      // 7钻分析弹框数据绑定
-      recordAnalysis: {
-        id: '',
-        standard: '',
-        actualSituation: '',
-        conclusion: '',
-        file: ''
-      },
-      // 涉及文件更新
-      recordUpdate: {
-        id: '',
-        fileName: '',
-        isUpdae: '0',
-        updateContent: '',
-        fileList: ''
-      }
 
-    };
-  },
-  created () {
-    this.formDcontent = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
+          // D5
+          description: '',
+          breakpointVin: '',
+          breakpointDate: null,
 
-        'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
-        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
-        'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
-        'reason'
-      ], 'record'),
-      onValuesChange: autoUpdateFileds(this, 'record')
-    });
-    this.rediStribution = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, ['dtfUser'], 'redistributionForm'),
-      onValuesChange: autoUpdateFileds(this, 'redistributionForm')
-    });
-    this.AnalysisForm = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'id', 'standard', 'actualSituation', 'conclusion', 'file'
-      ], 'recordAnalysis'),
-      onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
-    });
-    this.updateForm = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
-      ], 'recordUpdate'),
-      onValuesChange: autoUpdateFileds(this, 'recordUpdate')
-    });
-    this.request();
-  },
-  methods: {
-    moment,
-    ...mapActions([
-      'addQuestion',
-      'commitQuestion',
-      'updateQuestion',
-      'getFilePage',
-      'getRecord',
-      'problemDefinition',
-      'issueDefinition',
-      'getQuestionStep',
-      'redistribute',
-      'eidtQuestion',
-      'getAnalysis',
-      'editFile',
-      'effectSave',
-      'effectDetail',
-      'ImplementationDetail',
-      'firstCreateFile',
-      'updateFile',
-      'MeasureDetail',
-      'issueDefinitionAdd',
-      'closeSave',
-      'closeDetail',
-      'addFile',
-      'rootCauseAdd',
-      'rootCause',
-      'problemDefinitionAdd',
-      'getAnalysis',
-      'MeasureDecisionSave',
-      'workFlowSubmit',
-      'getSysUser',
-      'sevenDiamonds',
-      'analysisSave',
-      'analysisDetail'
-    ]),
-    // 是否需要围堵措施
-    conActionChange (e) {
-      if (e.target.value === '0') {
-        this.conActionFlag = true;
-      } else {
-        this.conActionFlag = false;
-      }
+          // D6
+          recurrencePrevention: '1',
+          isClose: '1',
+          reason: ''
+        },
+        // 再分配
+
+        redistributionForm: {
+          dtfUser: ''
+        },
+        // 7钻分析弹框数据绑定
+        recordAnalysis: {
+          id: '',
+          standard: '',
+          actualSituation: '',
+          conclusion: '',
+          file: ''
+        },
+        // 涉及文件更新
+        recordUpdate: {
+          id: '',
+          fileName: '',
+          isUpdae: '0',
+          updateContent: '',
+          fileList: ''
+        }
+
+      };
     },
-    goBack () {
-      this.$router.push({
-        path: this.$route.query.form || '/'
+    created() {
+      this.formDcontent = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
+          'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
+
+          'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+          'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
+          'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
+          'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+          'reason'
+        ], 'record'),
+        onValuesChange: autoUpdateFileds(this, 'record')
       });
+      this.rediStribution = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, ['dtfUser'], 'redistributionForm'),
+        onValuesChange: autoUpdateFileds(this, 'redistributionForm')
+      });
+      this.AnalysisForm = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'id', 'standard', 'actualSituation', 'conclusion', 'file'
+        ], 'recordAnalysis'),
+        onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
+      });
+      this.updateForm = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
+        ], 'recordUpdate'),
+        onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+      });
+      this.request();
     },
-    // 是否驳回选择
-    RejectRadioChange (e) {
-      if (e.target.value === '0') {
-        this.RejectTrue = true;
-      } else {
-        this.RejectTrue = false;
-      }
-    },
-    selectOption (input, option) {
-      const optionArray = [];
+    methods: {
+      moment,
+      ...mapActions([
+        'addQuestion',
+        'commitQuestion',
+        'updateQuestion',
+        'getFilePage',
+        'getRecord',
+        'problemDefinition',
+        'issueDefinition',
+        'getQuestionStep',
+        'redistribute',
+        'eidtQuestion',
+        'getAnalysis',
+        'editFile',
+        'effectSave',
+        'effectDetail',
+        'ImplementationDetail',
+        'firstCreateFile',
+        'updateFile',
+        'MeasureDetail',
+        'issueDefinitionAdd',
+        'closeSave',
+        'closeDetail',
+        'addFile',
+        'rootCauseAdd',
+        'rootCause',
+        'problemDefinitionAdd',
+        'getAnalysis',
+        'MeasureDecisionSave',
+        'workFlowSubmit',
+        'getSysUser',
+        'sevenDiamonds',
+        'analysisSave',
+        'analysisDetail'
+      ]),
+      // 是否需要围堵措施
+      conActionChange(e) {
+        if (e.target.value === '0') {
+          this.conActionFlag = true;
+        } else {
+          this.conActionFlag = false;
+        }
+      },
+      goBack() {
+        this.$router.push({
+          path: this.$route.query.form || '/'
+        });
+      },
+      // 是否驳回选择
+      RejectRadioChange(e) {
+        if (e.target.value === '0') {
+          this.RejectTrue = true;
+        } else {
+          this.RejectTrue = false;
+        }
+      },
+      selectOption(input, option) {
+        const optionArray = [];
 
         input.forEach((item) => {
 
@@ -2425,485 +2421,489 @@ export default {
          }*/
 
 
-      this.AnalysisForm = this.$form.createForm(this, {
+        this.AnalysisForm = this.$form.createForm(this, {
 
-        mapPropsToFields: () => {
-          return {
-            id: this.$form.createFormField({
-              value: param.id
-            }),
-            standard: this.$form.createFormField({
-              value: param.standard
-            }),
-            actualSituation: this.$form.createFormField({
-              value: param.actualSituation
-            }),
-            conclusion: this.$form.createFormField({
-              value: param.conclusion
-            }),
-            file: this.$form.createFormField({
-              value: param.file
-            })
-          };
-        }
-
-      });
-    },
-    showUpdate (param) {
-      this.visibleUpdate = true;
-      if (param) {
-        this.fileNameFlag = false;
-        this.fileModalTitle = param.fileName;
-        this.updateForm = this.$form.createForm(this, {
           mapPropsToFields: () => {
             return {
               id: this.$form.createFormField({
                 value: param.id
               }),
-              fileName: this.$form.createFormField({
-                value: param.fileName
+              standard: this.$form.createFormField({
+                value: param.standard
               }),
-              isUpdae: this.$form.createFormField({
-                value: param.isUpdae
+              actualSituation: this.$form.createFormField({
+                value: param.actualSituation
               }),
-              updateContent: this.$form.createFormField({
-                value: param.updateContent
+              conclusion: this.$form.createFormField({
+                value: param.conclusion
               }),
-              fileList: this.$form.createFormField({
-                value: param.fileList != null ? param.fileList.length : 0
+              file: this.$form.createFormField({
+                value: param.file
               })
             };
           }
+
         });
-      } else {
-        this.fileNameFlag = true;
-      }
-    },
-    // 校验中英文
-    languageVer (rule, value, callback) {
-      const regzh = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
-      const zh = regzh.test(value);
-      const regen = new RegExp('[a-zA-Z]+', 'g');
-      const en = regen.test(value);
-      if (!zh || !en) {
-        callback(new Error('必须同时含有中文和英文'));
-      } else {
-        callback();
-      }
-    },
-    // 确定7钻分析弹框
-    AnalysisOk () {
-      this.AnalysisForm.validateFields((err, fieldsValue) => {
-        if (!err) {
-          const data = this.AnalysisForm.getFieldsValue();
-          if (this.AnalysisForm === '') {
-            data.id = this.AnalysisForm.id;
-          }
-          this.sevenDiamonds(data).then(res => {
-            console.info(res)
-          })
-          /* this.analysisData.forEach((item, index) => {
-              if (item.id === data.id) {
-                item.id = data.id;
-                item.standard = data.standard;
-                item.actualSituation = data.actualSituation;
-                item.conclusion = data.conclusion;
-                item.file = data.file;
-                console.log(item);
-              }
-            }) */
-          this.visibleAnalysis = false;
-        }
-      });
-    },
-    AnalysisDetailOk () {
-      this.visibleDetail = false;
-    },
-    AnalysisDetailCancel () {
-      this.visibleDetail = false;
-    },
-    updateOk () {
-      this.updateForm.validateFields((err, fieldsValue) => {
-        if (!err) {
-          this.visibleUpdate = false;
-          // const data = this.updateForm.getFieldsValue();
-
-          if (this.fileNameFlag === true) {
-            const data = this.updateForm.getFieldsValue();
-            data.issueId = this.id;
-            if (!data.id) {
-              this.addFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
-                  this.updateData = res;
+      },
+      showUpdate(param) {
+        this.visibleUpdate = true;
+        if (param) {
+          this.fileNameFlag = false;
+          this.fileModalTitle = param.fileName;
+          this.updateForm = this.$form.createForm(this, {
+            mapPropsToFields: () => {
+              return {
+                id: this.$form.createFormField({
+                  value: param.id
+                }),
+                fileName: this.$form.createFormField({
+                  value: param.fileName
+                }),
+                isUpdae: this.$form.createFormField({
+                  value: param.isUpdae
+                }),
+                updateContent: this.$form.createFormField({
+                  value: param.updateContent
+                }),
+                fileList: this.$form.createFormField({
+                  value: param.fileList != null ? param.fileList.length : 0
                 })
-              })
-            } else {
-              this.editFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
-                  this.updateData = res;
-                })
-              })
+              };
             }
-          } else {
-            const data = this.updateForm.getFieldsValue();
-            data.issueId = this.id;
-            data.fileName = this.fileModalTitle;
-            if (!data.id) {
-              this.addFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
-                  this.updateData = res;
-                })
-              })
-            } else {
-              this.editFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
-                  this.updateData = res;
-                })
-              })
-            }
-          }
-        }
-      });
-    },
-    updateCancel () {
-      this.visibleUpdate = false;
-    },
-    // 关闭7钻分析弹框
-    AnalysisCancel () {
-      this.visibleAnalysis = false;
-    },
-    // 是否同意关闭
-    CloseRadioChange (e) {
-      if (e.target.value === '0') {
-        this.disAgree = false;
-      } else {
-        this.disAgree = true;
-      }
-    },
-    request () {
-      const param = {
-        pageSize: 10,
-        pageNo: 1
-      }
-      // 查看问题详情
-      this.eidtQuestion(this.id).then(res => {
-        this.detailList = res;
-      })
-      this.getAnalysis(this.id).then(res => {
-        this.analysisData = res.list;
-        if (this.analysisData.length === 0) {
-          this.analysisData = [{
-            id: '8',
-            standard: '',
-            actualSituation: '',
-            conclusion: '',
-            file: '',
-            operation: '编辑'
-          },
-          {
-            id: '9',
-            standard: '',
-            actualSituation: '',
-            conclusion: '',
-            file: '',
-            operation: '编辑'
-          },
-          {
-            id: '10',
-            standard: '',
-            actualSituation: '',
-            conclusion: '',
-            file: '',
-            operation: '编辑'
-          }
-          ];
-        }
-      })
-      this.getFilePage().then(res => {
-        this.dataFile = res.list;
-      });
-      this.getRecord().then(res => {
-        this.dataRecord = res.list;
-      });
-      this.getQuestionStepAll(this.id);
-    },
-    getQuestionStepAll (id) {
-      this.getQuestionStep(this.id).then(res => {
-        this.stepDetail = res;
-        // this.updateData = res.updateList;
-      });
-      this.problemDefinition(id).then(res => {
-        this.problemDefinitionData = res || {};
-        this.updateData = res.updateList;
-      });
-      this.issueDefinition(id).then(res => {
-        this.issueDefinitionData = res || {};
-        // this.analysisData = res.sevenDiamondsVos
-      });
-
-      this.updateFile(this.id).then(res => {
-        if (res.length === 0) {
-          const param = {
-            issueId: this.id
-          };
-          this.firstCreateFile(param).then(updateData => {
-            this.updateData = updateData;
           });
         } else {
-          this.updateData = res;
+          this.fileNameFlag = true;
         }
-      });
+      },
+      // 校验中英文
+      languageVer(rule, value, callback) {
+        const regzh = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
+        const zh = regzh.test(value);
+        const regen = new RegExp('[a-zA-Z]+', 'g');
+        const en = regen.test(value);
+        if (!zh || !en) {
+          callback(new Error('必须同时含有中文和英文'));
+        } else {
+          callback();
+        }
+      },
+      // 确定7钻分析弹框
+      AnalysisOk() {
+        this.AnalysisForm.validateFields((err, fieldsValue) => {
+          if (!err) {
+            const data = this.AnalysisForm.getFieldsValue();
+            if (this.AnalysisForm === '') {
+              data.id = this.AnalysisForm.id;
+            }
+            this.sevenDiamonds(data).then(res => {
+              console.info(res)
+            })
+            /* this.analysisData.forEach((item, index) => {
+                if (item.id === data.id) {
+                  item.id = data.id;
+                  item.standard = data.standard;
+                  item.actualSituation = data.actualSituation;
+                  item.conclusion = data.conclusion;
+                  item.file = data.file;
+                  console.log(item);
+                }
+              }) */
+            this.visibleAnalysis = false;
+          }
+        });
+      },
+      AnalysisDetailOk() {
+        this.visibleDetail = false;
+      },
+      AnalysisDetailCancel() {
+        this.visibleDetail = false;
+      },
+      updateOk() {
+        this.updateForm.validateFields((err, fieldsValue) => {
+          if (!err) {
+            this.visibleUpdate = false;
+            // const data = this.updateForm.getFieldsValue();
 
-      this.MeasureDetail(this.id).then(res => {
-        this.stepMeasures = res;
-      })
-      this.ImplementationDetail(this.id).then(res => {
-        this.stepImplementation = res;
-      })
-      this.effectDetail(this.id).then(res => {
-        this.stepEffect = res;
-      })
-      this.analysisDetail(this.id).then(res => {
-        if (res) {
-          this.analysisId = res.id;
-        }
-      })
-    },
-    // 再分配弹框
-    showModal () {
-      this.visible = true
-    },
-    handleOk (e) {
-      this.ModalText = 'The modal will be closed after two seconds';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
-    },
-    handleCancel (e) {
-      this.visible = false
-    },
-    // 是否需要7钻分析
-    determineChange (e) {
-      if (e.target.value === '0') {
-        this.NeedFlage = false;
-      } else if (e.target.value === '1') {
-        this.NeedFlage = true;
-      }
-    },
-    // 车型选择
-    vehicleModelIdChange (value) {
-      this.carTitle = value;
-      if (value) {
-        this.titleFlag = true;
-      }
-    },
-    // 回退到param步
-    goto (param) {
-      this.backCurrent = param;
-      if (this.backCurrent < this.stepCurrent) {
-        this.backFlag = true;
-        if (param === 3) {
-          this.MeasureDetail(this.id).then(res => {
-            this.stepMeasures = res;
-          });
-        } else if (param === 4) {
-          this.ImplementationDetail(this.id).then(res => {
-            this.stepImplementation = res;
-          });
-        } else if (param === 5) {
-          this.effectDetail(this.id).then(res => {
-            this.stepEffect = res;
-          })
-        } else if (param === 6) {
-          this.closeDetail(this.id).then(res => {
-            this.stepClose = res;
-          })
-        }
-      } else {
-        this.backFlag = false;
-      }
-    },
-    // tab栏切换
-    callback (key) {
-    },
-    // 查看更多
-    showMore () {
-      this.showMoreFlag = !this.showMoreFlag;
-    },
-    // 所属功能选择
-    functionChange (value) {
-      this.functionTitle = value;
-      if (value) {
-        this.titleFlag = true;
-      }
-    },
-    faultCodeChange (value) {
-      this.codeTitle = value;
-      if (value) {
-        this.titleFlag = true;
-      }
-    },
-    handleSubmit (e) {
-      // this.handleSave()
-      const vm = this
-      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
-      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
-      this.formDcontent.validateFields((err, fieldsValue) => {
-        if (!err) {
-          const data = this.formDcontent.getFieldsValue();
-          const transData = {
-            businessKey: this.id, // 问题id
-            businessTitle: data.title, // 问题title
-            processDefinitionKey: 'BJEV1', // BJEV1  固定值
-            subSys: 'irs', //  子系统编号
-            taskId: null, //  任务id
-            userId: this.userId, //  当前用户id
-            variables: {
-              assigner: data.zuanUser1,
-              coChair: vm.coChair,
-              monitor: vm.monitor,
-              isDirectSerious: '0',
-              isPass: '0',
-              isQZEnd: '0',
-              isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
-              isQZ: '0',
-              isCheckError: '0',
-              isLeaderSign: '0',
-              isItem: data.isProject,
-              zuanUser1: data.zuanUser1,
-              zuanUser4: data.zuanUser4,
-              zuanUser5: data.zuanUser5,
-              zuanUser6: data.zuanUser6,
-              zuanUser7: data.zuanUser7
+            if (this.fileNameFlag === true) {
+              const data = this.updateForm.getFieldsValue();
+              data.issueId = this.id;
+              if (!data.id) {
+                this.addFile(data).then(() => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              } else {
+                this.editFile(data).then(() => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              }
+            } else {
+              const data = this.updateForm.getFieldsValue();
+              data.issueId = this.id;
+              data.fileName = this.fileModalTitle;
+              if (!data.id) {
+                this.addFile(data).then(() => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              } else {
+                this.editFile(data).then(() => {
+                  this.updateFile(this.id).then(res => {
+                    this.updateData = res;
+                  })
+                })
+              }
             }
           }
-          vm.workFlowSubmit(transData).then(res => {
-            vm.$message.success('提交成功');
-            // 隐藏7钻责任人模块
-            // vm.userFlag = false;
-          });
-        }
-      });
-    },
-    // 再分配提交
-    handleUser (e) {
-      this.rediStribution.validateFields((err, fieldsValue) => {
-        if (!err) {
-          const data = this.rediStribution.getFieldsValue();
-          this.redistribute(data).then(res => {
-            this.ModalText = 'The modal will be closed after two seconds';
-            setTimeout(() => {
-              this.visible = false;
-            }, 2000);
-          });
-        }
-      });
-    },
-    handleSave () {
-      const data = this.formDcontent.getFieldsValue();
-      data.issueId = this.id;
-      data.optCounter = this.optCounter;
-      // data.optCounter = this.problemDefinitionData.optCounter
-      if (this.stepCurrent === 0) {
-        this.problemDefinitionAdd(data).then(res => {
-          this.problemDefinitionData = res
-          this.optCounter = res.optCounter;
-        })
-      }
-      if (this.stepCurrent === 1) {
-        this.issueDefinitionAdd(data).then(res => {
-          this.optCounter = res.optCounter;
-        })
-      }
-      if (this.stepCurrent === 2) {
-        data.id = this.analysisId;
-        this.analysisSave(data).then(res => {
-          this.optCounter = res.optCounter;
-        })
-      }
-      data.issueId = this.id;
-
-      if (data.estimatedClosureTime) {
-        data.estimatedClosureTime = data.estimatedClosureTime.format('YYYY-MM-DD HH:mm:ss');
-      }
-      if (data.pcaExecTime) {
-        data.pcaExecTime = data.pcaExecTime.format('YYYY-MM-DD HH:mm:ss');
-      }
-      if (data.pcaPlanTime) {
-        data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
-      }
-
-      if (this.stepCurrent === 3) {
-        this.MeasureDecisionSave(data).then(() => {
-          this.MeasureDetail(this.id).then(res => {
-            this.stepMeasures = res;
-            //  data.optCounter=res.optCounter;
-          });
         });
-      } else if (this.stepCurrent === 4) {
-        this.MeasureDecisionSave(data).then(() => {
-          this.ImplementationDetail(this.id).then(res => {
-            this.stepImplementation = res;
-            //  data.optCounter=res.optCounter;
-          });
-        });
-      } else if (this.stepCurrent === 5) {
-        this.effectSave(data).then(res => {
-          //  data.optCounter=res.optCounter;
-        })
-      } else if (this.stepCurrent === 6) {
-        this.closeSave(data).then(res => {
-          // data.optCounter=res.optCounter;
-        })
-      }
-    },
-    handleSearch (e) {
-      e.preventDefault();
-      this.form.validateFields((error, values) => {
-      });
-    },
-
-    handleChange () {
-    },
-    levelChange (value) {
-      console.log(`selected ${value}`);
-    },
-    handleReset () {
-      this.form.resetFields();
-    },
-
-    toggle () {
-      this.expand = !this.expand;
-    },
-    // 点击编辑按钮
-    editDetail () {
-      this.editFlag = true;
-      const name = 'edit'
-      const id = this.id
-      this.$router.push({
-        name: 'QuestionCreate',
-        params: {
-          name,
-          id
-        },
-        query: {
-          form: this.$route.path
+      },
+      updateCancel() {
+        this.visibleUpdate = false;
+      },
+      // 关闭7钻分析弹框
+      AnalysisCancel() {
+        this.visibleAnalysis = false;
+      },
+      // 是否同意关闭
+      CloseRadioChange(e) {
+        if (e.target.value === '0') {
+          this.disAgree = false;
+        } else {
+          this.disAgree = true;
         }
-      })
-    },
-    // 是否满足立项条件切换
-    satisfyChange (e) {
-      this.record.isNeedIca = '0';
-      if (e.target.value === '0') {
-        this.satisfyFlag = true;
-      } else if (e.target.value === '1') {
-        this.satisfyFlag = false;
+      },
+      request() {
+        const param = {
+          pageSize: 10,
+          pageNo: 1
+        }
+        // 查看问题详情
+        this.eidtQuestion(this.id).then(res => {
+          this.detailList = res;
+        })
+        /*this.getAnalysis(this.id).then(res => {
+          this.analysisData = res.list;
+          if (this.analysisData.length === 0) {
+            this.analysisData = [{
+              id: '8',
+              standard: '',
+              actualSituation: '',
+              conclusion: '',
+              file: '',
+              operation: '编辑'
+            },
+              {
+                id: '9',
+                standard: '',
+                actualSituation: '',
+                conclusion: '',
+                file: '',
+                operation: '编辑'
+              },
+              {
+                id: '10',
+                standard: '',
+                actualSituation: '',
+                conclusion: '',
+                file: '',
+                operation: '编辑'
+              }
+            ];
+          }
+        })*/
+        this.getFilePage().then(res => {
+          this.dataFile = res.list;
+        });
+        this.getRecord().then(res => {
+          this.dataRecord = res.list;
+        });
+        this.getQuestionStepAll(this.id);
+      },
+      getQuestionStepAll(id) {
+        this.getQuestionStep(this.id).then(res => {
+          this.stepDetail = res;
+          // this.updateData = res.updateList;
+        });
+        this.problemDefinition(id).then(res => {
+          this.problemDefinitionData = res || {};
+          this.updateData = res.updateList;
+        });
+        this.issueDefinition(id).then(res => {
+          this.issueDefinitionData = res || {};
+          this.analysisData = res.sevenDiamondsVos
+        });
+        this.rootCause(id).then(res => {
+          this.rootCauseData = res || {};
+        })
+
+        this.updateFile(this.id).then(res => {
+          if (res.length === 0) {
+            const param = {
+              issueId: this.id
+            };
+            this.firstCreateFile(param).then(updateData => {
+              this.updateData = updateData;
+            });
+          } else {
+            this.updateData = res;
+          }
+        });
+
+        this.MeasureDetail(this.id).then(res => {
+          this.stepMeasures = res;
+        })
+        this.ImplementationDetail(this.id).then(res => {
+          this.stepImplementation = res;
+        })
+        this.effectDetail(this.id).then(res => {
+          this.stepEffect = res;
+        })
+        this.analysisDetail(this.id).then(res => {
+          if (res) {
+            this.analysisId = res.id;
+          }
+        })
+      },
+      // 再分配弹框
+      showModal() {
+        this.visible = true
+      },
+      handleOk(e) {
+        this.ModalText = 'The modal will be closed after two seconds';
+        this.confirmLoading = true;
+        setTimeout(() => {
+          this.visible = false;
+          this.confirmLoading = false;
+        }, 2000);
+      },
+      handleCancel(e) {
+        this.visible = false
+      },
+      // 是否需要7钻分析
+      determineChange(e) {
+        if (e.target.value === '0') {
+          this.NeedFlage = false;
+        } else if (e.target.value === '1') {
+          this.NeedFlage = true;
+        }
+      },
+      // 车型选择
+      vehicleModelIdChange(value) {
+        this.carTitle = value;
+        if (value) {
+          this.titleFlag = true;
+        }
+      },
+      // 回退到param步
+      goto(param) {
+        this.backCurrent = param;
+        if (this.backCurrent < this.stepCurrent) {
+          this.backFlag = true;
+          if (param === 3) {
+            this.MeasureDetail(this.id).then(res => {
+              this.stepMeasures = res;
+            });
+          } else if (param === 4) {
+            this.ImplementationDetail(this.id).then(res => {
+              this.stepImplementation = res;
+            });
+          } else if (param === 5) {
+            this.effectDetail(this.id).then(res => {
+              this.stepEffect = res;
+            })
+          } else if (param === 6) {
+            this.closeDetail(this.id).then(res => {
+              this.stepClose = res;
+            })
+          }
+        } else {
+          this.backFlag = false;
+        }
+      },
+      // tab栏切换
+      callback(key) {
+      },
+      // 查看更多
+      showMore() {
+        this.showMoreFlag = !this.showMoreFlag;
+      },
+      // 所属功能选择
+      functionChange(value) {
+        this.functionTitle = value;
+        if (value) {
+          this.titleFlag = true;
+        }
+      },
+      faultCodeChange(value) {
+        this.codeTitle = value;
+        if (value) {
+          this.titleFlag = true;
+        }
+      },
+      handleSubmit(e) {
+        // this.handleSave()
+        const vm = this
+        vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
+        vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
+        this.formDcontent.validateFields((err, fieldsValue) => {
+          if (!err) {
+            const data = this.formDcontent.getFieldsValue();
+            const transData = {
+              businessKey: this.id, // 问题id
+              businessTitle: data.title, // 问题title
+              processDefinitionKey: 'BJEV1', // BJEV1  固定值
+              subSys: 'irs', //  子系统编号
+              taskId: null, //  任务id
+              userId: this.userId, //  当前用户id
+              variables: {
+                assigner: data.zuanUser1,
+                coChair: vm.coChair,
+                monitor: vm.monitor,
+                isDirectSerious: '0',
+                isPass: '0',
+                isQZEnd: '0',
+                isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
+                isQZ: '0',
+                isCheckError: '0',
+                isLeaderSign: '0',
+                isItem: data.isProject,
+                zuanUser1: data.zuanUser1,
+                zuanUser4: data.zuanUser4,
+                zuanUser5: data.zuanUser5,
+                zuanUser6: data.zuanUser6,
+                zuanUser7: data.zuanUser7
+              }
+            }
+            vm.workFlowSubmit(transData).then(res => {
+              vm.$message.success('提交成功');
+              // 隐藏7钻责任人模块
+              // vm.userFlag = false;
+            });
+          }
+        });
+      },
+      // 再分配提交
+      handleUser(e) {
+        this.rediStribution.validateFields((err, fieldsValue) => {
+          if (!err) {
+            const data = this.rediStribution.getFieldsValue();
+            this.redistribute(data).then(res => {
+              this.ModalText = 'The modal will be closed after two seconds';
+              setTimeout(() => {
+                this.visible = false;
+              }, 2000);
+            });
+          }
+        });
+      },
+      handleSave() {
+        const data = this.formDcontent.getFieldsValue();
+        const _this = this
+        data.issueId = this.id;
+        if (this.stepCurrent === 0) {
+          data.optCounter = _this.problemDefinitionData.optCounter;
+          this.problemDefinitionAdd(data).then(res => {
+            this.problemDefinitionData = res
+          })
+        }
+        if (this.stepCurrent === 1) {
+          data.optCounter = _this.issueDefinitionData.optCounter;
+          this.issueDefinitionAdd(data).then(res => {
+            this.optCounter = res.optCounter;
+          })
+        }
+        if (this.stepCurrent === 2) {
+          data.id = this.analysisId;
+          data.optCounter = _this.rootCauseData.optCounter;
+          this.analysisSave(data).then(res => {
+            this.optCounter = res.optCounter;
+          })
+        }
+        data.issueId = this.id;
+
+        if (data.estimatedClosureTime) {
+          data.estimatedClosureTime = data.estimatedClosureTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (data.pcaExecTime) {
+          data.pcaExecTime = data.pcaExecTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (data.pcaPlanTime) {
+          data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        if (this.stepCurrent === 3) {
+          this.MeasureDecisionSave(data).then(() => {
+            this.MeasureDetail(this.id).then(res => {
+              this.stepMeasures = res;
+              //  data.optCounter=res.optCounter;
+            });
+          });
+        } else if (this.stepCurrent === 4) {
+          this.MeasureDecisionSave(data).then(() => {
+            this.ImplementationDetail(this.id).then(res => {
+              this.stepImplementation = res;
+              //  data.optCounter=res.optCounter;
+            });
+          });
+        } else if (this.stepCurrent === 5) {
+          this.effectSave(data).then(res => {
+            //  data.optCounter=res.optCounter;
+          })
+        } else if (this.stepCurrent === 6) {
+          this.closeSave(data).then(res => {
+            // data.optCounter=res.optCounter;
+          })
+        }
+      },
+      handleSearch(e) {
+        e.preventDefault();
+        this.form.validateFields((error, values) => {
+        });
+      },
+
+      handleChange() {
+      },
+      levelChange(value) {
+        console.log(`selected ${value}`);
+      },
+      handleReset() {
+        this.form.resetFields();
+      },
+
+      toggle() {
+        this.expand = !this.expand;
+      },
+      // 点击编辑按钮
+      editDetail() {
+        this.editFlag = true;
+        const name = 'edit'
+        const id = this.id
+        this.$router.push({
+          name: 'QuestionCreate',
+          params: {
+            name,
+            id
+          },
+          query: {
+            form: this.$route.path
+          }
+        })
+      },
+      // 是否满足立项条件切换
+      satisfyChange(e) {
+        this.record.isNeedIca = '0';
+        if (e.target.value === '0') {
+          this.satisfyFlag = true;
+        } else if (e.target.value === '1') {
+          this.satisfyFlag = false;
+        }
       }
     }
-  }
-};
+  };
 </script>
 <style lang="less">
   .visibleDetail {
