@@ -11,53 +11,54 @@
         <!-- 标题 -->
         <a-form-item :label="$t('issue.title')">
           <v-input
-            allow-clear
             v-decorator="[
               'title'
             ]"
+            allow-clear
             :placeholder="$t('search.please_input') + $t('issue.title')"
           />
         </a-form-item>
       </a-col>
 
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 车型名称 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
+            v-decorator="['vehicleModelId']"
             allow-clear
             url="/masterdata/v1/vehiclemodel"
             :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
             :transform="transformVehicleModelName"
-            v-decorator="['vehicleModelId']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 所属系统 -->
         <a-form-item :label="$t('issue.faultTreeIds1')">
           <net-select
+            v-decorator="['faultTreeIds1']"
             allow-clear
             url="/issue/v1/faultcategory?p_id=0"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
             :transform="transformFaultTreeIds1"
             @change="faultTreeIds1Change"
-            v-decorator="['faultTreeIds1']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 所属功能 -->
         <a-form-item :label="$t('issue.faultTreeIds2')">
           <net-select
+            v-decorator="['faultTreeIds2']"
             allow-clear
             :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
             :cache="false"
@@ -66,17 +67,17 @@
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
             :transform="transformFaultTreeIds2"
             @change="faultTreeIds2Change"
-            v-decorator="['faultTreeIds2']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 故障代码 -->
         <a-form-item :label="$t('issue.faultTreeIds3')">
           <net-select
+            v-decorator="['faultTreeIds3']"
             allow-clear
             :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds2}`"
             :cache="false"
@@ -84,115 +85,114 @@
             :delay="!record.faultTreeIds2"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
             :transform="transformFaultTreeIds3"
-            v-decorator="['faultTreeIds3']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 问题分类 -->
         <a-form-item :label="$t('issue.source')">
           <net-select
+            v-decorator="['source']"
             allow-clear
             url="/sys/dict?dictType=issue_source"
             :cache="false"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
             :transform="transformSource"
-            v-decorator="['source']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 严重等级 -->
         <a-form-item :label="$t('issue.grade')">
           <net-select
+            v-decorator="['grade']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.grade')"
             url="/sys/dict?dictType=issue_grade"
             :transform="transformGrade"
-            v-decorator="['grade']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 问题阶段 -->
         <a-form-item :label="$t('issue.projectPhase')">
           <net-select
+            v-decorator="['projectPhase']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.projectPhase')"
             url="/sys/dict?dictType=issue_phase"
             :transform="transformPhase"
-            v-decorator="['projectPhase']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 生产基地 -->
         <a-form-item :label="$t('issue.manufactureBase')">
           <net-select
+            v-decorator="['manufactureBase']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.manufactureBase')"
             url="/masterdata/v1/manufactureBase"
             :transform="transformManufactureBase"
-            v-decorator="['manufactureBase']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 祸首件 -->
         <a-form-item :label="$t('issue.firstCausePart')">
           <net-select
+            v-decorator="['firstCausePart']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
             url="/masterdata/v1/part"
             :transform="transformFirstCausePart"
-            v-decorator="['firstCausePart']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 供应商ID -->
         <a-form-item :label="$t('issue.supplierId')">
           <net-select
+            v-decorator="['supplierId']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.supplierId')"
             url="/masterdata/v1/supplier"
             :transform="transformSupplierId"
-            v-decorator="['supplierId']"
           />
         </a-form-item>
       </a-col>
       <a-col
-        :span="6"
         v-if="advanced"
+        :span="6"
       >
         <!-- 问题发生日期 -->
         <a-form-item :label="$t('issue.failureDate')">
           <a-date-picker
+            v-decorator="['failureDate']"
             show-time
             allow-clear
             style="width: 100%;"
             format="YYYY-MM-DD HH:mm:ss"
             :placeholder="$t('search.please_select') + $t('issue.failureDate')"
-            v-decorator="['failureDate']"
           />
         </a-form-item>
       </a-col>
@@ -251,7 +251,6 @@ export default {
     advanced (value) {
       if (value) {
         this.form.updateFields(this.mapPropsToFields());
-        const record = this.form.getFieldsValue();
       }
     }
   },
@@ -277,7 +276,6 @@ export default {
      * 提交搜索内容
      */
     submitSearch () {
-      const record = this.form.getFieldsValue();
       this.$emit('change', this.record);
     },
     /**
@@ -288,13 +286,13 @@ export default {
       this.form.updateFields(this.mapPropsToFields());
       this.$emit('change', this.record);
     },
-    faultTreeIds1Change (value, option) {
+    faultTreeIds1Change (value) {
       if (!value) {
         this.record.faultTreeIds2 = undefined;
         this.record.faultTreeIds3 = undefined;
       }
     },
-    faultTreeIds2Change (value, option) {
+    faultTreeIds2Change (value) {
       if (!value) {
         this.record.faultTreeIds3 = undefined;
       }

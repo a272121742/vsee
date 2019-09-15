@@ -6,14 +6,14 @@
     <!-- 用户名 -->
     <a-form-item>
       <v-input
-        allow-clear
-        autocomplete="off"
-        size="large"
-        :placeholder="$t('username.placeholder')"
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
         }]"
+        allow-clear
+        autocomplete="off"
+        size="large"
+        :placeholder="$t('username.placeholder')"
         class="background-white-50"
       >
         <a-icon
@@ -26,14 +26,14 @@
     <!-- 密码 -->
     <a-form-item>
       <password
-        autocomplete="off"
-        allow-clear
-        size="large"
-        :placeholder="$t('password.placeholder')"
         v-decorator="['password', {
           initialValue: record.password,
           rules: [{type: 'string', required: true, message: $t('password.required_message')}]
         }]"
+        autocomplete="off"
+        allow-clear
+        size="large"
+        :placeholder="$t('password.placeholder')"
         class="background-white-50"
       >
         <a-icon
@@ -46,16 +46,16 @@
     <!-- 验证码 -->
     <a-form-item>
       <captcha-input
+        v-decorator="['captcha', {
+          rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
+        }]"
         autocomplete="off"
         allow-clear
         size="large"
         :url="`/auth/captcha?uuid=${record.uuid}`"
         :placeholder="$t('captcha.placeholder')"
-        @click-captcha="captchaChange"
-        v-decorator="['captcha', {
-          rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
-        }]"
         class="background-white-50"
+        @click-captcha="captchaChange"
       >
         <a-icon
           slot="prefix"
@@ -74,8 +74,8 @@
     </a-form-item>
     <a-form-item>
       <a-input
-        type="hidden"
         v-decorator="['uuid', {initialValue: record.uuid}]"
+        type="hidden"
       >
       </a-input>
     </a-form-item>
@@ -145,7 +145,7 @@ export default {
     /**
      * 提交数据
      */
-    handleSubmit (e) {
+    handleSubmit () {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
           this.login(loginInfo).then(res => {

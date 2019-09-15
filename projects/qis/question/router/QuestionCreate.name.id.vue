@@ -15,24 +15,24 @@
         <a-button
           type="primary"
           html-type="submit"
-          @click="handleSubmit"
           class="submitBtn"
           v-if="submitBtn"
+          @click="handleSubmit"
         >
           提交
         </a-button>
         <a-button
           :style="{ marginLeft: '8px' }"
-          @click="handleSave"
           type="primary"
           :class="[actiive]"
+          @click="handleSave"
         >
           保存
         </a-button>
         <a-button
           :style="{ marginLeft: '8px' }"
-          @click="handleReset"
           class="cancelBtn"
+          @click="handleReset"
         >
           取消
         </a-button>
@@ -75,9 +75,9 @@
                       show-search
                       :transform="selectOption"
                       :filter-option="filterOption"
-                      @change="vehicleModelIdChange"
                       placeholder="请选择"
                       :allow-clear="true"
+                      @change="vehicleModelIdChange"
                       v-decorator="[
                         'vehicleModelId',
                         {rules:[{required:true, message:'请选择车型'}]}
@@ -93,9 +93,9 @@
                       :transform="selectOption"
                       :delay="!isEdit"
                       placeholder="请选择"
-                      @change="handleSystem"
                       :filter-option="filterOption"
                       :allow-clear="true"
+                      @change="handleSystem"
                       v-decorator="[
                         'faultTreeIds1',
                         {rules:[{required:true, message:'请选择所属系统'}]}
@@ -114,12 +114,12 @@
                       :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
                       :cache="false"
                       :transform="selectOption"
-                      @change="faultTreeIds2Change"
                       :allow-clear="true"
                       v-decorator="[
                         'faultTreeIds2',
                         {rules:[{required:true, message:'请选择所属系统'}]}
                       ]"
+                      @change="faultTreeIds2Change"
                     >
                     </net-select>
                   </a-form-item>
@@ -131,9 +131,9 @@
                       placeholder="请选择"
                       :delay="!isEdit"
                       :filter-option="filterOption"
-                      @change="faultTreeIds3Change"
                       :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
                       :cache="false"
+                      @change="faultTreeIds3Change"
                       :transform="selectOption"
                       :allow-clear="true"
                       v-decorator="[
@@ -153,12 +153,12 @@
                       placeholder="请选择"
                       :filter-option="filterOption"
                       url="/sys/dict?dictType=issue_source"
-                      :transform="selectOptiondict"
-                      :allow-clear="true"
                       v-decorator="[
                         'source',
                         {rules:[{required:true, message:'请选择问题分类'}]}
                       ]"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                     >
                     </net-select>
                   </a-form-item>
@@ -170,12 +170,12 @@
                       placeholder="请选择"
                       :filter-option="filterOption"
                       url="/sys/dict?dictType=issue_grade"
-                      :transform="selectOptiondict"
-                      :allow-clear="true"
                       v-decorator="[
                         'grade',
                         {rules:[{required:true, message:'请选择严重等级'}]}
                       ]"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                     >
                     </net-select>
                   </a-form-item>
@@ -187,12 +187,12 @@
                       placeholder="请选择"
                       :filter-option="filterOption"
                       url="/sys/dict?dictType=issue_phase"
-                      :transform="selectOptiondict"
-                      :allow-clear="true"
                       v-decorator="[
                         'projectPhase',
                         {rules:[{required:true, message:'请选择问题阶段'}]}
                       ]"
+                      :transform="selectOptiondict"
+                      :allow-clear="true"
                     >
                     </net-select>
                   </a-form-item>
@@ -201,11 +201,11 @@
                   <a-form-item :label="`故障发生日期`">
                     <a-date-picker
                       format="YYYY-MM-DD HH:mm:ss"
-                      show-time
-                      style="width:231px;"
                       v-decorator="[
                         'failureDate'
                       ]"
+                      show-time
+                      style="width:231px;"
                     />
                   </a-form-item>
                 </a-col>
@@ -219,12 +219,12 @@
                       placeholder="请选择"
                       :filter-option="filterOption"
                       url="/masterdata/v1/manufactureBase"
-                      :transform="selectOptionBase"
-                      :allow-clear="true"
                       v-decorator="[
                         'manufactureBaseId',
                         {rules:[{required:true, message:'请选择生产基地'}]}
                       ]"
+                      :transform="selectOptionBase"
+                      :allow-clear="true"
                     />
                   </a-form-item>
                 </a-col>
@@ -235,11 +235,11 @@
                       placeholder="请选择"
                       :filter-option="filterOption"
                       :url="`/issue/faultTree?fault_category_id=${record.faultTreeIds2}`"
-                      :transform="selectOption"
-                      :allow-clear="true"
                       v-decorator="[
                         'responsibleDepartmentId',
                       ]"
+                      :transform="selectOption"
+                      :allow-clear="true"
                     >
                     </net-select>
                   </a-form-item>
@@ -247,11 +247,11 @@
                 <a-col :span="6">
                   <a-form-item :label="`问题频次`">
                     <v-input
-                      allow-clear
-                      placeholder="请输入"
                       v-decorator="[
                         'frequency',
                       ]"
+                      allow-clear
+                      placeholder="请输入"
                     />
                   </a-form-item>
                 </a-col>
@@ -261,11 +261,11 @@
                     class="quesetionContact"
                   >
                     <v-input
-                      allow-clear
-                      placeholder="请输入"
                       v-decorator="[
                         'contact',
                       ]"
+                      allow-clear
+                      placeholder="请输入"
                     />
                   </a-form-item>
                 </a-col>
@@ -277,12 +277,12 @@
                     :label="`问题描述`"
                   >
                     <v-textarea
-                      placeholder="输入"
-                      allow-clear
                       v-decorator="[
                         'description',
                         {rules: [{ required: true, message: '请输入问题描述' }]}
                       ]"
+                      placeholder="输入"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -294,8 +294,8 @@
                       name="file"
                       :multiple="true"
                       :file-list="fileList"
-                      @change="handleChange"
                       :remove="removeFile"
+                      @change="handleChange"
                     >
                       <a-button>
                         <a-icon type="upload" /> 上传文件
@@ -324,11 +324,11 @@
               <a-col :span="6">
                 <a-form-item :label="`VIN`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'vinNo',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   />
                 </a-form-item>
               </a-col>
@@ -339,11 +339,11 @@
                     :filter-option="filterOption"
                     url="/masterdata/v1/part"
                     placeholder="请选择"
-                    :transform="selectOption"
-                    :allow-clear="true"
                     v-decorator="[
                       'firstCausePart',
                     ]"
+                    :transform="selectOption"
+                    :allow-clear="true"
                   ></net-select>
                 </a-form-item>
               </a-col>
@@ -354,11 +354,11 @@
                     :filter-option="filterOption"
                     url="/masterdata/v1/part"
                     placeholder="请选择"
-                    :transform="selectOption"
-                    :allow-clear="true"
                     v-decorator="[
                       'partId',
                     ]"
+                    :transform="selectOption"
+                    :allow-clear="true"
                   ></net-select>
                 </a-form-item>
               </a-col>
@@ -369,11 +369,11 @@
                     :filter-option="filterOption"
                     url="/masterdata/v1/supplier"
                     placeholder="请选择"
-                    :transform="selectOption"
-                    :allow-clear="true"
                     v-decorator="[
                       'supplierId',
                     ]"
+                    :transform="selectOption"
+                    :allow-clear="true"
                   ></net-select>
                 </a-form-item>
               </a-col>
@@ -383,11 +383,11 @@
                 <a-form-item :label="`生产时间`">
                   <a-date-picker
                     format="YYYY-MM-DD HH:mm:ss"
-                    show-time
-                    style="width:231px;"
                     v-decorator="[
                       'productDate'
                     ]"
+                    show-time
+                    style="width:231px;"
                   />
                 </a-form-item>
               </a-col>
@@ -401,35 +401,35 @@
 
                     placeholder="请选择"
 
-                    :transform="selectOptiondict"
-
-                    :allow-clear="true"
-
                     v-decorator="[
                       'testType',
                     ]"
+
+                    :transform="selectOptiondict"
+
+                    :allow-clear="true"
                   ></net-select>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`故障里程（Km）`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入                                       Km"
                     v-decorator="[
                       'milage',
                     ]"
+                    allow-clear
+                    placeholder="请输入                                       Km"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`维修网点`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'maintenanceStation',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   />
                 </a-form-item>
               </a-col>
@@ -438,44 +438,44 @@
               <a-col :span="6">
                 <a-form-item :label="`软件版本号`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'softwareVersion',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`标定版本号`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'calibrationVersion',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`硬件版本号`">
                   <v-input
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'hardwareVersion',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`配置字版本号`">
                   <v-input
-                    placeholder="请输入"
-                    allow-clear
                     v-decorator="[
                       'confirmationVersion',
                     ]"
+                    placeholder="请输入"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
@@ -484,33 +484,33 @@
               <a-col :span="6">
                 <a-form-item :label="`工况信息`">
                   <v-textarea
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'workConditionInfo',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   ></v-textarea>
                 </a-form-item>
               </a-col>
               <a-col :span="6">
                 <a-form-item :label="`初步排查情况`">
                   <v-textarea
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'preliminaryInvestigation',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   ></v-textarea>
                 </a-form-item>
               </a-col>
               <a-col :span="12">
                 <a-form-item :label="`备注`">
                   <v-textarea
-                    allow-clear
-                    placeholder="请输入"
                     v-decorator="[
                       'remark',
                     ]"
+                    allow-clear
+                    placeholder="请输入"
                   ></v-textarea>
                 </a-form-item>
               </a-col>
@@ -834,7 +834,7 @@ export default {
 
           this.saveQuestion(data).then(res => {
             this.businessKey = res;
-            const name = 'submit'
+            const name = 'submit';
 
             const param = {
               businessKey: this.businessKey,
@@ -928,7 +928,7 @@ export default {
       this.dataFileList = newDataList;
       console.log(this.dataFileList);
     },
-    gradeChange (value) {
+    gradeChange () {
 
     },
     handleReset () {

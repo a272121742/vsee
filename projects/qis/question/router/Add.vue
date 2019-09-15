@@ -47,11 +47,11 @@
           >
             <a-form-item :label="`严重等级`">
               <a-select
-                @change="levelChange"
                 v-decorator="[
                   'level'
                 ]"
                 style="width: 120px"
+                @change="levelChange"
               >
                 <a-select-option value="A">
                   A
@@ -86,10 +86,10 @@
           >
             <a-form-item :label="`车型平台`">
               <a-select
-                style="width: 120px"
                 v-decorator="[
                   'vehicletype'
                 ]"
+                style="width: 120px"
               >
                 <a-select-option value="jack">
                   Jack
@@ -506,8 +506,8 @@ export default {
       'commitQuestion',
       'updateQuestion'
     ]),
-    handleSubmit (e) {
-      this.form.validateFields((err, fieldsValue) => {
+    handleSubmit () {
+      this.form.validateFields(() => {
         const data = this.form.getFieldsValue();
         this.addQuestion(data).then(res => {
           console.log('新赠成功，获取到数据', res);

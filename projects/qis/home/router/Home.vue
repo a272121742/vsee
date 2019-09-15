@@ -85,48 +85,6 @@
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
 
-const columns = [
-  {
-    title: 'no',
-    dataIndex: 'no',
-    scopedSlots: { customRender: 'no' }
-  }, {
-    title: 'title',
-    dataIndex: 'title',
-    scopedSlots: { customRender: 'title' }
-  }, {
-    title: 'system',
-    dataIndex: 'system',
-    scopedSlots: { customRender: 'system' }
-  }, {
-    title: 'level',
-    dataIndex: 'level',
-    scopedSlots: { customRender: 'level' }
-  }, {
-    title: 'problemsClassify',
-    dataIndex: 'problemsClassify',
-    scopedSlots: { customRender: 'problemsClassify' }
-  }, {
-    title: 'problemStage',
-    dataIndex: 'problemStage',
-    scopedSlots: { customRender: 'problemStage' }
-  }, {
-    title: 'schedule',
-    dataIndex: 'schedule',
-    scopedSlots: { customRender: 'schedule' }
-  },
-  {
-    title: 'createDate',
-    dataIndex: 'createDate',
-    scopedSlots: { customRender: 'createDate' }
-  },
-  {
-    title: 'acceptDate',
-    dataIndex: 'acceptDate',
-    scopedSlots: { customRender: 'acceptDate' }
-  }
-
-];
 export default {
   name: 'QuestionList',
   components: {

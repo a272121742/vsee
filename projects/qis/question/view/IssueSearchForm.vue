@@ -11,11 +11,11 @@
         <!-- 车型 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
+            v-decorator="['vehicleModelId']"
             allow-clear
             url="/masterdata/v1/vehiclemodel"
             :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
             :transform="transformField"
-            v-decorator="['vehicleModelId']"
           />
         </a-form-item>
       </a-col>
@@ -25,11 +25,11 @@
         <!-- 问题等级 -->
         <a-form-item :label="$t('issue.grade')">
           <net-select
+            v-decorator="['grade']"
             allow-clear
             :placeholder="$t('search.please_select') + $t('issue.grade')"
             url="/sys/dict?dictType=issue_grade"
             :transform="transformGrade"
-            v-decorator="['grade']"
           />
         </a-form-item>
       </a-col>
@@ -39,13 +39,13 @@
         <!-- 问题分类 -->
         <a-form-item :label="$t('issue.source')">
           <net-select
+            v-decorator="['source']"
             allow-clear
             url="/sys/dict?dictType=issue_source"
             :cache="false"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
             :transform="transformSource"
-            v-decorator="['source']"
           />
         </a-form-item>
       </a-col>
@@ -142,7 +142,6 @@ export default {
      * 提交搜索内容
      */
     submitSearch () {
-      const record = this.form.getFieldsValue();
       this.$emit('change', this.record);
     },
     /**
