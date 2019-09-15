@@ -697,10 +697,6 @@
                         {rules: [{ required: true, message: '请选择是否立项' }]}
                       ]"
                     />
-
-                    <a-radio-group :options="contActionOption"
-                                   @change='conActionChange'
-                                   v-decorator="['isNeedIca',{rules: [{ required: true, message: '请选择是否立项' }]}]"/>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -805,7 +801,7 @@
               <a-row style="margin-left:340px;">
                 <a-col :span="21">
                   <a-form-item>
-                    <a-radio-group :options="determineRadio" @change="determineChange" v-decorator="[ 'determine']"/>
+                    <a-radio-group :options="determineRadio" @change="determineChange" v-decorator="[ 'type']"/>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -2167,10 +2163,10 @@
         radioDefault: 'Yes',
         determineRadio: [{
           label: '直接判定',
-          value: '0'
+          value: '1'
         }, {
           label: '需要7钻分析',
-          value: '1'
+          value: '2'
         }],
         verifyRadio: [{
           label: '通过',
@@ -2223,7 +2219,7 @@
           // D1
           owerDeptLv1: [], // 责任部门
           champion: [], // 责任人
-          type: '0', // 判定
+          type: '1', // 判定
           verifySeven: '2', // 7钻审核
           sevenFailReason: '', // 不通过原因
           // 7钻责任人
@@ -2745,10 +2741,10 @@
         }
       },
       handleSubmit(e) {
-        // this.handleSave()
+        this.handleSave()
         const vm = this
-        vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
-        vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
+        vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.source, 'coChairStepMonitor').id;
+        vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.source, 'stepMonitor').id;
         this.formDcontent.validateFields((err, fieldsValue) => {
           if (!err) {
             const data = this.formDcontent.getFieldsValue();
