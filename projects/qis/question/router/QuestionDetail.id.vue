@@ -2710,6 +2710,9 @@ export default {
       this.effectDetail(this.id).then(res => {
         this.stepEffect = res;
       })
+      this.closeDetail(this.id).then(res => {
+        this.stepClose = res;
+      })
       this.analysisDetail(this.id).then(res => {
         if (res) {
           this.analysisId = res.id;
