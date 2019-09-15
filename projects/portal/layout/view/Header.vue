@@ -4,8 +4,14 @@
       <div class="header-index-left">
         <div class="logo">
         </div>
-        <a-divider type="vertical" style="height: 16px; margin: 24px 0; background: #0C9CE0"></a-divider>
-        <banner title="全面质量管理系统" desc="Total Quality Information System"></banner>
+        <a-divider
+          type="vertical"
+          style="height: 16px; margin: 24px 0; background: #0C9CE0"
+        ></a-divider>
+        <banner
+          title="全面质量管理系统"
+          desc="Total Quality Information System"
+        ></banner>
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">
@@ -65,7 +71,7 @@ export default {
       padding-left: 0;
       display: flex;
       height: 64px;
-      
+
     }
 
     .header-index-left {
@@ -115,4 +121,3 @@ export default {
     }
   }
 </style>
-

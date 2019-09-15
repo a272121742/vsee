@@ -14,8 +14,14 @@
       :page-size.async="limit"
       @change="handleTableChange"
     >
-      <span slot="action" slot-scope="record">
-        <a href="javascript:;" @click="goToDetail(record.id)">
+      <span
+        slot="action"
+        slot-scope="record"
+      >
+        <a
+          href="javascript:;"
+          @click="goToDetail(record.id)"
+        >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
         </a>
@@ -32,7 +38,7 @@ export default {
   name: 'IssueList',
   components: {
     AdvanceSearchForm: () => import('../view/AdvanceSearchForm.vue'),
-    IssueTable: () => import('../view/IssueTable.vue'),
+    IssueTable: () => import('../view/IssueTable.vue')
   },
   data () {
     return {
@@ -59,7 +65,7 @@ export default {
       /**
        * 排序字段
        */
-      orderField: '',
+      orderField: ''
     }
   },
   created () {
@@ -72,13 +78,17 @@ export default {
     ]),
     request (config) {
       if (config) this.page = 1;
-      const {page, limit, order, orderField} = this;
-      this.getIssuePage({...config, page, limit, order, orderField}).then(res => {
+      const {
+        page, limit, order, orderField
+      } = this;
+      this.getIssuePage({
+        ...config, page, limit, order, orderField
+      }).then(res => {
         this.data = res.list;
         this.total = res.total;
       });
     },
-    handleTableChange ({current = 1, pageSize = 10}, filters, {order = '', field = ''}) {
+    handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
       current && (this.page = current);
       pageSize && (this.limit = pageSize);
       order && (this.order = order);
@@ -88,12 +98,12 @@ export default {
     mapping (cols) {
       this.columns = cols;
     },
-     //查看详情
-    goToDetail(idValue){
+    // 查看详情
+    goToDetail (idValue) {
       this.$router.push({
         name: 'QuestionDetail',
         params: {
-         id: idValue,
+          id: idValue
         },
         query: {
           form: this.$route.path
@@ -106,7 +116,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  
+
   .container {
     margin-top: 16px;
     padding: 8px 16px 0;

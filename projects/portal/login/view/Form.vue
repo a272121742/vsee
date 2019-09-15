@@ -25,7 +25,7 @@
     </a-form-item>
     <!-- 密码 -->
     <a-form-item>
-      <password 
+      <password
         autocomplete="off"
         allow-clear
         size="large"
@@ -65,11 +65,11 @@
       </captcha-input>
     </a-form-item>
     <a-form-item>
-      <a-checkbox 
-        :checked="remember" 
+      <a-checkbox
+        :checked="remember"
         @change="e => remember = e.target.checked"
       >
-        {{ $t('remember.text')}}
+        {{ $t('remember.text') }}
       </a-checkbox>
     </a-form-item>
     <a-form-item>
@@ -77,7 +77,7 @@
         type="hidden"
         v-decorator="['uuid', {initialValue: record.uuid}]"
       >
-    </a-input>
+      </a-input>
     </a-form-item>
     <a-form-item>
       <a-button
@@ -85,7 +85,7 @@
         block
         html-type="submit"
       >
-        {{ $t('login.submit')}}
+        {{ $t('login.submit') }}
       </a-button>
     </a-form-item>
   </a-form>
@@ -102,8 +102,7 @@ export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
     CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
-    Password: () => import('@comp/form/Password.vue'),
-    Captcha: () => import('@comp/image/Captcha.vue'),
+    Password: () => import('@comp/form/Password.vue')
   },
   data () {
     return {
@@ -118,17 +117,17 @@ export default {
         username: null,
         password: null,
         captcha: null,
-        uuid: getUUID(),
+        uuid: getUUID()
       },
       /**
        * 是否记住密码
        */
-      remember: false,
+      remember: false
     }
   },
   created () {
     this.recovery();
-    this.form = this.$form.createForm(this, createFormFields(this, ['username','password', 'captcha', 'uuid'], 'record'));
+    this.form = this.$form.createForm(this, createFormFields(this, ['username', 'password', 'captcha', 'uuid'], 'record'));
   },
   methods: {
     ...mapActions(['login']),
@@ -154,20 +153,18 @@ export default {
               console.log(this.$route, this.$router);
               const goPage = this.$route.query.redirect || '/';
               if (this.$router.matcher.match(goPage).name === '404') {
-                this.$router.push({path: '/'});
+                this.$router.push({ path: '/' });
               } else {
-                this.$router.push({path: this.$route.query.redirect});
+                this.$router.push({ path: this.$route.query.redirect });
               }
-              // this.$router.push({path: '/'});
-              // window.location.href="/";
               if (this.remember) {
                 this.$store.commit('cacheLoginInfo', loginInfo);
               } else {
                 this.$store.commit('cleanLoginInfo', loginInfo);
               }
             }
-          }).catch(err => {
-            this.$message.error(this.$t(err));
+          }).catch(errCode => {
+            this.$message.error(this.$t(errCode));
             this.captchaChange();
           })
         }

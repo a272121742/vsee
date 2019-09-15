@@ -5,10 +5,10 @@ export default {
   state: {
   },
   getters: {
-    
+
   },
   mutations: {
-   
+
   },
   actions: {
     getAnnouncementPage (store, params = {}) {

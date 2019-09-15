@@ -28,8 +28,8 @@ if (process.env.NODE_ENV === 'production') {
     }
     next();
   });
-} 
-    // eslint-disable-next-line no-new
+}
+// eslint-disable-next-line no-new
 new Vue({
   router,
   store,

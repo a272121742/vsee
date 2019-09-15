@@ -1,15 +1,23 @@
 <template>
   <div class="login_wrapper">
     <div class="ant-drawer ant-drawer-right ant-drawer-open no-mask">
-      <div class="ant-drawer-content-wrapper" style="width: 500px;">
+      <div
+        class="ant-drawer-content-wrapper"
+        style="width: 500px;"
+      >
         <div class="ant-drawer-content">
-          <div class="ant-drawer-wrapper-body" style="overflow: auto; height: 100%;">
+          <div
+            class="ant-drawer-wrapper-body"
+            style="overflow: auto; height: 100%;"
+          >
             <div class="ant-drawer-body">
               <a-row>
                 <language-radio class="language-radio"></language-radio>
               </a-row>
               <a-row>
-                <h1 class="title">BJEV-TQIS</h1>
+                <h1 class="title">
+                  BJEV-TQIS
+                </h1>
               </a-row>
               <a-row>
                 <login-form class="login-form"></login-form>
@@ -58,5 +66,5 @@ export default {
   .login-form {
     margin: auto 48px;
   }
-  
+
 </style>

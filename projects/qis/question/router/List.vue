@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <a-tabs :activeKey="activeKey" @change="changeTable">
+    <a-tabs
+      :active-key="activeKey"
+      @change="changeTable"
+    >
       <a-tab-pane
         key="2"
       >
         <template slot="tab">
           <!-- 待办事项 -->
-          {{ $t('issue_status.todo')}}
+          {{ $t('issue_status.todo') }}
           <a-badge
             :count="total2"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
@@ -18,7 +21,7 @@
       >
         <span slot="tab">
           <!-- 待发事项（草稿） -->
-          {{ $t('issue_status.draft')}}
+          {{ $t('issue_status.draft') }}
           <a-badge
             :count="total0"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
@@ -30,7 +33,7 @@
       >
         <span slot="tab">
           <!-- 已办事项（完成） -->
-          {{ $t('issue_status.done')}}
+          {{ $t('issue_status.done') }}
         </span>
       </a-tab-pane>
       <a-tab-pane
@@ -38,7 +41,7 @@
       >
         <span slot="tab">
           <!-- 已发事项（待审批） -->
-          {{ $t('issue_status.created')}}
+          {{ $t('issue_status.created') }}
         </span>
       </a-tab-pane>
       <template #tabBarExtraContent>
@@ -50,7 +53,7 @@
           @click="() => hideForm = !hideForm"
         >
           <!-- 搜索按钮 -->
-          {{ $t('search.search_button')}}
+          {{ $t('search.search_button') }}
         </a-button>
         <a-button
           v-permission="'issue:owner:create'"
@@ -59,7 +62,7 @@
           @click="createQuestion"
         >
           <!-- 创建问题按钮 -->
-          {{ $t('issue_action.create')}}
+          {{ $t('issue_action.create') }}
         </a-button>
       </template>
     </a-tabs>
@@ -75,17 +78,22 @@
       :data="data"
       :total="total"
       :page="page"
-      :page-size.async="limit"
+      :page-size.sync="limit"
       @change="handleTableChange"
     >
-     <span slot="action" slot-scope="record">
-        <a href="javascript:;" @click="goToDetail(record.id)">
+      <span
+        slot="action"
+        slot-scope="record"
+      >
+        <a
+          href="javascript:;"
+          @click="goToDetail(record.id)"
+        >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
         </a>
       </span>
     </issue-table>
-
   </div>
 </template>
 
@@ -95,51 +103,51 @@ const { mapActions } = createNamespacedHelpers('question');
 
 const columns = [
   {
-  title: 'no',
-  dataIndex: 'no',
-  scopedSlots: { customRender: 'no' }
-}, {
-  title: 'title',
-  dataIndex: 'title',
-  scopedSlots: { customRender: 'title' }
-}, {
-  title: 'system',
-  dataIndex: 'system',
-  scopedSlots: { customRender: 'system' }
-}, {
-  title: 'level',
-  dataIndex: 'level',
-  scopedSlots: { customRender: 'level' }
-}, {
-  title: 'problemsClassify',
-  dataIndex: 'problemsClassify',
-  scopedSlots: { customRender: 'problemsClassify' }
-}, {
-  title: 'problemStage',
-  dataIndex: 'problemStage',
-  scopedSlots: { customRender: 'problemStage' }
-}, {
-  title: 'schedule',
-  dataIndex: 'schedule',
-  scopedSlots: { customRender: 'schedule' }
-},
-{
-  title: 'createDate',
-  dataIndex: 'createDate',
-  scopedSlots: { customRender: 'createDate' }
-},
-{
-  title: 'acceptDate',
-  dataIndex: 'acceptDate',
-  scopedSlots: { customRender: 'acceptDate' }
-}
+    title: 'no',
+    dataIndex: 'no',
+    scopedSlots: { customRender: 'no' }
+  }, {
+    title: 'title',
+    dataIndex: 'title',
+    scopedSlots: { customRender: 'title' }
+  }, {
+    title: 'system',
+    dataIndex: 'system',
+    scopedSlots: { customRender: 'system' }
+  }, {
+    title: 'level',
+    dataIndex: 'level',
+    scopedSlots: { customRender: 'level' }
+  }, {
+    title: 'problemsClassify',
+    dataIndex: 'problemsClassify',
+    scopedSlots: { customRender: 'problemsClassify' }
+  }, {
+    title: 'problemStage',
+    dataIndex: 'problemStage',
+    scopedSlots: { customRender: 'problemStage' }
+  }, {
+    title: 'schedule',
+    dataIndex: 'schedule',
+    scopedSlots: { customRender: 'schedule' }
+  },
+  {
+    title: 'createDate',
+    dataIndex: 'createDate',
+    scopedSlots: { customRender: 'createDate' }
+  },
+  {
+    title: 'acceptDate',
+    dataIndex: 'acceptDate',
+    scopedSlots: { customRender: 'acceptDate' }
+  }
 
 ];
 export default {
   name: 'QuestionList',
   components: {
     IssueSearchForm: () => import('../view/IssueSearchForm.vue'),
-    IssueTable: () => import('../view/IssueTable.vue'),
+    IssueTable: () => import('../view/IssueTable.vue')
   },
   data () {
     return {
@@ -171,7 +179,7 @@ export default {
       /**
        * 排序字段
        */
-      orderField: '',
+      orderField: ''
     }
   },
   watch: {
@@ -191,9 +199,13 @@ export default {
     ]),
     request (config) {
       if (config) this.page = 1;
-      const {page, limit, order, orderField} = this;
+      const {
+        page, limit, order, orderField
+      } = this;
       const type = Number(this.activeKey || 0);
-      this.getIssuePage({...config, page, limit, order, orderField, type}).then(res => {
+      this.getIssuePage({
+        ...config, page, limit, order, orderField, type
+      }).then(res => {
         this.data = res.list;
         this.total = res.total;
         if (this.activeKey === '0') {
@@ -204,7 +216,7 @@ export default {
         }
       });
     },
-    handleTableChange ({current = 1, pageSize = 10}, filters, {order = '', field = ''}) {
+    handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
       current && (this.page = current);
       pageSize && (this.limit = pageSize);
       order && (this.order = order);
@@ -212,15 +224,15 @@ export default {
       this.request();
     },
     createQuestion () {
-      let name='create';
+      const name = 'create';
       this.$router.push({
         name: 'QuestionCreate',
         params: {
-         name
+          name
         },
-         query: {
-          form: this.$route.path
-        }
+        query: {
+          form: this.$route.path
+        }
       })
     },
     changeTable (activeKey) {
@@ -233,14 +245,12 @@ export default {
     hiddenForm () {
       this.hideForm = true;
     },
-     //查看详情
-    goToDetail(record){
-
-
+    // 查看详情
+    goToDetail (record) {
       this.$router.push({
         name: 'QuestionDetail',
         params: {
-         id: record,
+          id: record
         },
         query: {
           form: this.$route.path

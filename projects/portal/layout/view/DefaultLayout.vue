@@ -17,7 +17,6 @@
         </div>
       </a-layout-content>
     </a-spin>
-    
   </a-layout>
 </template>
 
@@ -37,7 +36,7 @@ export default {
       this.$store.dispatch('layout/getPermissions');
       this.$store.dispatch('layout/getUserInfo');
     }
-  },
+  }
 };
 </script>
 

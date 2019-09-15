@@ -61,7 +61,7 @@ new Vue({
       locale: null
     };
   },
-  beforeCreate() {
+  beforeCreate () {
     this.$store && this.$store.dispatch('loadLanguage').then(locale => {
       import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
         this.$set(this, 'locale', res.default)
