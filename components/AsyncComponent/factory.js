@@ -7,7 +7,7 @@ function factory (_path, delay = 0, timeout = 3000) {
   const path = _path.charAt(0) === '/' ? _path.slice(1) : _path;
   return () => ({
     // 需要加载的组件
-    component: path ? import(`@@/${path}`).catch(err => AsyncError) : AsyncUndefined,
+    component: path ? import(`$/${path}`).catch(err => AsyncError) : AsyncUndefined,
     // component: import(`${this.file}`),
     // 异步加载过程中的loading状态（可以是一个组件）
     loading: AsyncLoading, // 根据系统要求定制化加载页面

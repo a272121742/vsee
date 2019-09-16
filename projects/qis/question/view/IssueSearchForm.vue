@@ -98,7 +98,7 @@
 
 <script>
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
-import { transform1, transform2 } from '@@cmd/model.js';
+import { transform1, transform2 } from '$cmd/model.js';
 
 export default {
   components: {

@@ -2115,7 +2115,7 @@ const columnsUpdate = [{
 export default {
   name: 'QuestionDetail',
   components: {
-    // EditableCell: () => import('@@/question/view/EditableCell'),
+    // EditableCell: () => import('$/question/view/EditableCell'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
   props: ['id'],
