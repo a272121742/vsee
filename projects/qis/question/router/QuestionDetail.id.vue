@@ -370,7 +370,7 @@
           <div class="baseMessage">
             基本信息
           </div>
-          <div class="pageTitle">
+          <div class="pageTitle clearfix">
             <span>问题标题：</span>
             <!-- <span class="carTitle">{{ detailList.vehicleModelId }}</span> -->
             <!-- <span class="functionTitle">{{ detailList.function }}</span>
@@ -378,6 +378,7 @@
             <span class="carTitle">
               {{ detailList.title }}
             </span>
+            <span style="float:right;margin-right:100px;">编号：{{ detailList.code }}</span>
           </div>
 
           <a-row :gutter="24">
@@ -813,7 +814,7 @@
                 <a-col :span="21">
                   <a-form-item>
                     <a-radio-group
-                      v-decorator="[ 'determine']"
+                      v-decorator="[ 'type']"
                       :options="determineRadio"
                       @change="determineChange"
                     />
@@ -842,7 +843,7 @@
                     <a-form-item :label="`责任人`">
                       <net-select
                         v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                         :transform="selectOptionChampion"
                         :delay="true"
                         placeholder="请选择"
@@ -1127,7 +1128,7 @@
                           <a-form-item :label="'责任人：'">
                             <net-select
                               v-decorator="['champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-                              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                               :transform="selectOptionChampion"
                               :delay="true"
                               placeholder="请选择"
@@ -1145,7 +1146,7 @@
                     <a-col :span="21">
                       <a-form-item :label="'不通过原因：'">
                         <a-textarea
-                          v-decorator="['icaDescription',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                          v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
                           placeholder="请输入"
                         >
                         </a-textarea>
@@ -1260,7 +1261,10 @@
                   <a-textarea
                     v-decorator="[
                       'rootCauseDescription',
-                      {rules: [{ required: true, message: '请输入根本原因' }]}
+                      {
+                        rules:[
+                          {required: true, message: '请输入根本原因'}, {validator: languageVer}
+                        ]}
                     ]"
                     placeholder="请输入"
                     style="width:572px;height:88px;"
@@ -1332,24 +1336,37 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
+            <div class="examineResult">
+              <div>审核结果</div>
+              <a-form-item :label="`审核`">
+                <p>{{}}</p>
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <p>{{}}</p>
+              </a-form-item>
+            </div>
+            <div class="Dtitle">
+              <span>措施判定</span>
+            </div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
-                  <a-textarea
+                  <v-textarea
                     v-decorator="[
                       'icaDescription',
                       {rules: [{validator: languageVer}]}
                     ]"
                     placeholder="请输入"
                     style="width:572px;height:88px;"
-                  ></a-textarea>
+                    :allow-clear="true"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施（中英文）`">
-                  <a-textarea
+                  <v-textarea
                     v-decorator="[
                       'pcaDescription',
                       {rules: [
@@ -1359,19 +1376,21 @@
                     ]"
                     placeholder="请输入"
                     style="width:572px;height:88px;"
-                  ></a-textarea>
+                    :allow-clear="true"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`小批量验证`">
-                  <a-input
+                  <v-input
                     v-decorator="[
                       'smallBatchValidation',
                     ]"
                     placeholder="请输入"
                     style="width:572px;"
+                    :allow-clear="true"
                   />
                 </a-form-item>
               </a-col>
@@ -1445,17 +1464,9 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-            <div class="examine">
-              <div>审核结果</div>
-              <a-radio-group
-                v-decorator="[
-                  'recurrencePrevention',
-                  {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
-                ]"
-                :options="recurrencePreventionRadio"
-              />
+            <div class="Dtitle">
+              <span>措施判定</span>
             </div>
-            <div>措施判定</div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期措施`">
@@ -1519,6 +1530,31 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <div class="examine">
+              <div class="Dtitle examineTitle">
+                <span>审核</span>
+              </div>
+              <a-form-item :label="`是否通过审核`">
+                <a-radio-group
+                  v-decorator="[
+                    'recurrencePrevention',
+                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                  ]"
+                  :options="recurrencePreventionRadio"
+                />
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <v-textarea
+                  v-decorator="[
+                    'description',
+                    {rules: [{ required: true, message: '请输入不通过理由' }]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                  style="width:572px;height:88px;"
+                />
+              </a-form-item>
+            </div>
           </div>
           <div
             v-if="stepCurrent===4&&backFlag===false"
@@ -1527,17 +1563,36 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
+            <div class="examineResult">
+              <div>
+                <span>审核结果</span>
+              </div>
+              <a-form-item :label="`审核`">
+                <p>{{}}</p>
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <p>{{}}</p>
+              </a-form-item>
+            </div>
+            <div class="Dtitle">
+              <span>措施实施</span>
+            </div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`短期效果(中英文)`">
-                  <a-textarea
+                  <v-textarea
                     v-decorator="[
                       'icaExecDescription',
-                      {rules: [{validator: languageVer}]}
+                      {
+                        rules: [
+                          {validator: languageVer,message:'请输入中英文'},
+                        ]
+                      }
                     ]"
                     placeholder="请输入"
                     style="width:572px;height:88px;"
-                  ></a-textarea>
+                    :allow-clear="true"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1558,7 +1613,7 @@
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`长期措施实施描述(中英文)`">
-                  <a-textarea
+                  <v-textarea
                     v-decorator="[
                       'pcaDescription',
                       {rules: [
@@ -1568,7 +1623,8 @@
                     ]"
                     placeholder="请输入"
                     style="width:572px;height:88px;"
-                  ></a-textarea>
+                    :allow-clear="true"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -1611,6 +1667,9 @@
           >
             <div class="triangle_border_up">
               <span></span>
+            </div>
+            <div class="Dtitle">
+              <span>措施实施</span>
             </div>
             <a-row>
               <a-col :span="21">
@@ -1661,6 +1720,144 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <div class="examine">
+              <div class="Dtitle examineTitle">
+                <span>审核</span>
+              </div>
+              <a-form-item :label="`是否通过审核`">
+                <a-radio-group
+                  v-decorator="[
+                    'recurrencePrevention',
+                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                  ]"
+                  :options="recurrencePreventionRadio"
+                />
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <v-textarea
+                  v-decorator="[
+                    'description',
+                    {rules: [{ required: true, message: '请输入不通过理由' }]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                  style="width:572px;height:88px;"
+                />
+              </a-form-item>
+            </div>
+          </div>
+
+          <div
+            v-if="stepCurrent===5&&backFlag===false"
+            class="Dcontent D5content"
+          >
+            <div class="triangle_border_up">
+              <span></span>
+            </div>
+            <div class="examineResult">
+              <div>
+                <span>审核结果</span>
+              </div>
+              <a-form-item :label="`审核`">
+                <p>{{}}</p>
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <p>{{}}</p>
+              </a-form-item>
+            </div>
+            <div class="Dtitle">
+              <span>效果验证</span>
+            </div>
+            <a-row>
+              <a-col :span="21">
+                <a-form-item :label="`效果验证`">
+                  <v-textarea
+                    v-decorator="[
+                      'description',
+                      {rules: [{ required: true, message: '请输入效果验证' }]}
+                    ]"
+                    placeholder="请输入"
+                    style="width:572px;height:88px;"
+                    :allow-clear="true"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row>
+              <a-col :span="21">
+                <a-form-item :label="`附件`">
+                  <a-upload
+                    name="file"
+                    :multiple="true"
+                    :headers="headers"
+                    @change="handleChange"
+                  >
+                    <a-button>
+                      <a-icon type="upload" />
+                      上传文件
+                    </a-button>
+                  </a-upload>
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row style="margin-left:220px;">
+              <a-col :span="8">
+                <a-form-item :label="`断点VIN`">
+                  <v-input
+                    v-decorator="[
+                      'breakpointVin ',
+                      {rules: [{ required: true, message: '请输入断点VIN' }]}
+                    ]"
+                    placeholder="请输入"
+                    :allow-clear="true"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="10">
+                <a-form-item :label="`断点时间`">
+                  <a-date-picker
+                    v-decorator="[
+                      'breakpointDate ',
+                      {rules: [{ required: true, message: '请选择断点时间' }]}
+                    ]"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    show-time
+                    style="width:231px;"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <div class="fileUpdate clearfix">
+              <a-col :span="21">
+                <a-form-item :label="`涉及文件更新:`">
+                  <div class="updateTable">
+                    <a-table
+                      row-key="id"
+                      :data-source="updateData"
+                      :columns="columnsUpdate"
+                      :pagination="false"
+                    >
+                      <span
+                        slot="id"
+                        slot-scope="text, row"
+                      >
+                        <a
+                          href="javascript:;"
+                          @click="showUpdate(row)"
+                        >查看</a>
+                      </span>
+                    </a-table>
+                    <div
+                      style="text-align:center;"
+                      @click="showUpdate()"
+                    >
+                      <a-icon type="plus-circle" />
+                      添加新的更新文件
+                    </div>
+                  </div>
+                </a-form-item>
+              </a-col>
+            </div>
           </div>
 
           <div
@@ -1709,142 +1906,76 @@
                 </a-table>
               </div>
             </a-form-item>
-
-
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`备件处理方案`">
-                  <p>{{ stepDetail.SpareParts }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`是否驳回`">
-                  <p>{{ stepDetail.Reject }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`驳回理由`">
-                  <p>{{ stepDetail.RejectReason }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-
-          <!-- <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`附件`" style="height:auto;">
-                  <div class="stepFileList clearfix">
-                    <ul class="fileList clearfix">
-                      <li v-for="(item,index) in stepDetail.D5file" :title="item" :key="index">
-                        <img src="/static/question/file.png">
-                        <span>{{ item }}</span>
-                      </li>
-
-                    </ul>
-
-                  </div>
-                </a-form-item>
-              </a-col>
-            </a-row>
-             -->
-          </div>
-          <div
-            v-if="stepCurrent===5&&backFlag===false"
-            class="Dcontent D5content"
-          >
-            <div class="triangle_border_up">
-              <span></span>
+            <div class="examine">
+              <div class="Dtitle examineTitle">
+                <span>审核</span>
+              </div>
+              <a-form-item :label="`是否通过审核`">
+                <a-radio-group
+                  v-decorator="[
+                    'recurrencePrevention',
+                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                  ]"
+                  :options="recurrencePreventionRadio"
+                />
+              </a-form-item>
+              <a-form-item :label="`不通过理由`">
+                <v-textarea
+                  v-decorator="[
+                    'description',
+                    {rules: [{ required: true, message: '请输入不通过理由' }]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                  style="width:572px;height:88px;"
+                />
+              </a-form-item>
             </div>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`效果验证`">
-                  <a-textarea
+            <div>
+              <div class="Dtitle examineTitle">
+                <span>提出人验证</span>
+              </div>
+              <a-row>
+                <a-form-item :label="`验证结果(中英文)`">
+                  <v-textarea
                     v-decorator="[
                       'description',
-                      {rules: [{ required: true, message: '请输入效果验证' }]}
+                      {rules: [
+                        {required: true, message: '请输入验证结果' },
+                        {validator: languageVer}
+                      ]}
                     ]"
                     placeholder="请输入"
+                    allow-clear
                     style="width:572px;height:88px;"
-                  ></a-textarea>
+                  />
                 </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`附件`">
-                  <a-upload
-                    name="file"
-                    :multiple="true"
-                    :headers="headers"
-                    @change="handleChange"
-                  >
-                    <a-button>
-                      <a-icon type="upload" />
-                      上传文件
-                    </a-button>
-                  </a-upload>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row style="margin-left:220px;">
-              <a-col :span="8">
-                <a-form-item :label="`断点VIN`">
-                  <a-input
+              </a-row>
+              <div class="examine">
+                <div class="Dtitle examineTitle">
+                  <span>审核</span>
+                </div>
+                <a-form-item :label="`是否通过审核`">
+                  <a-radio-group
                     v-decorator="[
-                      'breakpointVin ',
-                      {rules: [{ required: true, message: '请输入断点VIN' }]}
+                      'recurrencePrevention',
+                      {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                    ]"
+                    :options="recurrencePreventionRadio"
+                  />
+                </a-form-item>
+                <a-form-item :label="`不通过理由`">
+                  <v-textarea
+                    v-decorator="[
+                      'description',
+                      {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
+                    allow-clear
+                    style="width:572px;height:88px;"
                   />
                 </a-form-item>
-              </a-col>
-              <a-col :span="10">
-                <a-form-item :label="`断点时间`">
-                  <a-date-picker
-                    v-decorator="[
-                      'breakpointDate ',
-                      {rules: [{ required: true, message: '请选择断点时间' }]}
-                    ]"
-                    format="YYYY-MM-DD HH:mm:ss"
-                    show-time
-                    style="width:231px;"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <div class="fileUpdate clearfix">
-              <a-col :span="21">
-                <a-form-item :label="`涉及文件更新:`">
-                  <div class="updateTable">
-                    <a-table
-                      row-key="id"
-                      :data-source="updateData"
-                      :columns="columnsUpdate"
-                      :pagination="false"
-                    >
-                      <span
-                        slot="id"
-                        slot-scope="text, row"
-                      >
-                        <a
-                          href="javascript:;"
-                          @click="showUpdate(row)"
-                        >查看</a>
-                      </span>
-                    </a-table>
-                    <div
-                      style="text-align:center;"
-                      @click="showUpdate()"
-                    >
-                      <a-icon type="plus-circle" />
-                      添加新的更新文件
-                    </div>
-                  </div>
-                </a-form-item>
-              </a-col>
+              </div>
             </div>
           </div>
           <div
@@ -1906,7 +2037,9 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-
+            <div class="Dtitle">
+              <span>问题关闭</span>
+            </div>
             <a-row>
               <a-col :span="21">
                 <a-form-item :label="`是否需要进入再发防止库`">
@@ -1928,6 +2061,40 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <div class="examine">
+              <div class="Dtitle">
+                <span>加签审批</span>
+              </div>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`是否审阅`">
+                    <a-radio-group
+                      v-decorator="[
+                        'isClose',
+                        {rules: [{ required: true, message: '请选择是否审阅' }]}
+                      ]"
+                      :options="isCloseRadio"
+                    />
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item
+                    :label="`备注`"
+                  >
+                    <v-textarea
+                      v-decorator="[
+                        'reason '
+                      ]"
+                      placeholder="请输入"
+                      style="width:572px;height:88px;"
+                      :allow-clear="true"
+                    />
+                  </a-form-item>
+                </a-col>
+              </a-row>
+            </div>
           </div>
         </div>
       </a-card>
@@ -2116,13 +2283,16 @@ export default {
   name: 'QuestionDetail',
   components: {
     // EditableCell: () => import('@@/question/view/EditableCell'),
-    NetSelect: () => import('@comp/form/NetSelect.vue')
+    NetSelect: () => import('@comp/form/NetSelect.vue'),
+    VInput: () => import('@comp/form/VInput.vue'),
+    VTextarea: () => import('@comp/form/VTextarea.vue')
   },
   props: ['id'],
   data () {
     const that = this
     return {
       userId: that.$store.getters.getUser().id,
+      taskId: null, // 任务id
       // 再分配弹框
       ModalText: 'Content of the modal',
       fileModalTitle: '添加更新文件',
@@ -2217,10 +2387,10 @@ export default {
       radioDefault: 'Yes',
       determineRadio: [{
         label: '直接判定',
-        value: '0'
+        value: '1'
       }, {
         label: '需要7钻分析',
-        value: '1'
+        value: '2'
       }],
       verifyRadio: [{
         label: '通过',
@@ -2273,10 +2443,12 @@ export default {
         // D1
         owerDeptLv1: [], // 责任部门
         champion: [], // 责任人
-        type: '0', // 判定
+        type: '1', // 判定
         verifySeven: '2', // 7钻审核
         sevenFailReason: '', // 不通过原因
+        comment: '', // 不通过原因
         // 7钻责任人
+        endSeven: '1',
         zuanUser1: [],
         zuanUser4: [],
         zuanUser5: [],
@@ -2428,7 +2600,7 @@ export default {
 
       input.forEach((item) => {
         optionArray.push({
-          value: item.id,
+          value: item.code,
           label: item.name
         })
       })
@@ -2736,9 +2908,9 @@ export default {
     },
     // 是否需要7钻分析
     determineChange (e) {
-      if (e.target.value === '0') {
+      if (e.target.value === '1') {
         this.NeedFlage = false;
-      } else if (e.target.value === '1') {
+      } else if (e.target.value === '2') {
         this.NeedFlage = true;
       }
     },
@@ -2796,7 +2968,7 @@ export default {
       }
     },
     handleSubmit () {
-      // this.handleSave()
+      this.handleSave()
       const vm = this
       vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
       vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
@@ -2811,12 +2983,15 @@ export default {
             taskId: null, //  任务id
             userId: this.userId, //  当前用户id
             variables: {
+              businessKey: this.id, // 问题id
+              comment: data.comment || '0',
               assigner: data.zuanUser1,
               coChair: vm.coChair,
               monitor: vm.monitor,
               isDirectSerious: '0',
-              isPass: '0',
-              isQZEnd: '0',
+              isEnd: '0',
+              isPass: data.verifySeven,
+              isQZEnd: data.endSeven,
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
               isQZ: '0',
               isCheckError: '0',
@@ -2829,13 +3004,8 @@ export default {
               zuanUser7: data.zuanUser7
             }
           }
-          vm.workFlowSubmit(transData).then(res => {
-            if (res) {
-              vm.$message.success('提交成功');
-            }
-
-            // 隐藏7钻责任人模块
-            // vm.userFlag = false;
+          vm.workFlowSubmit(transData).then(function s () {
+            vm.$message.success('提交成功');
           });
         }
       });
@@ -2987,6 +3157,24 @@ export default {
     //      }
     //  }
     // }
+    .examineResult{
+       border-bottom: 1px solid rgba(0,0,0,0.09);
+       width:1012px;
+       margin-left:32px;
+       margin-bottom:20px;
+    }
+    .Dtitle{
+      margin-left:32px;
+    }
+    .examineTitle{
+      border-top: 1px solid rgba(0,0,0,0.09);
+      margin-right:32px;
+      display: block;
+      width:1012px;
+      padding-top: 20px;
+      margin-top:41px;
+    }
+
    .fileListNumber{
     width: 20px;
     height: 20px;
@@ -3034,7 +3222,7 @@ export default {
       background: rgba(0, 0, 0, 0.02);
       border-radius: 4px;
       border-radius: 4px;
-      width: 1020px;
+      width: 1168px;
       height: 40px;
       line-height: 40px;
       margin-top: 16px;
@@ -3267,6 +3455,18 @@ export default {
 
   .D3content {
     padding-top: 28px;
+    .triangle_border_up{
+       position: absolute;
+       left: 494px;
+       top: -15px;
+    }
+  }
+  .D3back{
+     .triangle_border_up{
+        position: absolute;
+        left: 494px;
+        top: -15px;
+    }
   }
 
   .analysisList {
@@ -3663,6 +3863,15 @@ export default {
       .d2file {
         float: left;
         margin-top: -5px;
+      }
+    }
+  }
+  .examine{
+     /deep/ .ant-form-item-label {
+      label {
+        font-family: SourceHanSansCN-Normal;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.85);
       }
     }
   }
