@@ -18,7 +18,10 @@
       height: 100%;
     }
     #app {
-      height: 100%;
+      height: -webkit-fill-available;
+      height: -moz-fill-available;
+      height: -moz-available;    /* FireFox目前这个生效 */
+      height: fill-available;
     }
     * {
       font-family: "SYHT"

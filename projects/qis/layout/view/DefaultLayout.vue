@@ -17,13 +17,16 @@
         </div>
       </a-layout-content>
     </a-spin>
+    <!-- 开发辅助区域 -->
+    <helper v-if="$store.state.isDev"></helper>
   </a-layout>
 </template>
 
 <script>
 export default {
   components: {
-    LayoutHeader: () => import('./Header.vue')
+    LayoutHeader: () => import('./Header.vue'),
+    Helper: () => import('@comp/helper/Helper.vue')
   },
   data () {
     return {

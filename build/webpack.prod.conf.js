@@ -109,7 +109,11 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {...require('../config/prod.env'), project: JSON.stringify(project)}
+      'process.env': {
+        ...require('../config/prod.env'),
+        project: JSON.stringify(project),
+        isMock: JSON.stringify(!!process.env.npm_config_mock)
+      }
     }),
     new MiniCssExtractPlugin({
       filename: utils.assetsPath(`css/[name].[chunkhash].css`),

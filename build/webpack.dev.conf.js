@@ -1,5 +1,3 @@
-'use strict'
-
 const path = require('path');
 // 加载webpack
 const webpack = require('webpack');
@@ -28,12 +26,12 @@ const PORT = process.env.PORT && Number(process.env.PORT);
 // ------- 注入系统环境 begin --------////////////////////////////////////////////////////////////////////////
 const env = require('../config/dev.env');
 // 如果是开发联调模式
-if(process.env.npm_config_test){
+if (process.env.npm_config_test) {
   env.testing = JSON.stringify(true);
   const proxyTable = config.dev.proxyTable;
   const keys = Object.keys(proxyTable);
   env.proxyServerPix = JSON.stringify(keys[0]);
-}else {
+} else {
   env.testing = JSON.stringify(false);
 }
 env.baseUrl = JSON.stringify(config.dev.assetsPublicPath);
@@ -44,7 +42,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   ],
   mode: config.dev.mode,
   module: {
-    //规则是工具utils中处理出来的styleLoaders，生成了css，less,postcss等规则
+    // 规则是工具utils中处理出来的styleLoaders，生成了css，less,postcss等规则
     rules: utils.styleLoaders({
       sourceMap: config.dev.cssSourceMap,
       usePostCSS: true
@@ -64,12 +62,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devServer: {
     // 日志级别，控制台显示的选项有none, error, warning 或者 info
     clientLogLevel: 'error',
-    //当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
+    // 当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html
     historyApiFallback: {
       rewrites: [{
         from: /.*/,
         to: path.posix.join(config.dev.assetsPublicPath, 'index.html')
-      }, ],
+      }]
     },
     // 是否热加载
     hot: true,
@@ -96,12 +94,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     watchOptions: {
       ignored: /node_modules/,
       // 文件系统检测改动
-      poll: config.dev.poll,
+      poll: config.dev.poll
     }
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {...require('../config/dev.env'), project: JSON.stringify(utils.project)}
+      'process.env': { 
+        ...require('../config/dev.env'),
+        project: JSON.stringify(utils.project),
+        isTest: JSON.stringify(!!process.env.npm_config_test)
+      }
     }),
     // 热更新模块
     new webpack.HotModuleReplacementPlugin(),
@@ -117,7 +119,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       title: 'vsee',
       filename: 'index.html',
-      template: 'index.html',
+      template: 'index.html'
       // inject: true
     }),
     // 复制插件

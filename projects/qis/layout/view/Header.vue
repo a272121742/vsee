@@ -34,7 +34,10 @@
               icon="user"
             />
             <a-menu slot="overlay">
-              <a-menu-item key="2">
+              <a-menu-item
+                v-if="$store.state.isDev"
+                key="2"
+              >
                 <a @click.stop.prevent="refresh">
                   {{ $t('user_action.refresh') }}
                 </a>
