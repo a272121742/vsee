@@ -1,3 +1,4 @@
+'use strict'
 
 const os = require('os');
 const path = require('path');
@@ -15,7 +16,7 @@ var happyThreadPool = HappyPack.ThreadPool({
 
 const isProd = process.env.NODE_ENV === 'production';
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -34,7 +35,7 @@ const createLintingRule = () => ({
 const exportConfig = {
   context: path.resolve(__dirname, '../'),
   entry: [
-    `$/main.js`
+    `@@/main.js`
   ],
   output: {
     path: config.build.assetsRoot,
@@ -48,18 +49,18 @@ const exportConfig = {
     alias: {
       '@': resolve('./'),
       // 当前项目路径
-      $: resolve('projects/' + utils.project),
-      $cmd: resolve('projects/' + utils.project + '/commond'),
+      '@@': resolve('projects/' + utils.project),
+      '@@cmd': resolve('projects/' + utils.project + '/commond'),
       '@comp': resolve('components'),
       '@lib': resolve('lib'),
       '@mix': resolve('lib/mixins'),
       '@util': resolve('lib/utils'),
       '@dir': resolve('lib/directives'),
-      '@static': resolve('static')
+      '@static': resolve('static'),
     },
     // 配置搜索模块，以减少搜索范围
     modules: [
-      path.resolve(__dirname, '../node_modules')
+      path.resolve(__dirname, '../node_modules'),
     ]
   },
   module: {
@@ -80,7 +81,7 @@ const exportConfig = {
         test: /\.js$/,
         loader: 'happypack/loader?id=happybabel',
         include: [resolve('projects'), resolve('test'), resolve('node_modules/webpack-dev-server/client')],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.js[x]?$/,

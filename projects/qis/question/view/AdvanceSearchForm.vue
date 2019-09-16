@@ -232,7 +232,7 @@
 
 <script>
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
-import { transform1, transform2, transform3 } from '$cmd/model.js';
+import { transform1, transform2, transform3 } from '@@cmd/model.js';
 
 export default {
   components: {
