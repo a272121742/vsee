@@ -161,7 +161,7 @@ export default {
     handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
       current && (this.page = current);
       pageSize && (this.limit = pageSize);
-      order && (this.order = order);
+      order && (this.order = order.slice(0, -3));
       field && (this.orderField = field);
       this.request();
     },

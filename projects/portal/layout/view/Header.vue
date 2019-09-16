@@ -79,8 +79,8 @@ export default {
       display: flex;
       .logo {
         width: 168px;
-        height: 32px;
-        margin: 16px 16px 16px 0;
+        height: 38px;
+        margin: 14px 16px 14px 0;
         float: left;
         background-image: url("/static/logo.png");
         img,

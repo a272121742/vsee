@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default {
   data () {
     return {
@@ -42,6 +44,11 @@ export default {
       // 变更ant-design UI组件的国际化
       import('ant-design-vue/lib/locale-provider/' + name).then(res => {
         this.$root && this.$root.locale && (this.$root.locale = res.default);
+        if (name !== 'zh_CN') {
+          moment.locale('en');
+        } else {
+          moment.locale('zh-cn');
+        }
       });
     }
   }

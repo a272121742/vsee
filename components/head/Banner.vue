@@ -33,6 +33,7 @@ export default {
       margin: 0;
     }
     .ant-list-item-meta-description {
+      font-weight: bold;
       display: flex;
       justify-content: left;
       align-items: center;

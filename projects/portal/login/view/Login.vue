@@ -49,7 +49,7 @@ export default {
     align-items: center;
   }
   .login_wrapper {
-    height: -webkit-fill-available;
+    height: 100%;
     background-image: url(/static/portal/login_bg.png);
     background-repeat:no-repeat;
     background-size: cover;
