@@ -813,7 +813,7 @@
                 <a-col :span="21">
                   <a-form-item>
                     <a-radio-group
-                      v-decorator="[ 'determine']"
+                      v-decorator="[ 'type']"
                       :options="determineRadio"
                       @change="determineChange"
                     />
@@ -842,7 +842,7 @@
                     <a-form-item :label="`责任人`">
                       <net-select
                         v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                        :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                         :transform="selectOptionChampion"
                         :delay="true"
                         placeholder="请选择"
@@ -1127,7 +1127,7 @@
                           <a-form-item :label="'责任人：'">
                             <net-select
                               v-decorator="['champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-                              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&deptId=${record.owerDeptLv1}`"
+                              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                               :transform="selectOptionChampion"
                               :delay="true"
                               placeholder="请选择"
@@ -1145,7 +1145,7 @@
                     <a-col :span="21">
                       <a-form-item :label="'不通过原因：'">
                         <a-textarea
-                          v-decorator="['icaDescription',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                          v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
                           placeholder="请输入"
                         >
                         </a-textarea>
@@ -2217,10 +2217,10 @@ export default {
       radioDefault: 'Yes',
       determineRadio: [{
         label: '直接判定',
-        value: '0'
+        value: '1'
       }, {
         label: '需要7钻分析',
-        value: '1'
+        value: '2'
       }],
       verifyRadio: [{
         label: '通过',
@@ -2273,10 +2273,12 @@ export default {
         // D1
         owerDeptLv1: [], // 责任部门
         champion: [], // 责任人
-        type: '0', // 判定
+        type: '1', // 判定
         verifySeven: '2', // 7钻审核
         sevenFailReason: '', // 不通过原因
+        comment: '', // 不通过原因
         // 7钻责任人
+        endSeven: '1',
         zuanUser1: [],
         zuanUser4: [],
         zuanUser5: [],
@@ -2428,7 +2430,7 @@ export default {
 
       input.forEach((item) => {
         optionArray.push({
-          value: item.id,
+          value: item.code,
           label: item.name
         })
       })
@@ -2736,9 +2738,9 @@ export default {
     },
     // 是否需要7钻分析
     determineChange (e) {
-      if (e.target.value === '0') {
+      if (e.target.value === '1') {
         this.NeedFlage = false;
-      } else if (e.target.value === '1') {
+      } else if (e.target.value === '2') {
         this.NeedFlage = true;
       }
     },
@@ -2796,7 +2798,7 @@ export default {
       }
     },
     handleSubmit () {
-      // this.handleSave()
+      this.handleSave()
       const vm = this
       vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
       vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
@@ -2811,12 +2813,15 @@ export default {
             taskId: null, //  任务id
             userId: this.userId, //  当前用户id
             variables: {
+              businessKey: this.id, // 问题id
+              comment: data.comment || '0',
               assigner: data.zuanUser1,
               coChair: vm.coChair,
               monitor: vm.monitor,
               isDirectSerious: '0',
-              isPass: '0',
-              isQZEnd: '0',
+              isEnd: '0',
+              isPass: data.verifySeven,
+              isQZEnd: data.endSeven,
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
               isQZ: '0',
               isCheckError: '0',
