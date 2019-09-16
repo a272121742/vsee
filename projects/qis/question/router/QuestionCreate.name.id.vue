@@ -285,7 +285,7 @@
                         'description',
                         {rules: [{ required: true, message: '请输入问题描述' }]}
                       ]"
-                      placeholder="输入"
+                      placeholder="请输入"
                       allow-clear
                     />
                   </a-form-item>
@@ -298,6 +298,7 @@
                       name="file"
                       :multiple="true"
                       :file-list="fileList"
+                      :preview="false"
                       :remove="removeFile"
                       @change="handleChange"
                     >
@@ -554,7 +555,7 @@ export default {
       $store
     } = this;
     return {
-      businessKey: '',
+      businessKey: null,
       businessTitle: '',
       fileList: [], // 上传附件列表
       dataFileList: [], // 存储到数据库的列表
@@ -803,8 +804,6 @@ export default {
           this.carTitle = option.componentOptions.children[0].text;
         }
       }
-
-
       // this.carTitle = value;
     },
     // 所属功能选择
@@ -848,33 +847,56 @@ export default {
           }
 
           const id = this.$store.getters.getUser().id;
-
-          this.saveQuestion(data).then(res => {
-            this.businessKey = res;
-
-            const param = {
-              businessKey: this.businessKey,
-              businessTitle: this.businessTitle,
-              processDefinitionKey: 'BJEV1',
-              subSys: 'irs',
-              taskId: null,
-              userId: id,
-              variables: {
-                assigner: '1',
-                issc: '0'
-              }
-
-
-            };
-
-            this.workFlowSubmit(param).then(res2 => {
-              if (res2) {
-                this.$router.push({
-                  path: this.$route.query.form || '/'
-                });
-              }
+          if (this.businessKey) {
+            data.id = this.id;
+            data.optCounter = this.optCounter;
+            this.editSaveQuestion(data).then(res => {
+              this.businessKey = res.id;
+              this.optCounter = res.optCounter;
+              const param = {
+                businessKey: this.businessKey,
+                businessTitle: this.businessTitle,
+                processDefinitionKey: 'BJEV1',
+                subSys: 'irs',
+                taskId: null,
+                userId: id,
+                variables: {
+                  assigner: '1',
+                  issc: '0'
+                }
+              };
+              this.workFlowSubmit(param).then(res2 => {
+                if (res2) {
+                  this.$router.push({
+                    path: this.$route.query.form || '/'
+                  });
+                }
+              });
+            })
+          } else {
+            this.saveQuestion(data).then(res => {
+              this.businessKey = res.id;
+              const param = {
+                businessKey: this.businessKey,
+                businessTitle: this.businessTitle,
+                processDefinitionKey: 'BJEV1',
+                subSys: 'irs',
+                taskId: null,
+                userId: id,
+                variables: {
+                  assigner: '1',
+                  issc: '0'
+                }
+              };
+              this.workFlowSubmit(param).then(res2 => {
+                if (res2) {
+                  this.$router.push({
+                    path: this.$route.query.form || '/'
+                  });
+                }
+              });
             });
-          })
+          }
         }
       });
     },
@@ -898,15 +920,31 @@ export default {
       data.fileList = this.dataFileList;
 
       if (this.name === 'create') {
-        this.saveQuestion(data).then(res => {
-          this.businessKey = res;
-        });
+        if (this.businessKey) {
+          data.id = this.id;
+          data.optCounter = this.optCounter;
+          this.editSaveQuestion(data).then(res => {
+            this.businessKey = res.id;
+            this.optCounter = res.optCounter;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          })
+        } else {
+          this.saveQuestion(data).then(res => {
+            this.businessKey = res.id;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          });
+        }
       } else if (this.name === 'edit') {
         data.id = this.id;
         data.optCounter = this.optCounter;
 
         this.editSaveQuestion(data).then(res => {
-          this.businessKey = res;
+          this.businessKey = res.id;
+          this.optCounter = res.optCounter;
           this.$router.push({
             name: 'QuestionDetail',
             params: {
