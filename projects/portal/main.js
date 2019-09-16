@@ -11,6 +11,7 @@ import { router } from '@lib/auto-router.js';
 import store from '@lib/auto-store.js';
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
+import moment from 'moment';
 
 // 加载权限控制
 // import('@dir/v-permission.js');
@@ -37,7 +38,7 @@ if (store.state.allowLogin) {
     // 如果进入的不是登陆界面，且未登陆过
     if (!toLogin && !isLogin) {
       next({
-        path: '/login',
+        name: 'Login',
         query: {
           redirect: to.fullPath
         }
@@ -66,6 +67,11 @@ new Vue({
       import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
         this.$set(this, 'locale', res.default)
       });
+      if (locale !== 'zh_CN') {
+        moment.locale('en');
+      } else {
+        moment.locale('zh-cn');
+      }
     });
   },
   render () {

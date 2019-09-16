@@ -66,6 +66,7 @@ module.exports = {
     "vue/html-indent": ["error", 2],
     "import/no-extraneous-dependencies": 0,
     "import/extensions": 0,
+    "no-param-reassign": ["error", { "props": false }],
     "vue/no-parsing-error": [2, {
       "x-invalid-end-tag": false
     }],

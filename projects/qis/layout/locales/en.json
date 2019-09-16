@@ -1,7 +1,7 @@
 {
   "Home": "Home",
-  "List": "My Question",
-  "Search": "AdvanceSearch",
+  "List": "My Issue",
+  "Search": "Issue Search",
   "user_action": {
     "refresh": "refresh",
     "editinfo": "edit info",

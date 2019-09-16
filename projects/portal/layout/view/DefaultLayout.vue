@@ -34,6 +34,7 @@ export default {
     if (this.$store) {
       this.$store.dispatch('layout/getMenus');
       this.$store.dispatch('layout/getPermissions');
+      this.$store.dispatch('layout/getWorkflows');
       this.$store.dispatch('layout/getUserInfo');
     }
   }

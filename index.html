@@ -10,18 +10,21 @@
   <style>
     @font-face {
       font-family: "SYHT";
-      /* src: url('static/font/SourceHanSansCN-Bold.otf'); 太重 */
-      /* src: url('/static/font/SourceHanSansCN-ExtraLight.otf');  太亮*/
-      /* src: url('/static/font/SourceHanSansCN-Heavy.otf');太重 */
-      /* src: url('/static/font/SourceHanSansCN-Light.otf');太亮 */
-      src: url('/static/font/SourceHanSansCN-Medium.otf'); /*正常*/
-      /* src: url('/static/font/SourceHanSansCN-Normal.otf');略微细 */
-      /* src: url('/static/font/SourceHanSansCN-Regular.otf');普通 */
+      src: url('/static/font/SourceHanSansCN-Regular.otf');/*普通 */
       font-weight: normal;
       font-style: normal;
     }
+    body {
+      height: 100%;
+    }
+    #app {
+      height: 100%;
+    }
     * {
       font-family: "SYHT"
+    }
+    *[class*="title"]{
+      font-weight: bold;
     }
     #loader-wrapper {
       position: fixed;
@@ -198,13 +201,106 @@
       -webkit-transition: all 0.3s 1s ease-out;
       transition: all 0.3s 1s ease-out;
     }
-    /* JavaScript Turned Off */
-    .no-js #loader-wrapper {
-      display: none;
-    }
-    .no-js h1 {
-      color: #222222;
-    }
+        #SplashScreen {
+            contain: strict;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background: transparent!important;
+            overflow: hidden;
+        }
+        #SplashScreen {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #SplashScreen.shown {
+            opacity: 1;
+        }
+
+        #SplashScreen {
+            position: fixed;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+        }
+
+        #SplashScreen .text {
+            font: italic 24px "Times New Roman";
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #SplashScreen.shown .text {
+            opacity: 1;
+        }
+
+        #SplashScreen .center {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #SplashScreen .load-icon {
+            width: 200px;
+            height: 200px;
+        }
+
+        #SplashScreen .load-icon div {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: SplashScreen__spin 2.1s linear infinite;
+        }
+
+        #SplashScreen.shown .load-icon div {
+            opacity: 1;
+        }
+
+        #SplashScreen .load-icon div:nth-child(1) {
+            height: 100%;
+            width: 100%;
+            border-top: solid 8px rgba(33, 150, 243, 0.40);
+            animation-duration: 1.7s;
+        }
+
+        #SplashScreen .load-icon div:nth-child(2) {
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            border-top: solid 8px rgba(33, 150, 243, 0.60);
+            animation-duration: 1.3s;
+        }
+
+        #SplashScreen .load-icon div:nth-child(3) {
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-top: solid 8px rgba(33, 150, 243, 0.80);
+            animation-duration: 1.1s;
+        }
+
+        html {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        @keyframes SplashScreen__spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(210deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    
   </style>
 </head>
 
@@ -215,10 +311,17 @@
   <a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a> 更新, 以获取最佳的体验</p>
   <![endif]-->
   <div id="app">
-    <div id="loader-wrapper">
+    <!-- <div id="loader-wrapper">
         <div id="loader"></div>
         <div class="loader-section section-left"></div>
-        <div class="loader-section section-right"></div>
+        <div class="loader-section section-right"></div> -->
+        <div id="SplashScreen" class="shown">
+          <div class="load-icon center">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+      </div>
   </div>
   <!-- built files will be auto injected -->
 </body>

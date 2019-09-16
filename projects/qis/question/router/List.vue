@@ -41,7 +41,7 @@
       >
         <span slot="tab">
           <!-- 已发事项（待审批） -->
-          {{ $t('issue_status.created') }}
+          {{ $t('issue_status.published') }}
         </span>
       </a-tab-pane>
       <template #tabBarExtraContent>
@@ -220,7 +220,7 @@ export default {
     handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
       current && (this.page = current);
       pageSize && (this.limit = pageSize);
-      order && (this.order = order);
+      order && (this.order = order.slice(0, -3));
       field && (this.orderField = field);
       this.request();
     },
