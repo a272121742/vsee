@@ -310,7 +310,7 @@
           class="backBtn"
           @click="goBack"
         >
-          <img src="/static/question/back.png" />
+          <a-icon type="rollback" />
           返回
         </a-button>
       </div>

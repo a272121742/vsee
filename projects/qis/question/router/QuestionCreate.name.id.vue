@@ -9,7 +9,7 @@
           class="backBtn"
           @click="goBack"
         >
-          <img src="/static/question/back.png" />
+          <a-icon type="rollback" />
           返回
         </a-button>
       </div>
@@ -298,8 +298,8 @@
                       name="file"
                       :multiple="true"
                       :file-list="fileList"
-                      :preview="false"
                       :remove="removeFile"
+                      @preview="downFile"
                       @change="handleChange"
                     >
                       <a-button>
@@ -541,6 +541,8 @@ const {
   mapActions
 } = createNamespacedHelpers('question');
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export default {
   name: 'QuestionCreate',
   components: {
@@ -701,30 +703,19 @@ export default {
         });
       }
     },
-    // //自定义文件上传
-    // customRequest(data) {
+    // 文件下载
+    downFile (info) {
+      const locationUrl = isDev ? 'http://106.75.63.69:8091' : window.location.origin;
+      const a = document.createElement('a');
+      a.download = info.name;
+      // a.href = 'www.baidu.com';
+      const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
+      a.href = decodeURI(url);
+      // a.href = locationUrl + '/api/oss/ossFile/download?path=1.pdb&originalFilename=3.pdb';
+      a.click();
+      return false;
+    },
 
-    //   const formData = new FormData()
-    //   formData.append('file', data.file)
-    //   formData.append('token', data.headers.token) //随便写一个token示例
-    //   this.saveFile(formData)
-    // },
-    // saveFile(formData) {
-    //   debugger;
-
-    //   Axios({
-    //     url: "http://106.75.63.69:8080/issue/v1/file/upload?recType=10021003",
-    //     method: 'post',
-    //     data: formData
-    //   }) .then((response) => {
-    //       console.log(response)
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error)
-    //     })
-
-
-    // },
     // 基本信息是否展开
     BaseOpen () {
       if (this.DetailBase) {
@@ -829,8 +820,8 @@ export default {
       this.form.validateFields((err) => {
         if (!err) {
           const data = this.form.getFieldsValue();
-          const primaryKey = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
-          data.faultTreeIds = primaryKey;
+          const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
+          data.faultTreeIds = tree;
 
           const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
 
@@ -903,8 +894,8 @@ export default {
     handleSave () {
       const data = this.form.getFieldsValue();
 
-      const primaryKey = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
-      data.faultTreeIds = primaryKey;
+      const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码$ data.faultTreeIds3"`;
+      data.faultTreeIds = tree;
       const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
 
       data.title = title;
