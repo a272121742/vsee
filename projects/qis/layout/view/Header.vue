@@ -88,6 +88,7 @@ export default {
   methods: {
     jump (path) {
       this.$router.push({ path });
+      this.refresh();
     },
     refresh () {
       this.$store.dispatch('refresh');

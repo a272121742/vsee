@@ -26,12 +26,33 @@
         >
         </async-component>
       </template>
+      <template>
+        是否代理
+        <a-switch
+          default-checked
+          @change="onProxyChange"
+        />
+      </template>
+      <template>
+        刷新页面
+        <a-button
+          @click="refresh"
+        >
+          刷新页面
+        </a-button>
+      </template>
+      <template>
+        <async-component
+          path="@comp/helper/LocaleTable.vue"
+        ></async-component>
+      </template>
     </a-drawer>
   </a-affix>
 </template>
 
 <script>
 import $ from '@lib/ajax.js';
+console.log($.instance.defaults.baseURL);
 
 export default {
   components: {
@@ -82,6 +103,14 @@ export default {
       }).finally(() => {
         this.reloadCaptcha();
       });
+    },
+    onProxyChange (checked) {
+      checked
+        ? ($.instance.defaults.baseURL = '/api')
+        : ($.instance.defaults.baseURL = '/');
+    },
+    refresh () {
+      this.$store.dispatch('refresh');
     }
   }
 }
