@@ -13,27 +13,16 @@
       >
         <a-col :span="18">
           <a-form-item :label="`选择责任人`">
-            <a-select
-              v-decorator="[
-                'dtfUser',
-                {rules: [{ required: true, message: '请选择责任人' }]}
-              ]"
+            <net-select
+              v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+              :transform="selectOptionChampion"
+              :delay="true"
               placeholder="请选择"
               :allow-clear="true"
+              style="width:272px;height:32px;"
             >
-              <a-select-option value="D0">
-                D0
-              </a-select-option>
-              <a-select-option value="D1">
-                D1
-              </a-select-option>
-              <a-select-option value="D2">
-                D2
-              </a-select-option>
-              <a-select-option value="D3">
-                D3
-              </a-select-option>
-            </a-select>
+            </net-select>
           </a-form-item>
         </a-col>
       </a-form>
@@ -52,55 +41,59 @@
         <a-row v-show="false">
           <a-col :span="22">
             <a-form-item :label="`id`">
-              <a-textarea
+              <v-textarea
                 v-decorator="[
                   'id',
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-              ></a-textarea>
+                allow-clear
+              />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
             <a-form-item :label="`标准要求`">
-              <a-textarea
+              <v-textarea
                 v-decorator="[
                   'standard',
                   {rules: [{ required: true, message: '请输入标准要求' }]}
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-              ></a-textarea>
+                allow-clear
+              />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
             <a-form-item :label="`实际情况`">
-              <a-textarea
+              <v-textarea
                 v-decorator="[
                   'actualSituation',
                   {rules: [{ required: true, message: '请输入实际情况' }]}
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-              ></a-textarea>
+                allow-clear
+              />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
             <a-form-item :label="`结论`">
-              <a-textarea
+              <v-textarea
                 v-decorator="[
                   'conclusion',
                   {rules: [{ required: true, message: '请输入结论' }]}
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-              ></a-textarea>
+                allow-clear
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -220,11 +213,12 @@
         <a-row v-show="false">
           <a-col :span="17">
             <a-form-item :label="`id`">
-              <a-input
+              <v-input
                 v-decorator="[
                   'id',
                 ]"
                 placeholder="请输入"
+                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -232,12 +226,13 @@
         <a-row v-show="fileNameFlag">
           <a-col :span="17">
             <a-form-item :label="`文件名称`">
-              <a-input
+              <v-input
                 v-decorator="[
                   'fileName',
                   {rules:[{required: true,message: '请输入文件名称'}]}
                 ]"
                 placeholder="请输入"
+                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -264,16 +259,15 @@
             <a-form-item
               :label="`更新内容`"
             >
-              <a-textarea
+              <v-textarea
                 v-decorator="[
                   'updateContent',
                   {rules:[{required: true,message: '请输入更新内容'}]}
                 ]"
                 placeholder="请输入"
-
+                allow-clear
                 style="width:340px; height:56px;"
-              >
-              </a-textarea>
+              />
             </a-form-item>
           </a-col>
         </a-row>
