@@ -1,8 +1,8 @@
 <template>
-  <a-layout id="components-layout-top-side">
+  <a-layout>
     <!-- 头部，固定 -->
     <a-affix>
-      <layout-header class="shadow-head"></layout-header>
+      <layout-header></layout-header>
     </a-affix>
     <!-- 内容区域 -->
     <a-spin :spinning="refreshing">
@@ -17,20 +17,23 @@
         </div>
       </a-layout-content>
     </a-spin>
+    <!-- 开发辅助区域 -->
+    <helper v-if="$store.state.isDev"></helper>
   </a-layout>
 </template>
 
 <script>
 export default {
   components: {
-    LayoutHeader: () => import('./Header.vue')
+    LayoutHeader: () => import('./Header.vue'),
+    Helper: () => import('@comp/helper/Helper.vue')
   },
   computed: {
     refreshing () {
       return this.$store.state.refresh;
     }
   },
-  beforeCreate () {
+  created () {
     if (this.$store) {
       this.$store.dispatch('layout/getMenus');
       this.$store.dispatch('layout/getPermissions');
@@ -41,26 +44,19 @@ export default {
 };
 </script>
 
-<style lang="less">
-body {
-  background: #f0f2f5;
-}
-.ant-layout-content {
-  overflow-x: overlay;
-}
-#components-layout-top-side {
-  height: 100%;
-}
-/* 动画 */
-.page-transition-enter {
-  opacity: 0;
-}
-.page-transition-leave-active {
-  opacity: 0;
-}
-.page-transition-enter .page-transition-container,
-.page-transition-leave-active .page-transition-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
+<style lang="less" scoped>
+  .ant-layout-content {
+    overflow-x: hidden;
+  }
+  /* 动画 */
+  .page-transition-enter {
+    opacity: 0;
+  }
+  .page-transition-leave-active {
+    opacity: 0;
+  }
+  .page-transition-enter .page-transition-container,
+  .page-transition-leave-active .page-transition-container {
+    transform: scale(1.1);
+  }
 </style>

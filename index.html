@@ -1,332 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>BEJV</title>
-  <link rel="icon" href="./logo-symbol.png" type="image/x-icon">
-  <style>
-    @font-face {
-      font-family: "SYHT";
-      src: url('/static/font/SourceHanSansCN-Regular.otf');/*普通 */
-      font-weight: normal;
-      font-style: normal;
-    }
-    body {
-      height: 100%;
-    }
-    #app {
-      height: -webkit-fill-available;
-      height: -moz-fill-available;
-      height: -moz-available;    /* FireFox目前这个生效 */
-      height: fill-available;
-    }
-    * {
-      font-family: "SYHT"
-    }
-    *[class*="title"]{
-      font-weight: bold;
-    }
-    #loader-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 999999;
-      background: -webkit-linear-gradient(to right,rgba(0,151,224, 0.7),rgba(0,151,224, 0.9),rgba(0,151,224, 0.7)); /* Safari 5.1-6.0 */
-      background: -o-linear-gradient(to right,rgba(0,151,224, 0.7),rgba(0,151,224, 0.9),rgba(0,151,224, 0.7)); /* Opera 11.1-12.0 */
-      background: -moz-linear-gradient(to right,rgba(0,151,224, 0.7),rgba(0,151,224, 0.9),rgba(0,151,224, 0.7)); /* Firefox 3.6-15 */
-      background: linear-gradient(to right,rgba(0,151,224, 0.7),rgba(0,151,224, 0.9),rgba(0,151,224, 0.7)); /* 标准语法 */
-    }
-    #loader {
-      display: block;
-      position: relative;
-      left: 50%;
-      top: 50%;
-      width: 150px;
-      height: 150px;
-      margin: -75px 0 0 -75px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      /* COLOR 1 */
-      border-top-color: #FFF;
-      -webkit-animation: spin 2s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -ms-animation: spin 2s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -moz-animation: spin 2s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -o-animation: spin 2s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      animation: spin 2s linear infinite;
-      /* Chrome, Firefox 16+, IE 10+, Opera */
-      z-index: 1001;
-    }
-    #loader:before {
-      content: "";
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      right: 5px;
-      bottom: 5px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      /* COLOR 2 */
-      border-top-color: #FFF;
-      -webkit-animation: spin 3s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -moz-animation: spin 3s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -o-animation: spin 3s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -ms-animation: spin 3s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      animation: spin 3s linear infinite;
-      /* Chrome, Firefox 16+, IE 10+, Opera */
-    }
-    #loader:after {
-      content: "";
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      bottom: 15px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: #FFF;
-      /* COLOR 3 */
-      -moz-animation: spin 1.5s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -o-animation: spin 1.5s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -ms-animation: spin 1.5s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      -webkit-animation: spin 1.5s linear infinite;
-      /* Chrome, Opera 15+, Safari 5+ */
-      animation: spin 1.5s linear infinite;
-      /* Chrome, Firefox 16+, IE 10+, Opera */
-    }
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-        /* Chrome, Opera 15+, Safari 3.1+ */
-        -ms-transform: rotate(0deg);
-        /* IE 9 */
-        transform: rotate(0deg);
-        /* Firefox 16+, IE 10+, Opera */
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BEJV</title>
+    <link rel="icon" href="./logo-symbol.png" type="image/x-icon">
+    <style>
+      /* 字体 */
+      @font-face {
+        font-family: "SYHT";
+        src: url('/static/font/SourceHanSansCN-Regular.otf');/*普通 */
+        font-weight: normal;
+        font-style: normal;
       }
-      100% {
-        -webkit-transform: rotate(360deg);
-        /* Chrome, Opera 15+, Safari 3.1+ */
-        -ms-transform: rotate(360deg);
-        /* IE 9 */
-        transform: rotate(360deg);
-        /* Firefox 16+, IE 10+, Opera */
+      * {
+        font-family: "SYHT"
       }
-    }
-    @keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-        /* Chrome, Opera 15+, Safari 3.1+ */
-        -ms-transform: rotate(0deg);
-        /* IE 9 */
-        transform: rotate(0deg);
-        /* Firefox 16+, IE 10+, Opera */
+      *[class*="title"]{
+        font-weight: bold;
       }
-      100% {
-        -webkit-transform: rotate(360deg);
-        /* Chrome, Opera 15+, Safari 3.1+ */
-        -ms-transform: rotate(360deg);
-        /* IE 9 */
-        transform: rotate(360deg);
-        /* Firefox 16+, IE 10+, Opera */
+      body {
+        height: 100%;
       }
-    }
-    #loader-wrapper .loader-section {
-      position: fixed;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      /* background: rgba(0,151,224, 0.9); */
+      #SplashScreen {
+        contain: strict;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        background: transparent!important;
+        overflow: hidden;
+      }
+      #SplashScreen {
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      #SplashScreen {
+        opacity: 1;
+      }
 
-      /* Old browsers */
-      z-index: 1000;
-      -webkit-transform: translateX(0);
-      /* Chrome, Opera 15+, Safari 3.1+ */
-      -ms-transform: translateX(0);
-      /* IE 9 */
-      transform: translateX(0);
-      /* Firefox 16+, IE 10+, Opera */
-    }
-    #loader-wrapper .loader-section.section-left {
-      left: 0;
-    }
-    #loader-wrapper .loader-section.section-right {
-      right: 0;
-    }
-    /* Loaded */
-    .loaded #loader-wrapper .loader-section.section-left {
-      -webkit-transform: translateX(-100%);
-      /* Chrome, Opera 15+, Safari 3.1+ */
-      -ms-transform: translateX(-100%);
-      /* IE 9 */
-      transform: translateX(-100%);
-      /* Firefox 16+, IE 10+, Opera */
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
-    .loaded #loader-wrapper .loader-section.section-right {
-      -webkit-transform: translateX(100%);
-      /* Chrome, Opera 15+, Safari 3.1+ */
-      -ms-transform: translateX(100%);
-      /* IE 9 */
-      transform: translateX(100%);
-      /* Firefox 16+, IE 10+, Opera */
-      -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-      transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-    }
-    .loaded #loader {
-      opacity: 0;
-      -webkit-transition: all 0.3s ease-out;
-      transition: all 0.3s ease-out;
-    }
-    .loaded #loader-wrapper {
-      visibility: hidden;
-      -webkit-transform: translateY(-100%);
-      /* Chrome, Opera 15+, Safari 3.1+ */
-      -ms-transform: translateY(-100%);
-      /* IE 9 */
-      transform: translateY(-100%);
-      /* Firefox 16+, IE 10+, Opera */
-      -webkit-transition: all 0.3s 1s ease-out;
-      transition: all 0.3s 1s ease-out;
-    }
-        #SplashScreen {
-            contain: strict;
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            background: transparent!important;
-            overflow: hidden;
-        }
-        #SplashScreen {
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+      #SplashScreen {
+        position: fixed;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+      }
+      #SplashScreen .center {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      #SplashScreen .load-icon {
+        width: 200px;
+        height: 200px;
+      }
 
-        #SplashScreen.shown {
-            opacity: 1;
+      #SplashScreen .load-icon div {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s;
+        animation: SplashScreen__spin 2.1s linear infinite;
+      }
+      #SplashScreen .load-icon div {
+        opacity: 1;
+      }
+      #SplashScreen .load-icon div:nth-child(1) {
+        height: 100%;
+        width: 100%;
+        border-top: solid 8px rgba(33, 150, 243, 0.40);
+        animation-duration: 1.7s;
+      }
+      #SplashScreen .load-icon div:nth-child(2) {
+        top: 5%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+        border-top: solid 8px rgba(33, 150, 243, 0.60);
+        animation-duration: 1.3s;
+      }
+      #SplashScreen .load-icon div:nth-child(3) {
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        border-top: solid 8px rgba(33, 150, 243, 0.80);
+        animation-duration: 1.1s;
+      }
+      @keyframes SplashScreen__spin {
+        0% {
+          transform: rotate(0deg);
         }
-
-        #SplashScreen {
-            position: fixed;
-            left: 0;
-            top: 0;
-            pointer-events: none;
+        50% {
+          transform: rotate(210deg);
         }
-
-        #SplashScreen .text {
-            font: italic 24px "Times New Roman";
-            opacity: 0;
-            transition: opacity 0.3s;
+        100% {
+          transform: rotate(360deg);
         }
+      }
+    </style>
+  </head>
 
-        #SplashScreen.shown .text {
-            opacity: 1;
-        }
-
-        #SplashScreen .center {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        #SplashScreen .load-icon {
-            width: 200px;
-            height: 200px;
-        }
-
-        #SplashScreen .load-icon div {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.3s;
-            animation: SplashScreen__spin 2.1s linear infinite;
-        }
-
-        #SplashScreen.shown .load-icon div {
-            opacity: 1;
-        }
-
-        #SplashScreen .load-icon div:nth-child(1) {
-            height: 100%;
-            width: 100%;
-            border-top: solid 8px rgba(33, 150, 243, 0.40);
-            animation-duration: 1.7s;
-        }
-
-        #SplashScreen .load-icon div:nth-child(2) {
-            top: 5%;
-            left: 5%;
-            width: 90%;
-            height: 90%;
-            border-top: solid 8px rgba(33, 150, 243, 0.60);
-            animation-duration: 1.3s;
-        }
-
-        #SplashScreen .load-icon div:nth-child(3) {
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
-            border-top: solid 8px rgba(33, 150, 243, 0.80);
-            animation-duration: 1.1s;
-        }
-
-        html {
-            font-family: 'Noto Sans', sans-serif;
-        }
-
-        @keyframes SplashScreen__spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            50% {
-                transform: rotate(210deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    
-  </style>
-</head>
-
-<body>
-  <!--[if lte IE 9]>
-  <p class="browserupgrade">你的浏览器实在
-  <strong>太太太太太太旧了</strong>，放学别走，升级完浏览器再说
-  <a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a> 更新, 以获取最佳的体验</p>
-  <![endif]-->
-  <div id="app">
-    <!-- <div id="loader-wrapper">
-        <div id="loader"></div>
-        <div class="loader-section section-left"></div>
-        <div class="loader-section section-right"></div> -->
-        <div id="SplashScreen" class="shown">
-          <div class="load-icon center">
-              <div></div>
-              <div></div>
-              <div></div>
-          </div>
+  <body>
+    <!--[if lte IE 9]>
+    <p class="browserupgrade">你的浏览器实在
+    <strong>太太太太太太旧了</strong>，放学别走，升级完浏览器再说
+    <a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a> 更新, 以获取最佳的体验</p>
+    <![endif]-->
+    <div id="app">
+      <div id="SplashScreen">
+        <div class="load-icon center">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
-  </div>
-  <!-- built files will be auto injected -->
-</body>
-
+    </div>
+  </body>
 </html>

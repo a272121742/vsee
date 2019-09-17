@@ -110,6 +110,7 @@ export default {
       display: flex;
       justify-content: right;
       align-items: center;
+      border-bottom: 1px solid transparent!important;
     }
     /deep/ .ant-menu-item {
       height: 64px;
@@ -121,16 +122,14 @@ export default {
       padding-left: 0;
       display: flex;
       height: 64px;
-
     }
-
     .header-index-left {
       flex: 0 1 1080px;
       display: flex;
       .logo {
         width: 168px;
-        height: 32px;
-        margin: 16px 16px 16px 0;
+        height: 40px;
+        margin: 12px 16px 12px 0;
         float: left;
         background-image: url("/static/logo.png");
         img,
@@ -140,7 +139,6 @@ export default {
           height: 32px;
           width: 32px;
         }
-
         h1 {
           color: #fff;
           display: inline-block;
@@ -151,13 +149,11 @@ export default {
         }
       }
     }
-
     .header-index-right {
       flex: 1 0 auto;
       height: 64px;
       overflow: hidden;
       color: rgba(255, 255, 255, .65);
-
       .content-box {
         float: right;
         button, span {

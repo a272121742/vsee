@@ -3,11 +3,12 @@ import AsyncError from './AsyncError';
 
 const AsyncUndefined = import('./AsyncUndefined');
 
-function factory (_path, delay = 0, timeout = 3000) {
-  const path = _path.charAt(0) === '/' ? _path.slice(1) : _path;
+function factory (path, delay = 0, timeout = 3000) {
+  const useCompLib = path.charAt(0) === '@';
+  let compPath = useCompLib ? path.split('/').slice(1).join('/') : path.charAt(0) === '/' ? path.slice(1) : path;
   return () => ({
     // 需要加载的组件
-    component: path ? import(`@@/${path}`).catch(err => AsyncError) : AsyncUndefined,
+    component: useCompLib ? import(`@comp/${compPath}`).catch(err => AsyncError) : import(`@@/${compPath}`).catch(err => AsyncError),
     // component: import(`${this.file}`),
     // 异步加载过程中的loading状态（可以是一个组件）
     loading: AsyncLoading, // 根据系统要求定制化加载页面
@@ -21,6 +22,13 @@ function factory (_path, delay = 0, timeout = 3000) {
     // 则使用加载失败时使用的组件。默认值是：`Infinity`
     timeout: timeout
   });
+}
+
+function resolvePath (path) {
+  const pathArray = path.split('/');
+  const root = pathArray[0] ? pathArray[0] : '@@';
+  const compPath = pathArray.slice(1).join('/');
+  return [root, compPath];
 }
 
 export default factory;

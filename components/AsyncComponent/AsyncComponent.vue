@@ -4,14 +4,24 @@
       :is="AsyncComponent"
       v-bind="$attrs"
       v-on="$listeners"
-    />
+    >
+      <!-- slot继承 -->
+      <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
+        <slot :name="slot" v-bind="scope"/>
+      </template>
+    </component>
   </keep-alive>
   <component
     v-else
     :is="AsyncComponent"
     v-bind="$attrs"
     v-on="$listeners"
-  />
+  >
+    <!-- slot继承 -->
+    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
+      <slot :name="slot" v-bind="scope"/>
+    </template>
+  </component>
 </template>
 
 <script>
