@@ -1,5 +1,15 @@
 {
+  "user_action": {
+    "refresh": "refresh",
+    "editinfo": "edit",
+    "logout": "logout"
+  },
   "link": {
     "more": "more"
+  },
+  "title": {
+    "quickEntry": "Quick Entry",
+    "announcement": "Announcement",
+    "todo": "Todo"
   }
 }

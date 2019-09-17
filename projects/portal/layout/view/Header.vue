@@ -9,7 +9,7 @@
           style="height: 16px; margin: 24px 0; background: #0C9CE0"
         ></a-divider>
         <banner
-          title="全面质量管理系统"
+          title="全面质量信息管理系统"
           desc="Total Quality Information System"
         ></banner>
       </div>
@@ -23,13 +23,14 @@
             />
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a @click.stop.prevent="refresh">刷新</a>
+                <a href="javascript:;">
+                  {{ $t('user_action.editinfo') }}
+                </a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a href="javascript:;">编辑信息</a>
-              </a-menu-item>
-              <a-menu-item key="2">
-                <a @click="logoutHandle">退出系统</a>
+                <a @click.stop.prevent="logoutHandle">
+                  {{ $t('user_action.logout') }}
+                </a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -46,9 +47,6 @@ export default {
     LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
   },
   methods: {
-    refresh () {
-      this.$store.dispatch('refresh');
-    },
     logoutHandle () {
       this.$store.dispatch('login/logout');
     }

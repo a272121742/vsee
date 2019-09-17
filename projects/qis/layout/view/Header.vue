@@ -9,8 +9,7 @@
           style="height: 17px; margin: 25px 0; background: #0C9CE0"
         ></a-divider>
         <banner
-          title="质量管理系统"
-          desc="Total Quality Information System"
+          title="质量问题分析解决平台"
         ></banner>
         <a-menu
           :selected-keys="custMenu"
@@ -34,14 +33,6 @@
               icon="user"
             />
             <a-menu slot="overlay">
-              <a-menu-item
-                v-if="$store.state.isDev"
-                key="2"
-              >
-                <a @click.stop.prevent="refresh">
-                  {{ $t('user_action.refresh') }}
-                </a>
-              </a-menu-item>
               <a-menu-item key="0">
                 <a href="javascript:;">
                   {{ $t('user_action.editinfo') }}
@@ -88,9 +79,6 @@ export default {
   methods: {
     jump (path) {
       this.$router.push({ path });
-      this.refresh();
-    },
-    refresh () {
       this.$store.dispatch('refresh');
     },
     logoutHandle () {

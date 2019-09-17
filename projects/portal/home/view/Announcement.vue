@@ -1,15 +1,21 @@
 <template>
-  <a-card title="公告">
-    <a-button
+  <a-card :title="$t('title.announcement')">
+    <router-link
       slot="extra"
-      type="link"
+      to="/announcement/list"
     >
-      {{ $t('link.more') }}
-      <a-icon
-        type="right"
-        style="font-size: 12px;"
-      />
-    </a-button>
+      <a-button
+
+        type="link"
+      >
+        {{ $t('link.more') }}
+        <a-icon
+          type="right"
+          style="font-size: 12px;"
+        />
+      </a-button>
+    </router-link>
+
     <a-list
       size="small"
       :split="false"

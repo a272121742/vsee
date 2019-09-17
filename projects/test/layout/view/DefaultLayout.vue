@@ -1,7 +1,7 @@
 <template>
   <a-layout id="components-layout-top-side">
     <!-- 头部，固定 -->
-    <Header class="shadow-head" @refresh="refresh"></Header>
+    <header class="shadow-head" @refresh="refresh"></header>
     <!-- 内容区域 -->
     <a-spin :spinning="refreshing">
       <a-layout-content
@@ -15,8 +15,7 @@
         </div>
       </a-layout-content>
     </a-spin>
-    
-  </a-layout>
+</a-layout>
 </template>
 
 <script>
@@ -29,12 +28,12 @@ export default {
       refreshing: false
     }
   },
+  computed: {
+  },
   beforeCreate () {
     if (this.$store && this.$store.state && this.$store.state.allowLogin) {
       this.$store.dispatch('layout/getPermissions');
     }
-  },
-  computed: {
   },
   methods: {
     refresh (next) {
@@ -45,7 +44,7 @@ export default {
           next && next();
         });
       }
-    },
+    }
   }
 };
 </script>

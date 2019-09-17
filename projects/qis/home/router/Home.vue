@@ -1,83 +1,97 @@
 <template>
   <div class="container">
-    <a-tabs
-      :active-key="activeKey"
-      @change="changeTable"
+    <a-row
+      class="row1"
     >
-      <a-tab-pane
-        key="2"
+      <a-card class="banner-card">
+        <img
+          slot="cover"
+          src="/static/portal/portal_banner.png"
+        >
+      </a-card>
+    </a-row>
+    <a-row
+      class="row2"
+    >
+      <a-tabs
+        :active-key="activeKey"
+        @change="changeTable"
       >
-        <template slot="tab">
-          <!-- 待办事项 -->
-          {{ $t('issue_status.todo') }}
-          <a-badge
-            :count="total2"
-            :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
-          />
+        <a-tab-pane
+          key="1"
+        >
+          <template slot="tab">
+            <!-- 待办事项 -->
+            {{ $t('issue_status.todo') }}
+            <a-badge
+              :count="total1"
+              :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
+            />
+          </template>
+        </a-tab-pane>
+        <a-tab-pane
+          key="0"
+        >
+          <span slot="tab">
+            <!-- 待发事项（草稿） -->
+            {{ $t('issue_status.draft') }}
+            <a-badge
+              :count="total0"
+              :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
+            />
+          </span>
+        </a-tab-pane>
+        <template #tabBarExtraContent>
+          <a-button
+            v-if="showSearch"
+            icon="search"
+            type="primary"
+            :ghost="true"
+            @click="() => hideForm = !hideForm"
+          >
+            <!-- 搜索按钮 -->
+            {{ $t('search.search_button') }}
+          </a-button>
+          <a-button
+            v-permission="'issue:owner:create'"
+            icon="plus-circle"
+            type="primary"
+            @click="createQuestion"
+          >
+            <!-- 创建问题按钮 -->
+            {{ $t('issue_action.create') }}
+          </a-button>
         </template>
-      </a-tab-pane>
-      <a-tab-pane
-        key="0"
+      </a-tabs>
+      <!-- 搜索表单 -->
+      <issue-search-form
+        :hide="hideForm"
+        @hidden="hiddenForm"
+        @change="request"
+      />
+      <!-- 数据列表 -->
+      <issue-table
+        col-update-url="/sys/customlist?listCode=issue-columns"
+        :data="data"
+        :total="total"
+        :page="page"
+        :page-size.sync="limit"
+        @change="handleTableChange"
       >
-        <span slot="tab">
-          <!-- 待发事项（草稿） -->
-          {{ $t('issue_status.draft') }}
-          <a-badge
-            :count="total0"
-            :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
-          />
+        <span
+          slot="action"
+          slot-scope="record"
+        >
+          <a
+            href="javascript:;"
+            @click="goToDetail(record.id)"
+          >
+            <!-- 详情链接 -->
+            {{ $t('issue_action.detail') }}
+          </a>
         </span>
-      </a-tab-pane>
-      <template #tabBarExtraContent>
-        <a-button
-          v-if="showSearch"
-          icon="search"
-          type="primary"
-          :ghost="true"
-          @click="() => hideForm = !hideForm"
-        >
-          <!-- 搜索按钮 -->
-          {{ $t('search.search_button') }}
-        </a-button>
-        <a-button
-          v-permission="'issue:owner:create'"
-          icon="plus-circle"
-          type="primary"
-          @click="createQuestion"
-        >
-          <!-- 创建问题按钮 -->
-          {{ $t('issue_action.create') }}
-        </a-button>
-      </template>
-    </a-tabs>
-    <!-- 搜索表单 -->
-    <issue-search-form
-      :hide="hideForm"
-      @hidden="hiddenForm"
-      @change="request"
-    />
-    <!-- 数据列表 -->
-    <issue-table
-      col-update-url="/sys/customlist?listCode=issue-columns"
-      :data="data"
-      :total="total"
-      :page="page"
-      :page-size.sync="limit"
-      @change="handleTableChange"
-    >
-      <span
-        slot="action"
-        slot-scope="record"
-      >
-        <a
-          href="javascript:;"
-          @click="goToDetail(record.id)"
-        >
-          <!-- 详情链接 -->
-          {{ $t('issue_action.detail') }}
-        </a>
-      </span>
-    </issue-table>
+      </issue-table>
+    </a-row>
   </div>
 </template>
 
@@ -105,7 +119,7 @@ export default {
        */
       total: 0,
       total0: 0,
-      total2: 0,
+      total1: 0,
       /**
        * 当前页
        */
@@ -153,8 +167,8 @@ export default {
         if (this.activeKey === '0') {
           this.total0 = res.total;
         }
-        if (this.activeKey === '2') {
-          this.total2 = res.total;
+        if (this.activeKey === '1') {
+          this.total1 = res.total;
         }
       });
     },
@@ -203,12 +217,27 @@ export default {
 
 <style lang="less" scoped>
   .container {
-    margin-top: 16px;
-    padding: 8px 16px 0;
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
-    border-radius: 4px;
-    border-radius: 4px;
+    background-color: transparent!important;
+    .row1 {
+      margin-top: 16px;
+      .banner-card {
+        box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
+        border-radius: 4px;
+        border-radius: 4px;
+        img {
+          height: 220px;
+          object-fit: cover;
+        }
+      }
+    }
+    .row2 {
+      background-color: #FFFFFF;
+      margin: 16px 0;
+      padding: 16px 12px 0px 16px;
+      box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
+      border-radius: 4px;
+      border-radius: 4px;
+    }
     /deep/ .ant-table{
       table {
         width: 100%; /*必须设置，否则还是会拉长单元格*/

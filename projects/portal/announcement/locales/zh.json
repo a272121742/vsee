@@ -1,0 +1,26 @@
+{
+  "Home": "首页",
+  "MyQuestion": "我的问题",
+  "AdvanceSearch": "高级检索",
+  "username": {
+    "label": "用户名",
+    "placeholder": "请输入用户名",
+    "required_message": "用户名不能为空"
+  },
+  "password": {
+    "label": "密码",
+    "placeholder": "请输入用户密码",
+    "required_message": "密码不能为空"
+  },
+  "captcha": {
+    "label": "验证码",
+    "placeholder": "请输入验证码",
+    "required_message": "验证码不能为空"
+  },
+  "remember": {
+    "text": "记住用户名和密码"
+  },
+  "login": {
+    "submit": "登录"
+  }
+}

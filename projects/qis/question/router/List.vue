@@ -5,13 +5,13 @@
       @change="changeTable"
     >
       <a-tab-pane
-        key="2"
+        key="1"
       >
         <template slot="tab">
           <!-- 待办事项 -->
           {{ $t('issue_status.todo') }}
           <a-badge
-            :count="total2"
+            :count="total1"
             :number-style="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
           />
         </template>
@@ -29,7 +29,7 @@
         </span>
       </a-tab-pane>
       <a-tab-pane
-        key="1"
+        key="2"
       >
         <span slot="tab">
           <!-- 已办事项（完成） -->
@@ -101,49 +101,6 @@
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
 
-// eslint-disable-next-line no-unused-vars
-const columns = [
-  {
-    title: 'no',
-    dataIndex: 'no',
-    scopedSlots: { customRender: 'no' }
-  }, {
-    title: 'title',
-    dataIndex: 'title',
-    scopedSlots: { customRender: 'title' }
-  }, {
-    title: 'system',
-    dataIndex: 'system',
-    scopedSlots: { customRender: 'system' }
-  }, {
-    title: 'level',
-    dataIndex: 'level',
-    scopedSlots: { customRender: 'level' }
-  }, {
-    title: 'problemsClassify',
-    dataIndex: 'problemsClassify',
-    scopedSlots: { customRender: 'problemsClassify' }
-  }, {
-    title: 'problemStage',
-    dataIndex: 'problemStage',
-    scopedSlots: { customRender: 'problemStage' }
-  }, {
-    title: 'schedule',
-    dataIndex: 'schedule',
-    scopedSlots: { customRender: 'schedule' }
-  },
-  {
-    title: 'createDate',
-    dataIndex: 'createDate',
-    scopedSlots: { customRender: 'createDate' }
-  },
-  {
-    title: 'acceptDate',
-    dataIndex: 'acceptDate',
-    scopedSlots: { customRender: 'acceptDate' }
-  }
-
-];
 export default {
   name: 'QuestionList',
   components: {
@@ -164,7 +121,7 @@ export default {
        */
       total: 0,
       total0: 0,
-      total2: 0,
+      total1: 0,
       /**
        * 当前页
        */
@@ -212,8 +169,8 @@ export default {
         if (this.activeKey === '0') {
           this.total0 = res.total;
         }
-        if (this.activeKey === '2') {
-          this.total2 = res.total;
+        if (this.activeKey === '1') {
+          this.total1 = res.total;
         }
       });
     },

@@ -2,7 +2,9 @@
   <div class="panel-card">
     <a-row :gutter="64">
       <a-col :span="8">
-        <h2>公告</h2>
+        <h2 style="color: #0097E0;">
+          公告
+        </h2>
         <a-divider></a-divider>
         <a-list
           size="small"
@@ -76,6 +78,7 @@ export default {
 
 <style lang="less" scoped>
   .panel-card {
+    margin-top: 16px;
     background-color: #FFFFFF;
     padding: 32px 24px;
     border: 1px solid #e8e8e8;

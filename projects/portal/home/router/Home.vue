@@ -10,7 +10,7 @@
         </a-card>
         <a-card
           class="module-card"
-          title="快捷入口"
+          :title="$t('title.quickEntry')"
         >
           <a-row :gutter="16">
             <a-col

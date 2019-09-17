@@ -1,5 +1,15 @@
 {
+  "user_action": {
+    "refresh": "刷新",
+    "editinfo": "编辑信息",
+    "logout": "退出系统"
+  },
   "link": {
     "more": "查看更多"
+  },
+  "title": {
+    "quickEntry": "快捷入口",
+    "announcement": "公告",
+    "todo": "待办"
   }
 }

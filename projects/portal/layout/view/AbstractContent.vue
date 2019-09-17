@@ -9,9 +9,6 @@
 </template>
 
 <style lang="less">
-  body {
-    background: #f0f2f5;
-  }
   // 滚动条样式
   &::-webkit-scrollbar {
     width: 6px; /*滚动条的宽度*/

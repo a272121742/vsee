@@ -1,5 +1,5 @@
 <template>
-  <a-card title="待办">
+  <a-card :title="$t('title.todo')">
     <a-list
       size="small"
       :split="false"

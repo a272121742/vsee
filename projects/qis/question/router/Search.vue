@@ -95,9 +95,6 @@ export default {
       field && (this.orderField = field);
       this.request();
     },
-    mapping (cols) {
-      this.columns = cols;
-    },
     // 查看详情
     goToDetail (idValue) {
       this.$router.push({
