@@ -144,12 +144,12 @@ export default {
     return api.rootCauseAdd(data);
   },
   // 获取系统用户
-  getSysUser (store, issueSource, type) {
-    return api.getSysUser(issueSource, type);
+  getSysUser (store, data) {
+    return api.getSysUser(data);
   },
   // 存七钻
   sevenDiamonds (store, data) {
-    return api.getSysUser(data);
+    return api.sevenDiamonds(data);
   },
   /**
    * 获取问题分页列表

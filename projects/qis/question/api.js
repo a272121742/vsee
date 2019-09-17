@@ -27,7 +27,8 @@ export default {
   addQuestion: (data) => $.post('/activiti/running/completeTask', data),
   // 创建保存某个问题
   saveQuestion: (data) => $.post('/issue/v1/issue', data),
-  getSysUser: (issueSource, type) => $.get('/issue/v1/workflow/getSysUser', { issueSource, type }),
+  // getSysUser: (issueSource, type) => $.get('/issue/v1/workflow/getSysUser', { issueSource, type }),
+  getSysUser: (data) => $.get('/issue/v1/workflow/getSysUser', data),
   /**
  * 问题提交至工作流
  */
