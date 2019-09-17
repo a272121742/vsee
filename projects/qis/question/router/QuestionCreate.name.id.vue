@@ -559,7 +559,7 @@ export default {
     return {
       businessKey: null,
       businessTitle: '',
-      fileList: [], // 上传附件列表
+      fileList: [], // 上传附件列表回显
       dataFileList: [], // 存储到数据库的列表
       BaseContent: '',
       supplyContent: 'ContentDiv',
@@ -658,6 +658,7 @@ export default {
     ]),
     // 初始化
     init () {
+      this.form.resetFields();
       if (this.name === 'create') {
         this.questionTitle = '创建问题';
         this.submitBtn = true;
@@ -672,17 +673,18 @@ export default {
           // 附件
           const fileListArray = [];
 
-
+          this.dataFileList = res.fileList;
           res.fileList.forEach((item) => {
             const fileObject = {
               uid: item.id,
               name: item.originalFilename,
-              status: 'done',
-              url: item.path
+              url: item.path,
+              status: 'done'
             };
             fileListArray.push(fileObject);
           })
           this.fileList = fileListArray;
+          // this.dataFileList = fileListArray;
           this.optCounter = res.optCounter;
           // 日期格式回显
           if (res.failureDate) {
@@ -708,9 +710,15 @@ export default {
       const locationUrl = isDev ? 'http://106.75.63.69:8091' : window.location.origin;
       const a = document.createElement('a');
       a.download = info.name;
-      // a.href = 'www.baidu.com';
-      const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
-      a.href = decodeURI(url);
+      if (info.url !== undefined) {
+        const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
+        a.href = decodeURI(url);
+      } else {
+        const dataFile = info.response.data;
+        const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(dataFile.path) + '&originalFilename=' + encodeURIComponent(dataFile.originalFilename) + '&token=' + this.$store.getters.getToken();
+        a.href = decodeURI(url);
+      }
+
       // a.href = locationUrl + '/api/oss/ossFile/download?path=1.pdb&originalFilename=3.pdb';
       a.click();
       return false;
@@ -988,6 +996,9 @@ export default {
     },
     handleReset () {
       this.form.resetFields();
+      this.$router.push({
+        path: this.$route.query.form || '/'
+      });
     },
 
     toggle () {
@@ -1139,6 +1150,8 @@ export default {
   .TopButton {
     overflow: hidden;
     *zoom: 1;
+    position:fixed;
+    top:100px;
 
     .rightButton {
       float: right;
