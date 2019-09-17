@@ -16,31 +16,72 @@
       :visible="visible"
       @close="hide"
     >
-      开发人员专用
-      <async-component path="@comp/button/PreventButton">
-        按钮
-      </async-component>
+      <template v-if="!isLogin">
+        开发人员专用，授权验证（按回车直接提交）
+        <async-component
+          path="@comp/form/CaptchaInput.vue"
+          :url="authUrl"
+          @click-captcha="reloadCaptcha"
+          @keyup.enter="submitAuth"
+        >
+        </async-component>
+      </template>
     </a-drawer>
   </a-affix>
 </template>
 
 <script>
+import $ from '@lib/ajax.js';
+
 export default {
   components: {
     AsyncComponent: () => import('@comp/AsyncComponent')
   },
   data () {
+    const vm = this;
     return {
       top: 80,
-      visible: false
+      visible: false,
+      isLogin: vm.$store.state.isLogin
+    }
+  },
+  computed: {
+    authUrl () {
+      this.reloadCaptcha();
+      const uuid = this.$store.getters.getUUID();
+      const time = Date.now();
+      return `/auth/captcha?uuid=${uuid}&_t=${time}`;
     }
   },
   methods: {
+    // 显示
     show () {
       this.visible = true;
     },
+    // 隐藏
     hide () {
       this.visible = false;
+    },
+    // 重新加载验证码
+    reloadCaptcha () {
+      this.$store.dispatch('loadUUID');
+    },
+    // 提交授权
+    submitAuth (e) {
+      const captcha = e.target.value;
+      const uuid = this.$store.getters.getUUID();
+      $.post('/auth/login', {
+        captcha,
+        password: 'admin',
+        username: 'admin',
+        uuid
+      }).then(() => {
+        this.isLogin = true;
+      }).catch(() => {
+        this.isLogin = false;
+      }).finally(() => {
+        this.reloadCaptcha();
+      });
     }
   }
 }

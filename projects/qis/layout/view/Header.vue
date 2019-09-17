@@ -93,7 +93,7 @@ export default {
       this.$store.dispatch('refresh');
     },
     logoutHandle () {
-      this.$store && this.$store.dispatch('login/logout');
+      this.$store && this.$store.dispatch('layout/logout');
       // TODO: 做好多应用重定向
       window.location.href = '/portal';
     }

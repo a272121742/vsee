@@ -57,6 +57,10 @@ export default {
       api.getWorkflows && api.getWorkflows().then(workflows => {
         commit('setWorkflows', workflows, { root: true });
       })
+    },
+    logout ({ dispatch }) {
+      dispatch('logout', void 0, { root: true })
+      return api.logout();
     }
   }
 };
