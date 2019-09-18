@@ -2,6 +2,7 @@
   <div id="components-form-demo-advanced-search">
     <a-modal
       title="再分配"
+      style="top:200px;!important"
       :visible="visible"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
@@ -12,7 +13,7 @@
         class="ant-advanced-search-form"
         :form="rediStribution"
       >
-        <a-col :span="18">
+        <a-col :span="24">
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
@@ -29,6 +30,31 @@
       </a-form>
     </a-modal>
     <a-modal
+      title="驳回（7钻分析之前)"
+      style="top:200px;!important;"
+      :visible="visibleReject"
+      :mask-closable="false"
+      @ok="RejectSubmit"
+      @cancel="CancelReject"
+    >
+      <a-form
+        class="ant-advanced-search-form"
+        :form="rejectForm"
+      >
+        <a-col :span="24">
+          <a-form-item :label="`驳回理由`">
+            <v-textarea
+              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择驳回理由' }]} ]"
+              placeholder="请输入"
+              :allow-clear="true"
+            />
+            </net-select>
+          </a-form-item>
+        </a-col>
+      </a-form>
+    </a-modal>
+    <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleAnalysis"
       width="600px"
@@ -119,6 +145,7 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleDetail"
       wrap-class-name="visibleDetail"
@@ -203,6 +230,7 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="fileModalTitle"
       :visible="visibleUpdate"
       width="600px"
@@ -302,7 +330,9 @@
           </a-row>
         </a-form>
       </div>
-      <div class="fileEdit">
+      <!-- <div class="fileEdit"
+           style="display:none;"
+      >
         <a-form
           class="ant-advanced-search-form"
           :form="updateForm"
@@ -310,7 +340,9 @@
           <a-row v-show="false">
             <a-col :span="17">
               <a-form-item :label="`id`">
-                <p>{{ updateData.id }}</p>
+                <p v-if="updateData.id">
+                  {{ updateData.id }}
+                </p>
               </a-form-item>
             </a-col>
           </a-row>
@@ -365,7 +397,7 @@
             </a-col>
           </a-row>
         </a-form>
-      </div>
+      </div> -->
     </a-modal>
     <div class="TopButton">
       <div class="backButton">
@@ -390,11 +422,18 @@
           type="primary"
           html-type="submit"
           class="submitBtn"
+          @click="handleReject"
+        >
+          驳回
+        </a-button>
+        <a-button
+          type="primary"
+          html-type="submit"
+          class="submitBtn"
           @click="handleSubmit"
         >
           提交
         </a-button>
-
         <a-button
           style="marginLeft: 8px"
           class="saveBtn"
@@ -464,12 +503,17 @@
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
-                    <p>{{ detailList.faultTreeIds2Name }}</p>
+                    <p v-if="detailList.faultTreeIds2Name">
+                      {{ detailList.faultTreeIds2Name }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
-                    <p style="width:164px;">
+                    <p
+                      v-if="detailList.faultTreeIds3Name"
+                      style="width:164px;"
+                    >
                       {{ detailList.faultTreeIds3Name }}
                     </p>
                   </a-form-item>
@@ -478,39 +522,53 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`问题分类`">
-                    <p>{{ detailList.sourceName }}</p>
+                    <p v-if="detailList.sourceName">
+                      {{ detailList.sourceName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题等级`">
-                    <p>{{ detailList.gradeName }}</p>
+                    <p v-if="detailList.gradeName">
+                      {{ detailList.gradeName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题阶段`">
-                    <p>{{ detailList.projectPhaseName }}</p>
+                    <p v-if="detailList.projectPhaseName">
+                      {{ detailList.projectPhaseName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障发生日期`">
-                    <p>{{ detailList.failureDate }}</p>
+                    <p v-if="detailList.failureDate">
+                      {{ detailList.failureDate }}
+                    </p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`生产基地`">
-                    <p>{{ detailList.manufactureBaseName }}</p>
+                    <p v-if="detailList.manufactureBaseName">
+                      {{ detailList.manufactureBaseName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`责任部门`">
-                    <p>{{ detailList.responsibleDepartmentName }}</p>
+                    <p v-if="detailList.responsibleDepartmentName">
+                      {{ detailList.responsibleDepartmentName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题频次`">
-                    <p>{{ detailList.frequency }}</p>
+                    <p v-if="detailList.frequency">
+                      {{ detailList.frequency }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -518,24 +576,32 @@
                     :label="`联系人电话`"
                     class="quesetionContact"
                   >
-                    <p>{{ detailList.contact }}</p>
+                    <p v-if="detailList.contact">
+                      {{ detailList.contact }}
+                    </p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`创建人`">
-                    <p>{{ detailList.creatorName }}</p>
+                    <p v-if="detailList.creatorName">
+                      {{ detailList.creatorName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`创建部门`">
-                    <p>{{ detailList.creatorDept }}</p>
+                    <p v-if="detailList.creatorDept">
+                      {{ detailList.creatorDept }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题提报日期:`">
-                    <p>{{ detailList.createDate }}</p>
+                    <p v-if="detailList.createDate">
+                      {{ detailList.createDate }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -556,7 +622,9 @@
                     :label="`问题描述`"
                     :label-col="{span:2}"
                   >
-                    <p>{{ detailList.description }}</p>
+                    <p v-if="detailList.description">
+                      {{ detailList.description }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <div
@@ -576,74 +644,100 @@
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`试验类型`">
-                      <p>{{ detailList.testTypeName }}</p>
+                      <p v-if="detailList.testTypeName">
+                        {{ detailList.testTypeName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`祸首件`">
-                      <p>{{ detailList.firstCausePartName }}</p>
+                      <p v-if="detailList.firstCausePartName">
+                        {{ detailList.firstCausePartName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`零件号`">
-                      <p>{{ detailList.partName }}</p>
+                      <p v-if="detailList.partName">
+                        {{ detailList.partName }}
+                      </p>
                     </a-form-item>
                   </a-col>
 
                   <a-col :span="6">
                     <a-form-item :label="`供应商名称`">
-                      <p>{{ detailList.supplierName }}</p>
+                      <p v-if="detailList.supplierName">
+                        {{ detailList.supplierName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`软件版本号`">
-                      <p>{{ detailList.softwareVersion }}</p>
+                      <p v-if="detailList.softwareVersion">
+                        {{ detailList.softwareVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`标定版本号`">
-                      <p>{{ detailList.calibrationVersion }}</p>
+                      <p v-if="detailList.calibrationVersion">
+                        {{ detailList.calibrationVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`硬件版本号`">
-                      <p>{{ detailList.hardwareVersion }}</p>
+                      <p v-if="detailList.hardwareVersion">
+                        {{ detailList.hardwareVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`配置字版本号`">
-                      <p>{{ detailList.confirmationVersion }}</p>
+                      <p v-if="detailList.confirmationVersion">
+                        {{ detailList.confirmationVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`维修网点`">
-                      <p>{{ detailList.maintenanceStation }}</p>
+                      <p v-if="detailList.maintenanceStation">
+                        {{ detailList.maintenanceStation }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`故障里程`">
-                      <p>{{ detailList.milage }}</p>
+                      <p v-if="detailList.milage">
+                        {{ detailList.milage }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`VIN`">
-                      <p>{{ detailList.vinNo }}</p>
+                      <p v-if="detailList.vinNo">
+                        {{ detailList.vinNo }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`生产时间`">
-                      <p>{{ detailList.productDate }}</p>
+                      <p v-if="detailList.productDate">
+                        {{ detailList.productDate }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`备注`">
-                      <p>{{ detailList.remark }}</p>
+                      <p v-if="detailList.remark">
+                        {{ detailList.remark }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2409,6 +2503,8 @@ export default {
       visibleAnalysis: false, // 7钻编辑弹框
       visibleDetail: false, // 7钻详情
       confirmLoading: false,
+      visibleReject: false,
+      isCheckError: '0', // 验证不通过需要回到7钻
       optCounter: '',
       columns,
       columnsRecord,
@@ -2442,6 +2538,7 @@ export default {
       updateData: [], // 文件更新表格
       DetailForm: [], // 7钻查看表格
       updateForm: null, // 文件更新弹框表单
+      rejectForm: null,
       dataFile: [], // 附件
       dataRecord: [], // 操作记录
       stepDetail: [], // 某个问题的步骤详细信息
@@ -2608,6 +2705,10 @@ export default {
         isUpdae: '0',
         updateContent: '',
         fileList: ''
+      },
+      // 驳回
+      rejectRecord: {
+        comment: ''
       }
 
     };
@@ -2641,6 +2742,12 @@ export default {
         'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
       ], 'recordUpdate'),
       onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+    });
+    this.rejectForm = this.$form.createForm(this, {
+      mapPropsToFields: () => createFormFields(this, [
+        'rejectForm'
+      ], 'rejectRecord'),
+      onValuesChange: autoUpdateFileds(this, 'rejectRecord')
     });
     this.request();
   },
@@ -2690,6 +2797,17 @@ export default {
       } else {
         this.conActionFlag = false;
       }
+    },
+    // 驳回
+    handleReject () {
+      this.visibleReject = true;
+    },
+    RejectSubmit () {
+      this.visibleReject = false;
+      this.isCheckError = '1';
+    },
+    CancelReject () {
+      this.visibleReject = false;
     },
     goBack () {
       this.$router.push({
@@ -3097,15 +3215,15 @@ export default {
               assigner: data.zuanUser1,
               coChair: vm.coChair,
               monitor: vm.monitor,
-              isDirectSerious: '0',
-              isEnd: '0',
-              isPass: data.verifySeven,
-              isQZEnd: data.endSeven,
+              isDirectSerious: '0', // 是否直接极端严重事情
+              isEnd: this.record.isClose, // 是否关闭
+              isPass: data.verifySeven, // 审核是否通过
+              isQZEnd: data.endSeven, // 是否结束七钻
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
-              isQZ: '0',
-              isCheckError: '0',
-              isLeaderSign: '0',
-              isItem: data.isProject,
+              isQZ: data.type, // 是否需要七钻
+              isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
+              isLeaderSign: '0', // 领导加签
+              isItem: data.isProject, // 是否立项
               zuanUser1: data.zuanUser1,
               zuanUser4: data.zuanUser4,
               zuanUser5: data.zuanUser5,
@@ -3253,6 +3371,9 @@ export default {
   }
 </style>
 <style lang="less" scoped>
+  /deep/ .ant-modal{
+      top:120px!important;
+    }
   .new-steps-icon {
     line-height: 1;
     top: -6px;
@@ -3261,6 +3382,7 @@ export default {
   }
 
   #components-form-demo-advanced-search {
+
      .formConetnt{
         margin-top:72px;
      }
