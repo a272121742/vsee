@@ -2390,6 +2390,11 @@ export default {
         statusMaxCode: 0,
         statusNewCode: 0
       },
+      // SM SC
+      sysUser: {
+        coChair: '',
+        monitor: ''
+      },
       userId: that.$store.getters.getUser().id,
       taskId: null, // 任务id
       // 再分配弹框
@@ -2885,6 +2890,18 @@ export default {
       this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
         this.detailList = res;
+        this.getSysUser({
+          issueSource: this.detailList.source,
+          type: 'coChair'
+        }).then(res1 => {
+          this.sysUser.coChair = res1.id
+        })
+        this.getSysUser({
+          issueSource: this.detailList.source,
+          type: 'monitor'
+        }).then(res2 => {
+          this.sysUser.monitor = res2.id
+        })
       })
       this.getStatusCode(this.id).then(res => {
         if (res) {
@@ -3070,8 +3087,6 @@ export default {
     handleSubmit () {
       this.handleSave()
       const vm = this
-      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChair').id;
-      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'monitor').id;
       this.formDcontent.validateFields((err) => {
         if (!err) {
           const data = this.formDcontent.getFieldsValue();
@@ -3086,8 +3101,8 @@ export default {
               businessKey: this.id, // 问题id
               comment: data.comment || '0',
               assigner: data.zuanUser1,
-              coChair: vm.coChair,
-              monitor: vm.monitor,
+              coChair: vm.sysUser.coChair,
+              monitor: vm.sysUser.monitor,
               isDirectSerious: '0', // 是否直接极端严重事情
               isEnd: '0', // 是否关闭
               isPass: data.verifySeven, // 审核是否通过
