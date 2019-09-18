@@ -67,7 +67,7 @@ export default {
     transform: scale(1.1);
   }
   .child-view {
-    max-width: 1200px;
+    width: 1200px;
     transition: all .5s cubic-bezier(.55,0,.1,1);
   }
 </style>

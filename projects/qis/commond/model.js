@@ -5,7 +5,7 @@ export const issueColumns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',
-  width: 136,
+  width: 140,
   scopedSlots: { customRender: 'code' }
 }, {
   // 标题
@@ -39,12 +39,11 @@ export const issueColumns = [{
   width: 160,
   scopedSlots: { customRender: 'projectPhase' }
 }, {
-  // TODO: 目前取出来是草稿，后台修改后变为：D0、D1、D2....
   title: 'status',
   dataIndex: 'status',
   width: 100,
-  sorter: true,
-  scopedSlots: { customRender: 'status' }
+  scopedSlots: { customRender: 'status' },
+  sorter: true
 }, {
   // 立项时间
   title: 'projectDate',
