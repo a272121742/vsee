@@ -399,57 +399,62 @@
         </a-form>
       </div> -->
     </a-modal>
-    <div class="TopButton">
-      <div class="backButton">
-        <a-button
-          slot="tabBarExtraContent"
-          class="backBtn"
-          @click="goBack"
-        >
-          <a-icon type="rollback" />
-          返回
-        </a-button>
+    <a-affix
+      :offset-top="64"
+      @change="offsetChange"
+    >
+      <div class="top-buttons">
+        <div class="backButton">
+          <a-button
+            slot="tabBarExtraContent"
+            class="backBtn"
+            @click="goBack"
+          >
+            <a-icon type="rollback" />
+            返回
+          </a-button>
+        </div>
+        <div class="rightButton">
+          <a-button
+            v-if="stepCurrent!=6"
+            html-type="submit"
+            @click="showModal"
+          >
+            再分配
+          </a-button>
+          <a-button
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleReject"
+          >
+            驳回
+          </a-button>
+          <a-button
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleSubmit"
+          >
+            提交
+          </a-button>
+          <a-button
+            style="marginLeft: 8px"
+            class="saveBtn"
+            @click="handleSave"
+          >
+            保存
+          </a-button>
+          <a-button
+            style="marginLeft: 8px"
+            class="cancelBtn"
+            @click="handleReset"
+          >
+            取消
+          </a-button>
+        </div>
       </div>
-      <div class="rightButton">
-        <a-button
-          v-if="stepCurrent!=6"
-          html-type="submit"
-          @click="showModal"
-        >
-          再分配
-        </a-button>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="submitBtn"
-          @click="handleReject"
-        >
-          驳回
-        </a-button>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="submitBtn"
-          @click="handleSubmit"
-        >
-          提交
-        </a-button>
-        <a-button
-          style="marginLeft: 8px"
-          class="saveBtn"
-          @click="handleSave"
-        >
-          保存
-        </a-button>
-        <a-button
-          style="marginLeft: 8px"
-          class="cancelBtn"
-          @click="handleReset"
-        >
-          取消
-        </a-button>
-      </div>
-    </div>
+    </a-affix>
     <div class="formConetnt">
       <div class="messageForm">
         <a-form
@@ -3354,6 +3359,9 @@ export default {
       } else if (e.target.value === '1') {
         this.satisfyFlag = false;
       }
+    },
+    // 滚动时触发按钮固定
+    offsetChange () {
     }
   }
 };
@@ -3384,11 +3392,11 @@ export default {
   #components-form-demo-advanced-search {
 
      .formConetnt{
-        margin-top:72px;
+        margin-top: 40px;
      }
       .messageForm{
       /deep/ .ant-row{
-        height:40px;
+        height: 40px;
         line-height: 40px;
       }
     }
@@ -3902,25 +3910,27 @@ export default {
       margin-left: 4px;
     }
   }
-
-  .TopButton {
+  /deep/ .ant-affix {
+    left: 0px!important;
+    width: 100%!important;
+    background: rgba(75,75,75,0.85);
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    .top-buttons {
+      width: 1200px!important;
+      margin: 0 auto!important;
+    }
+  }
+  .top-buttons {
     overflow: hidden;
-    *zoom: 1!important;
-    position: fixed;
-    top:52px;
+    padding: 16px 0;
     z-index:9999;
-    width:1200px;
 
     .rightButton {
       float: right;
-      margin: 24px 0;
-      margin-right: 24px;
     }
 
     .backButton {
       float: left;
-      margin: 24px 0;
-      margin-left: 24px;
     }
   }
 
@@ -3930,7 +3940,6 @@ export default {
   }
 
   .ant-advanced-search-form {
-    padding: 24px;
     border-radius: 6px;
     margin-top: -40px;
 

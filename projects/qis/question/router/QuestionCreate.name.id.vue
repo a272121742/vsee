@@ -2,44 +2,49 @@
 /* eslint-disable vue/attribute-hyphenation */
 <template>
   <div id="components-form-demo-advanced-search">
-    <div class="TopButton">
-      <div class="backButton">
-        <a-button
-          slot="tabBarExtraContent"
-          class="backBtn"
-          @click="goBack"
-        >
-          <a-icon type="rollback" />
-          返回
-        </a-button>
+    <a-affix
+      :offset-top="64"
+      @change="offsetChange"
+    >
+      <div class="top-buttons">
+        <div class="backButton">
+          <a-button
+            slot="tabBarExtraContent"
+            class="backBtn"
+            @click="goBack"
+          >
+            <a-icon type="rollback" />
+            返回
+          </a-button>
+        </div>
+        <div class="rightButton">
+          <a-button
+            v-if="submitBtn"
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleSubmit"
+          >
+            提交
+          </a-button>
+          <a-button
+            :style="{ marginLeft: '8px' }"
+            type="primary"
+            :class="[actiive]"
+            @click="handleSave"
+          >
+            保存
+          </a-button>
+          <a-button
+            :style="{ marginLeft: '8px' }"
+            class="cancelBtn"
+            @click="handleReset"
+          >
+            取消
+          </a-button>
+        </div>
       </div>
-      <div class="rightButton">
-        <a-button
-          v-if="submitBtn"
-          type="primary"
-          html-type="submit"
-          class="submitBtn"
-          @click="handleSubmit"
-        >
-          提交
-        </a-button>
-        <a-button
-          :style="{ marginLeft: '8px' }"
-          type="primary"
-          :class="[actiive]"
-          @click="handleSave"
-        >
-          保存
-        </a-button>
-        <a-button
-          :style="{ marginLeft: '8px' }"
-          class="cancelBtn"
-          @click="handleReset"
-        >
-          取消
-        </a-button>
-      </div>
-    </div>
+    </a-affix>
     <div class="formConetnt">
       <a-card
         :title="questionTitle"
@@ -1090,7 +1095,7 @@ export default {
 <style lang="less" scoped>
   #components-form-demo-advanced-search {
     .formConetnt{
-        margin-top:52px;
+      margin-top:0px;
      }
     .BaseContent {
       height: 0;
@@ -1216,21 +1221,27 @@ export default {
     }
   }
 
-  .TopButton {
-     overflow: hidden;
-    *zoom: 1!important;
-    position: fixed;
-    top:52px;
+  /deep/ .ant-affix {
+    left: 0px!important;
+    width: 100%!important;
+    background: rgba(75,75,75,0.85);
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    .top-buttons {
+      width: 1200px!important;
+      margin: 0 auto!important;
+    }
+  }
+  .top-buttons {
+    overflow: hidden;
+    padding: 16px 0;
     z-index:9999;
-    width:1200px;
+
     .rightButton {
       float: right;
-      margin: 20px 0;
     }
 
     .backButton {
       float: left;
-      margin: 20px 0;
     }
   }
 
