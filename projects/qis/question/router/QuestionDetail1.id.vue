@@ -1369,10 +1369,10 @@
                 <p>{{}}</p>
               </a-form-item>
             </div>
-            <div class="Dtitle">
-              <span>措施判定</span>
-            </div>
             <div v-if="pagePermission.A3_1_3">
+              <div class="Dtitle">
+                <span>措施判定</span>
+              </div>
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`短期措施`">
