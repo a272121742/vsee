@@ -34,11 +34,10 @@
       </a-row>
       <a-row>
         刷新页面
-        <a-button
-          @click="refresh"
-        >
-          刷新页面
-        </a-button>
+        <async-component
+          path="@comp/button/RefreshButton.vue"
+          style="margin-left: 24px;"
+        />
       </a-row>
       <a-row>
         国际化
