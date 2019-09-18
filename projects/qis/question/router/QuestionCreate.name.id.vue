@@ -888,8 +888,6 @@ export default {
             issueSource: this.sourceName,
             type: 'monitor'
           }
-          let cocharId;
-          let monitorId;
           const cocharFunction = vm.getSysUser(param1).then(res => {
             vm.coChair = vm.coChair ? vm.coChair : res.id;
             return vm.coChair;
@@ -918,7 +916,8 @@ export default {
                   variables: {
                     coChair: result[0],
                     monitor: result[1],
-                    issc: '0'
+                    issc: '0',
+                    businessKey: this.businessKey
                   }
                 };
                 this.workFlowSubmit(param).then(res2 => {
@@ -946,7 +945,8 @@ export default {
                   variables: {
                     coChair: result[0],
                     monitor: result[1],
-                    issc: '0'
+                    issc: '0',
+                    businessKey: this.businessKey
                   }
                 };
                 this.workFlowSubmit(param).then(res2 => {
