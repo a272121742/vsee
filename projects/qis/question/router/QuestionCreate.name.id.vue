@@ -272,13 +272,14 @@
                           'frequency',
                         ]"
                         allow-clear
-                        placeholder="请输入"
+                        :placeholder="$t('search.please_select')"
                       />
                     </a-form-item>
                   </a-col>
+                  <!-- 相关人手机 -->
                   <a-col :span="6">
                     <a-form-item
-                      :label="`相关人手机`"
+                      :label="$t('issue.contact')"
                       class="quesetionContact"
                     >
                       <v-input
@@ -286,23 +287,24 @@
                           'contact',
                         ]"
                         allow-clear
-                        placeholder="请输入"
+                        :placeholder="$t('search.please_select')"
                       />
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
+                  <!-- 问题描述 -->
                   <a-col :span="16">
                     <a-form-item
                       class="form-item-flex-2"
-                      :label="`问题描述`"
+                      :label="$t('issue.description')"
                     >
                       <v-textarea
                         v-decorator="[
                           'description',
-                          {rules: [{ required: true, message: '请输入问题描述' }]}
+                          {rules: [{ required: true, message:$t('search.please_select')+$t('issue.description') }]}
                         ]"
-                        placeholder="请输入"
+                        :placeholder="$t('search.please_select')"
                         allow-clear
                       />
                     </a-form-item>
@@ -343,18 +345,19 @@
             <div :class="supplyContent">
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`VIN`">
+                  <!-- VIN -->
+                  <a-form-item :label="$t('issue.vinNo')">
                     <v-input
                       v-decorator="[
                         'vinNo',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`祸首件`">
+                  <a-form-item :label="$t('issue.firstCausePart')">
                     <net-select
                       v-decorator="[
                         'firstCausePart',
@@ -362,7 +365,7 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/part"
-                      placeholder="请选择"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
@@ -885,68 +888,76 @@ export default {
             issueSource: this.sourceName,
             type: 'monitor'
           }
-
           let cocharId;
           let monitorId;
-          vm.getSysUser(param1).then(res => {
-            cocharId = res.id;
+          const cocharFunction = vm.getSysUser(param1).then(res => {
+            vm.coChair = vm.coChair ? vm.coChair : res.id;
+            return vm.coChair;
           })
-          vm.getSysUser(param2).then(res => {
-            monitorId = res.id;
+          const monitorFunction = vm.getSysUser(param2).then(res => {
+            vm.monitor = vm.monitor ? vm.monitor : res.id;
+            return vm.monitor;
           })
-          vm.coChair = vm.coChair ? vm.coChair : cocharId;
-          vm.monitor = vm.monitor ? vm.monitor : monitorId;
+          // vm.coChair = vm.coChair ? vm.coChair : cocharId;
+          // vm.monitor = vm.monitor ? vm.monitor : monitorId;
           if (this.businessKey) {
             data.id = this.id;
             data.optCounter = this.optCounter;
-            this.editSaveQuestion(data).then(res => {
-              this.businessKey = res.id;
-              this.optCounter = res.optCounter;
-              const param = {
-                businessKey: this.businessKey,
-                businessTitle: this.businessTitle,
-                processDefinitionKey: 'BJEV1',
-                subSys: 'irs',
-                taskId: null,
-                userId: id,
-                variables: {
-                  coChair: vm.coChair,
-                  monitor: vm.monitor,
-                  issc: '0'
-                }
-              };
-              this.workFlowSubmit(param).then(res2 => {
-                if (res2) {
-                // this.$router.push({
-                //   path: this.$route.query.form || '/'
-                // });
-                }
-              });
+            Promise.all([cocharFunction, monitorFunction]).then((result) => {
+              console.log(result);
+              this.editSaveQuestion(data).then(res => {
+                this.businessKey = res.id;
+                this.optCounter = res.optCounter;
+                const param = {
+                  businessKey: this.businessKey,
+                  businessTitle: this.businessTitle,
+                  processDefinitionKey: 'BJEV1',
+                  subSys: 'irs',
+                  taskId: null,
+                  userId: id,
+                  variables: {
+                    coChair: result[0],
+                    monitor: result[1],
+                    issc: '0'
+                  }
+                };
+                this.workFlowSubmit(param).then(res2 => {
+                  if (res2) {
+                    this.$router.push({
+                      path: this.$route.query.form || '/'
+                    });
+                  }
+                });
+              })
             })
           } else {
-            this.saveQuestion(data).then(res => {
-              this.businessKey = res.id;
-              const param = {
-                businessKey: this.businessKey,
-                businessTitle: this.businessTitle,
-                processDefinitionKey: 'BJEV1',
-                subSys: 'irs',
-                taskId: null,
-                userId: id,
-                variables: {
-                  coChair: vm.coChair,
-                  monitor: vm.monitor,
-                  issc: '0'
-                }
-              };
-              this.workFlowSubmit(param).then(res2 => {
-                if (res2) {
-                // this.$router.push({
-                //   path: this.$route.query.form || '/'
-                // });
-                }
+            data.id = this.id;
+            data.optCounter = this.optCounter;
+            Promise.all([cocharFunction, monitorFunction]).then((result) => {
+              this.saveQuestion(data).then(res => {
+                this.businessKey = res.id;
+                const param = {
+                  businessKey: this.businessKey,
+                  businessTitle: this.businessTitle,
+                  processDefinitionKey: 'BJEV1',
+                  subSys: 'irs',
+                  taskId: null,
+                  userId: id,
+                  variables: {
+                    coChair: result[0],
+                    monitor: result[1],
+                    issc: '0'
+                  }
+                };
+                this.workFlowSubmit(param).then(res2 => {
+                  if (res2) {
+                    this.$router.push({
+                      path: this.$route.query.form || '/'
+                    });
+                  }
+                });
               });
-            });
+            })
           }
         }
       });

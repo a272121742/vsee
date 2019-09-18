@@ -464,12 +464,17 @@
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属功能`">
-                    <p>{{ detailList.faultTreeIds2Name }}</p>
+                    <p v-if="detailList.faultTreeIds2Name">
+                      {{ detailList.faultTreeIds2Name }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障代码`">
-                    <p style="width:164px;">
+                    <p
+                      v-if="detailList.faultTreeIds3Name"
+                      style="width:164px;"
+                    >
                       {{ detailList.faultTreeIds3Name }}
                     </p>
                   </a-form-item>
@@ -478,39 +483,53 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`问题分类`">
-                    <p>{{ detailList.sourceName }}</p>
+                    <p v-if="detailList.sourceName">
+                      {{ detailList.sourceName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题等级`">
-                    <p>{{ detailList.gradeName }}</p>
+                    <p v-if="detailList.gradeName">
+                      {{ detailList.gradeName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题阶段`">
-                    <p>{{ detailList.projectPhaseName }}</p>
+                    <p v-if="detailList.projectPhaseName">
+                      {{ detailList.projectPhaseName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`故障发生日期`">
-                    <p>{{ detailList.failureDate }}</p>
+                    <p v-if="detailList.failureDate">
+                      {{ detailList.failureDate }}
+                    </p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`生产基地`">
-                    <p>{{ detailList.manufactureBaseName }}</p>
+                    <p v-if="detailList.manufactureBaseName">
+                      {{ detailList.manufactureBaseName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`责任部门`">
-                    <p>{{ detailList.responsibleDepartmentName }}</p>
+                    <p v-if="detailList.responsibleDepartmentName">
+                      {{ detailList.responsibleDepartmentName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题频次`">
-                    <p>{{ detailList.frequency }}</p>
+                    <p v-if="detailList.frequency">
+                      {{ detailList.frequency }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -518,24 +537,32 @@
                     :label="`联系人电话`"
                     class="quesetionContact"
                   >
-                    <p>{{ detailList.contact }}</p>
+                    <p v-if="detailList.contact">
+                      {{ detailList.contact }}
+                    </p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`创建人`">
-                    <p>{{ detailList.creatorName }}</p>
+                    <p v-if="detailList.creatorName">
+                      {{ detailList.creatorName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`创建部门`">
-                    <p>{{ detailList.creatorDept }}</p>
+                    <p v-if="detailList.creatorDept">
+                      {{ detailList.creatorDept }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`问题提报日期:`">
-                    <p>{{ detailList.createDate }}</p>
+                    <p v-if="detailList.createDate">
+                      {{ detailList.createDate }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -556,7 +583,9 @@
                     :label="`问题描述`"
                     :label-col="{span:2}"
                   >
-                    <p>{{ detailList.description }}</p>
+                    <p v-if="detailList.description">
+                      {{ detailList.description }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <div
@@ -576,74 +605,100 @@
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`试验类型`">
-                      <p>{{ detailList.testTypeName }}</p>
+                      <p v-if="detailList.testTypeName">
+                        {{ detailList.testTypeName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`祸首件`">
-                      <p>{{ detailList.firstCausePartName }}</p>
+                      <p v-if="detailList.firstCausePartName">
+                        {{ detailList.firstCausePartName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`零件号`">
-                      <p>{{ detailList.partName }}</p>
+                      <p v-if="detailList.partName">
+                        {{ detailList.partName }}
+                      </p>
                     </a-form-item>
                   </a-col>
 
                   <a-col :span="6">
                     <a-form-item :label="`供应商名称`">
-                      <p>{{ detailList.supplierName }}</p>
+                      <p v-if="detailList.supplierName">
+                        {{ detailList.supplierName }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`软件版本号`">
-                      <p>{{ detailList.softwareVersion }}</p>
+                      <p v-if="detailList.softwareVersion">
+                        {{ detailList.softwareVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`标定版本号`">
-                      <p>{{ detailList.calibrationVersion }}</p>
+                      <p v-if="detailList.calibrationVersion">
+                        {{ detailList.calibrationVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`硬件版本号`">
-                      <p>{{ detailList.hardwareVersion }}</p>
+                      <p v-if="detailList.hardwareVersion">
+                        {{ detailList.hardwareVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`配置字版本号`">
-                      <p>{{ detailList.confirmationVersion }}</p>
+                      <p v-if="detailList.confirmationVersion">
+                        {{ detailList.confirmationVersion }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`维修网点`">
-                      <p>{{ detailList.maintenanceStation }}</p>
+                      <p v-if="detailList.maintenanceStation">
+                        {{ detailList.maintenanceStation }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`故障里程`">
-                      <p>{{ detailList.milage }}</p>
+                      <p v-if="detailList.milage">
+                        {{ detailList.milage }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`VIN`">
-                      <p>{{ detailList.vinNo }}</p>
+                      <p v-if="detailList.vinNo">
+                        {{ detailList.vinNo }}
+                      </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <a-form-item :label="`生产时间`">
-                      <p>{{ detailList.productDate }}</p>
+                      <p v-if="detailList.productDate">
+                        {{ detailList.productDate }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <a-form-item :label="`备注`">
-                      <p>{{ detailList.remark }}</p>
+                      <p v-if="detailList.remark">
+                        {{ detailList.remark }}
+                      </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
