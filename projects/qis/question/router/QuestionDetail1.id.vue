@@ -2927,10 +2927,10 @@ export default {
       this.getQuestionStepAll(this.id);
     },
     getQuestionStepAll (id) {
-      this.getQuestionStep(this.id).then(res => {
-        this.stepDetail = res;
-        // this.updateData = res.updateList;
-      });
+      // this.getQuestionStep(this.id).then(res => {
+      //  this.stepDetail = res;
+      // this.updateData = res.updateList;
+      // });
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         this.updateData = this.problemDefinitionData.updateList;

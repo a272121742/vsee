@@ -2855,17 +2855,17 @@ export default {
       this.getQuestionStepAll(this.id);
     },
     getQuestionStepAll (id) {
-      this.getQuestionStep(this.id).then(res => {
-        this.stepDetail = res;
-        // this.updateData = res.updateList;
-      });
+      // this.getQuestionStep(this.id).then(res => {
+      //  this.stepDetail = res;
+      // this.updateData = res.updateList;
+      // });
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
-        this.updateData = res.updateList;
+        this.updateData = this.problemDefinitionData.updateList;
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        this.analysisData = res.sevenDiamondsVos
+        this.analysisData = this.issueDefinitionData.sevenDiamondsVos
       });
       this.rootCause(id).then(res => {
         this.rootCauseData = res || {};
