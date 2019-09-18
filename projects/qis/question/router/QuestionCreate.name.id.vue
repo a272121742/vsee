@@ -909,7 +909,7 @@ export default {
                 const param = {
                   businessKey: this.businessKey,
                   businessTitle: this.businessTitle,
-                  processDefinitionKey: 'BJEV1',
+                  processDefinitionKey: 'IRS1',
                   subSys: 'irs',
                   taskId: null,
                   userId: id,
@@ -917,7 +917,8 @@ export default {
                     coChair: result[0],
                     monitor: result[1],
                     issc: '0',
-                    businessKey: this.businessKey
+                    businessKey: this.businessKey,
+                    assigner: vm.monitor
                   }
                 };
                 this.workFlowSubmit(param).then(res2 => {
@@ -938,7 +939,7 @@ export default {
                 const param = {
                   businessKey: this.businessKey,
                   businessTitle: this.businessTitle,
-                  processDefinitionKey: 'BJEV1',
+                  processDefinitionKey: 'IRS1',
                   subSys: 'irs',
                   taskId: null,
                   userId: id,
@@ -946,7 +947,8 @@ export default {
                     coChair: result[0],
                     monitor: result[1],
                     issc: '0',
-                    businessKey: this.businessKey
+                    businessKey: this.businessKey,
+                    assigner: vm.monitor
                   }
                 };
                 this.workFlowSubmit(param).then(res2 => {
