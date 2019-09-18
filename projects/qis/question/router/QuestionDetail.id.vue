@@ -210,96 +210,162 @@
       @ok="updateOk"
       @cancel="updateCancel"
     >
-      <a-form
-        class="ant-advanced-search-form"
-        :form="updateForm"
-      >
-        <a-row v-show="false">
-          <a-col :span="17">
-            <a-form-item :label="`id`">
-              <v-input
-                v-decorator="[
-                  'id',
-                ]"
-                placeholder="请输入"
-                allow-clear
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row v-show="fileNameFlag">
-          <a-col :span="17">
-            <a-form-item :label="`文件名称`">
-              <v-input
-                v-decorator="[
-                  'fileName',
-                  {rules:[{required: true,message: '请输入文件名称'}]}
-                ]"
-                placeholder="请输入"
-                allow-clear
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="17">
-            <a-form-item
-              :label="`是否更新`"
-              style="margin-bottom:0;"
-            >
-              <a-radio-group
-                v-decorator="[
-                  'isUpdae',
-                  {rules:[{required: true,message: '请选择是否更新'}]}
-                ]"
-
-                :options="updateRadio"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="22">
-            <a-form-item
-              :label="`更新内容`"
-            >
-              <v-textarea
-                v-decorator="[
-                  'updateContent',
-                  {rules:[{required: true,message: '请输入更新内容'}]}
-                ]"
-                placeholder="请输入"
-                allow-clear
-                style="width:340px; height:56px;"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="18">
-            <a-form-item
-              :label="`附件`"
-            >
-              <a-upload
-                name="file"
-
-                :multiple="true"
-
-                :headers="headers"
-
-                @change="handleChange"
+      <div class="fileEdit">
+        <a-form
+          class="ant-advanced-search-form"
+          :form="updateForm"
+        >
+          <a-row v-show="false">
+            <a-col :span="17">
+              <a-form-item :label="`id`">
+                <v-input
+                  v-decorator="[
+                    'id',
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row v-show="fileNameFlag">
+            <a-col :span="17">
+              <a-form-item :label="`文件名称`">
+                <v-input
+                  v-decorator="[
+                    'fileName',
+                    {rules:[{required: true,message: '请输入文件名称'}]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="17">
+              <a-form-item
+                :label="`是否更新`"
+                style="margin-bottom:0;"
               >
-                <a-button>
-                  <a-icon
-                    type="upload"
-                  />
-                  上传文件
-                </a-button>
-              </a-upload>
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form>
+                <a-radio-group
+                  v-decorator="[
+                    'isUpdae',
+                    {rules:[{required: true,message: '请选择是否更新'}]}
+                  ]"
+
+                  :options="updateRadio"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="22">
+              <a-form-item
+                :label="`更新内容`"
+              >
+                <v-textarea
+                  v-decorator="[
+                    'updateContent',
+                    {rules:[{required: true,message: '请输入更新内容'}]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                  style="width:340px; height:56px;"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="18">
+              <a-form-item
+                :label="`附件`"
+              >
+                <a-upload
+                  name="file"
+
+                  :multiple="true"
+
+                  :headers="headers"
+
+                  @change="handleChange"
+                >
+                  <a-button>
+                    <a-icon
+                      type="upload"
+                    />
+                    上传文件
+                  </a-button>
+                </a-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
+      <div class="fileEdit">
+        <a-form
+          class="ant-advanced-search-form"
+          :form="updateForm"
+        >
+          <a-row v-show="false">
+            <a-col :span="17">
+              <a-form-item :label="`id`">
+                <p>{{ updateData.id }}</p>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row v-show="fileNameFlag">
+            <a-col :span="17">
+              <a-form-item :label="`文件名称`">
+                <p>{{ updateData.fileName }}</p>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="17">
+              <a-form-item
+                :label="`是否更新`"
+                style="margin-bottom:0;"
+              >
+                <p>{{ updateData.isUpdae }}</p>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="22">
+              <a-form-item
+                :label="`更新内容`"
+              >
+                <p>{{ updateData.updateContent }}</p>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="18">
+              <a-form-item
+                :label="`附件`"
+              >
+                <a-upload
+                  name="file"
+
+                  :multiple="true"
+
+                  :headers="headers"
+
+                  @change="handleChange"
+                >
+                  <a-button>
+                    <a-icon
+                      type="upload"
+                    />
+                    上传文件
+                  </a-button>
+                </a-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
     </a-modal>
     <div class="TopButton">
       <div class="backButton">
@@ -384,12 +450,16 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <a-form-item :label="`车型`">
-                    <p>{{ detailList.vehicleModelName }}</p>
+                    <p v-if="detailList.vehicleModelName">
+                      {{ detailList.vehicleModelName }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <a-form-item :label="`所属系统`">
-                    <p>{{ detailList.faultTreeIds1Name }}</p>
+                    <p v-if="detailList.faultTreeIds1Name">
+                      {{ detailList.faultTreeIds1Name }}
+                    </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
@@ -2102,6 +2172,34 @@
                   </a-col>
                 </a-row>
               </div>
+              <div class="examine">
+                <div class="Dtitle">
+                  <span>加签审批</span>
+                </div>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`审阅领导`">
+                      <p>{{ stepClose.isClose }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`审阅时间`">
+                      <p>{{ stepClose.isClose }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item
+                      :label="`备注`"
+                    >
+                      <p>{{ stepClose }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
             </div>
           </div>
         </a-card>
@@ -2583,7 +2681,7 @@ export default {
       'analysisDetail'
     ]),
     disabledDate (current) {
-      return current && current < moment().subtract(1, 'day');
+      return current && current > moment().endOf('day');
     },
     // 是否需要围堵措施
     conActionChange (e) {
@@ -2991,7 +3089,7 @@ export default {
             businessTitle: data.title, // 问题title
             processDefinitionKey: 'BJEV1', // BJEV1  固定值
             subSys: 'irs', //  子系统编号
-            taskId: null, //  任务id
+            taskId: this.taskId, //  任务id
             userId: this.userId, //  当前用户id
             variables: {
               businessKey: this.id, // 问题id
@@ -3015,7 +3113,8 @@ export default {
               zuanUser7: data.zuanUser7
             }
           }
-          vm.workFlowSubmit(transData).then(function s () {
+          vm.workFlowSubmit(transData).then(res => {
+            this.taskId = res.taskId;
             vm.$message.success('提交成功');
           });
         }

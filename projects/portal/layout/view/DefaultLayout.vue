@@ -43,7 +43,6 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
   .ant-layout {
     height: 100%;

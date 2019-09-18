@@ -72,34 +72,40 @@
                 </div>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`车型`">
+                    <!-- 车型名称 -->
+                    <a-form-item :label="$t('issue.vehicleModelName')">
                       <net-select
                         v-decorator="[
                           'vehicleModelId',
-                          {rules:[{required:true, message:'请选择车型'}]}
+                          {rules:[
+                            {
+                              required:true,
+                              message:$t('search.please_select')+$t('issue.vehicleModelName')
+                            }]}
                         ]"
                         url="/masterdata/v1/vehiclemodel"
                         show-search
                         :transform="selectOption"
                         :filter-option="filterOption"
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :allow-clear="true"
                         @change="vehicleModelIdChange"
                       ></net-select>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`所属系统`">
+                    <!-- 所属系统 -->
+                    <a-form-item :label="$t('issue.faultTreeIds1')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds1',
-                          {rules:[{required:true, message:'请选择所属系统'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds1')}]}
                         ]"
                         url="/issue/v1/faultcategory?p_id=0"
                         show-search
                         :transform="selectOption"
                         :delay="!isEdit"
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         :allow-clear="true"
                         @change="handleSystem"
@@ -107,15 +113,16 @@
                       </net-select>
                     </a-form-item>
                   </a-col>
+                  <!-- 所属功能 -->
                   <a-col :span="6">
-                    <a-form-item :label="`所属功能`">
+                    <a-form-item :label="$t('issue.faultTreeIds2')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds2',
-                          {rules:[{required:true, message:'请选择所属系统'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds2')}]}
                         ]"
                         show-search
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds1"
                         :delay="!isEdit"
@@ -128,22 +135,22 @@
                       </net-select>
                     </a-form-item>
                   </a-col>
+                  <!-- 故障代码 -->
                   <a-col :span="6">
-                    <a-form-item :label="`故障代码`">
+                    <a-form-item :label="$t('issue.faultTreeIds3')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds3',
-                          {rules:[{required:true, message:'请选择故障代码'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds3')}]}
                         ]"
                         show-search
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :delay="!isEdit"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds2"
                         :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
                         :cache="false"
                         :transform="selectOption"
-
                         :allow-clear="true"
                         @change="faultTreeIds3Change"
                       >
@@ -153,14 +160,15 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`问题分类`">
+                    <!-- 问题分类 -->
+                    <a-form-item :label="$t('issue.source')">
                       <net-select
                         v-decorator="[
                           'source',
-                          {rules:[{required:true, message:'请选择问题分类'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.source')}]}
                         ]"
                         show-search
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_source"
                         :transform="selectOptiondict"
@@ -171,14 +179,15 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`严重等级`">
+                    <!-- 严重等级 -->
+                    <a-form-item :label="$t('issue.grade')">
                       <net-select
                         v-decorator="[
                           'grade',
-                          {rules:[{required:true, message:'请选择严重等级'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.grade')}]}
                         ]"
                         show-search
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_grade"
                         :transform="selectOptiondict"
@@ -188,14 +197,15 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题阶段`">
+                    <!-- 问题阶段 -->
+                    <a-form-item :label="$t('issue.projectPhase')">
                       <net-select
                         v-decorator="[
                           'projectPhase',
-                          {rules:[{required:true, message:'请选择问题阶段'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.projectPhase')}]}
                         ]"
                         show-search-
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_phase"
                         :transform="selectOptiondict"
@@ -205,13 +215,14 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`故障发生日期`">
+                    <a-form-item :label="$t('issue.failureDate')">
                       <a-date-picker
                         v-decorator="[
                           'failureDate'
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
                         :disabled-date="disabledDate"
+                        :placeholder="$t('search.please_select')"
                         show-time
                         style="width:231px;"
                       />
@@ -220,15 +231,15 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`生产基地`">
-                      <!-- TODO:  何莎 回显数据的时候下拉框无法匹配数据 -->
+                    <!-- 生产基地 -->
+                    <a-form-item :label="$t('issue.manufactureBase')">
                       <net-select
                         v-decorator="[
                           'manufactureBaseId',
-                          {rules:[{required:true, message:'请选择生产基地'}]}
+                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.manufactureBase')}]}
                         ]"
                         show-search-
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         url="/masterdata/v1/manufactureBase"
                         :transform="selectOptionBase"
@@ -237,13 +248,14 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`责任部门`">
+                    <!-- 责任部门 -->
+                    <a-form-item :label="$t('issue.responsibleDepartmentId')">
                       <net-select
                         v-decorator="[
                           'responsibleDepartmentId',
                         ]"
                         show-search-
-                        placeholder="请选择"
+                        :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
                         url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                         :transform="selectOption"
@@ -253,7 +265,8 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题频次`">
+                    <!-- 问题频次 -->
+                    <a-form-item :label="$t('issue.frequency')">
                       <v-input
                         v-decorator="[
                           'frequency',
@@ -719,7 +732,7 @@ export default {
       this.sourceName = value;
     },
     disabledDate (current) {
-      return current && current < moment().subtract(1, 'day');
+      return current && current > moment().endOf('day');
     },
     // 文件下载
     downFile (info) {
@@ -842,7 +855,6 @@ export default {
       }
     },
     handleSubmit () {
-      debugger;
       this.form.validateFields((err) => {
         if (!err) {
           const data = this.form.getFieldsValue();
@@ -865,16 +877,25 @@ export default {
 
           const id = this.$store.getters.getUser().id;
           const vm = this
-          const paramValue = {
+          const param1 = {
             issueSource: this.sourceName,
-            type: 'coChairStepMonitor'
+            type: 'coChair'
           }
-          const paramValue2 = {
+          const param2 = {
             issueSource: this.sourceName,
-            type: 'stepMonitor'
+            type: 'monitor'
           }
-          vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(paramValue).id;
-          vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(paramValue2).id;
+
+          let cocharId;
+          let monitorId;
+          vm.getSysUser(param1).then(res => {
+            cocharId = res.id;
+          })
+          vm.getSysUser(param2).then(res => {
+            monitorId = res.id;
+          })
+          vm.coChair = vm.coChair ? vm.coChair : cocharId;
+          vm.monitor = vm.monitor ? vm.monitor : monitorId;
           if (this.businessKey) {
             data.id = this.id;
             data.optCounter = this.optCounter;
@@ -896,9 +917,9 @@ export default {
               };
               this.workFlowSubmit(param).then(res2 => {
                 if (res2) {
-                  // this.$router.push({
-                  //   path: this.$route.query.form || '/'
-                  // });
+                // this.$router.push({
+                //   path: this.$route.query.form || '/'
+                // });
                 }
               });
             })
@@ -920,9 +941,9 @@ export default {
               };
               this.workFlowSubmit(param).then(res2 => {
                 if (res2) {
-                  // this.$router.push({
-                  //   path: this.$route.query.form || '/'
-                  // });
+                // this.$router.push({
+                //   path: this.$route.query.form || '/'
+                // });
                 }
               });
             });
@@ -1199,7 +1220,6 @@ export default {
       margin: 20px 0;
     }
   }
-
 
   .ant-advanced-search-form {
     padding: 24px;
