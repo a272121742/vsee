@@ -43,7 +43,6 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
   .ant-layout {
     // 覆盖`ant design`的样式，必须

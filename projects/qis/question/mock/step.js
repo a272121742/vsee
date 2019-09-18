@@ -234,3 +234,10 @@ mock.get('/issue/v1/workflow/rootCause?issue_id=', (id) => {
     data: db.findById(id)
   });
 });
+// 用户信息
+mock.get('/issue/v1/workflow/getSysUser', (data) => {
+  debugger;
+  return mock.result({
+    data: db.find(data)
+  });
+});
