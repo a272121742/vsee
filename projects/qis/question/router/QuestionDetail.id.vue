@@ -3152,15 +3152,15 @@ export default {
               assigner: data.zuanUser1,
               coChair: vm.coChair,
               monitor: vm.monitor,
-              isDirectSerious: '0',
-              isEnd: '0',
-              isPass: data.verifySeven,
-              isQZEnd: data.endSeven,
+              isDirectSerious: '0', // 是否直接极端严重事情
+              isEnd: '0', // 是否关闭
+              isPass: data.verifySeven, // 审核是否通过
+              isQZEnd: data.endSeven, // 是否结束七钻
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
-              isQZ: '0',
-              isCheckError: '0',
-              isLeaderSign: '0',
-              isItem: data.isProject,
+              isQZ: data.type, // 是否需要七钻
+              isCheckError: '0', // 验证不通过(需要回到七钻前)
+              isLeaderSign: '0', // 领导加签
+              isItem: data.isProject, // 是否立项
               zuanUser1: data.zuanUser1,
               zuanUser4: data.zuanUser4,
               zuanUser5: data.zuanUser5,
