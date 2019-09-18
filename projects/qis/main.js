@@ -13,22 +13,30 @@ import store from '@lib/auto-store.js';
 import i18n from '@lib/auto-i18n.js';
 import moment from 'moment';
 
+// 添加进度条
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
 // 加载权限控制
 import('@dir/v-permission.js');
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
 
+const token = store.getters.getToken();
 // 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）
-if (process.env.NODE_ENV === 'production') {
-  const token = store.getters.getToken();
-  router.beforeEach((to, from, next) => {
-    if (!token) {
-      window.location.href = `/portal`;
-    }
-    next();
-  });
-}
+
+router.beforeEach((to, from, next) => {
+  if (process.env.NODE_ENV === 'production' && !token) {
+    window.location.href = `/portal`;
+  }
+  NProgress.start(); // 开始进度条
+  next();
+});
+router.afterEach(() => {
+  NProgress.done(); // 完成进度条
+});
+
 // eslint-disable-next-line no-new
 new Vue({
   router,

@@ -13,6 +13,8 @@
           <net-select
             v-decorator="['vehicleModelId']"
             allow-clear
+            show-search
+            :filter-option="filterOption"
             url="/masterdata/v1/vehiclemodel"
             :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
             :transform="transformField"
@@ -27,6 +29,8 @@
           <net-select
             v-decorator="['grade']"
             allow-clear
+            show-search
+            :filter-option="filterOption"
             :placeholder="$t('search.please_select') + $t('issue.grade')"
             url="/sys/dict?dictType=issue_grade"
             :transform="transformGrade"
@@ -41,6 +45,8 @@
           <net-select
             v-decorator="['source']"
             allow-clear
+            show-search
+            :filter-option="filterOption"
             url="/sys/dict?dictType=issue_source"
             :cache="false"
             :delay="!record.source"
@@ -49,20 +55,18 @@
           />
         </a-form-item>
       </a-col>
-      <!--
-          <a-col
-            :span="8"
-          >
-            <a-form-item label="$t('search.#责任人')">
-              <a-input
-                v-decorator="[
-                  'TODO:3'
-                ]"
-                placeholder="$t('search.title')"
-              />
-            </a-form-item>
-          </a-col>
-          -->
+      <a-col
+        :span="8"
+      >
+        <a-form-item label="$t('search.champion')">
+          <a-input
+            v-decorator="[
+              'champion'
+            ]"
+            placeholder="$t('search.champion')"
+          />
+        </a-form-item>
+      </a-col>
       <a-col
         :span="8"
         style="float: right;"
@@ -158,6 +162,10 @@ export default {
     cancelSearch () {
       this.resetSearch();
       this.$emit('hidden');
+    },
+    // 本地搜索通用函数
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
     /**
      * 转换net-select获取的参数

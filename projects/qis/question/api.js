@@ -30,12 +30,12 @@ export default {
   getSysUser: (data) => $.get('/issue/v1/workflow/getSysUser', data),
   // getSysUser: (issueSource, type) => $.get('/issue/v1/workflow/getSysUser', { issueSource, type }),
   /**
- * 问题提交至工作流
- */
+   * 问题提交至工作流
+   */
   workFlowSubmit: (data) => $.post('/activiti/running/completeTask', data),
   /**
- * 措施判定保存
- */
+   * 措施判定保存
+   */
   MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),
   // 措施判定详情查询
   MeasureDetail: (issueId) => $.get('/issue/v1/workflow/actionDraft?type=0&issueId=' + issueId),
@@ -72,5 +72,7 @@ export default {
   closeDetail: (issueId) => $.get('/issue/v1/workflow/issueClose?issueId=' + issueId),
   // 原因分析保存
   analysisSave: (data) => $.post('/issue/v1/workflow/rootCause', data),
-  analysisDetail: (issueId) => $.get('/issue/v1/workflow/rootCause?issue_id=' + issueId)
+  analysisDetail: (issueId) => $.get('/issue/v1/workflow/rootCause?issue_id=' + issueId),
+  // 获取页面权限
+  getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id)
 };

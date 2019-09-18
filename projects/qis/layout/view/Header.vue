@@ -35,10 +35,15 @@
             <a-menu slot="overlay">
               <a-menu-item key="0">
                 <a href="javascript:;">
-                  {{ $t('user_action.editinfo') }}
+                  {{ $t('user_action.manual') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
+                <a href="/">
+                  {{ $t('user_action.to_portal') }}
+                </a>
+              </a-menu-item>
+              <a-menu-item key="2">
                 <a @click.stop.prevent="logoutHandle">
                   {{ $t('user_action.logout') }}
                 </a>

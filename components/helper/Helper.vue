@@ -16,43 +16,42 @@
       :visible="visible"
       @close="hide"
     >
-      <template v-if="!isLogin">
+      <a-row v-if="!isLogin">
         开发人员专用，授权验证（按回车直接提交）
         <async-component
           path="@comp/form/CaptchaInput.vue"
           :url="authUrl"
           @click-captcha="reloadCaptcha"
           @keyup.enter="submitAuth"
-        >
-        </async-component>
-      </template>
-      <template>
-        是否代理
+        />
+      </a-row>
+      <a-row>
+        是否代理（暂时不要切换，没做好）
         <a-switch
           default-checked
           @change="onProxyChange"
         />
-      </template>
-      <template>
+      </a-row>
+      <a-row>
         刷新页面
-        <a-button
-          @click="refresh"
-        >
-          刷新页面
-        </a-button>
-      </template>
-      <template>
+        <async-component
+          path="@comp/button/RefreshButton.vue"
+          style="margin-left: 24px;"
+        />
+      </a-row>
+      <a-row>
+        国际化
+        <async-component path="@comp/i18n/LanguageRadio.vue" />
         <async-component
           path="@comp/helper/LocaleTable.vue"
         ></async-component>
-      </template>
+      </a-row>
     </a-drawer>
   </a-affix>
 </template>
 
 <script>
 import $ from '@lib/ajax.js';
-console.log($.instance.defaults.baseURL);
 
 export default {
   components: {
@@ -108,9 +107,6 @@ export default {
       checked
         ? ($.instance.defaults.baseURL = '/api')
         : ($.instance.defaults.baseURL = '/');
-    },
-    refresh () {
-      this.$store.dispatch('refresh');
     }
   }
 }
