@@ -74,5 +74,6 @@ export default {
   analysisSave: (data) => $.post('/issue/v1/workflow/rootCause', data),
   analysisDetail: (issueId) => $.get('/issue/v1/workflow/rootCause?issue_id=' + issueId),
   // 获取页面权限
-  getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id)
+  getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id),
+  getStatusCode: (id) => $.get('/issue/v1/workflow/getStatusCode?issueId=' + id)
 };

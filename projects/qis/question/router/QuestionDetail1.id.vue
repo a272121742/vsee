@@ -2385,6 +2385,11 @@ export default {
         A3_2: true,
         A4: true
       },
+      // 流程状态
+      statusCode: {
+        statusMaxCode: 0,
+        statusNewCode: 0
+      },
       userId: that.$store.getters.getUser().id,
       taskId: null, // 任务id
       // 再分配弹框
@@ -2645,7 +2650,8 @@ export default {
       'sevenDiamonds',
       'analysisSave',
       'analysisDetail',
-      'getIssueAutomousRegion'
+      'getIssueAutomousRegion',
+      'getStatusCode'
     ]),
     // 是否需要围堵措施
     conActionChange (e) {
@@ -2880,6 +2886,14 @@ export default {
         console.info(this.id)
         this.detailList = res;
       })
+      this.getStatusCode(this.id).then(res => {
+        if (res) {
+          this.statusCode.statusMaxCode = res.statusMaxCode
+          this.statusCode.statusNewCode = res.statusNewCode
+          console.info(Math.floor((res.statusNewCode) / 100000) - 1)
+          this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1
+        }
+      })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
         const that = this
@@ -3066,7 +3080,7 @@ export default {
             businessTitle: data.title, // 问题title
             processDefinitionKey: 'IRS1', // IRS1  固定值
             subSys: 'irs', //  子系统编号
-            taskId: null, //  任务id
+            taskId: this.detailList.taskId, //  任务id
             userId: this.userId, //  当前用户id
             variables: {
               businessKey: this.id, // 问题id
