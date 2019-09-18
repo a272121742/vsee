@@ -22,19 +22,19 @@
 </i18n>
 <template>
   <div
-    class="col-provider"
     ref="container"
+    class="col-provider"
   >
     <a-popover
+      v-model="visible"
       placement="bottom"
       trigger="click"
-      v-model="visible"
       :auto-adjust-overflow="false"
       :arrow-point-at-center="true"
     >
       <a-card
-        class="col-provider-card"
         slot="content"
+        class="col-provider-card"
         :title="title || $t('title')"
         :bordered="false"
         style="width: 320px;"
@@ -74,8 +74,8 @@
           </a-button>
           <a-button
             :disabled="!modified"
-            @click="recover"
             style="float: right; margin-right: 24px;"
+            @click="recover"
           >
             {{ $t('button_reset') }}
           </a-button>
@@ -137,13 +137,14 @@ export default {
     mapping: {
       type: Function,
       required: true
-    }, 
+    },
     /**
      * 传入给服务端的唯一标识
      */
     id: {
       type: String,
-      require: true
+      require: true,
+      default: ''
     }
   },
   data () {
@@ -181,11 +182,11 @@ export default {
     // 获取数据，如果无后台，将得到`undefined`
     this.fetch().then(cols => {
       this.columns.forEach(col => {
-        // eslint-disable-next-line no-param-reassign
         col.invisible = !!col.invisible;
       });
       this.cache = cols || clone(this.columns);
       this.columnList = cols || this.columns;
+      this.mapping(clone(this.columnList));
     });
   },
   methods: {
@@ -195,7 +196,7 @@ export default {
     fetch () {
       return new Promise((resolve, reject) => {
         if (this.url) {
-          $.get(this.url, {listCode: this.id}).then(res => {
+          $.get(this.url, { listCode: this.id }).then(res => {
             resolve(JSON.parse(res.expression));
           }).catch(err => {
             resolve();
@@ -239,7 +240,7 @@ export default {
       if (!this.disableCommit) {
         this.disableCommit = true;
         if (this.url) {
-          $.post(this.url, {listCode: this.id, expression: JSON.stringify(this.columnList)}).then(res => {
+          $.post(this.url, { listCode: this.id, expression: JSON.stringify(this.columnList) }).then(res => {
             this.cache = clone(this.columnList);
             this.mapping(clone(this.columnList));
             this.$message.success(this.$t('save_success'));

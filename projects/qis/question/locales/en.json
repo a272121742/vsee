@@ -50,7 +50,8 @@
     "vehicleModelId": "Vehicle Model ID",
     "vehicleModelName": "Vehicle Model",
     "vinNo": "VIN Number",
-    "workConditionInfo": "Working condition"
+    "workConditionInfo": "Working condition",
+    "champion": "champion"
   },
   "search": {
     "inquire_button": "Search",

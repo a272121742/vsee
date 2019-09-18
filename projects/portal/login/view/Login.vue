@@ -1,6 +1,8 @@
 <template>
   <div class="login_wrapper">
     <div class="ant-drawer ant-drawer-right ant-drawer-open no-mask">
+      <div class="logo">
+      </div>
       <div
         class="ant-drawer-content-wrapper"
         style="width: 500px;"
@@ -58,6 +60,13 @@ export default {
     /deep/ .ant-drawer-content {
       background: rgba(255, 255, 255, 0.6);
     }
+  }
+  .logo {
+    width: 168px;
+    height: 40px;
+    float: left;
+    margin: 32px 16px 12px 80px;
+    background-image: url("/static/logo.png");
   }
   .language-radio {
     float: right;

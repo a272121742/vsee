@@ -2,7 +2,7 @@
   <a-table
     row-key="id"
     :data-source="data"
-    :pagination="{total: total, current: page, pageSize, showSizeChanger: true, pageSizeOptions: ['10', '20', '50'], showTotal}"
+    :pagination="{total: total, current: page, pageSize, showSizeChanger: false, pageSizeOptions: ['10', '20', '50'], showTotal, showQuickJumper: true}"
     v-on="$listeners"
   >
     <template v-for="col in columns">
@@ -13,7 +13,12 @@
       >
         <span slot="title">{{ $t(`issue.${col.dataIndex}`) }}</span>
         <template slot-scope="text">
-          {{ text }}
+          <a-tooltip>
+            <template #title>
+              {{ text }}
+            </template>
+            {{ text }}
+          </a-tooltip>
         </template>
       </a-table-column>
     </template>
@@ -137,18 +142,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  // TODO: 通过flex布局重新更改元素位置，但是点击时好像会有串位置的情况
+
   /deep/ .ant-pagination {
     display: inline-flex;
     li.ant-pagination-item,
     li.ant-pagination-prev,
     li.ant-pagination-next,
+    li.ant-pagination-jump-prev,
     li.ant-pagination-jump-next {
       order: 1;
     }
     li.ant-pagination-total-text {
       order: 2;
-      margin: 0 -6px 0 12px;
+      margin: 1px -6px 0 12px;
     }
     li.ant-pagination-options {
       order: 3;

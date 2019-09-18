@@ -13,6 +13,10 @@ import store from '@lib/auto-store.js';
 import i18n from '@lib/auto-i18n.js';
 import moment from 'moment';
 
+// 添加进度条
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
 // 加载权限控制
 // import('@dir/v-permission.js');
 
@@ -21,6 +25,7 @@ Vue.use(Antd);
 
 if (store.state.allowLogin) {
   router.beforeEach((to, from, next) => {
+    NProgress.start(); // 开始进度条
     // 是否跳转到登陆界面
     const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
     // 是否已经登陆
@@ -47,7 +52,15 @@ if (store.state.allowLogin) {
     // 登陆过但不是登陆界面就直接放行，或者没登陆但进入的是登陆界面直接放行
     next(true);
   });
+} else {
+  router.beforeEach((to, from, next) => {
+    NProgress.start(); // 完成进度条
+    next();
+  });
 }
+router.afterEach(() => {
+  NProgress.done(); // 完成进度条
+});
 
 
 // eslint-disable-next-line no-new

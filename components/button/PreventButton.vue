@@ -11,12 +11,21 @@
 <template>
   <a-button
     v-bind="$attrs"
-    v-on="$listeners"
     :loading="loading"
     :disabled="disabled"
+    v-on="$listeners"
     @click.self.stop.prevent="handleClick"
   >
-    <slot></slot>
+    <!-- slot继承 -->
+    <template
+      v-for="(_, slot) of $scopedSlots"
+      v-slot:[slot]="scope"
+    >
+      <slot
+        :name="slot"
+        v-bind="scope"
+      />
+    </template>
   </a-button>
 </template>
 

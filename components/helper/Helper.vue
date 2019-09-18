@@ -52,7 +52,6 @@
 
 <script>
 import $ from '@lib/ajax.js';
-console.log($.instance.defaults.baseURL);
 
 export default {
   components: {
@@ -108,9 +107,6 @@ export default {
       checked
         ? ($.instance.defaults.baseURL = '/api')
         : ($.instance.defaults.baseURL = '/');
-    },
-    refresh () {
-      this.$store.dispatch('refresh');
     }
   }
 }

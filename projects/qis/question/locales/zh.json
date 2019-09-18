@@ -50,7 +50,8 @@
     "vehicleModelId": "车型id",
     "vehicleModelName": "车型名称",
     "vinNo": "VIN",
-    "workConditionInfo": "工况信息"
+    "workConditionInfo": "工况信息",
+    "champion": "责任人"
   },
   "search": {
     "find_button": "查询",
