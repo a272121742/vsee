@@ -347,11 +347,12 @@
       @submit="handleSearch"
     >
       <a-card
-        v-if="pagePermission.A2"
+        v-if="pagePermission.A2_1||pagePermission.A1_2||pagePermission.A1_3"
         title="问题详情"
         class="cardTitle"
       >
         <img
+          v-if="pagePermission.A1_3"
           src="/static/question/editIcon.png"
           class="editIcon"
           @click="editDetail"
@@ -595,7 +596,7 @@
         <a-input-number v-model="stepCurrent"></a-input-number>
         <div class="ant-advanced-search-form">
           <div
-            v-if="pagePermission.A3"
+            v-if="pagePermission.A3_2"
             class="step"
           >
             <a-steps :current="stepCurrent">
@@ -655,7 +656,7 @@
             v-if="stepCurrent===0&&backFlag===false"
             class="Dcontent D0content"
           >
-            <div v-if="pagePermission.A0_1">
+            <div v-if="pagePermission.A0_1_3">
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -744,7 +745,7 @@
             >
               <span></span>
             </div>
-            <div v-if="pagePermission.A0_2">
+            <div v-if="pagePermission.A0_2||pagePermission.A0_1_2">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`立项条件`">
@@ -777,7 +778,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <a-row v-if="pagePermission.A0_3||pagePermission.A1_2||pagePermission.A2_4||pagePermission.A4_4||pagePermission.A5_5">
+              <a-row v-if="pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2">
                 <a-col
                   :span="24"
                   style="text-align:center;"
@@ -818,7 +819,7 @@
             >
               <span></span>
             </div>
-            <div v-if="pagePermission.A1_1">
+            <div v-if="pagePermission.A1_1_3">
               <div>
                 <a-row style="margin-left:340px;">
                   <a-col :span="21">
@@ -1051,7 +1052,7 @@
                   </ul>
                 </div>
                 <div class="analysisTable">
-                  <div v-if="pagePermission.A1_5||pagePermission.A1_8||pagePermission.A1_11||pagePermission.A1_14||pagePermission.A1_17||pagePermission.A2_3">
+                  <div v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2">
                     <a-row>
                       <span>审核结果：</span>
                     </a-row>
@@ -1066,7 +1067,7 @@
                       </a-form-item>
                     </a-row>
                   </div>
-                  <div v-if="pagePermission.A1_3||pagePermission.A1_6||pagePermission.A1_9||pagePermission.A1_12||pagePermission.A1_15">
+                  <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3">
                     <a-row>
                       <a-form-item>
                         <span>6钻分析</span>
@@ -1089,7 +1090,7 @@
                       </span>
                     </a-table>
                   </div>
-                  <div v-if="pagePermission.A1_4||pagePermission.A1_7||pagePermission.A1_10||pagePermission.A1_13||pagePermission.A1_16||pagePermission.A2_2">
+                  <div v-if="pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3||pagePermission.A2_2_3">
                     <a-form-item>
                       <span>
                         审核
@@ -1169,7 +1170,7 @@
             </div>
           </div>
           <div
-            v-if="stepCurrent!=1&&backCurrent==1&&backFlag"
+            v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
             class="Dcontent D1back"
           >
             <div class="triangle_border_up">
@@ -1266,7 +1267,7 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-            <div v-if="pagePermission.A2_5">
+            <div v-if="pagePermission.A2_1_3">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`根本原因（中英文）`">
@@ -1313,7 +1314,7 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-            <div v-if="pagePermission.A2_1">
+            <div v-if="pagePermission.A2_1_2">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`根本原因（中英文）`">
@@ -1351,13 +1352,13 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-            <div v-if="pagePermission.A3_4">
+            <div v-if="pagePermission.A3_4_2">
               <p>
                 该问题正在措施制定中
               </p>
             </div>
             <div
-              v-if="pagePermission.A3_3"
+              v-if="pagePermission.A3_3_2"
               class="examineResult"
             >
               <div>审核结果</div>
@@ -1371,7 +1372,7 @@
             <div class="Dtitle">
               <span>措施判定</span>
             </div>
-            <div v-if="pagePermission.A3_1">
+            <div v-if="pagePermission.A3_1_3">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`短期措施`">
@@ -1489,74 +1490,76 @@
             <div class="triangle_border_up">
               <span></span>
             </div>
-            <div class="Dtitle">
-              <span>措施判定</span>
+            <div v-if="pagePermission.A3_1_2">
+              <div class="Dtitle">
+                <span>措施判定</span>
+              </div>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`短期措施`">
+                    <p>{{ stepMeasures.icaDescription }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`长期措施`">
+                    <p>{{ stepDetail.pcaDescription }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`长期措施实施计划日期`">
+                    <p>{{ stepDetail.pcaPlanTime }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`长期措施验证计划日期:`">
+                    <p>{{ stepDetail.pcaExecTime }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item
+                    :label="`附件`"
+                    style="height:auto;"
+                  >
+                    <div class="stepFileList clearfix">
+                      <ul class="fileList clearfix">
+                        <li
+                          v-for="(item,index) in stepDetail.fileList"
+                          :key="index"
+                          :title="item"
+                        >
+                          <img src="/static/question/file.png">
+                          <span>{{ item }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`小批量验证`">
+                    <p>{{ stepDetail.smallBatchValidation }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`计划关闭日期`">
+                    <p>{{ stepDetail.estimatedClosureTime }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
             </div>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`短期措施`">
-                  <p>{{ stepMeasures.icaDescription }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`长期措施`">
-                  <p>{{ stepDetail.pcaDescription }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`长期措施实施计划日期`">
-                  <p>{{ stepDetail.pcaPlanTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`长期措施验证计划日期:`">
-                  <p>{{ stepDetail.pcaExecTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item
-                  :label="`附件`"
-                  style="height:auto;"
-                >
-                  <div class="stepFileList clearfix">
-                    <ul class="fileList clearfix">
-                      <li
-                        v-for="(item,index) in stepDetail.fileList"
-                        :key="index"
-                        :title="item"
-                      >
-                        <img src="/static/question/file.png">
-                        <span>{{ item }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`小批量验证`">
-                  <p>{{ stepDetail.smallBatchValidation }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`计划关闭日期`">
-                  <p>{{ stepDetail.estimatedClosureTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
           </div>
-          <div v-if="pagePermission.A3_2">
+          <div v-if="pagePermission.A3_2_3">
             <div class="examine">
               <div class="Dtitle examineTitle">
                 <span>审核</span>
@@ -1591,7 +1594,7 @@
               <span></span>
             </div>
             <div
-              v-if="pagePermission.A4_3"
+              v-if="pagePermission.A4_3_2"
               class="examineResult"
             >
               <div>
@@ -1604,7 +1607,7 @@
                 <p>{{}}</p>
               </a-form-item>
             </div>
-            <div v-if="pagePermission.A4_1">
+            <div v-if="pagePermission.A4_1_3">
               <div class="Dtitle">
                 <span>措施实施</span>
               </div>
@@ -1697,61 +1700,63 @@
             v-if="stepCurrent!=4&&backCurrent==4&&backFlag"
             class="Dcontent D4back"
           >
-            <div class="triangle_border_up">
-              <span></span>
+            <div v-if="pagePermission.A4_1_2">
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
+              <div class="Dtitle">
+                <span>措施实施</span>
+              </div>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`短期效果`">
+                    <p>{{ stepImplementation.icaExecDescription }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`短期措施实施日期`">
+                    <p>{{ stepImplementation.icaExecTime }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`长期措施实施描述`">
+                    <p>{{ stepImplementation.pcaDescription }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item
+                    :label="`附件`"
+                    style="height:auto;"
+                  >
+                    <div class="stepFileList clearfix">
+                      <ul class="fileList clearfix">
+                        <li
+                          v-for="(item,index) in stepDetail.fileList"
+                          :key="index"
+                          :title="item"
+                        >
+                          <img src="/static/question/file.png">
+                          <span>{{ item }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`长期措施实施日期`">
+                    <p>{{ stepImplementation.pcaExecTime }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
             </div>
-            <div class="Dtitle">
-              <span>措施实施</span>
-            </div>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`短期效果`">
-                  <p>{{ stepImplementation.icaExecDescription }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`短期措施实施日期`">
-                  <p>{{ stepImplementation.icaExecTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`长期措施实施描述`">
-                  <p>{{ stepImplementation.pcaDescription }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item
-                  :label="`附件`"
-                  style="height:auto;"
-                >
-                  <div class="stepFileList clearfix">
-                    <ul class="fileList clearfix">
-                      <li
-                        v-for="(item,index) in stepDetail.fileList"
-                        :key="index"
-                        :title="item"
-                      >
-                        <img src="/static/question/file.png">
-                        <span>{{ item }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`长期措施实施日期`">
-                  <p>{{ stepImplementation.pcaExecTime }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
             <div
               v-if="pagePermission.A4_2"
               class="examine"
@@ -1790,7 +1795,7 @@
               <span></span>
             </div>
             <div
-              v-if="pagePermission.A5_3"
+              v-if="pagePermission.A5_3_2"
               class="examineResult"
             >
               <div>
@@ -1803,7 +1808,7 @@
                 <p>{{}}</p>
               </a-form-item>
             </div>
-            <div v-if="pagePermission.A5_1">
+            <div v-if="pagePermission.A5_1_3">
               <div class="Dtitle">
                 <span>效果验证</span>
               </div>
@@ -1904,50 +1909,52 @@
             v-if="stepCurrent!=5&&backCurrent==5&&backFlag"
             class="Dcontent D5back"
           >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="`效果验证`">
-                  <p>{{ stepEffect.description }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row style="margin-left:220px;">
-              <a-col :span="8">
-                <a-form-item :label="`断点VIN`">
-                  <p>{{ stepEffect.breakpointVin }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="10">
-                <a-form-item :label="`断点时间`">
-                  <p>{{ stepEffect.breakpointDate }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-form-item :label="`涉及文件更新:`">
-              <div class="updateTable">
-                <a-table
-                  row-key="id"
-                  :data-source="updateData"
-                  :columns="columnsUpdate"
-                  :pagination="false"
-                >
-                  <span
-                    slot="id"
-                    slot-scope="text, row"
-                  >
-                    <a
-                      href="javascript:;"
-                      @click="showUpdate(row)"
-                    >查看</a>
-                  </span>
-                </a-table>
+            <div v-if="pagePermission.A5_1_2">
+              <div class="triangle_border_up">
+                <span></span>
               </div>
-            </a-form-item>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`效果验证`">
+                    <p>{{ stepEffect.description }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row style="margin-left:220px;">
+                <a-col :span="8">
+                  <a-form-item :label="`断点VIN`">
+                    <p>{{ stepEffect.breakpointVin }}</p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="10">
+                  <a-form-item :label="`断点时间`">
+                    <p>{{ stepEffect.breakpointDate }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-form-item :label="`涉及文件更新:`">
+                <div class="updateTable">
+                  <a-table
+                    row-key="id"
+                    :data-source="updateData"
+                    :columns="columnsUpdate"
+                    :pagination="false"
+                  >
+                    <span
+                      slot="id"
+                      slot-scope="text, row"
+                    >
+                      <a
+                        href="javascript:;"
+                        @click="showUpdate(row)"
+                      >查看</a>
+                    </span>
+                  </a-table>
+                </div>
+              </a-form-item>
+            </div>
             <div
-              v-if="pagePermission.A5_2"
+              v-if="pagePermission.A5_2_3"
               class="examine"
             >
               <div class="Dtitle examineTitle">
@@ -1974,11 +1981,8 @@
                 />
               </a-form-item>
             </div>
-            <div>
-              <div
-                v-if="pagePermission.A5_4"
-                class="Dtitle examineTitle"
-              >
+            <div v-if="pagePermission.A5_4_3">
+              <div class="Dtitle examineTitle">
                 <span>提出人验证</span>
               </div>
               <a-row>
@@ -1998,7 +2002,7 @@
                 </a-form-item>
               </a-row>
               <div
-                v-if="pagePermission.A5_2"
+                v-if="pagePermission.A5_2_3"
                 class="examine"
               >
                 <div class="Dtitle examineTitle">
@@ -2031,7 +2035,7 @@
             v-if="stepCurrent===6&&backFlag===false"
             class="Dcontent D6content"
           >
-            <div v-if="pagePermission.A6_1_2">
+            <div v-if="pagePermission.A6_1_3">
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -2114,7 +2118,10 @@
                 </a-col>
               </a-row>
             </div>
-            <div class="examine">
+            <div
+              v-if="pagePermission.A6_2_3"
+              class="examine"
+            >
               <div class="Dtitle">
                 <span>加签审批</span>
               </div>
@@ -2375,6 +2382,7 @@ export default {
         A2_3: true,
         A2_4: true,
         A2_5: true,
+        A3_2: true,
         A4: true
       },
       userId: that.$store.getters.getUser().id,
@@ -2636,7 +2644,8 @@ export default {
       'getSysUser',
       'sevenDiamonds',
       'analysisSave',
-      'analysisDetail'
+      'analysisDetail',
+      'getIssueAutomousRegion'
     ]),
     // 是否需要围堵措施
     conActionChange (e) {
@@ -2868,7 +2877,16 @@ export default {
       // }
       // 查看问题详情
       this.eidtQuestion(this.id).then(res => {
+        console.info(this.id)
         this.detailList = res;
+      })
+      this.getIssueAutomousRegion(this.id).then(res => {
+        this.pagePermission = {}
+        const that = this
+        res.forEach(item => {
+          that.pagePermission[item.DETAIL_REGION] = true
+        })
+        console.info(this.pagePermission)
       })
       /* this.getAnalysis(this.id).then(res => {
           this.analysisData = res.list;
@@ -2915,14 +2933,14 @@ export default {
       });
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
-        this.updateData = res.updateList;
+        this.updateData = this.problemDefinitionData.updateList;
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        (res.sevenDiamondsVos || {}).forEach((item) => {
+        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
           item.operation = '操作'
         })
-        this.analysisData = res.sevenDiamondsVos
+        this.analysisData = this.issueDefinitionData.sevenDiamondsVos
       });
       this.rootCause(id).then(res => {
         this.rootCauseData = res || {};
@@ -3038,8 +3056,8 @@ export default {
     handleSubmit () {
       this.handleSave()
       const vm = this
-      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
-      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
+      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChair').id;
+      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'monitor').id;
       this.formDcontent.validateFields((err) => {
         if (!err) {
           const data = this.formDcontent.getFieldsValue();
