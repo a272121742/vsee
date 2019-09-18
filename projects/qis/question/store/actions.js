@@ -166,5 +166,9 @@ export default {
   // 原因分析详情
   analysisDetail (store, id) {
     return api.analysisDetail(id);
+  },
+  // 获取页面权限
+  getIssueAutomousRegion (store, id) {
+    return api.getIssueAutomousRegion(id);
   }
 };
