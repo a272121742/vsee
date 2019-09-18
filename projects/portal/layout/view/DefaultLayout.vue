@@ -12,7 +12,7 @@
       >
         <div style="margin: 0 auto; max-width: 1200px;">
           <transition name="page-transition">
-            <router-view />
+            <router-view class="child-view" />
           </transition>
         </div>
       </a-layout-content>
@@ -45,7 +45,11 @@ export default {
 </script>
 <style lang="less" scoped>
   .ant-layout {
-    height: 100%;
+    // 覆盖`ant design`的样式，必须
+    background-color: transparent!important;
+  }
+  /deep/ .ant-affix {
+    z-index: 2147483647;
   }
   .ant-layout-content {
     overflow-x: hidden;
@@ -60,5 +64,9 @@ export default {
   .page-transition-enter .page-transition-container,
   .page-transition-leave-active .page-transition-container {
     transform: scale(1.1);
+  }
+  .child-view {
+    max-width: 1200px;
+    transition: all .5s cubic-bezier(.55,0,.1,1);
   }
 </style>

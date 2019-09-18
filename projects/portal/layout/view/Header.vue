@@ -55,9 +55,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  #app {
-    height: fill-available!important;
-  }
   /* 重写头部 */
   .ant-layout-header {
     background: #FFFFFF;

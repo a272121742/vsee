@@ -9,9 +9,6 @@
 </template>
 
 <style lang="less">
-  #app {
-    height: fill-available!important;
-  }
   // 滚动条样式
   &::-webkit-scrollbar {
     width: 6px; /*滚动条的宽度*/

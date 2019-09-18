@@ -46,7 +46,8 @@ export default {
 
 <style lang="less" scoped>
   .ant-layout {
-    height: 100%;
+    // 覆盖`ant design`的样式，必须
+    background-color: transparent!important;
   }
   /deep/ .ant-affix {
     z-index: 2147483647;
@@ -67,7 +68,6 @@ export default {
   }
   .child-view {
     max-width: 1200px;
-    position: absolute;
     transition: all .5s cubic-bezier(.55,0,.1,1);
   }
 </style>
