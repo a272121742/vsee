@@ -4,7 +4,6 @@
   <div id="components-form-demo-advanced-search">
     <a-affix
       :offset-top="64"
-      @change="offsetChange"
     >
       <div class="top-buttons">
         <div class="backButton">
@@ -229,7 +228,7 @@
                         :disabled-date="disabledDate"
                         :placeholder="$t('search.please_select')"
                         show-time
-                        style="width:231px;"
+                        style="width:261px;"
                       />
                     </a-form-item>
                   </a-col>
@@ -262,8 +261,9 @@
                         show-search-
                         :placeholder="$t('search.please_select')"
                         :filter-option="filterOption"
-                        url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                        url="/sys/dept/list"
                         :transform="selectOption"
+                        :delay="!isEdit"
                         :allow-clear="true"
                       >
                       </net-select>
@@ -377,7 +377,7 @@
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`零件号`">
+                  <a-form-item :label="$t('issue.partId')">
                     <net-select
                       v-decorator="[
                         'partId',
@@ -385,14 +385,14 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/part"
-                      placeholder="请选择"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`供应商名称`">
+                  <a-form-item :label="$t('issue.supplierId')">
                     <net-select
                       v-decorator="[
                         'supplierId',
@@ -400,7 +400,7 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/supplier"
-                      placeholder="请选择"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
@@ -409,20 +409,22 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`生产时间`">
+                  <a-form-item :label="$t('issue.productDate')">
                     <a-date-picker
                       v-decorator="[
                         'productDate'
                       ]"
+                      :placeholder="$t('search.please_select')"
                       :disabled-date="disabledDate"
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
-                      style="width:231px;"
+                      style="width:261px;"
                     />
                   </a-form-item>
                 </a-col>
+                <!-- 试验类型 -->
                 <a-col :span="6">
-                  <a-form-item :label="`试验类型`">
+                  <a-form-item :label="$t('issue.testType')">
                     <net-select
                       v-decorator="[
                         'testType',
@@ -433,7 +435,7 @@
 
                       url="/sys/dict?dictType=issue_test_type"
 
-                      placeholder="请选择"
+                      :placeholder="$t('search.please_select')"
 
                       :transform="selectOptiondict"
 
@@ -441,70 +443,75 @@
                     ></net-select>
                   </a-form-item>
                 </a-col>
+                <!-- 故障里程 -->
                 <a-col :span="6">
-                  <a-form-item :label="`故障里程（Km）`">
+                  <a-form-item :label="$t('issue.milage')">
                     <v-input
                       v-decorator="[
                         'milage',
                       ]"
                       allow-clear
-                      placeholder="请输入                                       Km"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
+                <!-- 维修网点 -->
                 <a-col :span="6">
-                  <a-form-item :label="`维修网点`">
+                  <a-form-item :label="$t('issue.maintenanceStation')">
                     <v-input
                       v-decorator="[
                         'maintenanceStation',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
+              <!-- 软件版本号 -->
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`软件版本号`">
+                  <a-form-item :label="$t('issue.softwareVersion')">
                     <v-input
                       v-decorator="[
                         'softwareVersion',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
+                <!-- 标定版本号 -->
                 <a-col :span="6">
-                  <a-form-item :label="`标定版本号`">
+                  <a-form-item :label="$t('issue.calibrationVersion')">
                     <v-input
                       v-decorator="[
                         'calibrationVersion',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`硬件版本号`">
+                  <a-form-item :label="$t('issue.hardwareVersion')">
                     <v-input
                       v-decorator="[
                         'hardwareVersion',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     />
                   </a-form-item>
                 </a-col>
+                <!-- 配置字版本号 -->
                 <a-col :span="6">
-                  <a-form-item :label="`配置字版本号`">
+                  <a-form-item :label="$t('issue.confirmationVersion')">
                     <v-input
                       v-decorator="[
                         'confirmationVersion',
                       ]"
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -512,35 +519,38 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`工况信息`">
+                  <!-- 工况信息 -->
+                  <a-form-item :label="$t('issue.workConditionInfo')">
                     <v-textarea
                       v-decorator="[
                         'workConditionInfo',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
+                <!-- 初步排查情况 -->
                 <a-col :span="6">
-                  <a-form-item :label="`初步排查情况`">
+                  <a-form-item :label="$t('issue.preliminaryInvestigation')">
                     <v-textarea
                       v-decorator="[
                         'preliminaryInvestigation',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
+                <!-- 备注 -->
                 <a-col :span="12">
-                  <a-form-item :label="`备注`">
+                  <a-form-item :label="$t('issue.remark')">
                     <v-textarea
                       v-decorator="[
                         'remark',
                       ]"
                       allow-clear
-                      placeholder="请输入"
+                      :placeholder="$t('search.please_input')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>

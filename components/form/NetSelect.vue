@@ -1,11 +1,11 @@
 <template>
   <a-select
+    ref="select"
     v-bind="$attrs"
-    v-on="$listeners"
     :value="value"
     :options="data"
+    v-on="$listeners"
     @dropdownVisibleChange="dropdownVisibleChange"
-    ref="select"
   >
     <a-spin
       v-if="fetching"
@@ -54,7 +54,6 @@ export default {
       data: []
     }
   },
-  
   created () {
     const { url, delay } = this;
     url && !delay && this.fetch().then(data => {

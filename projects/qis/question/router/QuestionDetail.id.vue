@@ -2,7 +2,6 @@
   <div id="components-form-demo-advanced-search">
     <a-modal
       title="再分配"
-      style="top:200px;!important"
       :visible="visible"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
@@ -12,12 +11,13 @@
       <a-form
         class="ant-advanced-search-form"
         :form="rediStribution"
+        style="height:50px;margin-top:20px;"
       >
         <a-col :span="24">
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+              url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
               :transform="selectOptionChampion"
               :delay="true"
               placeholder="请选择"
@@ -31,7 +31,6 @@
     </a-modal>
     <a-modal
       title="驳回（7钻分析之前)"
-      style="top:200px;!important;"
       :visible="visibleReject"
       :mask-closable="false"
       @ok="RejectSubmit"
@@ -40,11 +39,12 @@
       <a-form
         class="ant-advanced-search-form"
         :form="rejectForm"
+        style="height:60px;margin-top:10px;"
       >
         <a-col :span="24">
-          <a-form-item :label="`驳回理由`">
+          <a-form-item :label="`理由`">
             <v-textarea
-              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择驳回理由' }]} ]"
+              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择理由' }]} ]"
               placeholder="请输入"
               :allow-clear="true"
             />
@@ -406,6 +406,7 @@
       <div class="top-buttons">
         <div class="backButton">
           <a-button
+            v-if="pagePermission.button_back_3"
             slot="tabBarExtraContent"
             class="backBtn"
             @click="goBack"
@@ -416,21 +417,23 @@
         </div>
         <div class="rightButton">
           <a-button
-            v-if="stepCurrent!=6"
+            v-if="pagePermission.button_allocation_3"
             html-type="submit"
             @click="showModal"
           >
             再分配
           </a-button>
           <a-button
+            v-if="pagePermission.button_redistribution_3"
             type="primary"
             html-type="submit"
             class="submitBtn"
             @click="handleReject"
           >
-            驳回
+            再分析
           </a-button>
           <a-button
+            v-if="pagePermission.button_submit_3"
             type="primary"
             html-type="submit"
             class="submitBtn"
@@ -438,6 +441,14 @@
           >
             提交
           </a-button>
+          <!-- <a-button
+            v-if="pagePermission.button_commit_3"
+            style="marginLeft: 8px"
+            class="saveBtn"
+            @click="handleSave"
+          >
+            保存
+          </a-button> -->
           <a-button
             style="marginLeft: 8px"
             class="saveBtn"
@@ -446,6 +457,7 @@
             保存
           </a-button>
           <a-button
+            v-if="pagePermission.button_cancel_3"
             style="marginLeft: 8px"
             class="cancelBtn"
             @click="handleReset"
@@ -795,30 +807,37 @@
                 </a-popover>
                 <a-step
                   title="问题定义"
+                  style="cursor:pointer;"
                   @click="goto(0)"
                 />
                 <a-step
                   title="责任判定"
+                  style="cursor:pointer;"
                   @click="goto(1)"
                 />
                 <a-step
                   title="原因分析"
+                  style="cursor:pointer;"
                   @click="goto(2)"
                 />
                 <a-step
                   title="措施判定"
+                  style="cursor:pointer;"
                   @click="goto(3)"
                 />
                 <a-step
                   title="措施实施"
+                  style="cursor:pointer;"
                   @click="goto(4)"
                 />
                 <a-step
                   title="效果验证"
+                  style="cursor:pointer;"
                   @click="goto(5)"
                 />
                 <a-step
                   title="问题关闭"
+                  style="cursor:pointer;"
                   @click="goto(6)"
                 />
               </a-steps>
@@ -918,11 +937,11 @@
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`立项条件`">
-                    <p>{{ problemDefinitionData.isProject==='0'?'是':'否' }}</p>
+                    <p>{{ problemDefinitionData.isProject===1?'是':'否' }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <div v-if="problemDefinitionData.isProject==='0'">
+              <div v-if="problemDefinitionData.isProject===1">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`需要围堵措施`">
@@ -930,7 +949,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row v-if="problemDefinitionData.isNeedIca==='0'">
+                <a-row v-if="problemDefinitionData.isNeedIca===1">
                   <a-col :span="21">
                     <a-form-item :label="`围堵措施`">
                       <p>{{ problemDefinitionData.icaDescription }}</p>
@@ -938,7 +957,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="stepDetail.isProject==='1'">
+              <div v-if="stepDetail.isProject===0">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`理由`">
@@ -2176,38 +2195,35 @@
               </a-row>
               <a-row>
                 <a-col :span="21">
-                  <a-form-item :label="`是否同意关闭`">
+                  <a-form-item :label="`是否加签`">
                     <a-radio-group
                       v-decorator="[
-                        'isClose',
-                        {rules: [{ required: true, message: '请选择是否同意关闭' }]}
+                        'isSign'
                       ]"
-                      :options="isCloseRadio"
-                      @change="CloseRadioChange"
+                      :options="recurrencePreventionRadio"
+                      @change="apostilleChange"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row>
+              <a-row v-if="signLeaderFlag">
                 <a-col :span="21">
-                  <a-form-item
-                    v-if="disAgree"
-                    :label="`不同意关闭理由`"
-                  >
-                    <a-textarea
-                      v-decorator="[
-                        'reason ',
-                        {rules: [{ required: true, message: '请输入不同意关闭理由' }]}
-                      ]"
-                      placeholder="请输入"
-                      style="width:572px;height:88px;"
-                    ></a-textarea>
+                  <a-form-item :label="`加签领导`">
+                    <net-select
+                      v-decorator="[ 'signLeaderId',{rules: [{ required: true, message: '请选择加签领导' }]} ]"
+                      :url="`issue/v1/workflow/getSysUser?issueSource=${detailList.source}&type=director`"
+                      :transform="selectOptionSingn"
+                      placeholder="请选择"
+                      :allow-clear="true"
+                      style="width:272px;height:32px;"
+                    >
+                    </net-select>
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
             <div
-              v-if="stepCurrent!=6&&backCurrent==6&&backFlag"
+              v-if="stepCurrent==6&&backCurrent==6&&backFlag"
               class="Dcontent D6back"
             >
               <div class="triangle_border_up">
@@ -2218,53 +2234,47 @@
               </div>
               <a-row>
                 <a-col :span="21">
-                  <a-form-item :label="`是否需要进入再发防止库`">
+                  <a-form-item :label="`关闭人`">
+                    <p>{{ stepClose.creator }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`关闭时间`">
+                    <p>{{ stepClose.createDate }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`进入再发防止库`">
                     <p>{{ stepClose.recurrencePrevention }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`是否同意关闭`">
-                    <p>{{ stepClose.isClose }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`不同意关闭理由`">
-                    <p>{{ stepClose.reason }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
               <div class="examine">
                 <div class="Dtitle">
-                  <span>加签审批</span>
+                  <span>加签审阅</span>
                 </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`是否审阅`">
                       <a-radio-group
                         v-decorator="[
-                          'isClose',
-                          {rules: [{ required: true, message: '请选择是否审阅' }]}
+                          'Review'
                         ]"
-                        :options="isCloseRadio"
+                        :options="ReviewRadio"
                       />
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item
-                      :label="`备注`"
-                    >
+                    <a-form-item :label="`备注`">
                       <v-textarea
-                        v-decorator="[
-                          'reason '
-                        ]"
+                        v-decorator="[ 'signRemark' ]"
                         placeholder="请输入"
-                        style="width:572px;height:88px;"
                         :allow-clear="true"
                       />
                     </a-form-item>
@@ -2273,19 +2283,19 @@
               </div>
               <div class="examine">
                 <div class="Dtitle">
-                  <span>加签审批</span>
+                  <span>加签审阅</span>
                 </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`审阅领导`">
-                      <p>{{ stepClose.isClose }}</p>
+                      <p>{{ stepClose.signLeaderName }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`审阅时间`">
-                      <p>{{ stepClose.isClose }}</p>
+                      <p>{{ stepClose.signDate }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2294,7 +2304,7 @@
                     <a-form-item
                       :label="`备注`"
                     >
-                      <p>{{ stepClose }}</p>
+                      <p>{{ stepClose.signRemark }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2496,6 +2506,51 @@ export default {
   data () {
     const that = this
     return {
+      // 页面权限控制
+      pagePermission: {
+        A0_1: true,
+        A0_2: true,
+        A0_3: true,
+        A1_1: true,
+        A1_2: true,
+        A1_3: true,
+        A1_4: true,
+        A1_5: true,
+        A1_6: true,
+        A1_7: true,
+        A1_8: true,
+        A1_9: true,
+        A1_10: true,
+        A1_11: true,
+        A1_12: true,
+        A1_13: true,
+        A1_14: true,
+        A1_15: true,
+        A1_16: true,
+        A1_17: true,
+        A2: true,
+        A2_1: true,
+        A2_2: true,
+        A2_3: true,
+        A2_4: true,
+        A2_5: true,
+        A3_2: true,
+        A4: true,
+        button_allocation_1: false,
+        button_allocation_3: false,
+        button_back_3: false,
+        button_back_1: false,
+        button_cancel_1: false,
+        button_cancel_3: false,
+        button_commit_1: false,
+        button_commit_3: false,
+        button_submit_1: false,
+        button_submit_3: false,
+        button_redistribution_1: false,
+        button_redistribution_3: false
+
+      },
+      stepId: '', // 每一步id
       userId: that.$store.getters.getUser().id,
       taskId: null, // 任务id
       // 再分配弹框
@@ -2510,6 +2565,7 @@ export default {
       confirmLoading: false,
       visibleReject: false,
       isCheckError: '0', // 验证不通过需要回到7钻
+      signLeaderFlag: false, // 加签领导
       optCounter: '',
       columns,
       columnsRecord,
@@ -2567,18 +2623,24 @@ export default {
       AnalysisForm: null, // 7钻分析表单
       satisfy: [{
         label: '是',
-        value: '0'
+        value: 1
       }, {
         label: '否',
-        value: '1'
+        value: 0
       }],
       contActionOption: [{
         label: '需要',
-        value: '0'
+        value: 1
       }, {
         label: '不需要',
-        value: '1'
+        value: 0
       }],
+      ReviewRadio: [
+        {
+          label: '已审阅',
+          value: 1
+        }
+      ],
       conActionFlag: true, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
       showMoreFlag: false, // 查看更多
@@ -2602,10 +2664,10 @@ export default {
       }],
       verifyRadio: [{
         label: '通过',
-        value: '0'
+        value: 1
       }, {
         label: '不通过',
-        value: '1'
+        value: 0
       }],
       endSevenRadio: [{
         label: '是',
@@ -2625,10 +2687,10 @@ export default {
       // D6
       recurrencePreventionRadio: [{
         label: '是',
-        value: '0'
+        value: 1
       }, {
         label: '否',
-        value: '1'
+        value: 0
       }],
       isCloseRadio: [{
         label: '同意关闭',
@@ -2643,10 +2705,10 @@ export default {
       // 数据模板
       record: {
         // D0
-        isProject: '0', //  是否满足立项条件
+        isProject: 1, //  是否满足立项条件
         dissatisfaction: '', // 不满足理由
         Remarks: '', // 备注
-        isNeedIca: '0', // 是否需要围堵措施
+        isNeedIca: 1, // 是否需要围堵措施
         icaDescription: '', // 围堵措施
         // D1
         owerDeptLv1: [], // 责任部门
@@ -2686,9 +2748,11 @@ export default {
         breakpointDate: null,
 
         // D6
-        recurrencePrevention: '1',
-        isClose: '1',
-        reason: ''
+        recurrencePrevention: 0,
+        isSign: 0,
+        signLeaderId: '',
+        Review: '1',
+        signRemark: ''
       },
       // 再分配
 
@@ -2790,17 +2854,26 @@ export default {
       'getSysUser',
       'sevenDiamonds',
       'analysisSave',
-      'analysisDetail'
+      'analysisDetail',
+      'getIssueAutomousRegion'
     ]),
     disabledDate (current) {
       return current && current > moment().endOf('day');
     },
     // 是否需要围堵措施
     conActionChange (e) {
-      if (e.target.value === '0') {
+      if (e.target.value === 1) {
         this.conActionFlag = true;
       } else {
         this.conActionFlag = false;
+      }
+    },
+    // 是否加签
+    apostilleChange (e) {
+      if (e.target.value === 1) {
+        this.signLeaderFlag = true;
+      } else {
+        this.signLeaderFlag = false;
       }
     },
     // 驳回
@@ -2826,6 +2899,20 @@ export default {
       } else {
         this.RejectTrue = false;
       }
+    },
+    selectOptionSingn (input) {
+      const optionArray = [{
+        value: input.id,
+        label: input.username
+      }];
+      // input.forEach((item) => {
+      //   optionArray.push({
+      //     value: item.id,
+      //     label: item.username
+      //   })
+      // })
+
+      return optionArray;
     },
     selectOption (input) {
       const optionArray = [];
@@ -3037,6 +3124,14 @@ export default {
       this.eidtQuestion(this.id).then(res => {
         this.detailList = res;
       })
+      this.getIssueAutomousRegion(this.id).then(res => {
+        this.pagePermission = {}
+        const that = this
+        res.forEach(item => {
+          that.pagePermission[item.DETAIL_REGION] = true
+        })
+        console.info(this.pagePermission)
+      })
       /* this.getAnalysis(this.id).then(res => {
           this.analysisData = res.list;
           if (this.analysisData.length === 0) {
@@ -3175,6 +3270,11 @@ export default {
             this.stepClose = res;
           })
         }
+      } else if (this.backCurrent === 6 && this.stepCurrent === 6) {
+        this.backFlag = true;
+        this.closeDetail(this.id).then(res => {
+          this.stepClose = res;
+        })
       } else {
         this.backFlag = false;
       }
@@ -3295,25 +3395,46 @@ export default {
       }
 
       if (this.stepCurrent === 3) {
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
         this.MeasureDecisionSave(data).then(() => {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
             //  data.optCounter=res.optCounter;
           });
         });
       } else if (this.stepCurrent === 4) {
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
         this.MeasureDecisionSave(data).then(() => {
           this.ImplementationDetail(this.id).then(res => {
             this.stepImplementation = res;
-            //  data.optCounter=res.optCounter;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
           });
         });
       } else if (this.stepCurrent === 5) {
-        this.effectSave(data).then()
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
+        this.effectSave(data).then(() => {
+          this.effectDetail(this.id).then(res => {
+            this.stepEffect = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
+          });
+        })
       } else if (this.stepCurrent === 6) {
-        this.closeSave(data).then(
-          // data.optCounter=res.optCounter;
-        )
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
+        this.closeSave(data).then(() => {
+          this.closeDetail(this.id).then(res => {
+            this.stepClose = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
+          })
+        })
       }
     },
     handleSearch (e) {
@@ -3326,7 +3447,6 @@ export default {
       console.log(`selected ${value}`);
     },
     handleReset () {
-      this.form.resetFields();
       this.$router.push({
         path: this.$route.query.form || '/'
       });
@@ -3354,9 +3474,9 @@ export default {
     // 是否满足立项条件切换
     satisfyChange (e) {
       this.record.isNeedIca = '0';
-      if (e.target.value === '0') {
+      if (e.target.value === 1) {
         this.satisfyFlag = true;
-      } else if (e.target.value === '1') {
+      } else if (e.target.value === 0) {
         this.satisfyFlag = false;
       }
     },
@@ -3379,6 +3499,11 @@ export default {
   }
 </style>
 <style lang="less" scoped>
+  /deep/.ant-btn {
+    .anticon {
+      margin-left:-4px;
+    }
+  }
   /deep/ .ant-modal{
       top:120px!important;
     }
@@ -3454,6 +3579,7 @@ export default {
       float: right;
       right: 52px;
       width: 82px;
+      cursor: pointer;
 
       img {
         width: 16px;
@@ -3511,6 +3637,7 @@ export default {
       position: absolute;
       right: 32px;
       top: 22px;
+      cursor: pointer;
     }
 
     .baseMessage {
