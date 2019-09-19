@@ -3,7 +3,8 @@ import Vue from 'vue';
 
 // 加载皮肤组件
 import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.less'
+import 'ant-design-vue/dist/antd.less';
+import '@@cmd/global.less';
 
 // 加载本地路由
 import { router } from '@lib/auto-router.js';

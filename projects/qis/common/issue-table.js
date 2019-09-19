@@ -102,6 +102,10 @@ export const issueTableMix = {
       this.page = 1;
       this.request({ type: Number(activeKey) });
     },
+    search (filters) {
+      this.page = 1;
+      this.request(filters);
+    },
     hiddenForm () {
       this.hideForm = true;
     },
