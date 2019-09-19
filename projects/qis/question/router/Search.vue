@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container shadown-block-normal">
     <!-- 搜索表单 -->
     <advance-search-form
       @change="search"
@@ -118,12 +118,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
   .container {
-    margin-top: 16px;
-    padding: 8px 16px 0;
+    margin: 16px 0;
+    padding: 4px 12px 0 12px;
     background-color: #FFFFFF;
-    box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
     /deep/ .ant-table{
@@ -140,7 +138,8 @@ export default {
       }
     }
   }
-  /deep/.ant-table-thead > tr > th, /deep/.ant-table-tbody > tr > td {
+  /deep/.ant-table-thead > tr > th,
+  /deep/.ant-table-tbody > tr > td {
     padding: 16px 11px;
   }
 </style>

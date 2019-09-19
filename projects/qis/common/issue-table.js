@@ -57,7 +57,7 @@ export const issueTableMix = {
       'getIssuePage'
     ]),
     request (config) {
-      if (config) this.page = 1;
+      // if (config) this.page = 1;
       const {
         page, limit, order, orderField
       } = this;
@@ -101,6 +101,10 @@ export const issueTableMix = {
       this.hideForm = this.activeKey !== '1' || this.showForm;
       this.page = 1;
       this.request({ type: Number(activeKey) });
+    },
+    search (filters) {
+      this.page = 1;
+      this.request(filters);
     },
     hiddenForm () {
       this.hideForm = true;

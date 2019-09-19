@@ -103,7 +103,8 @@ export default {
   /* 重写头部 */
   .ant-layout-header {
     background: #FFFFFF;
-    box-shadow: 0 0 4px 0 rgba(0,0,0,0.06);
+    padding: 0px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
     /deep/ .ant-menu {
       display: flex;
       justify-content: right;
@@ -115,14 +116,14 @@ export default {
       line-height: 64px;
     }
     .header-index-wide {
-      max-width: 1200px;
-      margin: auto;
+      width: 1200px;
+      margin: 0 auto;
       padding-left: 0;
       display: flex;
       height: 64px;
     }
     .header-index-left {
-      flex: 0 1 1080px;
+      flex: 0 1 calc(100% - 128px);
       display: flex;
       .logo {
         width: 168px;

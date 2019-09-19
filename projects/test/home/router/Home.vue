@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <a-layout-content>
+    <template v-slot="topAffix">
+      123
+    </template>
     hello 问题首页
     <net-select
       url="/getdata"
@@ -22,17 +25,20 @@
       ajax按钮
     </net-button>
     <prevent-button
+      ref="preventButton"
       bind="both"
       @click="preventClick"
-      ref="preventButton"
     >
       阻止二次提交
     </prevent-button>
-    <a-button v-permission="'sys:dept:save'" @click="handleClick">
+    <a-button
+      v-permission="'sys:dept:save'"
+      @click="handleClick"
+    >
       普通按钮
     </a-button>
     <async-component path="/order/router/List.vue"></async-component>
-  </div>
+  </a-layout-content>
 </template>
 <script>
 export default {
@@ -42,6 +48,9 @@ export default {
     NetButton: () => import('@comp/button/NetButton.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue'),
     AsyncComponent: () => import('@comp/AsyncComponent')
+  },
+  created () {
+    console.log(this);
   },
   methods: {
     transform (list) {
