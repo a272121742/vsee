@@ -34,6 +34,10 @@ export default {
    */
   workFlowSubmit: (data) => $.post('/activiti/running/completeTask', data),
   /**
+   * 工作流中的审核
+   */
+  examineDetail: (data) => $.post('/activiti/comment/nodeComment', data),
+  /**
    * 措施判定保存
    */
   MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),

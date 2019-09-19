@@ -1528,10 +1528,10 @@
               <div class="examineResult">
                 <div>审核结果</div>
                 <a-form-item :label="`审核`">
-                  <p>{{}}</p>
+                  <p>不通过</p>
                 </a-form-item>
                 <a-form-item :label="`不通过理由`">
-                  <p>{{}}</p>
+                  <p>{{ examineReason }}</p>
                 </a-form-item>
               </div>
               <div class="Dtitle">
@@ -1729,16 +1729,19 @@
                 <a-form-item :label="`是否通过审核`">
                   <a-radio-group
                     v-decorator="[
-                      'recurrencePrevention',
+                      'isPass',
                       {rules: [{ required: true, message: '请选择是否通过审核' }]}
                     ]"
                     :options="recurrencePreventionRadio"
                   />
                 </a-form-item>
-                <a-form-item :label="`不通过理由`">
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
                   <v-textarea
                     v-decorator="[
-                      'description',
+                      'comment',
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
@@ -1760,10 +1763,10 @@
                   <span>审核结果</span>
                 </div>
                 <a-form-item :label="`审核`">
-                  <p>{{}}</p>
+                  <p>不通过</p>
                 </a-form-item>
                 <a-form-item :label="`不通过理由`">
-                  <p>{{}}</p>
+                  <p>{{ examineReason }}</p>
                 </a-form-item>
               </div>
               <div class="Dtitle">
@@ -1921,16 +1924,19 @@
                 <a-form-item :label="`是否通过审核`">
                   <a-radio-group
                     v-decorator="[
-                      'recurrencePrevention',
+                      'isPass',
                       {rules: [{ required: true, message: '请选择是否通过审核' }]}
                     ]"
                     :options="recurrencePreventionRadio"
                   />
                 </a-form-item>
-                <a-form-item :label="`不通过理由`">
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
                   <v-textarea
                     v-decorator="[
-                      'description',
+                      'comment',
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
@@ -1953,10 +1959,10 @@
                   <span>审核结果</span>
                 </div>
                 <a-form-item :label="`审核`">
-                  <p>{{}}</p>
+                  <p>不通过</p>
                 </a-form-item>
                 <a-form-item :label="`不通过理由`">
-                  <p>{{}}</p>
+                  <p>{{ examineReason }}</p>
                 </a-form-item>
               </div>
               <div class="Dtitle">
@@ -2108,16 +2114,19 @@
                 <a-form-item :label="`是否通过审核`">
                   <a-radio-group
                     v-decorator="[
-                      'recurrencePrevention',
+                      'isPass',
                       {rules: [{ required: true, message: '请选择是否通过审核' }]}
                     ]"
                     :options="recurrencePreventionRadio"
                   />
                 </a-form-item>
-                <a-form-item :label="`不通过理由`">
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
                   <v-textarea
                     v-decorator="[
-                      'description',
+                      'comment',
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
@@ -2153,16 +2162,19 @@
                   <a-form-item :label="`是否通过审核`">
                     <a-radio-group
                       v-decorator="[
-                        'recurrencePrevention',
+                        'isPass',
                         {rules: [{ required: true, message: '请选择是否通过审核' }]}
                       ]"
                       :options="recurrencePreventionRadio"
                     />
                   </a-form-item>
-                  <a-form-item :label="`不通过理由`">
+                  <a-form-item
+                    v-if="record.isPass"
+                    :label="`不通过理由`"
+                  >
                     <v-textarea
                       v-decorator="[
-                        'description',
+                        'comment',
                         {rules: [{ required: true, message: '请输入不通过理由' }]}
                       ]"
                       placeholder="请输入"
@@ -2621,6 +2633,7 @@ export default {
       NeedFlage: false, // 需要7钻标识
       userFlag: true, // 7钻责任人列表显示标识
       AnalysisForm: null, // 7钻分析表单
+      examineReason: '', // 审核理由
       satisfy: [{
         label: '是',
         value: 1
@@ -2735,18 +2748,17 @@ export default {
         estimatedClosureTime: null,
         fileList: '',
         smallBatchValidation: '',
+        isPass: '0',
         // D4
         icaExecDescription: '',
         icaExecTime: null,
         // pcaDescription: null,
         // pcaExecTime: null,
 
-
         // D5
         description: '',
         breakpointVin: '',
         breakpointDate: null,
-
         // D6
         recurrencePrevention: 0,
         isSign: 0,
@@ -3217,6 +3229,10 @@ export default {
           this.analysisId = res.id;
         }
       })
+      // let paramExamine = {
+      //   businessKey: this.issueId,
+      // };
+      // this.examineDetail().then()
     },
     // 再分配弹框
     showModal () {
@@ -3322,7 +3338,7 @@ export default {
               monitor: vm.monitor,
               isDirectSerious: '0', // 是否直接极端严重事情
               isEnd: this.record.isClose, // 是否关闭
-              isPass: data.verifySeven, // 审核是否通过
+              isPass: data.verifySeven || this.record.isPass, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
               isQZ: data.type, // 是否需要七钻
@@ -3392,6 +3408,9 @@ export default {
       }
       if (data.pcaPlanTime) {
         data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (data.icaExecTime) {
+        data.icaExecTime = data.icaExecTime.format('YYYY-MM-DD HH:mm:ss');
       }
 
       if (this.stepCurrent === 3) {
