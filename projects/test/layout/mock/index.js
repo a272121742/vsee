@@ -1,7 +1,12 @@
 import mock from '@lib/mock.js';
 
+mock.get('/sys/user/info', () => {
+  return mock.result({
+    data: {}
+  })
+});
 mock.get('/sys/menu/permissions', () => {
   return mock.result({
-    data: ['portal:home:save']
+    data: ['qis:list:create']
   });
-}, {timeout: 2000})
+})

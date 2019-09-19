@@ -1,16 +1,17 @@
 <template>
-  <a-table :columns="columns"
-    :rowKey="record => record.no"
-    :dataSource="data"
+  <a-table
+    :columns="columns"
+    :row-key="record => record.no"
+    :data-source="data"
   >
-  <span
-        slot="id"
-        slot-scope="text, record"
-      >
-        <template>
-          <a @click="e => viewOrder(record.id)">编辑</a>
-        </template>
-      </span>
+    <span
+      slot="id"
+      slot-scope="text, record"
+    >
+      <template>
+        <a @click="e => viewOrder(record.id)">编辑</a>
+      </template>
+    </span>
   </a-table>
 </template>
 
@@ -35,8 +36,8 @@ export default {
   data () {
     return {
       columns,
-      data: [],
-      
+      data: []
+
     }
   },
   created () {

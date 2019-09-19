@@ -57,7 +57,7 @@ export const issueTableMix = {
       'getIssuePage'
     ]),
     request (config) {
-      if (config) this.page = 1;
+      // if (config) this.page = 1;
       const {
         page, limit, order, orderField
       } = this;

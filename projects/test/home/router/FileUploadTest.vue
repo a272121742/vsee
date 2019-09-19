@@ -1,6 +1,11 @@
 <template>
-  <a-upload action="/api/issue/v1/file/upload?recType=10021003" :headers="headers" name="file"
-    :multiple="true" @change="handleChange">
+  <a-upload
+    action="/api/issue/v1/file/upload?recType=10021003"
+    :headers="headers"
+    name="file"
+    :multiple="true"
+    @change="handleChange"
+  >
     <a-button>
       <a-icon type="upload" /> 上传文件
     </a-button>
@@ -15,11 +20,11 @@ export default {
       headers: {
         authorization: 'authorization-text',
         token: $store.getters.getToken()
-      },
+      }
     }
   },
   methods: {
-    handleChange(info) {
+    handleChange (info) {
       if (!info.event) {
         console.log(info.file.response);
       }
@@ -38,7 +43,7 @@ export default {
       // });
       // this.fileList = fileList
       // console.log(fileList);
-    },
+    }
   }
 }
 </script>
