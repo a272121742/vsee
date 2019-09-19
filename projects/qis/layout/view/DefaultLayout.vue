@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <!-- 头部，固定 -->
-    <a-affix>
+    <a-affix class="affix-header">
       <layout-header></layout-header>
     </a-affix>
     <!-- 内容区域 -->
@@ -50,7 +50,7 @@ export default {
     background-color: transparent!important;
   }
   // 设置头部固定
-  /deep/ .ant-affix {
+  /deep/ .affix-header .ant-affix {
     z-index: 100;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }

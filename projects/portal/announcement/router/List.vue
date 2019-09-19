@@ -1,5 +1,15 @@
 <template>
-  <div class="panel-card">
+  <div class="shadown-block-normal panel-card">
+    <a-affix
+      :offset-top="0"
+      style="margin-top: -24px; margin-left: -2px"
+    >
+      <a-button
+        icon="rollback"
+        type="link"
+        @click="() => $router.push({name: 'Home'})"
+      ></a-button>
+    </a-affix>
     <a-row :gutter="64">
       <a-col :span="8">
         <h2 style="color: #0097E0;">
@@ -78,7 +88,8 @@ export default {
 
 <style lang="less" scoped>
   .panel-card {
-    margin-top: 16px;
+    height: calc(100% - 200px);
+    margin: 16px 0;
     background-color: #FFFFFF;
     padding: 32px 24px;
     border: 1px solid #e8e8e8;

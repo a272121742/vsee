@@ -2,14 +2,14 @@
   <div>
     <a-row :gutter="16">
       <a-col :span="18">
-        <a-card class="banner-card">
+        <a-card class="shadown-block-normal banner-card">
           <img
             slot="cover"
             src="/static/portal/portal_banner.png"
           >
         </a-card>
         <a-card
-          class="module-card"
+          class="shadown-block-normal module-card"
           :title="$t('title.quickEntry')"
         >
           <a-row :gutter="16">
@@ -86,8 +86,8 @@
       </a-col>
       <a-col :span="6">
         <!-- 公告 -->
-        <announcement class="announcement-card"></announcement>
-        <todo class="todo-card"></todo>
+        <announcement class="shadown-block-normal announcement-card"></announcement>
+        <todo class="shadown-block-normal todo-card"></todo>
       </a-col>
     </a-row>
   </div>
@@ -111,7 +111,6 @@ export default {
   /* 门户首页banner和公告*/
   .banner-card, .announcement-card, .module-card, .todo-card {
     margin: 16px 0;
-    box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
   }
@@ -124,11 +123,10 @@ export default {
     text-align: center;
     .module-wrapper {
       display: inline-block;
-
       &:hover {
         cursor: pointer;
         .module-container {
-          box-shadow: 0 6px 12px rgba(0,0,0,.11);
+          box-shadow: 0 15px 24px rgba(0, 0, 0, 0.22), 0 19px 76px rgba(0, 0, 0, 0.3);
         }
       }
       .module-container {
@@ -140,7 +138,8 @@ export default {
         border-radius: 100px;
         border: 1px solid #e8e8e8;
         border-color: rgba(0, 0, 0, 0);
-        box-shadow: 0 2px 8px rgba(0,0,0,.09);
+        transition: box-shadow 1s ease;
+        box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
       }
       .module-link {
         margin-top: 10px;

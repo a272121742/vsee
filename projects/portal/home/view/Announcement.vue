@@ -71,6 +71,7 @@ export default {
 
 <style lang="less" scoped>
   .ant-card {
+    height: 302px;
     /deep/ .ant-card-head {
       padding-right: 0px;
       /deep/ .ant-btn-link {

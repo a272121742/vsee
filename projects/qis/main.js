@@ -4,7 +4,6 @@ import Vue from 'vue';
 // 加载皮肤组件
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.less';
-import '@@cmd/global.less';
 
 // 加载本地路由
 import { router } from '@lib/auto-router.js';
@@ -17,6 +16,9 @@ import moment from 'moment';
 // 添加进度条
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+
+// 加载全局自定义皮肤
+import '@@cmd/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
 Vue.component('async-component', AsyncComponent);

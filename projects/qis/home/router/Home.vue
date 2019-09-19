@@ -135,9 +135,9 @@ export default {
     }
     /deep/ .ant-table{
       table {
-        // width: 100%; /*必须设置，否则还是会拉长单元格*/
-        // table-layout: fixed;/*只有定义表格的算法为fixed,th才有效果*/
-        // word-wrap:break-all;
+        width: 100%; /*必须设置，否则还是会拉长单元格*/
+        table-layout: fixed;/*只有定义表格的算法为fixed,th才有效果*/
+        word-wrap:break-all;
       }
       th > div, td {
         overflow:hidden;/*超出长度的文字隐藏*/

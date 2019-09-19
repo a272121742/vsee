@@ -53,8 +53,25 @@
       "503": "Server Unavailable",
       "504": "Gateway Timed-Out",
       "505": "HTTP Version not supported",
-      "10004": "username or password error",
-      "10007": "Captcha Error"
+      "10001": "{0} cannot be empty",
+      "10002": "The record already exists in the database",
+      "10003": "Failure to obtain parameters",
+      "10004": "Error in account or password",
+      "10005": "The account has been deactivated",
+      "10006": "Unique ID cannot be empty",
+      "10007": "Verification code incorrect",
+      "10008": "Delete submenus or buttons first",
+      "10009": "The original password is incorrect",
+      "10010": "No account exists",
+      "10011": "Misselection of superior departments",
+      "10012": "Superior menus can't be for themselves",
+      "10013": "Data privilege interface, can only be a Map type parameter",
+      "10014": "Please delete subordinate departments first",
+      "10015": "Please delete the users under the Department first.",
+      "10016": "The parameter format is incorrect. Use JSON format",
+      "10017": "Account already exists",
+      "10100": "The current data has been modified. Please refresh and try again.",
+      "100001003": "Account already exists under the current classification file path does not exist!"
     }
   }
 }

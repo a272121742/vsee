@@ -1,24 +1,24 @@
 <template>
   <a-layout>
     <!-- 头部，固定 -->
-    <a-affix>
+    <a-affix class="affix-header">
       <layout-header></layout-header>
     </a-affix>
     <!-- 内容区域 -->
-    <a-spin :spinning="refreshing">
-      <a-layout-content
-        v-if="!refreshing"
-        style="width: 100%;"
-      >
-        <div style="margin: 0 auto; max-width: 1200px;">
-          <transition name="page-transition">
-            <router-view class="child-view" />
-          </transition>
-        </div>
-      </a-layout-content>
-    </a-spin>
+    <transition name="page-transition">
+      <a-spin :spinning="refreshing">
+        <a-layout-content v-if="!refreshing">
+          <router-view class="child-view" />
+        </a-layout-content>
+      </a-spin>
+    </transition>
     <!-- 开发辅助区域 -->
     <helper v-if="$store.state.isDev"></helper>
+    <!-- 底部区域 -->
+    <a-affix :offset-bottom="0">
+      <a-layout-footer>
+      </a-layout-footer>
+    </a-affix>
   </a-layout>
 </template>
 
@@ -43,16 +43,37 @@ export default {
   }
 };
 </script>
+
 <style lang="less" scoped>
   .ant-layout {
     // 覆盖`ant design`的样式，必须
     background-color: transparent!important;
   }
-  /deep/ .ant-affix {
-    z-index: 2147483647;
+  // 设置头部固定
+  /deep/ .affix-header .ant-affix {
+    z-index: 100;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }
+  // 设置内容区域中，多余部分隐藏
   .ant-layout-content {
     overflow-x: hidden;
+  }
+  .ant-layout-footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    text-align: center;
+    padding: 8px 0;
+    background-color: transparent!important;
+  }
+  // 设置英雄区域
+  .child-view {
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all .5s cubic-bezier(.55,0,.1,1);
   }
   /* 动画 */
   .page-transition-enter {
@@ -64,9 +85,5 @@ export default {
   .page-transition-enter .page-transition-container,
   .page-transition-leave-active .page-transition-container {
     transform: scale(1.1);
-  }
-  .child-view {
-    width: 1200px;
-    transition: all .5s cubic-bezier(.55,0,.1,1);
   }
 </style>
