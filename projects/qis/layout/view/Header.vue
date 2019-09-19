@@ -28,10 +28,11 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <a-dropdown :trigger="['click', 'hover']">
-            <a-button
-              shape="circle"
-              icon="user"
-            />
+            <div>
+              <a-avatar icon="user">
+              </a-avatar>
+              {{ user.realName }}
+            </div>
             <a-menu slot="overlay">
               <a-menu-item key="0">
                 <a href="javascript:;">
@@ -79,6 +80,9 @@ export default {
   computed: {
     custMenu () {
       return [this.$route.name || 'Home'];
+    },
+    user () {
+      return this.$store.state.userInfo;
     }
   },
   methods: {
@@ -147,7 +151,6 @@ export default {
       flex: 1 0 auto;
       height: 64px;
       overflow: hidden;
-      color: rgba(255, 255, 255, .65);
       .content-box {
         float: right;
         button, span {

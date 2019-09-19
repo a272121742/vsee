@@ -106,7 +106,7 @@ export default {
       flex: 1 0 auto;
       height: 64px;
       overflow: hidden;
-      color: rgba(255, 255, 255, .65);
+      color: rgba(0, 0, 0, .65);
 
       .content-box {
         float: right;

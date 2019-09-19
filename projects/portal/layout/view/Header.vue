@@ -17,10 +17,11 @@
         <div class="content-box">
           <language-radio />
           <a-dropdown :trigger="['click', 'hover']">
-            <a-button
-              shape="circle"
-              icon="user"
-            />
+            <span>
+              <a-avatar icon="user">
+              </a-avatar>
+              {{ $store.state.userInfo.realName }}
+            </span>
             <a-menu slot="overlay">
               <a-menu-item key="0">
                 <a href="javascript:;">
@@ -106,7 +107,6 @@ export default {
       flex: 1 0 auto;
       height: 64px;
       overflow: hidden;
-      color: rgba(255, 255, 255, .65);
       .content-box {
         float: right;
         button, span {

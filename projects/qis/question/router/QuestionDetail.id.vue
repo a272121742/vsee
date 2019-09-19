@@ -2,6 +2,7 @@
   <div id="components-form-demo-advanced-search">
     <a-modal
       title="再分配"
+      style="top:200px;!important"
       :visible="visible"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
@@ -12,7 +13,7 @@
         class="ant-advanced-search-form"
         :form="rediStribution"
       >
-        <a-col :span="18">
+        <a-col :span="24">
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
@@ -29,6 +30,31 @@
       </a-form>
     </a-modal>
     <a-modal
+      title="驳回（7钻分析之前)"
+      style="top:200px;!important;"
+      :visible="visibleReject"
+      :mask-closable="false"
+      @ok="RejectSubmit"
+      @cancel="CancelReject"
+    >
+      <a-form
+        class="ant-advanced-search-form"
+        :form="rejectForm"
+      >
+        <a-col :span="24">
+          <a-form-item :label="`驳回理由`">
+            <v-textarea
+              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择驳回理由' }]} ]"
+              placeholder="请输入"
+              :allow-clear="true"
+            />
+            </net-select>
+          </a-form-item>
+        </a-col>
+      </a-form>
+    </a-modal>
+    <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleAnalysis"
       width="600px"
@@ -119,6 +145,7 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleDetail"
       wrap-class-name="visibleDetail"
@@ -203,6 +230,7 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="fileModalTitle"
       :visible="visibleUpdate"
       width="600px"
@@ -302,7 +330,9 @@
           </a-row>
         </a-form>
       </div>
-      <div class="fileEdit">
+      <!-- <div class="fileEdit"
+           style="display:none;"
+      >
         <a-form
           class="ant-advanced-search-form"
           :form="updateForm"
@@ -310,7 +340,9 @@
           <a-row v-show="false">
             <a-col :span="17">
               <a-form-item :label="`id`">
-                <p>{{ updateData.id }}</p>
+                <p v-if="updateData.id">
+                  {{ updateData.id }}
+                </p>
               </a-form-item>
             </a-col>
           </a-row>
@@ -365,52 +397,64 @@
             </a-col>
           </a-row>
         </a-form>
-      </div>
+      </div> -->
     </a-modal>
-    <div class="TopButton">
-      <div class="backButton">
-        <a-button
-          slot="tabBarExtraContent"
-          class="backBtn"
-          @click="goBack"
-        >
-          <a-icon type="rollback" />
-          返回
-        </a-button>
+    <a-affix
+      :offset-top="64"
+      @change="offsetChange"
+    >
+      <div class="top-buttons">
+        <div class="backButton">
+          <a-button
+            slot="tabBarExtraContent"
+            class="backBtn"
+            @click="goBack"
+          >
+            <a-icon type="rollback" />
+            返回
+          </a-button>
+        </div>
+        <div class="rightButton">
+          <a-button
+            v-if="stepCurrent!=6"
+            html-type="submit"
+            @click="showModal"
+          >
+            再分配
+          </a-button>
+          <a-button
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleReject"
+          >
+            驳回
+          </a-button>
+          <a-button
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleSubmit"
+          >
+            提交
+          </a-button>
+          <a-button
+            style="marginLeft: 8px"
+            class="saveBtn"
+            @click="handleSave"
+          >
+            保存
+          </a-button>
+          <a-button
+            style="marginLeft: 8px"
+            class="cancelBtn"
+            @click="handleReset"
+          >
+            取消
+          </a-button>
+        </div>
       </div>
-      <div class="rightButton">
-        <a-button
-          v-if="stepCurrent!=6"
-          html-type="submit"
-          @click="showModal"
-        >
-          再分配
-        </a-button>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="submitBtn"
-          @click="handleSubmit"
-        >
-          提交
-        </a-button>
-
-        <a-button
-          style="marginLeft: 8px"
-          class="saveBtn"
-          @click="handleSave"
-        >
-          保存
-        </a-button>
-        <a-button
-          style="marginLeft: 8px"
-          class="cancelBtn"
-          @click="handleReset"
-        >
-          取消
-        </a-button>
-      </div>
-    </div>
+    </a-affix>
     <div class="formConetnt">
       <div class="messageForm">
         <a-form
@@ -2464,6 +2508,8 @@ export default {
       visibleAnalysis: false, // 7钻编辑弹框
       visibleDetail: false, // 7钻详情
       confirmLoading: false,
+      visibleReject: false,
+      isCheckError: '0', // 验证不通过需要回到7钻
       optCounter: '',
       columns,
       columnsRecord,
@@ -2497,6 +2543,7 @@ export default {
       updateData: [], // 文件更新表格
       DetailForm: [], // 7钻查看表格
       updateForm: null, // 文件更新弹框表单
+      rejectForm: null,
       dataFile: [], // 附件
       dataRecord: [], // 操作记录
       stepDetail: [], // 某个问题的步骤详细信息
@@ -2663,6 +2710,10 @@ export default {
         isUpdae: '0',
         updateContent: '',
         fileList: ''
+      },
+      // 驳回
+      rejectRecord: {
+        comment: ''
       }
 
     };
@@ -2696,6 +2747,12 @@ export default {
         'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
       ], 'recordUpdate'),
       onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+    });
+    this.rejectForm = this.$form.createForm(this, {
+      mapPropsToFields: () => createFormFields(this, [
+        'rejectForm'
+      ], 'rejectRecord'),
+      onValuesChange: autoUpdateFileds(this, 'rejectRecord')
     });
     this.request();
   },
@@ -2745,6 +2802,17 @@ export default {
       } else {
         this.conActionFlag = false;
       }
+    },
+    // 驳回
+    handleReject () {
+      this.visibleReject = true;
+    },
+    RejectSubmit () {
+      this.visibleReject = false;
+      this.isCheckError = '1';
+    },
+    CancelReject () {
+      this.visibleReject = false;
     },
     goBack () {
       this.$router.push({
@@ -3153,12 +3221,12 @@ export default {
               coChair: vm.coChair,
               monitor: vm.monitor,
               isDirectSerious: '0', // 是否直接极端严重事情
-              isEnd: '0', // 是否关闭
+              isEnd: this.record.isClose, // 是否关闭
               isPass: data.verifySeven, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
               isQZ: data.type, // 是否需要七钻
-              isCheckError: '0', // 验证不通过(需要回到七钻前)
+              isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
               isLeaderSign: '0', // 领导加签
               isItem: data.isProject, // 是否立项
               zuanUser1: data.zuanUser1,
@@ -3291,6 +3359,9 @@ export default {
       } else if (e.target.value === '1') {
         this.satisfyFlag = false;
       }
+    },
+    // 滚动时触发按钮固定
+    offsetChange () {
     }
   }
 };
@@ -3308,6 +3379,9 @@ export default {
   }
 </style>
 <style lang="less" scoped>
+  /deep/ .ant-modal{
+      top:120px!important;
+    }
   .new-steps-icon {
     line-height: 1;
     top: -6px;
@@ -3316,12 +3390,13 @@ export default {
   }
 
   #components-form-demo-advanced-search {
+
      .formConetnt{
-        margin-top:72px;
+        margin-top: 40px;
      }
       .messageForm{
       /deep/ .ant-row{
-        height:40px;
+        height: 40px;
         line-height: 40px;
       }
     }
@@ -3835,25 +3910,27 @@ export default {
       margin-left: 4px;
     }
   }
-
-  .TopButton {
+  /deep/ .ant-affix {
+    left: 0px!important;
+    width: 100%!important;
+    background: rgba(75,75,75,0.85);
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    .top-buttons {
+      width: 1200px!important;
+      margin: 0 auto!important;
+    }
+  }
+  .top-buttons {
     overflow: hidden;
-    *zoom: 1!important;
-    position: fixed;
-    top:52px;
+    padding: 16px 0;
     z-index:9999;
-    width:1200px;
 
     .rightButton {
       float: right;
-      margin: 24px 0;
-      margin-right: 24px;
     }
 
     .backButton {
       float: left;
-      margin: 24px 0;
-      margin-left: 24px;
     }
   }
 
@@ -3863,7 +3940,6 @@ export default {
   }
 
   .ant-advanced-search-form {
-    padding: 24px;
     border-radius: 6px;
     margin-top: -40px;
 
