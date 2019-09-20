@@ -50,7 +50,10 @@
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">
-          <a-dropdown :trigger="['click', 'hover']">
+          <a-dropdown
+            class="user-info"
+            :trigger="['click', 'hover']"
+          >
             <div>
               <a-avatar icon="user">
               </a-avatar>
@@ -193,6 +196,10 @@ export default {
     .user-wrapper {
       float: right;
       height: 100%;
+      .user-info {
+        cursor: pointer;
+        display: inline-block;
+      }
     }
   }
 </style>
