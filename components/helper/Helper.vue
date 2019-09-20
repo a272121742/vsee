@@ -37,7 +37,9 @@
         <async-component
           path="@comp/button/RefreshButton.vue"
           style="margin-left: 24px;"
-        />
+        >
+          刷新
+        </async-component>
       </a-row>
       <a-row>
         国际化

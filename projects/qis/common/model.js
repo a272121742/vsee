@@ -5,7 +5,7 @@ export const issueColumns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',
-  width: 140,
+  width: 120,
   scopedSlots: { customRender: 'code' }
 }, {
   // 标题
@@ -17,38 +17,38 @@ export const issueColumns = [{
   // 所属系统
   title: 'faultTreeIds1',
   dataIndex: 'faultTreeIds1',
-  width: 80,
+  width: 130,
   scopedSlots: { customRender: 'faultTreeIds1' }
 }, {
   // 问题等级
   title: 'gradeName',
   dataIndex: 'gradeName',
-  width: 100,
+  width: 150,
   scopedSlots: { customRender: 'gradeName' },
   sorter: true
 }, {
   // 问题分类
   title: 'sourceName',
   dataIndex: 'sourceName',
-  width: 120,
+  width: 140,
   scopedSlots: { customRender: 'sourceName' }
 }, {
   // 问题阶段
   title: 'projectPhase',
   dataIndex: 'projectPhase',
-  width: 160,
+  width: 140,
   scopedSlots: { customRender: 'projectPhase' }
 }, {
   title: 'status',
   dataIndex: 'status',
-  width: 100,
+  width: 110,
   scopedSlots: { customRender: 'status' },
   sorter: true
 }, {
   // 立项时间
   title: 'projectDate',
   dataIndex: 'projectDate',
-  width: 108,
+  width: 150,
   scopedSlots: { customRender: 'projectDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '';
@@ -57,7 +57,7 @@ export const issueColumns = [{
   // 接受日期
   title: 'receiveDate',
   dataIndex: 'receiveDate',
-  width: 108,
+  width: 150,
   scopedSlots: { customRender: 'receiveDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '';

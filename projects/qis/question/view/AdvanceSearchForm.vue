@@ -228,17 +228,20 @@
             style="float: right; overflow: hidden;"
           >
             <a-button
+              class="advance-action"
               type="primary"
               @click="submitSearch"
             >
               {{ $t('search.find_button') }}
             </a-button>
             <a-button
+              class="advance-action"
               @click="resetSearch"
             >
               {{ $t('search.reset_button') }}
             </a-button>
             <a
+              class="advance-action"
               @click="() => advanced = !advanced"
             >
               {{ advanced ? $t('search.title_search') : $t('search.advance_search') }}
@@ -347,5 +350,7 @@ export default {
       margin-bottom: 4px;
     }
   }
-
+  .advance-action {
+    margin-left: 4px;
+  }
 </style>
