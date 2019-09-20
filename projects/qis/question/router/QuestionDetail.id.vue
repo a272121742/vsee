@@ -2935,9 +2935,6 @@ export default {
     });
     this.request();
   },
-  activated () {
-    this.$store.dispatch('refresh');
-  },
   methods: {
     moment,
     ...mapActions([
