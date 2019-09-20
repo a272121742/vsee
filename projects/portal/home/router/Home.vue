@@ -81,6 +81,19 @@
                 </div>
               </div>
             </a-col>
+            <a-col
+              class="module-center"
+              :span="8"
+            >
+              <div class="module-wrapper">
+                <div class="module-container">
+                  <img src="/static/portal/guocheng.png">
+                </div>
+                <div class="module-link">
+                  系统设置
+                </div>
+              </div>
+            </a-col>
           </a-row>
         </a-card>
       </a-col>

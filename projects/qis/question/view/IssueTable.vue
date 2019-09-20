@@ -2,6 +2,7 @@
   <a-table
     row-key="id"
     :data-source="data"
+    :scroll="{ x: 1300 }"
     :pagination="{total: total, current: page, pageSize, showSizeChanger: false, pageSizeOptions: ['10', '20', '50'], showTotal, showQuickJumper: true}"
     v-on="$listeners"
   >
@@ -25,6 +26,7 @@
 
     <a-table-column
       key="action"
+      fixed="right"
     >
       <template #title>
         <col-provider
