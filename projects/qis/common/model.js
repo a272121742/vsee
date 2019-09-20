@@ -16,7 +16,7 @@ export const issueColumns = [{
 }, {
   // 所属系统
   title: 'faultTreeIds1',
-  dataIndex: 'faultTreeIds1',
+  dataIndex: 'faultTreeIds1Name',
   width: 130,
   scopedSlots: { customRender: 'faultTreeIds1' }
 }, {
