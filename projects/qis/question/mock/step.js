@@ -31,6 +31,7 @@ const d = mock({
   pcaExecTime: '2019-01-01 00:00:00',
   estimatedClosureTime: '2019-01-01 00:00:00',
   smallBatchValidation: '小批量验证',
+  isPass: '0',
 
   // D4
   icaExecDescription: 'D4短期效果',
@@ -239,5 +240,11 @@ mock.get('/issue/v1/workflow/getSysUser', (data) => {
   debugger;
   return mock.result({
     data: db.find(data)
+  });
+});
+// 审核提交至工作流
+mock.post('/activiti/comment/nodeComment', (data) => {
+  return mock.result({
+    data: db.insert(data)
   });
 });

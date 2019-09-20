@@ -71,7 +71,12 @@ export default {
   workFlowSubmit (store, data) {
     return api.workFlowSubmit(data);
   },
-
+  /**
+   * 工作流中的审核
+   */
+  examineDetail (store, data) {
+    return api.examineSubmit(data);
+  },
   /**
    * 修改保存问题
    */
@@ -170,5 +175,9 @@ export default {
   // 获取页面权限
   getIssueAutomousRegion (store, id) {
     return api.getIssueAutomousRegion(id);
+  },
+  // 获取流程进度
+  getStatusCode (store, id) {
+    return api.getStatusCode(id)
   }
 };

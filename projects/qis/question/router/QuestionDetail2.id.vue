@@ -4,18 +4,20 @@
       title="再分配"
       :visible="visible"
       :confirm-loading="confirmLoading"
+      :mask-closable="false"
       @ok="handleUser"
       @cancel="handleCancel"
     >
       <a-form
         class="ant-advanced-search-form"
         :form="rediStribution"
+        style="height:50px;margin-top:20px;"
       >
-        <a-col :span="18">
+        <a-col :span="24">
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+              url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
               :transform="selectOptionChampion"
               :delay="true"
               placeholder="请选择"
@@ -28,9 +30,35 @@
       </a-form>
     </a-modal>
     <a-modal
+      title="驳回（7钻分析之前)"
+      :visible="visibleReject"
+      :mask-closable="false"
+      @ok="RejectSubmit"
+      @cancel="CancelReject"
+    >
+      <a-form
+        class="ant-advanced-search-form"
+        :form="rejectForm"
+        style="height:60px;margin-top:10px;"
+      >
+        <a-col :span="24">
+          <a-form-item :label="`理由`">
+            <v-textarea
+              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择理由' }]} ]"
+              placeholder="请输入"
+              :allow-clear="true"
+            />
+            </net-select>
+          </a-form-item>
+        </a-col>
+      </a-form>
+    </a-modal>
+    <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleAnalysis"
       width="600px"
+      :mask-closable="false"
       @ok="AnalysisOk"
       @cancel="AnalysisCancel"
     >
@@ -117,10 +145,12 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="AnalysisTitle"
       :visible="visibleDetail"
       wrap-class-name="visibleDetail"
       width="600px"
+      :mask-closable="false"
       @ok="AnalysisDetailOk"
       @cancel="AnalysisDetailCancel"
     >
@@ -200,463 +230,622 @@
       </a-form>
     </a-modal>
     <a-modal
+      style="top:200px;!important"
       :title="fileModalTitle"
       :visible="visibleUpdate"
       width="600px"
+      :mask-closable="false"
       @ok="updateOk"
       @cancel="updateCancel"
     >
-      <a-form
-        class="ant-advanced-search-form"
-        :form="updateForm"
-      >
-        <a-row v-show="false">
-          <a-col :span="17">
-            <a-form-item :label="`id`">
-              <v-input
-                v-decorator="[
-                  'id',
-                ]"
-                placeholder="请输入"
-                allow-clear
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row v-show="fileNameFlag">
-          <a-col :span="17">
-            <a-form-item :label="`文件名称`">
-              <v-input
-                v-decorator="[
-                  'fileName',
-                  {rules:[{required: true,message: '请输入文件名称'}]}
-                ]"
-                placeholder="请输入"
-                allow-clear
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="17">
-            <a-form-item
-              :label="`是否更新`"
-              style="margin-bottom:0;"
-            >
-              <a-radio-group
-                v-decorator="[
-                  'isUpdae',
-                  {rules:[{required: true,message: '请选择是否更新'}]}
-                ]"
-
-                :options="updateRadio"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="22">
-            <a-form-item
-              :label="`更新内容`"
-            >
-              <v-textarea
-                v-decorator="[
-                  'updateContent',
-                  {rules:[{required: true,message: '请输入更新内容'}]}
-                ]"
-                placeholder="请输入"
-                allow-clear
-                style="width:340px; height:56px;"
-              />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="18">
-            <a-form-item
-              :label="`附件`"
-            >
-              <a-upload
-                name="file"
-
-                :multiple="true"
-
-                :headers="headers"
-
-                @change="handleChange"
+      <div class="fileEdit">
+        <a-form
+          class="ant-advanced-search-form"
+          :form="updateForm"
+        >
+          <a-row v-show="false">
+            <a-col :span="17">
+              <a-form-item :label="`id`">
+                <v-input
+                  v-decorator="[
+                    'id',
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row v-show="fileNameFlag">
+            <a-col :span="17">
+              <a-form-item :label="`文件名称`">
+                <v-input
+                  v-decorator="[
+                    'fileName',
+                    {rules:[{required: true,message: '请输入文件名称'}]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="17">
+              <a-form-item
+                :label="`是否更新`"
+                style="margin-bottom:0;"
               >
-                <a-button>
-                  <a-icon
-                    type="upload"
-                  />
-                  上传文件
-                </a-button>
-              </a-upload>
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form>
-    </a-modal>
-    <div class="TopButton">
-      <div class="backButton">
-        <a-button
-          slot="tabBarExtraContent"
-          class="backBtn"
-          @click="goBack"
-        >
-          <a-icon type="rollback" />
-          返回
-        </a-button>
-      </div>
-      <div class="rightButton">
-        <a-button
-          v-if="stepCurrent!=6"
-          html-type="submit"
-          @click="showModal"
-        >
-          再分配
-        </a-button>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="submitBtn"
-          @click="handleSubmit"
-        >
-          提交
-        </a-button>
+                <a-radio-group
+                  v-decorator="[
+                    'isUpdae',
+                    {rules:[{required: true,message: '请选择是否更新'}]}
+                  ]"
 
-        <a-button
-          style="marginLeft: 8px"
-          class="saveBtn"
-          @click="handleSave"
-        >
-          保存
-        </a-button>
-        <a-button
-          style="marginLeft: 8px"
-          class="cancelBtn"
-          @click="handleReset"
-        >
-          取消
-        </a-button>
+                  :options="updateRadio"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="22">
+              <a-form-item
+                :label="`更新内容`"
+              >
+                <v-textarea
+                  v-decorator="[
+                    'updateContent',
+                    {rules:[{required: true,message: '请输入更新内容'}]}
+                  ]"
+                  placeholder="请输入"
+                  allow-clear
+                  style="width:340px; height:56px;"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="18">
+              <a-form-item
+                :label="`附件`"
+              >
+                <a-upload
+                  name="file"
+
+                  :multiple="true"
+
+                  :headers="headers"
+
+                  @change="handleChange"
+                >
+                  <a-button>
+                    <a-icon
+                      type="upload"
+                    />
+                    上传文件
+                  </a-button>
+                </a-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
       </div>
-    </div>
-    <a-form
-      class="ant-advanced-search-form"
-      :form="form"
-      @submit="handleSearch"
-    >
-      <a-card
-        v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_3"
-        title="问题详情"
-        class="cardTitle"
+      <!-- <div class="fileEdit"
+           style="display:none;"
       >
-        <img
-          v-if="pagePermission.A1_3"
-          src="/static/question/editIcon.png"
-          class="editIcon"
-          @click="editDetail"
+        <a-form
+          class="ant-advanced-search-form"
+          :form="updateForm"
         >
-        <!-- <div class="baseMessage">
-          基本信息
-        </div> -->
-        <!-- <div class="edit" v-if="editFlag">
-        </div> -->
-        <div class="detailText clearfix">
-          <div class="baseMessage">
-            基本信息
-          </div>
-          <div class="pageTitle clearfix">
-            <span>问题标题：</span>
-            <!-- <span class="carTitle">{{ detailList.vehicleModelId }}</span> -->
-            <!-- <span class="functionTitle">{{ detailList.function }}</span>
-            <span class="codeTitle">{{ detailList.code }}</span> -->
-            <span class="carTitle">
-              {{ detailList.title }}
-            </span>
-            <span style="float:right;margin-right:100px;">编号：{{ detailList.code }}</span>
-          </div>
-
-          <a-row :gutter="24">
-            <a-col :span="6">
-              <a-form-item :label="`车型`">
-                <p>{{ detailList.vehicleModelName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`所属系统`">
-                <p>{{ detailList.faultTreeIds1Name }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`所属功能`">
-                <p>{{ detailList.faultTreeIds2Name }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`故障代码`">
-                <p style="width:164px;">
-                  {{ detailList.faultTreeIds3Name }}
+          <a-row v-show="false">
+            <a-col :span="17">
+              <a-form-item :label="`id`">
+                <p v-if="updateData.id">
+                  {{ updateData.id }}
                 </p>
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row :gutter="24">
-            <a-col :span="6">
-              <a-form-item :label="`问题分类`">
-                <p>{{ detailList.sourceName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`问题等级`">
-                <p>{{ detailList.gradeName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`问题阶段`">
-                <p>{{ detailList.projectPhaseName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`故障发生日期`">
-                <p>{{ detailList.failureDate }}</p>
+          <a-row v-show="fileNameFlag">
+            <a-col :span="17">
+              <a-form-item :label="`文件名称`">
+                <p>{{ updateData.fileName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row :gutter="24">
-            <a-col :span="6">
-              <a-form-item :label="`生产基地`">
-                <p>{{ detailList.manufactureBaseName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`责任部门`">
-                <p>{{ detailList.responsibleDepartmentName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`问题频次`">
-                <p>{{ detailList.frequency }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
+          <a-row>
+            <a-col :span="17">
               <a-form-item
-                :label="`联系人电话`"
-                class="quesetionContact"
+                :label="`是否更新`"
+                style="margin-bottom:0;"
               >
-                <p>{{ detailList.contact }}</p>
+                <p>{{ updateData.isUpdae }}</p>
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row :gutter="24">
-            <a-col :span="6">
-              <a-form-item :label="`创建人`">
-                <p>{{ detailList.creatorName }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`创建部门`">
-                <p>{{ detailList.creatorDept }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`问题提报日期:`">
-                <p>{{ detailList.createDate }}</p>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
-              <a-form-item :label="`附件`">
-                <img src="/static/question/file.png">
-                <span
-                  v-if="detailList.fileList"
-                  class="fileListNumber"
-                >{{ detailList.fileList.length }}</span>
-              </a-form-item>
-            </a-col>
-          </a-row>
-
-          <a-row :gutter="24">
-            <a-col :span="12">
+          <a-row>
+            <a-col :span="22">
               <a-form-item
-                class="form-item-flex-2"
-                :label="`问题描述`"
-                :label-col="{span:2}"
+                :label="`更新内容`"
               >
-                <p>{{ detailList.description }}</p>
+                <p>{{ updateData.updateContent }}</p>
               </a-form-item>
             </a-col>
-            <div
-              v-if="!showMoreFlag"
-              class="showMore"
-              @click="showMore"
-            >
-              <span>查看更多</span>
-              <img src="/static/question/Open.png">
-            </div>
           </a-row>
+          <a-row>
+            <a-col :span="18">
+              <a-form-item
+                :label="`附件`"
+              >
+                <a-upload
+                  name="file"
 
-          <div v-if="showMoreFlag">
-            <div class="baseMessage">
-              补充信息
-            </div>
-            <a-row :gutter="24">
-              <a-col :span="6">
-                <a-form-item :label="`试验类型`">
-                  <p>{{ detailList.testTypeName }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`祸首件`">
-                  <p>{{ detailList.firstCausePartName }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`零件号`">
-                  <p>{{ detailList.partName }}</p>
-                </a-form-item>
-              </a-col>
+                  :multiple="true"
 
-              <a-col :span="6">
-                <a-form-item :label="`供应商名称`">
-                  <p>{{ detailList.supplierName }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row :gutter="24">
-              <a-col :span="6">
-                <a-form-item :label="`软件版本号`">
-                  <p>{{ detailList.softwareVersion }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`标定版本号`">
-                  <p>{{ detailList.calibrationVersion }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`硬件版本号`">
-                  <p>{{ detailList.hardwareVersion }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`配置字版本号`">
-                  <p>{{ detailList.confirmationVersion }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row :gutter="24">
-              <a-col :span="6">
-                <a-form-item :label="`维修网点`">
-                  <p>{{ detailList.maintenanceStation }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`故障里程`">
-                  <p>{{ detailList.milage }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`VIN`">
-                  <p>{{ detailList.vinNo }}</p>
-                </a-form-item>
-              </a-col>
-              <a-col :span="6">
-                <a-form-item :label="`生产时间`">
-                  <p>{{ detailList.productDate }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row :gutter="24">
-              <a-col :span="6">
-                <a-form-item :label="`备注`">
-                  <p>{{ detailList.remark }}</p>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <div
-              v-if="showMoreFlag"
-              class="showMore"
-              @click="showMore"
-            >
-              <span>收起</span>
-              <img src="/static/question/retractIcon.png">
-            </div>
-          </div>
-        </div>
-      </a-card>
-    </a-form>
-    <a-form
-      class="ant-advanced-search-form"
-      :form="formDcontent"
+                  :headers="headers"
+
+                  @change="handleChange"
+                >
+                  <a-button>
+                    <a-icon
+                      type="upload"
+                    />
+                    上传文件
+                  </a-button>
+                </a-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div> -->
+    </a-modal>
+    <a-affix
+      :offset-top="64"
+      @change="offsetChange"
     >
-      <a-card
-        title="问题流程"
-        class="cardTitle"
-      >
-        <a-input-number v-model="stepCurrent"></a-input-number>
-        <div class="ant-advanced-search-form">
-          <div
-            v-if="pagePermission.A3_2"
-            class="step"
+      <div class="top-buttons">
+        <div class="backButton">
+          <a-button
+            v-if="pagePermission.button_back_3"
+            slot="tabBarExtraContent"
+            class="backBtn"
+            @click="goBack"
           >
-            <a-steps :current="stepCurrent">
-              <a-popover
-                slot="progressDot"
-                slot-scope="{index, status}"
-              >
-                <template slot="content">
-                  <span>step {{ index }} status: {{ status }}</span>
-                </template>
-                <span class="new-steps-icon">
-                  <img
-                    v-if="index < stepCurrent"
-                    src="/static/img/shixinyuan.png"
-                  />
-                  <img
-                    v-if="index === stepCurrent"
-                    src="/static/img/kongxinyuan.png"
-                  />
-                  <img
-                    v-if="stepCurrent < index"
-                    src="/static/img/huiseyuan.png"
-                  />
+            <a-icon type="rollback" />
+            返回
+          </a-button>
+        </div>
+        <div class="rightButton">
+          <a-button
+            v-if="pagePermission.button_allocation_3"
+            html-type="submit"
+            @click="showModal"
+          >
+            再分配
+          </a-button>
+          <a-button
+            v-if="pagePermission.button_redistribution_3"
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleReject"
+          >
+            再分析
+          </a-button>
+          <a-button
+            v-if="pagePermission.button_submit_3"
+            type="primary"
+            html-type="submit"
+            class="submitBtn"
+            @click="handleSubmit"
+          >
+            提交
+          </a-button>
+          <!-- <a-button
+            v-if="pagePermission.button_commit_3"
+            style="marginLeft: 8px"
+            class="saveBtn"
+            @click="handleSave"
+          >
+            保存
+          </a-button> -->
+          <a-button
+            style="marginLeft: 8px"
+            class="saveBtn"
+            @click="handleSave"
+          >
+            保存
+          </a-button>
+          <a-button
+            v-if="pagePermission.button_cancel_3"
+            style="marginLeft: 8px"
+            class="cancelBtn"
+            @click="handleReset"
+          >
+            取消
+          </a-button>
+        </div>
+      </div>
+    </a-affix>
+    <div class="formConetnt">
+      <div class="messageForm">
+        <a-form
+          class="ant-advanced-search-form"
+          :form="form"
+          @submit="handleSearch"
+        >
+          <a-card
+            title="问题详情"
+            class="cardTitle"
+          >
+            <img
+              src="/static/question/editIcon.png"
+              class="editIcon"
+              @click="editDetail"
+            >
+            <!-- <div class="baseMessage">
+          基本信息
+        </div> -->
+            <!-- <div class="edit" v-if="editFlag">
+        </div> -->
+            <div class="detailText clearfix">
+              <div class="baseMessage">
+                基本信息
+              </div>
+              <div class="pageTitle clearfix">
+                <span>问题标题：</span>
+                <!-- <span class="carTitle">{{ detailList.vehicleModelId }}</span> -->
+                <!-- <span class="functionTitle">{{ detailList.function }}</span>
+            <span class="codeTitle">{{ detailList.code }}</span> -->
+                <span class="carTitle">
+                  {{ detailList.title }}
                 </span>
-              </a-popover>
-              <a-step
-                title="问题定义"
-                @click="goto(0)"
-              />
-              <a-step
-                title="责任判定"
-                @click="goto(1)"
-              />
-              <a-step
-                title="原因分析"
-                @click="goto(2)"
-              />
-              <a-step
-                title="措施判定"
-                @click="goto(3)"
-              />
-              <a-step
-                title="措施实施"
-                @click="goto(4)"
-              />
-              <a-step
-                title="效果验证"
-                @click="goto(5)"
-              />
-              <a-step
-                title="问题关闭"
-                @click="goto(6)"
-              />
-            </a-steps>
-          </div>
-          <div
-            v-if="stepCurrent===0&&backFlag===false"
-            class="Dcontent D0content"
-          >
-            <div v-if="pagePermission.A0_1_3">
+                <span style="float:right;margin-right:100px;">编号：{{ detailList.code }}</span>
+              </div>
+
+              <a-row :gutter="24">
+                <a-col :span="6">
+                  <a-form-item :label="`车型`">
+                    <p v-if="detailList.vehicleModelName">
+                      {{ detailList.vehicleModelName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`所属系统`">
+                    <p v-if="detailList.faultTreeIds1Name">
+                      {{ detailList.faultTreeIds1Name }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`所属功能`">
+                    <p v-if="detailList.faultTreeIds2Name">
+                      {{ detailList.faultTreeIds2Name }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`故障代码`">
+                    <p
+                      v-if="detailList.faultTreeIds3Name"
+                      style="width:164px;"
+                    >
+                      {{ detailList.faultTreeIds3Name }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row :gutter="24">
+                <a-col :span="6">
+                  <a-form-item :label="`问题分类`">
+                    <p v-if="detailList.sourceName">
+                      {{ detailList.sourceName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`问题等级`">
+                    <p v-if="detailList.gradeName">
+                      {{ detailList.gradeName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`问题阶段`">
+                    <p v-if="detailList.projectPhaseName">
+                      {{ detailList.projectPhaseName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`故障发生日期`">
+                    <p v-if="detailList.failureDate">
+                      {{ detailList.failureDate }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row :gutter="24">
+                <a-col :span="6">
+                  <a-form-item :label="`生产基地`">
+                    <p v-if="detailList.manufactureBaseName">
+                      {{ detailList.manufactureBaseName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`责任部门`">
+                    <p v-if="detailList.responsibleDepartmentName">
+                      {{ detailList.responsibleDepartmentName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`问题频次`">
+                    <p v-if="detailList.frequency">
+                      {{ detailList.frequency }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item
+                    :label="`联系人电话`"
+                    class="quesetionContact"
+                  >
+                    <p v-if="detailList.contact">
+                      {{ detailList.contact }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row :gutter="24">
+                <a-col :span="6">
+                  <a-form-item :label="`创建人`">
+                    <p v-if="detailList.creatorName">
+                      {{ detailList.creatorName }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`创建部门`">
+                    <p v-if="detailList.creatorDept">
+                      {{ detailList.creatorDept }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`问题提报日期:`">
+                    <p v-if="detailList.createDate">
+                      {{ detailList.createDate }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <a-col :span="6">
+                  <a-form-item :label="`附件`">
+                    <img src="/static/question/file.png">
+                    <span
+                      v-if="detailList.fileList"
+                      class="fileListNumber"
+                    >{{ detailList.fileList.length }}</span>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+
+              <a-row :gutter="24">
+                <a-col :span="12">
+                  <a-form-item
+                    class="form-item-flex-2"
+                    :label="`问题描述`"
+                    :label-col="{span:2}"
+                  >
+                    <p v-if="detailList.description">
+                      {{ detailList.description }}
+                    </p>
+                  </a-form-item>
+                </a-col>
+                <div
+                  v-if="!showMoreFlag"
+                  class="showMore"
+                  @click="showMore"
+                >
+                  <span>查看更多</span>
+                  <img src="/static/question/Open.png">
+                </div>
+              </a-row>
+
+              <div v-if="showMoreFlag">
+                <div class="baseMessage">
+                  补充信息
+                </div>
+                <a-row :gutter="24">
+                  <a-col :span="6">
+                    <a-form-item :label="`试验类型`">
+                      <p v-if="detailList.testTypeName">
+                        {{ detailList.testTypeName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`祸首件`">
+                      <p v-if="detailList.firstCausePartName">
+                        {{ detailList.firstCausePartName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`零件号`">
+                      <p v-if="detailList.partName">
+                        {{ detailList.partName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+
+                  <a-col :span="6">
+                    <a-form-item :label="`供应商名称`">
+                      <p v-if="detailList.supplierName">
+                        {{ detailList.supplierName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="6">
+                    <a-form-item :label="`软件版本号`">
+                      <p v-if="detailList.softwareVersion">
+                        {{ detailList.softwareVersion }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`标定版本号`">
+                      <p v-if="detailList.calibrationVersion">
+                        {{ detailList.calibrationVersion }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`硬件版本号`">
+                      <p v-if="detailList.hardwareVersion">
+                        {{ detailList.hardwareVersion }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`配置字版本号`">
+                      <p v-if="detailList.confirmationVersion">
+                        {{ detailList.confirmationVersion }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="6">
+                    <a-form-item :label="`维修网点`">
+                      <p v-if="detailList.maintenanceStation">
+                        {{ detailList.maintenanceStation }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`故障里程`">
+                      <p v-if="detailList.milage">
+                        {{ detailList.milage }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`VIN`">
+                      <p v-if="detailList.vinNo">
+                        {{ detailList.vinNo }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-form-item :label="`生产时间`">
+                      <p v-if="detailList.productDate">
+                        {{ detailList.productDate }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="6">
+                    <a-form-item :label="`备注`">
+                      <p v-if="detailList.remark">
+                        {{ detailList.remark }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <div
+                  v-if="showMoreFlag"
+                  class="showMore"
+                  @click="showMore"
+                >
+                  <span>收起</span>
+                  <img src="/static/question/retractIcon.png">
+                </div>
+              </div>
+            </div>
+          </a-card>
+        </a-form>
+      </div>
+      <a-form
+        class="ant-advanced-search-form"
+        :form="formDcontent"
+      >
+        <a-card
+          title="问题流程"
+          class="cardTitle"
+        >
+          <a-input-number v-model="stepCurrent"></a-input-number>
+          <div class="ant-advanced-search-form">
+            <div class="step">
+              <a-steps :current="stepCurrent">
+                <a-popover
+                  slot="progressDot"
+                  slot-scope="{index, status}"
+                >
+                  <template slot="content">
+                    <span>step {{ index }} status: {{ status }}</span>
+                  </template>
+                  <span class="new-steps-icon">
+                    <img
+                      v-if="index < stepCurrent"
+                      src="/static/img/shixinyuan.png"
+                    />
+                    <img
+                      v-if="index === stepCurrent"
+                      src="/static/img/kongxinyuan.png"
+                    />
+                    <img
+                      v-if="stepCurrent < index"
+                      src="/static/img/huiseyuan.png"
+                    />
+                  </span>
+                </a-popover>
+                <a-step
+                  title="问题定义"
+                  style="cursor:pointer;"
+                  @click="goto(0)"
+                />
+                <a-step
+                  title="责任判定"
+                  style="cursor:pointer;"
+                  @click="goto(1)"
+                />
+                <a-step
+                  title="原因分析"
+                  style="cursor:pointer;"
+                  @click="goto(2)"
+                />
+                <a-step
+                  title="措施判定"
+                  style="cursor:pointer;"
+                  @click="goto(3)"
+                />
+                <a-step
+                  title="措施实施"
+                  style="cursor:pointer;"
+                  @click="goto(4)"
+                />
+                <a-step
+                  title="效果验证"
+                  style="cursor:pointer;"
+                  @click="goto(5)"
+                />
+                <a-step
+                  title="问题关闭"
+                  style="cursor:pointer;"
+                  @click="goto(6)"
+                />
+              </a-steps>
+            </div>
+            <div
+              v-if="stepCurrent===0&&backFlag===false"
+              class="Dcontent D0content"
+            >
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -674,7 +863,7 @@
                   </a-form-item>
                 </a-col>
               </a-row>
-              <div v-if="satisfyFlag">
+              <div v-if="!satisfyFlag">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`理由`">
@@ -689,7 +878,8 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="!satisfyFlag">
+
+              <div v-if="satisfyFlag">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`是否需要围堵措施`">
@@ -734,26 +924,24 @@
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent!=0&&backCurrent==0&&backFlag"
-            class="Dcontent D0back"
-          >
             <div
-              class="triangle_border_up"
-              style="left:80px;"
+              v-if="stepCurrent!=0&&backCurrent==0&&backFlag"
+              class="Dcontent D0back"
             >
-              <span></span>
-            </div>
-            <div v-if="pagePermission.A0_2||pagePermission.A0_1_2">
+              <div
+                class="triangle_border_up"
+                style="left:80px;"
+              >
+                <span></span>
+              </div>
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`立项条件`">
-                    <p>{{ problemDefinitionData.isProject==='0'?'是':'否' }}</p>
+                    <p>{{ problemDefinitionData.isProject===1?'是':'否' }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <div v-if="problemDefinitionData.isProject==='0'">
+              <div v-if="problemDefinitionData.isProject===1">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`需要围堵措施`">
@@ -761,7 +949,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row v-if="problemDefinitionData.isNeedIca==='0'">
+                <a-row v-if="problemDefinitionData.isNeedIca===1">
                   <a-col :span="21">
                     <a-form-item :label="`围堵措施`">
                       <p>{{ problemDefinitionData.icaDescription }}</p>
@@ -769,7 +957,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="stepDetail.isProject==='1'">
+              <div v-if="stepDetail.isProject===0">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`理由`">
@@ -800,30 +988,17 @@
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div class="Dcontent D0back">
-            <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)">
-              <a-col
-                :span="24"
-                style="text-align:center;"
-              >
-                <p>该问题正在立项中</p>
-              </a-col>
-            </a-row>
-          </div>
-          <div
-            v-if="stepCurrent===1&&backFlag===false"
-            class="Dcontent D1content"
-          >
             <div
-              class="triangle_border_up"
-              style="left:216px;"
+              v-if="stepCurrent===1&&backFlag===false"
+              class="Dcontent D1content"
             >
-              <span></span>
-            </div>
-            <!---<div v-if="pagePermission.A1_1_3">-->
-            <div>
-              <div>
+              <div
+                class="triangle_border_up"
+                style="left:216px;"
+              >
+                <span></span>
+              </div>
+              <div v-if="userFlag">
                 <a-row style="margin-left:340px;">
                   <a-col :span="21">
                     <a-form-item>
@@ -835,7 +1010,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <div v-if="NeedFlage">
+                <div v-if="!NeedFlage">
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`责任部门`">
@@ -1055,7 +1230,7 @@
                   </ul>
                 </div>
                 <div class="analysisTable">
-                  <div v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2">
+                  <div>
                     <a-row>
                       <span>审核结果：</span>
                     </a-row>
@@ -1070,30 +1245,30 @@
                       </a-form-item>
                     </a-row>
                   </div>
-                  <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3">
+                  <div>
                     <a-row>
                       <a-form-item>
                         <span>6钻分析</span>
                       </a-form-item>
                     </a-row>
-                    <a-table
-                      row-key="id"
-                      :data-source="analysisData"
-                      :columns="columnsAnalysis"
-                      :pagination="false"
-                    >
-                      <span
-                        slot="operation"
-                        slot-scope="text, row"
-                      >
-                        <a
-                          href="javascript:;"
-                          @click="showAnalysis(row)"
-                        >{{ row.operation }}</a>
-                      </span>
-                    </a-table>
                   </div>
-                  <div v-if="pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3||pagePermission.A2_2_3">
+                  <a-table
+                    row-key="id"
+                    :data-source="analysisData"
+                    :columns="columnsAnalysis"
+                    :pagination="false"
+                  >
+                    <span
+                      slot="operation"
+                      slot-scope="text, row"
+                    >
+                      <a
+                        href="javascript:;"
+                        @click="showAnalysis(row)"
+                      >{{ row.operation }}</a>
+                    </span>
+                  </a-table>
+                  <div>
                     <a-form-item>
                       <span>
                         审核
@@ -1109,7 +1284,7 @@
                         </a-form-item>
                       </a-col>
                     </a-row>
-                    <div v-if=" record.verifySeven==='1' ">
+                    <div v-if=" record.verifySeven==='0' ">
                       <a-row>
                         <a-col :span="21">
                           <a-form-item :label="'结束7钻分析：'">
@@ -1120,7 +1295,7 @@
                           </a-form-item>
                         </a-col>
                       </a-row>
-                      <div v-if=" record.endSeven==='1' ">
+                      <div v-if=" record.endSeven==='0' ">
                         <a-row>
                           <a-col :span="21">
                             <a-form-item :label="'责任部门：'">
@@ -1156,7 +1331,7 @@
                       </div>
                     </div>
 
-                    <a-row v-if="record.verifySeven==='0'">
+                    <a-row v-if="record.verifySeven==='1'">
                       <a-col :span="21">
                         <a-form-item :label="'不通过原因：'">
                           <a-textarea
@@ -1171,123 +1346,104 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div v-if="pagePermission.A2_2_3">
-            <a-form-item>
-              <span>
-                审核
-              </span>
-            </a-form-item>
-            <a-row>
-              <a-col :span="21">
-                <a-form-item :label="'审核：'">
-                  <a-radio-group
-                    v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                    :options="verifyRadio"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </div>
-          <div
-            v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
-            class="Dcontent D1back"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <div class="backTitle">
-              <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
-            </div>
-            <div v-if="issueDefinitionData.type==='0'">
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`责任部门`">
-                    <p>{{ issueDefinitionData.owerDeptLv1 }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`责任人`">
-                    <p>{{ issueDefinitionData.champion }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item
-                    :label="`附件`"
-                    style="height:auto;"
-                  >
-                    <div class="stepFileList clearfix">
-                      <ul class="fileList clearfix">
-                        <li
-                          v-for="(item,index) in issueDefinitionData.fileList"
-                          :key="index"
-                          :title="item"
-                        >
-                          <img src="/static/question/file.png">
-                          <span>{{ item }}</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </div>
-            <div v-if="issueDefinitionData.type==='2'">
-              <div class="processList clearfix">
-                <div class="processTitle">
-                  7钻分析责任人:
-                </div>
-                <div class="processUl">
-                  <ul>
-                    <li class="clearfix">
-                      <span>7钻流程</span>
-                      <span>分析负责人</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第1钻： 过程是否正确？</span>
-                      <span>{{ issueDefinitionData.zuanUser1 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第2钻： 工具是否正确？</span>
-                      <span>{{ issueDefinitionData.zuanUser1 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第3钻： 物料是否正确？</span>
-                      <span>{{ issueDefinitionData.zuanUser1 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第4钻： 物料规格检测？</span>
-                      <span>{{ issueDefinitionData.zuanUser4 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第5钻： 过程变更？</span>
-                      <span>{{ issueDefinitionData.zuanUser5 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第6钻： 部件变更？</span>
-                      <span>{{ issueDefinitionData.zuanUser6 }}</span>
-                    </li>
-                    <li class="clearfix">
-                      <span>第7钻： 是否是极端复杂问题？</span>
-                      <span>{{ issueDefinitionData.zuanUser7 }}</span>
-                    </li>
-                  </ul>
+            <div
+              v-if="stepCurrent!=1&&backCurrent==1&&backFlag"
+              class="Dcontent D1back"
+            >
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
+              <div class="backTitle">
+                <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
+              </div>
+              <div v-if="issueDefinitionData.type==='0'">
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`责任部门`">
+                      <p>{{ issueDefinitionData.owerDeptLv1 }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`责任人`">
+                      <p>{{ issueDefinitionData.champion }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item
+                      :label="`附件`"
+                      style="height:auto;"
+                    >
+                      <div class="stepFileList clearfix">
+                        <ul class="fileList clearfix">
+                          <li
+                            v-for="(item,index) in issueDefinitionData.fileList"
+                            :key="index"
+                            :title="item"
+                          >
+                            <img src="/static/question/file.png">
+                            <span>{{ item }}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
+              <div v-if="issueDefinitionData.type==='1'">
+                <div class="processList clearfix">
+                  <div class="processTitle">
+                    7钻分析责任人:
+                  </div>
+                  <div class="processUl">
+                    <ul>
+                      <li class="clearfix">
+                        <span>7钻流程</span>
+                        <span>分析负责人</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第1钻： 过程是否正确？</span>
+                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第2钻： 工具是否正确？</span>
+                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第3钻： 物料是否正确？</span>
+                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第4钻： 物料规格检测？</span>
+                        <span>{{ issueDefinitionData.zuanUser4 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第5钻： 过程变更？</span>
+                        <span>{{ issueDefinitionData.zuanUser5 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第6钻： 部件变更？</span>
+                        <span>{{ issueDefinitionData.zuanUser6 }}</span>
+                      </li>
+                      <li class="clearfix">
+                        <span>第7钻： 是否是极端复杂问题？</span>
+                        <span>{{ issueDefinitionData.zuanUser7 }}</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent===2&&backFlag===false"
-            class="Dcontent D2content"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <div v-if="pagePermission.A2_1_3">
+            <div
+              v-if="stepCurrent===2&&backFlag===false"
+              class="Dcontent D2content"
+            >
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`根本原因（中英文）`">
@@ -1326,19 +1482,17 @@
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent===2&&backCurrent===2"
-            class="Dcontent D2back"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <div v-if="pagePermission.A2_1_2">
+            <div
+              v-if="stepCurrent!=2&&backCurrent==2&&backFlag"
+              class="Dcontent D2back"
+            >
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`根本原因（中英文）`">
-                    <p>{{ rootCauseData.rootCauseDescription }}</p>
+                    <p>{{ stepDetail.rootCauseDescription }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -1351,7 +1505,7 @@
                     <div class="stepFileList clearfix">
                       <ul class="fileList clearfix">
                         <li
-                          v-for="(item,index) in rootCauseData.D2file"
+                          v-for="(item,index) in stepDetail.D2file"
                           :key="index"
                           :title="item"
                         >
@@ -1364,32 +1518,22 @@
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent===3&&backFlag===false"
-            class="Dcontent D3content"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <div v-if="pagePermission.A3_4_2">
-              <p>
-                该问题正在措施制定中
-              </p>
-            </div>
             <div
-              v-if="pagePermission.A3_3_2"
-              class="examineResult"
+              v-if="stepCurrent===3&&backFlag===false"
+              class="Dcontent D3content"
             >
-              <div>审核结果</div>
-              <a-form-item :label="`审核`">
-                <p>{{}}</p>
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <p>{{}}</p>
-              </a-form-item>
-            </div>
-            <div v-if="pagePermission.A3_1_3">
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
+              <div class="examineResult">
+                <div>审核结果</div>
+                <a-form-item :label="`审核`">
+                  <p>不通过</p>
+                </a-form-item>
+                <a-form-item :label="`不通过理由`">
+                  <p>{{ examineReason }}</p>
+                </a-form-item>
+              </div>
               <div class="Dtitle">
                 <span>措施判定</span>
               </div>
@@ -1469,6 +1613,7 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
@@ -1483,6 +1628,7 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
@@ -1497,20 +1643,19 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent!=3&&backCurrent==3&&backFlag"
-            class="Dcontent D3back"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
-            <div v-if="pagePermission.A3_1_2">
+            <div
+              v-if="stepCurrent!=3&&backCurrent==3&&backFlag"
+              class="Dcontent D3back"
+            >
+              <div class="triangle_border_up">
+                <span></span>
+              </div>
               <div class="Dtitle">
                 <span>措施判定</span>
               </div>
@@ -1577,57 +1722,53 @@
                   </a-form-item>
                 </a-col>
               </a-row>
-            </div>
-          </div>
-          <div v-if="pagePermission.A3_2_3">
-            <div class="examine">
-              <div class="Dtitle examineTitle">
-                <span>审核</span>
+              <div class="examine">
+                <div class="Dtitle examineTitle">
+                  <span>审核</span>
+                </div>
+                <a-form-item :label="`是否通过审核`">
+                  <a-radio-group
+                    v-decorator="[
+                      'isPass',
+                      {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                    ]"
+                    :options="recurrencePreventionRadio"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
+                  <v-textarea
+                    v-decorator="[
+                      'comment',
+                      {rules: [{ required: true, message: '请输入不通过理由' }]}
+                    ]"
+                    placeholder="请输入"
+                    allow-clear
+                    style="width:572px;height:88px;"
+                  />
+                </a-form-item>
               </div>
-              <a-form-item :label="`是否通过审核`">
-                <a-radio-group
-                  v-decorator="[
-                    'recurrencePrevention',
-                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
-                  ]"
-                  :options="recurrencePreventionRadio"
-                />
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <v-textarea
-                  v-decorator="[
-                    'description',
-                    {rules: [{ required: true, message: '请输入不通过理由' }]}
-                  ]"
-                  placeholder="请输入"
-                  allow-clear
-                  style="width:572px;height:88px;"
-                />
-              </a-form-item>
-            </div>
-          </div>
-          <div
-            v-if="stepCurrent===4&&backFlag===false"
-            class="Dcontent D4content"
-          >
-            <div class="triangle_border_up">
-              <span></span>
             </div>
             <div
-              v-if="pagePermission.A4_3_2"
-              class="examineResult"
+              v-if="stepCurrent===4&&backFlag===false"
+              class="Dcontent D4content"
             >
-              <div>
-                <span>审核结果</span>
+              <div class="triangle_border_up">
+                <span></span>
               </div>
-              <a-form-item :label="`审核`">
-                <p>{{}}</p>
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <p>{{}}</p>
-              </a-form-item>
-            </div>
-            <div v-if="pagePermission.A4_1_3">
+              <div class="examineResult">
+                <div>
+                  <span>审核结果</span>
+                </div>
+                <a-form-item :label="`审核`">
+                  <p>不通过</p>
+                </a-form-item>
+                <a-form-item :label="`不通过理由`">
+                  <p>{{ examineReason }}</p>
+                </a-form-item>
+              </div>
               <div class="Dtitle">
                 <span>措施实施</span>
               </div>
@@ -1660,6 +1801,7 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
@@ -1710,17 +1852,16 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent === 4&&backCurrent=== 4"
-            class="Dcontent D4back"
-          >
-            <div v-if="pagePermission.A4_1_2">
+            <div
+              v-if="stepCurrent!=4&&backCurrent==4&&backFlag"
+              class="Dcontent D4back"
+            >
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -1776,59 +1917,54 @@
                   </a-form-item>
                 </a-col>
               </a-row>
-            </div>
-            <div
-              v-if="pagePermission.A4_2_3"
-              class="examine"
-            >
-              <div class="Dtitle examineTitle">
-                <span>审核</span>
+              <div class="examine">
+                <div class="Dtitle examineTitle">
+                  <span>审核</span>
+                </div>
+                <a-form-item :label="`是否通过审核`">
+                  <a-radio-group
+                    v-decorator="[
+                      'isPass',
+                      {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                    ]"
+                    :options="recurrencePreventionRadio"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
+                  <v-textarea
+                    v-decorator="[
+                      'comment',
+                      {rules: [{ required: true, message: '请输入不通过理由' }]}
+                    ]"
+                    placeholder="请输入"
+                    allow-clear
+                    style="width:572px;height:88px;"
+                  />
+                </a-form-item>
               </div>
-              <a-form-item :label="`是否通过审核`">
-                <a-radio-group
-                  v-decorator="[
-                    'recurrencePrevention',
-                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
-                  ]"
-                  :options="recurrencePreventionRadio"
-                />
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <v-textarea
-                  v-decorator="[
-                    'description',
-                    {rules: [{ required: true, message: '请输入不通过理由' }]}
-                  ]"
-                  placeholder="请输入"
-                  allow-clear
-                  style="width:572px;height:88px;"
-                />
-              </a-form-item>
             </div>
-          </div>
 
-          <div
-            v-if="stepCurrent===5&&backFlag===false"
-            class="Dcontent D5content"
-          >
-            <div class="triangle_border_up">
-              <span></span>
-            </div>
             <div
-              v-if="pagePermission.A5_3_2"
-              class="examineResult"
+              v-if="stepCurrent===5&&backFlag===false"
+              class="Dcontent D5content"
             >
-              <div>
-                <span>审核结果</span>
+              <div class="triangle_border_up">
+                <span></span>
               </div>
-              <a-form-item :label="`审核`">
-                <p>{{}}</p>
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <p>{{}}</p>
-              </a-form-item>
-            </div>
-            <div v-if="pagePermission.A5_1_3">
+              <div class="examineResult">
+                <div>
+                  <span>审核结果</span>
+                </div>
+                <a-form-item :label="`审核`">
+                  <p>不通过</p>
+                </a-form-item>
+                <a-form-item :label="`不通过理由`">
+                  <p>{{ examineReason }}</p>
+                </a-form-item>
+              </div>
               <div class="Dtitle">
                 <span>效果验证</span>
               </div>
@@ -1887,6 +2023,7 @@
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:231px;"
+                      :disabled-date="disabledDate"
                     />
                   </a-form-item>
                 </a-col>
@@ -1923,13 +2060,11 @@
                 </a-col>
               </div>
             </div>
-          </div>
 
-          <div
-            v-if="stepCurrent==5&&backCurrent==5"
-            class="Dcontent D5back"
-          >
-            <div v-if="pagePermission.A5_1_2">
+            <div
+              v-if="stepCurrent!=5&&backCurrent==5&&backFlag"
+              class="Dcontent D5back"
+            >
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -1972,75 +2107,26 @@
                   </a-table>
                 </div>
               </a-form-item>
-            </div>
-            <div
-              v-if="pagePermission.A5_2_3||pagePermission.A4_2_3"
-              class="examine"
-            >
-              <div class="Dtitle examineTitle">
-                <span>审核</span>
-              </div>
-              <a-form-item :label="`是否通过审核`">
-                <a-radio-group
-                  v-decorator="[
-                    'recurrencePrevention',
-                    {rules: [{ required: true, message: '请选择是否通过审核' }]}
-                  ]"
-                  :options="recurrencePreventionRadio"
-                />
-              </a-form-item>
-              <a-form-item :label="`不通过理由`">
-                <v-textarea
-                  v-decorator="[
-                    'description',
-                    {rules: [{ required: true, message: '请输入不通过理由' }]}
-                  ]"
-                  placeholder="请输入"
-                  allow-clear
-                  style="width:572px;height:88px;"
-                />
-              </a-form-item>
-            </div>
-            <div v-if="pagePermission.A5_4_3">
-              <div class="Dtitle examineTitle">
-                <span>提出人验证</span>
-              </div>
-              <a-row>
-                <a-form-item :label="`验证结果(中英文)`">
-                  <v-textarea
-                    v-decorator="[
-                      'description',
-                      {rules: [
-                        {required: true, message: '请输入验证结果' },
-                        {validator: languageVer}
-                      ]}
-                    ]"
-                    placeholder="请输入"
-                    allow-clear
-                    style="width:572px;height:88px;"
-                  />
-                </a-form-item>
-              </a-row>
-              <div
-                v-if="pagePermission.A5_2_3"
-                class="examine"
-              >
+              <div class="examine">
                 <div class="Dtitle examineTitle">
                   <span>审核</span>
                 </div>
                 <a-form-item :label="`是否通过审核`">
                   <a-radio-group
                     v-decorator="[
-                      'recurrencePrevention',
+                      'isPass',
                       {rules: [{ required: true, message: '请选择是否通过审核' }]}
                     ]"
                     :options="recurrencePreventionRadio"
                   />
                 </a-form-item>
-                <a-form-item :label="`不通过理由`">
+                <a-form-item
+                  v-if="record.isPass"
+                  :label="`不通过理由`"
+                >
                   <v-textarea
                     v-decorator="[
-                      'description',
+                      'comment',
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
@@ -2049,13 +2135,60 @@
                   />
                 </a-form-item>
               </div>
+              <div>
+                <div class="Dtitle examineTitle">
+                  <span>提出人验证</span>
+                </div>
+                <a-row>
+                  <a-form-item :label="`验证结果(中英文)`">
+                    <v-textarea
+                      v-decorator="[
+                        'description',
+                        {rules: [
+                          {required: true, message: '请输入验证结果' },
+                          {validator: languageVer}
+                        ]}
+                      ]"
+                      placeholder="请输入"
+                      allow-clear
+                      style="width:572px;height:88px;"
+                    />
+                  </a-form-item>
+                </a-row>
+                <div class="examine">
+                  <div class="Dtitle examineTitle">
+                    <span>审核</span>
+                  </div>
+                  <a-form-item :label="`是否通过审核`">
+                    <a-radio-group
+                      v-decorator="[
+                        'isPass',
+                        {rules: [{ required: true, message: '请选择是否通过审核' }]}
+                      ]"
+                      :options="recurrencePreventionRadio"
+                    />
+                  </a-form-item>
+                  <a-form-item
+                    v-if="record.isPass"
+                    :label="`不通过理由`"
+                  >
+                    <v-textarea
+                      v-decorator="[
+                        'comment',
+                        {rules: [{ required: true, message: '请输入不通过理由' }]}
+                      ]"
+                      placeholder="请输入"
+                      allow-clear
+                      style="width:572px;height:88px;"
+                    />
+                  </a-form-item>
+                </div>
+              </div>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent===6&&backFlag===false"
-            class="Dcontent D6content"
-          >
-            <div v-if="pagePermission.A6_1_3">
+            <div
+              v-if="stepCurrent===6&&backFlag===false"
+              class="Dcontent D6content"
+            >
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -2074,42 +2207,37 @@
               </a-row>
               <a-row>
                 <a-col :span="21">
-                  <a-form-item :label="`是否同意关闭`">
+                  <a-form-item :label="`是否加签`">
                     <a-radio-group
                       v-decorator="[
-                        'isClose',
-                        {rules: [{ required: true, message: '请选择是否同意关闭' }]}
+                        'isSign'
                       ]"
-                      :options="isCloseRadio"
-                      @change="CloseRadioChange"
+                      :options="recurrencePreventionRadio"
+                      @change="apostilleChange"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row>
+              <a-row v-if="signLeaderFlag">
                 <a-col :span="21">
-                  <a-form-item
-                    v-if="disAgree"
-                    :label="`不同意关闭理由`"
-                  >
-                    <a-textarea
-                      v-decorator="[
-                        'reason ',
-                        {rules: [{ required: true, message: '请输入不同意关闭理由' }]}
-                      ]"
-                      placeholder="请输入"
-                      style="width:572px;height:88px;"
-                    ></a-textarea>
+                  <a-form-item :label="`加签领导`">
+                    <net-select
+                      v-decorator="[ 'signLeaderId',{rules: [{ required: true, message: '请选择加签领导' }]} ]"
+                      :url="`issue/v1/workflow/getSysUser?issueSource=${detailList.source}&type=director`"
+                      :transform="selectOptionSingn"
+                      placeholder="请选择"
+                      :allow-clear="true"
+                      style="width:272px;height:32px;"
+                    >
+                    </net-select>
                   </a-form-item>
                 </a-col>
               </a-row>
             </div>
-          </div>
-          <div
-            v-if="stepCurrent===6&&backCurrent==6"
-            class="Dcontent D6back"
-          >
-            <div v-if="pagePermission.A6_1_2">
+            <div
+              v-if="stepCurrent==6&&backCurrent==6&&backFlag"
+              class="Dcontent D6back"
+            >
               <div class="triangle_border_up">
                 <span></span>
               </div>
@@ -2118,88 +2246,104 @@
               </div>
               <a-row>
                 <a-col :span="21">
-                  <a-form-item :label="`是否需要进入再发防止库`">
+                  <a-form-item :label="`关闭人`">
+                    <p>{{ stepClose.creator }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`关闭时间`">
+                    <p>{{ stepClose.createDate }}</p>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="`进入再发防止库`">
                     <p>{{ stepClose.recurrencePrevention }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`是否同意关闭`">
-                    <p>{{ stepClose.isClose }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`不同意关闭理由`">
-                    <p>{{ stepClose.reason }}</p>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </div>
-            <div
-              v-if="pagePermission.A6_2_3"
-              class="examine"
-            >
-              <div class="Dtitle">
-                <span>加签审批</span>
+              <div class="examine">
+                <div class="Dtitle">
+                  <span>加签审阅</span>
+                </div>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`是否审阅`">
+                      <a-radio-group
+                        v-decorator="[
+                          'Review'
+                        ]"
+                        :options="ReviewRadio"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`备注`">
+                      <v-textarea
+                        v-decorator="[ 'signRemark' ]"
+                        placeholder="请输入"
+                        :allow-clear="true"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
               </div>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="`是否审阅`">
-                    <a-radio-group
-                      v-decorator="[
-                        'isClose',
-                        {rules: [{ required: true, message: '请选择是否审阅' }]}
-                      ]"
-                      :options="isCloseRadio"
-                    />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item
-                    :label="`备注`"
-                  >
-                    <v-textarea
-                      v-decorator="[
-                        'reason '
-                      ]"
-                      placeholder="请输入"
-                      style="width:572px;height:88px;"
-                      :allow-clear="true"
-                    />
-                  </a-form-item>
-                </a-col>
-              </a-row>
+              <div class="examine">
+                <div class="Dtitle">
+                  <span>加签审阅</span>
+                </div>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`审阅领导`">
+                      <p>{{ stepClose.signLeaderName }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`审阅时间`">
+                      <p>{{ stepClose.signDate }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item
+                      :label="`备注`"
+                    >
+                      <p>{{ stepClose.signRemark }}</p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
             </div>
           </div>
-        </div>
-      </a-card>
-    </a-form>
-    <a-form
-      v-if="pagePermission.A4"
-      class="ant-advanced-search-form"
-    >
-      <a-collapse :bordered="false">
-        <a-collapse-panel
-          key="0"
-          header="操作记录"
-        >
-          <div id="fileAnchor">
-            <a-table
-              row-key="id"
-              :data-source="dataRecord"
-              :columns="columnsRecord"
-              :pagination="{defaultPageSize: 10}"
-            >
-            </a-table>
-          </div>
-        </a-collapse-panel>
-      </a-collapse>
-    </a-form>
+        </a-card>
+      </a-form>
+      <a-form class="ant-advanced-search-form">
+        <a-collapse :bordered="false">
+          <a-collapse-panel
+            key="0"
+            header="操作记录"
+          >
+            <div id="fileAnchor">
+              <a-table
+                row-key="id"
+                :data-source="dataRecord"
+                :columns="columnsRecord"
+                :pagination="{defaultPageSize: 10}"
+              >
+              </a-table>
+            </div>
+          </a-collapse-panel>
+        </a-collapse>
+      </a-form>
+    </div>
   </div>
 </template>
 <script>
@@ -2403,18 +2547,22 @@ export default {
         A2_4: true,
         A2_5: true,
         A3_2: true,
-        A4: true
+        A4: true,
+        button_allocation_1: false,
+        button_allocation_3: false,
+        button_back_3: false,
+        button_back_1: false,
+        button_cancel_1: false,
+        button_cancel_3: false,
+        button_commit_1: false,
+        button_commit_3: false,
+        button_submit_1: false,
+        button_submit_3: false,
+        button_redistribution_1: false,
+        button_redistribution_3: false
+
       },
-      // 流程状态
-      statusCode: {
-        statusMaxCode: 0,
-        statusNewCode: 0
-      },
-      // SM SC
-      sysUser: {
-        coChair: '',
-        monitor: ''
-      },
+      stepId: '', // 每一步id
       userId: that.$store.getters.getUser().id,
       taskId: null, // 任务id
       // 再分配弹框
@@ -2424,10 +2572,12 @@ export default {
       analysisId: '',
       fileNameFlag: true,
       visible: false,
-      stepId: '',
       visibleAnalysis: false, // 7钻编辑弹框
       visibleDetail: false, // 7钻详情
       confirmLoading: false,
+      visibleReject: false,
+      isCheckError: '0', // 验证不通过需要回到7钻
+      signLeaderFlag: false, // 加签领导
       optCounter: '',
       columns,
       columnsRecord,
@@ -2435,10 +2585,33 @@ export default {
       columnsUpdate,
       AnalysisTitle: '1钻-过程是否正确',
       data: [],
-      analysisData: [], // 7钻分析表格
+      analysisData: [
+        {
+          standard: '标准',
+          actualSituation: '实际情况',
+          conclusion: '结论',
+          file: '文件',
+          operation: '编辑'
+        },
+        {
+          standard: '标准',
+          actualSituation: '实际情况',
+          conclusion: '结论',
+          file: '文件',
+          operation: '编辑'
+        },
+        {
+          standard: '标准',
+          actualSituation: '实际情况',
+          conclusion: '结论',
+          file: '文件',
+          operation: '编辑'
+        }
+      ], // 7钻分析表格
       updateData: [], // 文件更新表格
       DetailForm: [], // 7钻查看表格
       updateForm: null, // 文件更新弹框表单
+      rejectForm: null,
       dataFile: [], // 附件
       dataRecord: [], // 操作记录
       stepDetail: [], // 某个问题的步骤详细信息
@@ -2460,20 +2633,27 @@ export default {
       NeedFlage: false, // 需要7钻标识
       userFlag: true, // 7钻责任人列表显示标识
       AnalysisForm: null, // 7钻分析表单
+      examineReason: '', // 审核理由
       satisfy: [{
         label: '是',
-        value: '1'
+        value: 1
       }, {
         label: '否',
-        value: '0'
+        value: 0
       }],
       contActionOption: [{
         label: '需要',
-        value: '0'
+        value: 1
       }, {
         label: '不需要',
-        value: '1'
+        value: 0
       }],
+      ReviewRadio: [
+        {
+          label: '已审阅',
+          value: 1
+        }
+      ],
       conActionFlag: true, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
       showMoreFlag: false, // 查看更多
@@ -2490,47 +2670,47 @@ export default {
       radioDefault: 'Yes',
       determineRadio: [{
         label: '直接判定',
-        value: '0'
+        value: '1'
       }, {
         label: '需要7钻分析',
-        value: '1'
+        value: '2'
       }],
       verifyRadio: [{
         label: '通过',
-        value: '1'
+        value: 1
       }, {
         label: '不通过',
-        value: '0'
+        value: 0
       }],
       endSevenRadio: [{
         label: '是',
-        value: '1'
+        value: '0'
       }, {
         label: '否',
-        value: '0'
+        value: '1'
       }],
       // D5
       updateRadio: [{
         label: '是',
-        value: '1'
+        value: '0'
       }, {
         label: '否',
-        value: '0'
+        value: '1'
       }],
       // D6
       recurrencePreventionRadio: [{
         label: '是',
-        value: '1'
+        value: 1
       }, {
         label: '否',
-        value: '0'
+        value: 0
       }],
       isCloseRadio: [{
         label: '同意关闭',
-        value: '1'
+        value: '0'
       }, {
         label: '不同意关闭',
-        value: '0'
+        value: '1'
       }],
       headers: {
         authorization: 'authorization-text'
@@ -2538,10 +2718,10 @@ export default {
       // 数据模板
       record: {
         // D0
-        isProject: '0', //  是否满足立项条件
+        isProject: 1, //  是否满足立项条件
         dissatisfaction: '', // 不满足理由
         Remarks: '', // 备注
-        isNeedIca: '0', // 是否需要围堵措施
+        isNeedIca: 1, // 是否需要围堵措施
         icaDescription: '', // 围堵措施
         // D1
         owerDeptLv1: [], // 责任部门
@@ -2552,11 +2732,11 @@ export default {
         comment: '', // 不通过原因
         // 7钻责任人
         endSeven: '1',
-        zuanUser1: '',
-        zuanUser4: '',
-        zuanUser5: '',
-        zuanUser6: '',
-        zuanUser7: '',
+        zuanUser1: [],
+        zuanUser4: [],
+        zuanUser5: [],
+        zuanUser6: [],
+        zuanUser7: [],
         // D2
         rootCauseDescription: '',
         D2file: [],
@@ -2568,22 +2748,23 @@ export default {
         estimatedClosureTime: null,
         fileList: '',
         smallBatchValidation: '',
+        isPass: '0',
         // D4
         icaExecDescription: '',
         icaExecTime: null,
         // pcaDescription: null,
         // pcaExecTime: null,
 
-
         // D5
         description: '',
         breakpointVin: '',
         breakpointDate: null,
-
         // D6
-        recurrencePrevention: '1',
-        isClose: '1',
-        reason: ''
+        recurrencePrevention: 0,
+        isSign: 0,
+        signLeaderId: '',
+        Review: '1',
+        signRemark: ''
       },
       // 再分配
 
@@ -2605,6 +2786,10 @@ export default {
         isUpdae: '0',
         updateContent: '',
         fileList: ''
+      },
+      // 驳回
+      rejectRecord: {
+        comment: ''
       }
 
     };
@@ -2614,6 +2799,7 @@ export default {
       mapPropsToFields: () => createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
         'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
+
         'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
         'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
@@ -2637,6 +2823,12 @@ export default {
         'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
       ], 'recordUpdate'),
       onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+    });
+    this.rejectForm = this.$form.createForm(this, {
+      mapPropsToFields: () => createFormFields(this, [
+        'rejectForm'
+      ], 'rejectRecord'),
+      onValuesChange: autoUpdateFileds(this, 'rejectRecord')
     });
     this.request();
   },
@@ -2675,16 +2867,37 @@ export default {
       'sevenDiamonds',
       'analysisSave',
       'analysisDetail',
-      'getIssueAutomousRegion',
-      'getStatusCode'
+      'getIssueAutomousRegion'
     ]),
+    disabledDate (current) {
+      return current && current > moment().endOf('day');
+    },
     // 是否需要围堵措施
     conActionChange (e) {
-      if (e.target.value === '0') {
+      if (e.target.value === 1) {
         this.conActionFlag = true;
       } else {
         this.conActionFlag = false;
       }
+    },
+    // 是否加签
+    apostilleChange (e) {
+      if (e.target.value === 1) {
+        this.signLeaderFlag = true;
+      } else {
+        this.signLeaderFlag = false;
+      }
+    },
+    // 驳回
+    handleReject () {
+      this.visibleReject = true;
+    },
+    RejectSubmit () {
+      this.visibleReject = false;
+      this.isCheckError = '1';
+    },
+    CancelReject () {
+      this.visibleReject = false;
     },
     goBack () {
       this.$router.push({
@@ -2698,6 +2911,20 @@ export default {
       } else {
         this.RejectTrue = false;
       }
+    },
+    selectOptionSingn (input) {
+      const optionArray = [{
+        value: input.id,
+        label: input.username
+      }];
+      // input.forEach((item) => {
+      //   optionArray.push({
+      //     value: item.id,
+      //     label: item.username
+      //   })
+      // })
+
+      return optionArray;
     },
     selectOption (input) {
       const optionArray = [];
@@ -2822,23 +3049,22 @@ export default {
           this.sevenDiamonds(data).then(res => {
             console.info(res)
           })
-          this.analysisData.forEach((item) => {
-            if (item.id === data.id) {
-              item.id = data.id;
-              item.standard = data.standard;
-              item.actualSituation = data.actualSituation;
-              item.conclusion = data.conclusion;
-              item.file = data.file;
-              console.log(item);
-            }
-          })
+          /* this.analysisData.forEach((item, index) => {
+                if (item.id === data.id) {
+                  item.id = data.id;
+                  item.standard = data.standard;
+                  item.actualSituation = data.actualSituation;
+                  item.conclusion = data.conclusion;
+                  item.file = data.file;
+                  console.log(item);
+                }
+              }) */
           this.visibleAnalysis = false;
         }
       });
     },
     AnalysisDetailOk () {
       this.visibleDetail = false;
-      console.info()
     },
     AnalysisDetailCancel () {
       this.visibleDetail = false;
@@ -2908,30 +3134,7 @@ export default {
       // }
       // 查看问题详情
       this.eidtQuestion(this.id).then(res => {
-        console.info(this.id)
         this.detailList = res;
-        this.getSysUser({
-          issueSource: this.detailList.source,
-          type: 'coChair'
-        }).then(res1 => {
-          this.sysUser.coChair = res1.id
-        })
-        this.getSysUser({
-          issueSource: this.detailList.source,
-          type: 'monitor'
-        }).then(res2 => {
-          this.sysUser.monitor = res2.id
-        })
-      })
-      this.getStatusCode(this.id).then(res => {
-        if (res) {
-          this.statusCode.statusMaxCode = res.statusMaxCode
-          this.statusCode.statusNewCode = res.statusNewCode
-          console.info(Math.floor((res.statusNewCode) / 100000) - 1)
-          this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1
-          console.info('11111:' + this.stepCurrent)
-          this.backCurrent = this.stepCurrent
-        }
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -2990,9 +3193,6 @@ export default {
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
-          item.operation = '操作'
-        })
         this.analysisData = this.issueDefinitionData.sevenDiamondsVos
       });
       this.rootCause(id).then(res => {
@@ -3029,6 +3229,10 @@ export default {
           this.analysisId = res.id;
         }
       })
+      // let paramExamine = {
+      //   businessKey: this.issueId,
+      // };
+      // this.examineDetail().then()
     },
     // 再分配弹框
     showModal () {
@@ -3049,7 +3253,7 @@ export default {
     determineChange (e) {
       if (e.target.value === '1') {
         this.NeedFlage = false;
-      } else if (e.target.value === '0') {
+      } else if (e.target.value === '2') {
         this.NeedFlage = true;
       }
     },
@@ -3082,6 +3286,11 @@ export default {
             this.stepClose = res;
           })
         }
+      } else if (this.backCurrent === 6 && this.stepCurrent === 6) {
+        this.backFlag = true;
+        this.closeDetail(this.id).then(res => {
+          this.stepClose = res;
+        })
       } else {
         this.backFlag = false;
       }
@@ -3109,41 +3318,42 @@ export default {
     handleSubmit () {
       this.handleSave()
       const vm = this
+      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
+      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
       this.formDcontent.validateFields((err) => {
         if (!err) {
           const data = this.formDcontent.getFieldsValue();
           const transData = {
             businessKey: this.id, // 问题id
             businessTitle: data.title, // 问题title
-            processDefinitionKey: 'IRS1', // IRS1  固定值
+            processDefinitionKey: 'BJEV1', // BJEV1  固定值
             subSys: 'irs', //  子系统编号
-            taskId: this.detailList.taskId, //  任务id
+            taskId: this.taskId, //  任务id
             userId: this.userId, //  当前用户id
             variables: {
               businessKey: this.id, // 问题id
               comment: data.comment || '0',
               assigner: data.zuanUser1,
-              coChair: vm.sysUser.coChair,
-              monitor: vm.sysUser.monitor,
-              champion: data.champion, // 责任人
+              coChair: vm.coChair,
+              monitor: vm.monitor,
               isDirectSerious: '0', // 是否直接极端严重事情
-              isEnd: '0', // 是否关闭
-              isPass: data.verifySeven ? data.verifySeven : data.recurrencePrevention, // 审核是否通过
+              isEnd: this.record.isClose, // 是否关闭
+              isPass: data.verifySeven || this.record.isPass, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
-              isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '0' : '1',
+              isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
               isQZ: data.type, // 是否需要七钻
-              isCheckError: '0', // 验证不通过(需要回到七钻前)
+              isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
               isLeaderSign: '0', // 领导加签
               isItem: data.isProject, // 是否立项
-              isWD: data.isNeedIca, // 是否围堵
-              diamondOwner1: data.zuanUser1,
-              diamondOwner4: data.zuanUser4,
-              diamondOwner5: data.zuanUser5,
-              diamondOwner6: data.zuanUser6,
-              diamondOwner7: data.zuanUser7
+              zuanUser1: data.zuanUser1,
+              zuanUser4: data.zuanUser4,
+              zuanUser5: data.zuanUser5,
+              zuanUser6: data.zuanUser6,
+              zuanUser7: data.zuanUser7
             }
           }
-          vm.workFlowSubmit(transData).then(function s () {
+          vm.workFlowSubmit(transData).then(res => {
+            this.taskId = res.taskId;
             vm.$message.success('提交成功');
           });
         }
@@ -3177,50 +3387,6 @@ export default {
       }
       if (this.stepCurrent === 1) {
         data.optCounter = _this.issueDefinitionData.optCounter;
-        _this.analysisData = _this.analysisData || []
-        if (this.record.zuanUser1) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser1,
-            type: 'DIAMONDS01'
-          })
-        }
-        if (this.record.zuanUser1) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser1,
-            type: 'DIAMONDS02'
-          })
-        }
-        if (this.record.zuanUser1) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser1,
-            type: 'DIAMONDS03'
-          })
-        }
-        if (this.record.zuanUser4) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser4,
-            type: 'DIAMONDS04'
-          })
-        }
-        if (this.record.zuanUser5) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser5,
-            type: 'DIAMONDS05'
-          })
-        }
-        if (this.record.zuanUser6) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser6,
-            type: 'DIAMONDS06'
-          })
-        }
-        if (this.record.zuanUser7) {
-          _this.analysisData.push({
-            champion: this.record.zuanUser7,
-            type: 'DIAMONDS07'
-          })
-        }
-        data.sevenDiamondsVos = _this.analysisData;
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
         })
@@ -3242,6 +3408,9 @@ export default {
       }
       if (data.pcaPlanTime) {
         data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (data.icaExecTime) {
+        data.icaExecTime = data.icaExecTime.format('YYYY-MM-DD HH:mm:ss');
       }
 
       if (this.stepCurrent === 3) {
@@ -3297,7 +3466,9 @@ export default {
       console.log(`selected ${value}`);
     },
     handleReset () {
-      this.form.resetFields();
+      this.$router.push({
+        path: this.$route.query.form || '/'
+      });
     },
 
     toggle () {
@@ -3322,11 +3493,14 @@ export default {
     // 是否满足立项条件切换
     satisfyChange (e) {
       this.record.isNeedIca = '0';
-      if (e.target.value === '0') {
+      if (e.target.value === 1) {
         this.satisfyFlag = true;
-      } else if (e.target.value === '1') {
+      } else if (e.target.value === 0) {
         this.satisfyFlag = false;
       }
+    },
+    // 滚动时触发按钮固定
+    offsetChange () {
     }
   }
 };
@@ -3344,6 +3518,14 @@ export default {
   }
 </style>
 <style lang="less" scoped>
+  /deep/.ant-btn {
+    .anticon {
+      margin-left:-4px;
+    }
+  }
+  /deep/ .ant-modal{
+      top:120px!important;
+    }
   .new-steps-icon {
     line-height: 1;
     top: -6px;
@@ -3353,6 +3535,15 @@ export default {
 
   #components-form-demo-advanced-search {
 
+     .formConetnt{
+        margin-top: 40px;
+     }
+      .messageForm{
+      /deep/ .ant-row{
+        height: 40px;
+        line-height: 40px;
+      }
+    }
     // .UserModal{
     //  /deep/.ant-modal-footer{
     //       padding:10px 5px;
@@ -3407,6 +3598,7 @@ export default {
       float: right;
       right: 52px;
       width: 82px;
+      cursor: pointer;
 
       img {
         width: 16px;
@@ -3464,6 +3656,7 @@ export default {
       position: absolute;
       right: 32px;
       top: 22px;
+      cursor: pointer;
     }
 
     .baseMessage {
@@ -3499,6 +3692,7 @@ export default {
       background: #0097e0;
       border-radius: 4px;
       border-radius: 4px;
+      margin-left:10px;
     }
 
     .saveBtn,
@@ -3862,22 +4056,27 @@ export default {
       margin-left: 4px;
     }
   }
-
-  .TopButton {
+  /deep/ .ant-affix {
+    left: 0px!important;
+    width: 100%!important;
+    background: rgba(75,75,75,0.85);
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    .top-buttons {
+      width: 1200px!important;
+      margin: 0 auto!important;
+    }
+  }
+  .top-buttons {
     overflow: hidden;
-    *zoom: 1;
-    margin: 14px auto;
+    padding: 16px 0;
+    z-index:9999;
 
     .rightButton {
       float: right;
-      margin: 24px 0;
-      margin-right: 24px;
     }
 
     .backButton {
       float: left;
-      margin: 24px 0;
-      margin-left: 24px;
     }
   }
 
@@ -3887,7 +4086,6 @@ export default {
   }
 
   .ant-advanced-search-form {
-    padding: 24px;
     border-radius: 6px;
     margin-top: -40px;
 
@@ -4078,5 +4276,6 @@ export default {
         color: rgba(0, 0, 0, 0.85);
       }
     }
+
   }
 </style>

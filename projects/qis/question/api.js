@@ -34,6 +34,10 @@ export default {
    */
   workFlowSubmit: (data) => $.post('/activiti/running/completeTask', data),
   /**
+   * 工作流中的审核
+   */
+  examineDetail: (data) => $.post('/activiti/comment/nodeComment', data),
+  /**
    * 措施判定保存
    */
   MeasureDecisionSave: (data) => $.post('/issue/v1/workflow/actionDraft', data),
@@ -74,5 +78,6 @@ export default {
   analysisSave: (data) => $.post('/issue/v1/workflow/rootCause', data),
   analysisDetail: (issueId) => $.get('/issue/v1/workflow/rootCause?issue_id=' + issueId),
   // 获取页面权限
-  getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id)
+  getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id),
+  getStatusCode: (id) => $.get('/issue/v1/workflow/getStatusCode?issueId=' + id)
 };
