@@ -441,15 +441,8 @@
           >
             提交
           </a-button>
-          <!-- <a-button
-            v-if="pagePermission.button_commit_3"
-            style="marginLeft: 8px"
-            class="saveBtn"
-            @click="handleSave"
-          >
-            保存
-          </a-button> -->
           <a-button
+            v-if="pagePermission.button_commit_3"
             style="marginLeft: 8px"
             class="saveBtn"
             @click="handleSave"
@@ -778,13 +771,12 @@
         :form="formDcontent"
       >
         <a-card
+          v-if="pagePermission.A3_2"
           title="问题流程"
           class="cardTitle"
         >
-          <a-input-number v-model="stepCurrent"></a-input-number>
           <div class="ant-advanced-search-form">
             <div
-              v-if="pagePermission.A3_2"
               class="step"
             >
               <a-steps :current="stepCurrent">
@@ -998,17 +990,37 @@
               </div>
             </div>
             <div class="Dcontent D0back">
-              <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)||pagePermission.A6_3_1&&(backCurrent === stepCurrent)">
+              <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A3_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)">
                 <a-col
                   :span="24"
                   style="text-align:center;"
                 >
-                  <p>该问题正在立项中</p>
+                  <p v-if="pagePermission.A0_3_2">
+                    该问题正在立项中
+                  </p>
+                  <p v-if="pagePermission.A1_2_2">
+                    该问题责任判定中
+                  </p>
+                  <p v-if="pagePermission.A2_4_2">
+                    问题原因分析填写中
+                  </p>
+                  <p v-if="pagePermission.A3_4_2">
+                    问题措施制定中
+                  </p>
+                  <p v-if="pagePermission.A4_4_2">
+                    该问题措施实施填写中
+                  </p>
+                  <p v-if="pagePermission.A5_5_2">
+                    该问题效果验证内容填写中
+                  </p>
+                  <p v-if="pagePermission.A6_3_2">
+                    该问题关闭中
+                  </p>
                 </a-col>
               </a-row>
             </div>
             <div
-              v-if="stepCurrent===1&&backFlag===false"
+              v-if="pagePermission.A1_1_3"
               class="Dcontent D1content"
             >
               <div
@@ -1083,7 +1095,7 @@
                       </a-col>
                     </a-row>
                   </div>
-                  <div v-if="NeedFlage">
+                  <div v-if="!NeedFlage">
                     <div class="processList clearfix">
                       <div class="processTitle">
                         <span>*</span>请指定7钻分析责任人:
@@ -1201,7 +1213,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="analysisList clearfix">
+                <div
+                  v-if="statusCode.statusMaxCode > 200100"
+                  class="analysisList clearfix"
+                >
                   <div class="analysisTitle">
                     <span>7钻分析</span>
                   </div>
@@ -1568,11 +1583,11 @@
               <div class="triangle_border_up">
                 <span></span>
               </div>
-              <div v-if="pagePermission.A3_4_2">
+              <!-- <div v-if="pagePermission.A3_4_2">
                 <p>
                   该问题正在措施制定中
                 </p>
-              </div>
+              </div> -->
               <div
                 v-if="pagePermission.A3_3_2"
                 class="examineResult"
@@ -2610,34 +2625,6 @@ export default {
     return {
       // 页面权限控制
       pagePermission: {
-        A0_1: true,
-        A0_2: true,
-        A0_3: true,
-        A1_1: true,
-        A1_2: true,
-        A1_3: true,
-        A1_4: true,
-        A1_5: true,
-        A1_6: true,
-        A1_7: true,
-        A1_8: true,
-        A1_9: true,
-        A1_10: true,
-        A1_11: true,
-        A1_12: true,
-        A1_13: true,
-        A1_14: true,
-        A1_15: true,
-        A1_16: true,
-        A1_17: true,
-        A2: true,
-        A2_1: true,
-        A2_2: true,
-        A2_3: true,
-        A2_4: true,
-        A2_5: true,
-        A3_2: true,
-        A4: true,
         button_allocation_1: false,
         button_allocation_3: false,
         button_back_3: false,
@@ -2731,7 +2718,7 @@ export default {
       visibleUpdate: false,
       formDcontent: null, // 步骤表单
       rediStribution: null, // 再分配
-      NeedFlage: false, // 需要7钻标识
+      NeedFlage: true, // 需要7钻标识
       userFlag: true, // 7钻责任人列表显示标识
       AnalysisForm: null, // 7钻分析表单
       examineReason: '', // 审核理由
@@ -2744,10 +2731,10 @@ export default {
       }],
       contActionOption: [{
         label: '需要',
-        value: '0'
+        value: '1'
       }, {
         label: '不需要',
-        value: '1'
+        value: '0'
       }],
       ReviewRadio: [
         {
@@ -2819,15 +2806,15 @@ export default {
       // 数据模板
       record: {
         // D0
-        isProject: '0', //  是否满足立项条件
+        isProject: '1', //  是否满足立项条件
         dissatisfaction: '', // 不满足理由
         Remarks: '', // 备注
-        isNeedIca: '0', // 是否需要围堵措施
+        isNeedIca: '1', // 是否需要围堵措施
         icaDescription: '', // 围堵措施
         // D1
         owerDeptLv1: [], // 责任部门
         champion: [], // 责任人
-        type: '1', // 判定
+        type: '0', // 判定
         verifySeven: '2', // 7钻审核
         sevenFailReason: '', // 不通过原因
         comment: '', // 不通过原因
@@ -2979,7 +2966,7 @@ export default {
     },
     // 是否需要围堵措施
     conActionChange (e) {
-      if (e.target.value === 1) {
+      if (e.target.value === '1') {
         this.conActionFlag = true;
       } else {
         this.conActionFlag = false;
@@ -2987,7 +2974,7 @@ export default {
     },
     // 是否加签
     apostilleChange (e) {
-      if (e.target.value === 1) {
+      if (e.target.value === '1') {
         this.signLeaderFlag = true;
       } else {
         this.signLeaderFlag = false;
@@ -3466,8 +3453,6 @@ export default {
     handleSubmit () {
       this.handleSave()
       const vm = this
-      vm.coChair = vm.coChair ? vm.coChair : vm.getSysUser(vm.detailList.sourceName, 'coChairStepMonitor').id;
-      vm.monitor = vm.monitor ? vm.monitor : vm.getSysUser(vm.detailList.sourceName, 'stepMonitor').id;
       this.formDcontent.validateFields((err) => {
         if (!err) {
           const data = this.formDcontent.getFieldsValue();
@@ -3686,10 +3671,10 @@ export default {
     },
     // 是否满足立项条件切换
     satisfyChange (e) {
-      this.record.isNeedIca = '0';
-      if (e.target.value === 1) {
+      // this.record.isNeedIca = '0';
+      if (e.target.value === '1') {
         this.satisfyFlag = true;
-      } else if (e.target.value === 0) {
+      } else if (e.target.value === '0') {
         this.satisfyFlag = false;
       }
     },
