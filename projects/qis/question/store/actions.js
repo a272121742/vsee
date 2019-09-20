@@ -75,7 +75,7 @@ export default {
    * 工作流中的审核
    */
   examineDetail (store, data) {
-    return api.examineSubmit(data);
+    return api.examineDetail(data);
   },
   /**
    * 修改保存问题
