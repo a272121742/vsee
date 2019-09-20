@@ -155,7 +155,6 @@
       @cancel="AnalysisDetailCancel"
     >
       <a-form
-        class="ant-advanced-search-form"
         :form="DetailForm"
       >
         <a-row v-show="false">
@@ -463,8 +462,8 @@
     <div class="formConetnt">
       <div class="messageForm">
         <a-form
-          class="ant-advanced-search-form"
           :form="form"
+          layout="vertical"
           @submit="handleSearch"
         >
           <a-card
@@ -478,20 +477,12 @@
               class="editIcon"
               @click="editDetail"
             >
-            <!-- <div class="baseMessage">
-          基本信息
-        </div> -->
-            <!-- <div class="edit" v-if="editFlag">
-        </div> -->
             <div class="detailText clearfix">
               <div class="baseMessage">
                 基本信息
               </div>
               <div class="pageTitle clearfix">
                 <span>问题标题：</span>
-                <!-- <span class="carTitle">{{ detailList.vehicleModelId }}</span> -->
-                <!-- <span class="functionTitle">{{ detailList.function }}</span>
-            <span class="codeTitle">{{ detailList.code }}</span> -->
                 <span class="carTitle">
                   {{ detailList.title }}
                 </span>
@@ -500,28 +491,28 @@
 
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`车型`">
+                  <a-form-item :label="`车型:`">
                     <p v-if="detailList.vehicleModelName">
                       {{ detailList.vehicleModelName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`所属系统`">
+                  <a-form-item :label="`所属系统:`">
                     <p v-if="detailList.faultTreeIds1Name">
                       {{ detailList.faultTreeIds1Name }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`所属功能`">
+                  <a-form-item :label="`所属功能:`">
                     <p v-if="detailList.faultTreeIds2Name">
                       {{ detailList.faultTreeIds2Name }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`故障代码`">
+                  <a-form-item :label="`故障代码:`">
                     <p
                       v-if="detailList.faultTreeIds3Name"
                       style="width:164px;"
@@ -533,28 +524,28 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`问题分类`">
+                  <a-form-item :label="`问题分类:`">
                     <p v-if="detailList.sourceName">
                       {{ detailList.sourceName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`问题等级`">
+                  <a-form-item :label="`问题等级:`">
                     <p v-if="detailList.gradeName">
                       {{ detailList.gradeName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`问题阶段`">
+                  <a-form-item :label="`问题阶段:`">
                     <p v-if="detailList.projectPhaseName">
                       {{ detailList.projectPhaseName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`故障发生日期`">
+                  <a-form-item :label="`故障发生日期:`">
                     <p v-if="detailList.failureDate">
                       {{ detailList.failureDate }}
                     </p>
@@ -563,21 +554,21 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`生产基地`">
+                  <a-form-item :label="`生产基地:`">
                     <p v-if="detailList.manufactureBaseName">
                       {{ detailList.manufactureBaseName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`责任部门`">
+                  <a-form-item :label="`责任部门:`">
                     <p v-if="detailList.responsibleDepartmentName">
                       {{ detailList.responsibleDepartmentName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`问题频次`">
+                  <a-form-item :label="`问题频次:`">
                     <p v-if="detailList.frequency">
                       {{ detailList.frequency }}
                     </p>
@@ -585,7 +576,7 @@
                 </a-col>
                 <a-col :span="6">
                   <a-form-item
-                    :label="`联系人电话`"
+                    :label="`联系人电话:`"
                     class="quesetionContact"
                   >
                     <p v-if="detailList.contact">
@@ -596,14 +587,14 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <a-form-item :label="`创建人`">
+                  <a-form-item :label="`创建人:`">
                     <p v-if="detailList.creatorName">
                       {{ detailList.creatorName }}
                     </p>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`创建部门`">
+                  <a-form-item :label="`创建部门:`">
                     <p v-if="detailList.creatorDept">
                       {{ detailList.creatorDept }}
                     </p>
@@ -617,7 +608,7 @@
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
-                  <a-form-item :label="`附件`">
+                  <a-form-item :label="`附件:`">
                     <img src="/static/question/file.png">
                     <span
                       v-if="detailList.fileList"
@@ -631,7 +622,7 @@
                 <a-col :span="12">
                   <a-form-item
                     class="form-item-flex-2"
-                    :label="`问题描述`"
+                    :label="`问题描述:`"
                     :label-col="{span:2}"
                   >
                     <p v-if="detailList.description">
@@ -655,21 +646,21 @@
                 </div>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`试验类型`">
+                    <a-form-item :label="`试验类型:`">
                       <p v-if="detailList.testTypeName">
                         {{ detailList.testTypeName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`祸首件`">
+                    <a-form-item :label="`祸首件:`">
                       <p v-if="detailList.firstCausePartName">
                         {{ detailList.firstCausePartName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`零件号`">
+                    <a-form-item :label="`零件号:`">
                       <p v-if="detailList.partName">
                         {{ detailList.partName }}
                       </p>
@@ -677,7 +668,7 @@
                   </a-col>
 
                   <a-col :span="6">
-                    <a-form-item :label="`供应商名称`">
+                    <a-form-item :label="`供应商名称:`">
                       <p v-if="detailList.supplierName">
                         {{ detailList.supplierName }}
                       </p>
@@ -686,28 +677,28 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`软件版本号`">
+                    <a-form-item :label="`软件版本号:`">
                       <p v-if="detailList.softwareVersion">
                         {{ detailList.softwareVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`标定版本号`">
+                    <a-form-item :label="`标定版本号:`">
                       <p v-if="detailList.calibrationVersion">
                         {{ detailList.calibrationVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`硬件版本号`">
+                    <a-form-item :label="`硬件版本号:`">
                       <p v-if="detailList.hardwareVersion">
                         {{ detailList.hardwareVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`配置字版本号`">
+                    <a-form-item :label="`配置字版本号:`">
                       <p v-if="detailList.confirmationVersion">
                         {{ detailList.confirmationVersion }}
                       </p>
@@ -716,28 +707,28 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`维修网点`">
+                    <a-form-item :label="`维修网点:`">
                       <p v-if="detailList.maintenanceStation">
                         {{ detailList.maintenanceStation }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`故障里程`">
+                    <a-form-item :label="`故障里程:`">
                       <p v-if="detailList.milage">
                         {{ detailList.milage }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`VIN`">
+                    <a-form-item :label="`VIN:`">
                       <p v-if="detailList.vinNo">
                         {{ detailList.vinNo }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`生产时间`">
+                    <a-form-item :label="`生产时间:`">
                       <p v-if="detailList.productDate">
                         {{ detailList.productDate }}
                       </p>
@@ -746,7 +737,7 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`备注`">
+                    <a-form-item :label="`备注:`">
                       <p v-if="detailList.remark">
                         {{ detailList.remark }}
                       </p>
@@ -2959,7 +2950,8 @@ export default {
       'analysisDetail',
       'getIssueAutomousRegion',
       'getStatusCode',
-      'examineDetail'
+      'examineDetail',
+      'redistribution'
     ]),
     disabledDate (current) {
       return current && current > moment().endOf('day');
@@ -3348,26 +3340,27 @@ export default {
           this.analysisId = res.id;
         }
       })
+      if (this.stepCurrent === 2) {
+        const paramExamine = {
+          businessKey: this.issueId,
+          processInstanceId: this.processInstanceId,
+          taskDefList: [
+            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
+            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
+            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
+            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
+            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
+            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
+            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
+            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
+            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+          ]
 
-      const paramExamine = {
-        businessKey: this.issueId,
-        processInstanceId: this.processInstanceId,
-        taskDefList: [
-          'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
-          'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
-          'sid-146F6433-8468-483A-B046-370C99C4F0E2',
-          'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
-          'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
-          'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
-          'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
-          'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
-          'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
-        ]
-
-      };
-      this.examineDetail(paramExamine).then(res => {
-        this.examineReason = res.fullMessage;
-      })
+        };
+        this.examineDetail(paramExamine).then(res => {
+          this.examineReason = res.fullMessage;
+        })
+      }
     },
     // 再分配弹框
     showModal () {
@@ -3496,17 +3489,14 @@ export default {
     },
     // 再分配提交
     handleUser () {
-      // this.rediStribution.validateFields((err) => {
-    //     if (!err) {
-    //       const data = this.rediStribution.getFieldsValue();
-    //   //     this.redistribute(data).then(
-    //   //       this.ModalText = 'The modal will be closed after two seconds';
-    //   //       setTimeout(() => {
-    //   //         this.visible = false;
-    //   //       }, 2000);
-
-    //   //   }
-    //   // });
+      this.rediStribution.validateFields((err) => {
+        if (!err) {
+          const data = this.rediStribution.getFieldsValue();
+          this.rediStribution(data).then(res => {
+            console.log(res);
+          })
+        }
+      })
     },
     handleSave () {
       const data = this.formDcontent.getFieldsValue();
@@ -3748,7 +3738,11 @@ export default {
       padding-top: 20px;
       margin-top:41px;
     }
-
+    .detailText{
+      .ant-row{
+         height:70px;
+      }
+    }
    .fileListNumber{
     width: 20px;
     height: 20px;
