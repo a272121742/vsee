@@ -797,8 +797,12 @@
                       src="/static/img/kongxinyuan.png"
                     />
                     <img
-                      v-if="stepCurrent < index"
+                      v-if="(stepCurrent == stepMax) && stepCurrent < index"
                       src="/static/img/huiseyuan.png"
+                    />
+                    <img
+                      v-if="(stepCurrent < stepMax) && stepCurrent < index"
+                      src="/static/img/huiseyuan_re.png"
                     />
                   </span>
                 </a-popover>
@@ -989,8 +993,11 @@
                 </a-row>
               </div>
             </div>
-            <div class="Dcontent D0back">
-              <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A3_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)">
+            <div
+              v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A3_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)"
+              class="Dcontent D0back"
+            >
+              <a-row>
                 <a-col
                   :span="24"
                   style="text-align:center;"
@@ -1404,7 +1411,10 @@
               v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
               class="Dcontent D1back"
             >
-              <div class="triangle_border_up">
+              <div
+                class="triangle_border_up"
+                style="left:216px;"
+              >
                 <span></span>
               </div>
               <div class="backTitle">
@@ -1492,13 +1502,16 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backFlag===false"
+              v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_3"
               class="Dcontent D2content"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <div v-if="pagePermission.A2_1_3">
+                <div
+                  class="triangle_border_up"
+                  style="left:352px;"
+                >
+                  <span></span>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`根本原因（中英文）`">
@@ -1539,13 +1552,16 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backCurrent===2"
+              v-if="stepCurrent===2&&backCurrent===2&&pagePermission.A2_1_2"
               class="Dcontent D2back"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <div v-if="pagePermission.A2_1_2">
+                <div
+                  class="triangle_border_up"
+                  style="left:352px;"
+                >
+                  <span></span>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`根本原因（中英文）`">
@@ -1580,9 +1596,6 @@
               v-if="stepCurrent===3&&backFlag===false"
               class="Dcontent D3content"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <!-- <div v-if="pagePermission.A3_4_2">
                 <p>
                   该问题正在措施制定中
@@ -1592,6 +1605,9 @@
                 v-if="pagePermission.A3_3_2"
                 class="examineResult"
               >
+                <div class="triangle_border_up">
+                  <span></span>
+                </div>
                 <div>审核结果</div>
                 <a-form-item :label="`审核`">
                   <p>不通过</p>
@@ -1721,10 +1737,10 @@
               v-if="stepCurrent!=3&&backCurrent==3&&backFlag"
               class="Dcontent D3back"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <div v-if="pagePermission.A3_1_2">
+                <div class="triangle_border_up">
+                  <span></span>
+                </div>
                 <div class="Dtitle">
                   <span>措施判定</span>
                 </div>
@@ -1827,13 +1843,13 @@
               v-if="stepCurrent===4&&backFlag===false"
               class="Dcontent D4content"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <div
                 v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
+                <div class="triangle_border_up">
+                  <span></span>
+                </div>
                 <div>
                   <span>审核结果</span>
                 </div>
@@ -2033,13 +2049,13 @@
               v-if="stepCurrent===5&&backFlag===false"
               class="Dcontent D5content"
             >
-              <div class="triangle_border_up">
-                <span></span>
-              </div>
               <div
                 v-if="pagePermission.A5_3_2"
                 class="examineResult"
               >
+                <div class="triangle_border_up">
+                  <span></span>
+                </div>
                 <div>
                   <span>审核结果</span>
                 </div>
@@ -2751,6 +2767,7 @@ export default {
       functionTitle: '', // 功能标题，
       codeTitle: '', // 故障代码标题，
       stepCurrent: 1, // 当前步骤状态  从数据库读取状态
+      stepMax: 1, // 最大步骤状态  从数据库读取状态
       backCurrent: 7, // 回退到的步骤数
       backFlag: false, // 是否点击回退
       disAgree: true, // 是否需要输入不同意关闭理由
@@ -3246,10 +3263,12 @@ export default {
         if (res) {
           this.statusCode.statusMaxCode = res.statusMaxCode
           this.statusCode.statusNewCode = res.statusNewCode
-          console.info(Math.floor((res.statusNewCode) / 100000) - 1)
           this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1
-          console.info('11111:' + this.stepCurrent)
+          this.stepMax = Math.floor((res.statusMaxCode) / 100000) - 1
           this.backCurrent = this.stepCurrent
+          console.info(Math.floor((res.statusNewCode) / 100000) - 1)
+          console.info('stepCurrent:' + this.stepCurrent)
+          console.info('stepMax:' + this.stepMax)
         }
       })
       this.getIssueAutomousRegion(this.id).then(res => {

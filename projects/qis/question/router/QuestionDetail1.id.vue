@@ -617,8 +617,12 @@
                     src="/static/img/kongxinyuan.png"
                   />
                   <img
-                    v-if="stepCurrent < index"
+                    v-if="(stepCurrent == stepMax) && stepCurrent < index"
                     src="/static/img/huiseyuan.png"
+                  />
+                  <img
+                    v-if="(stepCurrent < stepMax) && stepCurrent < index"
+                    src="/static/img/huiseyuan_re.png"
                   />
                 </span>
               </a-popover>
@@ -2483,6 +2487,7 @@ export default {
       functionTitle: '', // 功能标题，
       codeTitle: '', // 故障代码标题，
       stepCurrent: 1, // 当前步骤状态  从数据库读取状态
+      stepMax: 1, // 最大步骤状态  从数据库读取状态
       backCurrent: 7, // 回退到的步骤数
       backFlag: false, // 是否点击回退
       disAgree: true, // 是否需要输入不同意关闭理由
@@ -2927,10 +2932,12 @@ export default {
         if (res) {
           this.statusCode.statusMaxCode = res.statusMaxCode
           this.statusCode.statusNewCode = res.statusNewCode
+          this.backCurrent = this.stepCurrent
           console.info(Math.floor((res.statusNewCode) / 100000) - 1)
           this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1
-          console.info('11111:' + this.stepCurrent)
-          this.backCurrent = this.stepCurrent
+          this.stepMax = (Math.floor((res.statusMaxCode) / 100000) - 1)
+          console.info('stepCurrent:' + this.stepCurrent)
+          console.info('stepMax:' + this.stepMax)
         }
       })
       this.getIssueAutomousRegion(this.id).then(res => {
