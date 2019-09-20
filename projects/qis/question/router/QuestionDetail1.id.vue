@@ -15,7 +15,7 @@
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-              url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
+              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
               :transform="selectOptionChampion"
               :delay="true"
               placeholder="请选择"
@@ -347,7 +347,7 @@
       @submit="handleSearch"
     >
       <a-card
-        v-if="pagePermission.A2_1||pagePermission.A1_2||pagePermission.A1_3"
+        v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_3"
         title="问题详情"
         class="cardTitle"
       >
@@ -674,7 +674,7 @@
                   </a-form-item>
                 </a-col>
               </a-row>
-              <div v-if="!satisfyFlag">
+              <div v-if="satisfyFlag">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`理由`">
@@ -689,7 +689,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="satisfyFlag">
+              <div v-if="!satisfyFlag">
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`是否需要围堵措施`">
@@ -778,14 +778,6 @@
                   </a-col>
                 </a-row>
               </div>
-              <a-row v-if="pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2">
-                <a-col
-                  :span="24"
-                  style="text-align:center;"
-                >
-                  <p>该问题正在立项中</p>
-                </a-col>
-              </a-row>
               <a-row>
                 <a-col :span="21">
                   <a-form-item
@@ -809,6 +801,16 @@
               </a-row>
             </div>
           </div>
+          <div class="Dcontent D0back">
+            <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)">
+              <a-col
+                :span="24"
+                style="text-align:center;"
+              >
+                <p>该问题正在立项中</p>
+              </a-col>
+            </a-row>
+          </div>
           <div
             v-if="stepCurrent===1&&backFlag===false"
             class="Dcontent D1content"
@@ -819,7 +821,8 @@
             >
               <span></span>
             </div>
-            <div v-if="pagePermission.A1_1_3">
+            <!---<div v-if="pagePermission.A1_1_3">-->
+            <div>
               <div>
                 <a-row style="margin-left:340px;">
                   <a-col :span="21">
@@ -832,7 +835,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <div v-if="!NeedFlage">
+                <div v-if="NeedFlage">
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`责任部门`">
@@ -1106,7 +1109,7 @@
                         </a-form-item>
                       </a-col>
                     </a-row>
-                    <div v-if=" record.verifySeven==='0' ">
+                    <div v-if=" record.verifySeven==='1' ">
                       <a-row>
                         <a-col :span="21">
                           <a-form-item :label="'结束7钻分析：'">
@@ -1117,7 +1120,7 @@
                           </a-form-item>
                         </a-col>
                       </a-row>
-                      <div v-if=" record.endSeven==='0' ">
+                      <div v-if=" record.endSeven==='1' ">
                         <a-row>
                           <a-col :span="21">
                             <a-form-item :label="'责任部门：'">
@@ -1153,7 +1156,7 @@
                       </div>
                     </div>
 
-                    <a-row v-if="record.verifySeven==='1'">
+                    <a-row v-if="record.verifySeven==='0'">
                       <a-col :span="21">
                         <a-form-item :label="'不通过原因：'">
                           <a-textarea
@@ -1169,6 +1172,23 @@
               </div>
             </div>
           </div>
+          <div v-if="pagePermission.A2_2_3">
+            <a-form-item>
+              <span>
+                审核
+              </span>
+            </a-form-item>
+            <a-row>
+              <a-col :span="21">
+                <a-form-item :label="'审核：'">
+                  <a-radio-group
+                    v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                    :options="verifyRadio"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </div>
           <div
             v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
             class="Dcontent D1back"
@@ -1177,9 +1197,9 @@
               <span></span>
             </div>
             <div class="backTitle">
-              <p>{{ issueDefinitionData.type==='1'?'直接判定':'需要7钻分析' }}</p>
+              <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
             </div>
-            <div v-if="issueDefinitionData.type==='1'">
+            <div v-if="issueDefinitionData.type==='0'">
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`责任部门`">
@@ -1308,7 +1328,7 @@
             </div>
           </div>
           <div
-            v-if="stepCurrent!=2&&backCurrent==2&&backFlag"
+            v-if="stepCurrent===2&&backCurrent===2"
             class="Dcontent D2back"
           >
             <div class="triangle_border_up">
@@ -1318,7 +1338,7 @@
               <a-row>
                 <a-col :span="21">
                   <a-form-item :label="`根本原因（中英文）`">
-                    <p>{{ stepDetail.rootCauseDescription }}</p>
+                    <p>{{ rootCauseData.rootCauseDescription }}</p>
                   </a-form-item>
                 </a-col>
               </a-row>
@@ -1331,7 +1351,7 @@
                     <div class="stepFileList clearfix">
                       <ul class="fileList clearfix">
                         <li
-                          v-for="(item,index) in stepDetail.D2file"
+                          v-for="(item,index) in rootCauseData.D2file"
                           :key="index"
                           :title="item"
                         >
@@ -1697,7 +1717,7 @@
             </div>
           </div>
           <div
-            v-if="stepCurrent!=4&&backCurrent==4&&backFlag"
+            v-if="stepCurrent === 4&&backCurrent=== 4"
             class="Dcontent D4back"
           >
             <div v-if="pagePermission.A4_1_2">
@@ -1758,7 +1778,7 @@
               </a-row>
             </div>
             <div
-              v-if="pagePermission.A4_2"
+              v-if="pagePermission.A4_2_3"
               class="examine"
             >
               <div class="Dtitle examineTitle">
@@ -1906,7 +1926,7 @@
           </div>
 
           <div
-            v-if="stepCurrent!=5&&backCurrent==5&&backFlag"
+            v-if="stepCurrent==5&&backCurrent==5"
             class="Dcontent D5back"
           >
             <div v-if="pagePermission.A5_1_2">
@@ -1954,7 +1974,7 @@
               </a-form-item>
             </div>
             <div
-              v-if="pagePermission.A5_2_3"
+              v-if="pagePermission.A5_2_3||pagePermission.A4_2_3"
               class="examine"
             >
               <div class="Dtitle examineTitle">
@@ -2086,7 +2106,7 @@
             </div>
           </div>
           <div
-            v-if="stepCurrent!=6&&backCurrent==6&&backFlag"
+            v-if="stepCurrent===6&&backCurrent==6"
             class="Dcontent D6back"
           >
             <div v-if="pagePermission.A6_1_2">
@@ -2402,9 +2422,9 @@ export default {
       fileModalTitle: '添加更新文件',
       RejectTrue: true,
       analysisId: '',
-      isCheckError: '0',
       fileNameFlag: true,
       visible: false,
+      stepId: '',
       visibleAnalysis: false, // 7钻编辑弹框
       visibleDetail: false, // 7钻详情
       confirmLoading: false,
@@ -2442,10 +2462,10 @@ export default {
       AnalysisForm: null, // 7钻分析表单
       satisfy: [{
         label: '是',
-        value: '0'
+        value: '1'
       }, {
         label: '否',
-        value: '1'
+        value: '0'
       }],
       contActionOption: [{
         label: '需要',
@@ -2470,47 +2490,47 @@ export default {
       radioDefault: 'Yes',
       determineRadio: [{
         label: '直接判定',
-        value: '1'
+        value: '0'
       }, {
         label: '需要7钻分析',
-        value: '2'
+        value: '1'
       }],
       verifyRadio: [{
         label: '通过',
-        value: '0'
+        value: '1'
       }, {
         label: '不通过',
-        value: '1'
+        value: '0'
       }],
       endSevenRadio: [{
         label: '是',
-        value: '0'
+        value: '1'
       }, {
         label: '否',
-        value: '1'
+        value: '0'
       }],
       // D5
       updateRadio: [{
         label: '是',
-        value: '0'
+        value: '1'
       }, {
         label: '否',
-        value: '1'
+        value: '0'
       }],
       // D6
       recurrencePreventionRadio: [{
         label: '是',
-        value: '0'
+        value: '1'
       }, {
         label: '否',
-        value: '1'
+        value: '0'
       }],
       isCloseRadio: [{
         label: '同意关闭',
-        value: '0'
+        value: '1'
       }, {
         label: '不同意关闭',
-        value: '1'
+        value: '0'
       }],
       headers: {
         authorization: 'authorization-text'
@@ -2532,11 +2552,11 @@ export default {
         comment: '', // 不通过原因
         // 7钻责任人
         endSeven: '1',
-        zuanUser1: [],
-        zuanUser4: [],
-        zuanUser5: [],
-        zuanUser6: [],
-        zuanUser7: [],
+        zuanUser1: '',
+        zuanUser4: '',
+        zuanUser5: '',
+        zuanUser6: '',
+        zuanUser7: '',
         // D2
         rootCauseDescription: '',
         D2file: [],
@@ -2594,7 +2614,6 @@ export default {
       mapPropsToFields: () => createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
         'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
-
         'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
         'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
@@ -2910,6 +2929,8 @@ export default {
           this.statusCode.statusNewCode = res.statusNewCode
           console.info(Math.floor((res.statusNewCode) / 100000) - 1)
           this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1
+          console.info('11111:' + this.stepCurrent)
+          this.backCurrent = this.stepCurrent
         }
       })
       this.getIssueAutomousRegion(this.id).then(res => {
@@ -3028,7 +3049,7 @@ export default {
     determineChange (e) {
       if (e.target.value === '1') {
         this.NeedFlage = false;
-      } else if (e.target.value === '2') {
+      } else if (e.target.value === '0') {
         this.NeedFlage = true;
       }
     },
@@ -3104,20 +3125,22 @@ export default {
               assigner: data.zuanUser1,
               coChair: vm.sysUser.coChair,
               monitor: vm.sysUser.monitor,
+              champion: data.champion, // 责任人
               isDirectSerious: '0', // 是否直接极端严重事情
-              isEnd: this.record.isClose, // 是否关闭
-              isPass: data.verifySeven, // 审核是否通过
+              isEnd: '0', // 是否关闭
+              isPass: data.verifySeven ? data.verifySeven : data.recurrencePrevention, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
-              isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',
+              isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '0' : '1',
               isQZ: data.type, // 是否需要七钻
               isCheckError: '0', // 验证不通过(需要回到七钻前)
               isLeaderSign: '0', // 领导加签
               isItem: data.isProject, // 是否立项
-              zuanUser1: data.zuanUser1,
-              zuanUser4: data.zuanUser4,
-              zuanUser5: data.zuanUser5,
-              zuanUser6: data.zuanUser6,
-              zuanUser7: data.zuanUser7
+              isWD: data.isNeedIca, // 是否围堵
+              diamondOwner1: data.zuanUser1,
+              diamondOwner4: data.zuanUser4,
+              diamondOwner5: data.zuanUser5,
+              diamondOwner6: data.zuanUser6,
+              diamondOwner7: data.zuanUser7
             }
           }
           vm.workFlowSubmit(transData).then(function s () {
@@ -3154,6 +3177,49 @@ export default {
       }
       if (this.stepCurrent === 1) {
         data.optCounter = _this.issueDefinitionData.optCounter;
+        _this.analysisData = _this.analysisData || []
+        if (this.record.zuanUser1) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser1,
+            type: 'DIAMONDS01'
+          })
+        }
+        if (this.record.zuanUser1) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser1,
+            type: 'DIAMONDS02'
+          })
+        }
+        if (this.record.zuanUser1) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser1,
+            type: 'DIAMONDS03'
+          })
+        }
+        if (this.record.zuanUser4) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser4,
+            type: 'DIAMONDS04'
+          })
+        }
+        if (this.record.zuanUser5) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser5,
+            type: 'DIAMONDS05'
+          })
+        }
+        if (this.record.zuanUser6) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser6,
+            type: 'DIAMONDS06'
+          })
+        }
+        if (this.record.zuanUser7) {
+          _this.analysisData.push({
+            champion: this.record.zuanUser7,
+            type: 'DIAMONDS07'
+          })
+        }
         data.sevenDiamondsVos = _this.analysisData;
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
@@ -3179,25 +3245,46 @@ export default {
       }
 
       if (this.stepCurrent === 3) {
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
         this.MeasureDecisionSave(data).then(() => {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
             //  data.optCounter=res.optCounter;
           });
         });
       } else if (this.stepCurrent === 4) {
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
         this.MeasureDecisionSave(data).then(() => {
           this.ImplementationDetail(this.id).then(res => {
             this.stepImplementation = res;
-            //  data.optCounter=res.optCounter;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
           });
         });
       } else if (this.stepCurrent === 5) {
-        this.effectSave(data).then()
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
+        this.effectSave(data).then(() => {
+          this.effectDetail(this.id).then(res => {
+            this.stepEffect = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
+          });
+        })
       } else if (this.stepCurrent === 6) {
-        this.closeSave(data).then(
-          // data.optCounter=res.optCounter;
-        )
+        data.id = this.stepId;
+        data.optCounter = this.optCounter;
+        this.closeSave(data).then(() => {
+          this.closeDetail(this.id).then(res => {
+            this.stepClose = res;
+            this.optCounter = res.optCounter;
+            this.stepId = res.id;
+          })
+        })
       }
     },
     handleSearch (e) {
