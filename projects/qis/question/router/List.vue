@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container shadown-block-normal">
     <a-tabs
       :active-key="activeKey"
       @change="changeTable"
@@ -78,7 +78,7 @@
     <issue-search-form
       :hide="hideForm"
       @hidden="hiddenForm"
-      @change="request"
+      @change="search"
     />
     <!-- 数据列表 -->
     <issue-table
@@ -116,10 +116,9 @@ export default {
 </script>
 <style lang="less" scoped>
   .container {
-    margin-top: 16px;
-    padding: 8px 16px 0;
+    margin: 16px 0;
+    padding: 4px 16px 0;
     background-color: #FFFFFF;
-    box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
     /deep/ .ant-table{

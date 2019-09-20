@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container shadown-block-normal">
     <!-- 搜索表单 -->
     <advance-search-form
       @change="search"
@@ -118,20 +118,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
   .container {
-    margin-top: 16px;
-    padding: 8px 16px 0;
+    margin: 16px 0;
+    padding: 4px 12px 0 12px;
     background-color: #FFFFFF;
-    box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
     border-radius: 4px;
     border-radius: 4px;
     /deep/ .ant-table{
-      // table {
-      //   width: 100%; /*必须设置，否则还是会拉长单元格*/
-      //   // table-layout: inline-fixed;/*只有定义表格的算法为fixed,th才有效果*/
-      //   word-wrap:break-all;
-      // }
+      table {
+        width: 100%; /*必须设置，否则还是会拉长单元格*/
+        // table-layout: inline-fixed;/*只有定义表格的算法为fixed,th才有效果*/
+        word-wrap:break-all;
+      }
       th > div, td {
         overflow:hidden;/*超出长度的文字隐藏*/
         text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
@@ -140,7 +138,8 @@ export default {
       }
     }
   }
-  /deep/.ant-table-thead > tr > th, /deep/.ant-table-tbody > tr > td {
+  /deep/.ant-table-thead > tr > th,
+  /deep/.ant-table-tbody > tr > td {
     padding: 16px 11px;
   }
 </style>

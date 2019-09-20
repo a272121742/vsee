@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <a-row
-      class="row1"
+      class="row1 shadown-block-normal"
     >
       <a-card class="banner-card">
         <img
@@ -11,7 +11,7 @@
       </a-card>
     </a-row>
     <a-row
-      class="row2"
+      class="row2 shadown-block-normal"
     >
       <a-tabs
         :active-key="activeKey"
@@ -116,9 +116,8 @@ export default {
   .container {
     background-color: transparent!important;
     .row1 {
-      margin-top: 16px;
+      margin: 16px 0;
       .banner-card {
-        box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
         border-radius: 4px;
         border-radius: 4px;
         img {
@@ -128,10 +127,9 @@ export default {
       }
     }
     .row2 {
-      background-color: #FFFFFF;
       margin: 16px 0;
-      padding: 16px 12px 0px 16px;
-      box-shadow: 0 2px 6px 0 rgba(0,38,71,0.12);
+      background-color: #FFFFFF;
+      padding: 8px 12px 0 12px;
       border-radius: 4px;
       border-radius: 4px;
     }

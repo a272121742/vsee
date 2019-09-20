@@ -1,32 +1,41 @@
 <template>
   <a-input
+    ref="input"
     class="clear-input"
     v-bind="$attrs"
-    v-on="$listeners"
     :value="text"
+    v-on="$listeners"
     @change="e => text = e.target.value"
-    ref="input"
   >
     <!-- slot继承 -->
-    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope"/>
+    <template
+      v-for="(_, slot) of $scopedSlots"
+      v-slot:[slot]="scope"
+    >
+      <slot
+        :name="slot"
+        v-bind="scope"
+      />
     </template>
     <template v-if="allowClear">
       <a-icon
         v-show="text"
-        class="allow-clear"
         slot="suffix"
+        class="allow-clear"
         type="close-circle"
         theme="filled"
         @click="clear"
       />
     </template>
-    <a-spin 
-      class="captcha"
+    <a-spin
       slot="suffix"
+      class="captcha"
       :spinning="spinning"
     >
-      <img :src="src" @click="$emit('click-captcha')" />
+      <img
+        :src="src"
+        @click="$emit('click-captcha')"
+      />
     </a-spin>
   </a-input>
 </template>
@@ -45,7 +54,7 @@ export default {
     },
     value: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     /**
      * 是否允许自动清除
@@ -62,7 +71,7 @@ export default {
       // 地址
       src: '',
       // 加载状态
-      spinning: false,
+      spinning: false
     }
   },
   watch: {
@@ -78,7 +87,7 @@ export default {
   },
   methods: {
     clear () {
-      this.$emit('change', {target: {value: null}});
+      this.$emit('change', { target: { value: null } });
       this.text = null;
     },
     loadCaptche (first) {
@@ -92,7 +101,7 @@ export default {
           this.fetch({ responseType: 'arraybuffer' }).then(res => {
             if (/^data:image\/(png|jpe?g|gif|svg);base64,/.test(res)) {
               this.src = res;
-            }else if (res instanceof ArrayBuffer){
+            } else if (res instanceof ArrayBuffer) {
               this.src = 'data:image/png;base64,' + btoa(new Uint8Array(res).reduce((data, byte) => data + String.fromCharCode(byte), ''))
             }
             this.spinning = false;
@@ -122,6 +131,7 @@ export default {
   .ant-input-affix-wrapper, .ant-input-affix-wrapper-lg, .ant-input-affix-wrapper-sm {
     /deep/ .captcha {
       margin-left: 12px;
+      min-width: 40px;
       img {
         cursor: pointer;
         border: 1px solid transparent!important;
@@ -143,5 +153,5 @@ export default {
     align-items: center;
     display: inline-flex;
   }
-    
+
 </style>

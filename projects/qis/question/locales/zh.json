@@ -26,7 +26,7 @@
     "maintenanceStation": "维修网点",
     "manufactureBase": "生产基地",
     "masterIssueId": "主问题ID",
-    "milage": "故障里程",
+    "milage": "故障里程(Km)",
     "optCounter": "操作次数",
     "partId": "零件号",
     "preliminaryInvestigation": "初步排查情况",

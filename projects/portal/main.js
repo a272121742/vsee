@@ -17,6 +17,12 @@ import moment from 'moment';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
+// 加载全局自定义皮肤
+import '@@cmd/global.less';
+
+import AsyncComponent from '@comp/AsyncComponent';
+Vue.component('async-component', AsyncComponent);
+
 // 加载权限控制
 // import('@dir/v-permission.js');
 

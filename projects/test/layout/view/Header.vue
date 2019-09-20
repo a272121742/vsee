@@ -6,30 +6,48 @@
         </div>
         <a-divider
           type="vertical"
-          style="height: 16px; margin: 24px 0; background: #0C9CE0"
+          style="height: 17px; margin: 25px 0; background: #0C9CE0"
         ></a-divider>
         <banner
-          title="全面质量管理系统"
-          desc="Total Quality Information System"
+          title="质量问题分析解决平台"
         ></banner>
+        <a-menu
+          :selected-keys="custMenu"
+          mode="horizontal"
+        >
+          <a-menu-item
+            v-for="menu in menus"
+            :key="menu.key"
+            :title="$t(menu.key)"
+            @click="jump(menu.path)"
+          >
+            {{ $t(menu.key) }}
+          </a-menu-item>
+        </a-menu>
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">
-          <language-radio />
           <a-dropdown :trigger="['click', 'hover']">
-            <a-button
-              shape="circle"
-              icon="user"
-            />
+            <div>
+              <a-avatar icon="user">
+              </a-avatar>
+              {{ user.realName }}
+            </div>
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a @click.stop.prevent="refresh">刷新</a>
+                <a href="javascript:;">
+                  {{ $t('user_action.manual') }}
+                </a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a href="javascript:;">编辑信息</a>
+                <a href="/">
+                  {{ $t('user_action.to_portal') }}
+                </a>
               </a-menu-item>
               <a-menu-item key="2">
-                <a @click="logoutHandle">退出系统</a>
+                <a @click.stop.prevent="logoutHandle">
+                  {{ $t('user_action.logout') }}
+                </a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -41,17 +59,41 @@
 
 <script>
 export default {
+  name: 'Header',
   components: {
-    Banner: () => import('@comp/head/Banner.vue'),
-    LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
+    Banner: () => import('@comp/head/Banner.vue')
+  },
+  data () {
+    return {
+      menus: [{
+        key: 'Home',
+        path: '/'
+      }, {
+        key: 'List',
+        path: '/question/list'
+      }, {
+        key: 'Search',
+        path: '/question/search'
+      }]
+    };
+  },
+  computed: {
+    custMenu () {
+      return [this.$route.name || 'Home'];
+    },
+    user () {
+      return this.$store.state.userInfo;
+    }
   },
   methods: {
-    refresh () {
-      this.$emit('refresh')
+    jump (path) {
+      this.$router.push({ path });
+      this.$store.dispatch('refresh');
     },
     logoutHandle () {
-      this.$store && this.$store.dispatch('login/logout');
-      window.location.reload();
+      this.$store && this.$store.dispatch('layout/logout');
+      // TODO: 做好多应用重定向
+      window.location.href = '/portal';
     }
   }
 }
@@ -62,6 +104,12 @@ export default {
   .ant-layout-header {
     background: #FFFFFF;
     box-shadow: 0 0 4px 0 rgba(0,0,0,0.06);
+    /deep/ .ant-menu {
+      display: flex;
+      justify-content: right;
+      align-items: center;
+      border-bottom: 1px solid transparent!important;
+    }
     /deep/ .ant-menu-item {
       height: 64px;
       line-height: 64px;
@@ -73,14 +121,13 @@ export default {
       display: flex;
       height: 64px;
     }
-
     .header-index-left {
       flex: 0 1 1080px;
       display: flex;
       .logo {
         width: 168px;
-        height: 38px;
-        margin: 14px 16px 14px 0;
+        height: 40px;
+        margin: 12px 16px 12px 0;
         float: left;
         background-image: url("/static/logo.png");
         img,
@@ -90,7 +137,6 @@ export default {
           height: 32px;
           width: 32px;
         }
-
         h1 {
           color: #fff;
           display: inline-block;
@@ -101,13 +147,10 @@ export default {
         }
       }
     }
-
     .header-index-right {
       flex: 1 0 auto;
       height: 64px;
       overflow: hidden;
-      color: rgba(0, 0, 0, .65);
-
       .content-box {
         float: right;
         button, span {

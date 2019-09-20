@@ -15,7 +15,7 @@
           <a-form-item :label="`选择责任人`">
             <net-select
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-              :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+              url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
               :transform="selectOptionChampion"
               :delay="true"
               placeholder="请选择"
@@ -2402,6 +2402,7 @@ export default {
       fileModalTitle: '添加更新文件',
       RejectTrue: true,
       analysisId: '',
+      isCheckError: '0',
       fileNameFlag: true,
       visible: false,
       visibleAnalysis: false, // 7钻编辑弹框
@@ -3104,7 +3105,7 @@ export default {
               coChair: vm.sysUser.coChair,
               monitor: vm.sysUser.monitor,
               isDirectSerious: '0', // 是否直接极端严重事情
-              isEnd: '0', // 是否关闭
+              isEnd: this.record.isClose, // 是否关闭
               isPass: data.verifySeven, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
               isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '1' : '0',

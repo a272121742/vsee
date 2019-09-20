@@ -3,19 +3,19 @@ import cdb from '@lib/cdb.js';
 
 
 const list = mock({
-  'no': '@id',
-  'title': '@name',
+  no: '@id',
+  title: '@name'
 }, 100);
 
 const db = cdb.link('order', list);
 
-mock.get('/order/list', args => {
+mock.get('/order/list', () => {
   const result = db.find();
   return mock.result({
     data: {
       data: result.slice(4, 40),
       total: result.length
-    },
+    }
   });
 });
 

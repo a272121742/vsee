@@ -55,6 +55,7 @@ export default {
 
 <style lang="less" scoped>
   .ant-card {
+    height: 302px;
     /deep/ .ant-card-body {
       padding: 8px 16px;
     }

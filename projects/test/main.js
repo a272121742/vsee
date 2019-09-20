@@ -1,11 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-array-constructor */
-/* eslint-disable vars-on-top */
-/* eslint-disable no-shadow */
-/* eslint-disable no-plusplus */
-/* eslint-disable operator-assignment */
-/* eslint-disable camelcase */
-/* eslint-disable no-bitwise */
 // 加载vue
 import Vue from 'vue';
 
@@ -19,11 +11,34 @@ import { router } from '@lib/auto-router.js';
 import store from '@lib/auto-store.js';
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
-import zh from 'ant-design-vue/lib/locale-provider/zh_CN';
-import('@dir/v-permission.js')
+import moment from 'moment';
+
+// 添加进度条
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
+import AsyncComponent from '@comp/AsyncComponent';
+Vue.component('async-component', AsyncComponent);
+
+// 加载权限控制
+import('@dir/v-permission.js');
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
+
+const token = store.getters.getToken();
+// 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）
+
+router.beforeEach((to, from, next) => {
+  if (process.env.NODE_ENV === 'production' && !token) {
+    window.location.href = `/portal`;
+  }
+  NProgress.start(); // 开始进度条
+  next();
+});
+router.afterEach(() => {
+  NProgress.done(); // 完成进度条
+});
 
 // eslint-disable-next-line no-new
 new Vue({
@@ -34,8 +49,20 @@ new Vue({
   name: 'App',
   data () {
     return {
-      locale: zh
+      locale: null
     };
+  },
+  beforeCreate () {
+    this.$store && this.$store.dispatch('loadLanguage').then(locale => {
+      import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
+        this.$set(this, 'locale', res.default);
+      });
+      if (locale !== 'zh_CN') {
+        moment.locale('en');
+      } else {
+        moment.locale('zh-cn');
+      }
+    });
   },
   render () {
     return (

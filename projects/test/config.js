@@ -1,5 +1,10 @@
+export const TOKEN_KEY = 'login_token';
+export const LANGUAGE_KEY = 'language';
+export const LANGUAGE_DEFAULT = 'zh_CN';
+export const LOGIN_CACHE_KEY = 'cache_login_info';
+
 /**
- * 排除的模块
+ * 排除不运行的模块
  */
 export const excludeModules = [
 
@@ -26,7 +31,7 @@ export const API_PREFIX = '/api';
  */
 export const autoRequires = {
   // 路由模块
-  router: require.context('@@', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/router\/[A-z0-9- ./]+\.vue$/),
+  router: require.context('@@', true, /^\.(\/[A-Za-z][A-Za-z0-9_]*)+\/router\/[A-z0-9- ./]+\.vue$/),
   // 数据缓存模块
   store: require.context('@@', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/store\/index\.js$/),
   // 国际化模块
