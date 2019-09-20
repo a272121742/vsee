@@ -998,7 +998,7 @@
               </div>
             </div>
             <div class="Dcontent D0back">
-              <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)">
+              <a-row v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A4_4_2||pagePermission.A5_5_2||pagePermission.A6_3_2)||pagePermission.A6_3_1&&(backCurrent === stepCurrent)">
                 <a-col
                   :span="24"
                   style="text-align:center;"
@@ -2350,7 +2350,7 @@
                 </a-row>
               </div>
               <div
-                v-if="pagePermission.A6_2_3"
+                v-if="pagePermission.A6_2_1"
                 class="examine"
               >
                 <div class="Dtitle">
