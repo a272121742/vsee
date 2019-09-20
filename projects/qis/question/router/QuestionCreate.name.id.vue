@@ -1248,7 +1248,7 @@ export default {
     left: 0px!important;
     width: 100%!important;
     background: rgba(75,75,75,0.85);
-    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
     .top-buttons {
       width: 1200px!important;
       margin: 0 auto!important;

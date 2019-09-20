@@ -76,6 +76,7 @@ export default {
       padding-right: 0px;
       /deep/ .ant-btn-link {
         font-size: 12px;
+        color: rgba(0, 0, 0, .25)
       }
     }
     /deep/ .ant-card-body {
@@ -90,6 +91,7 @@ export default {
         margin-bottom: 0;
         font-size: 12px;
         line-height: 12px;
+        color: rgba(0, 0, 0, .25)
       }
       .ant-list-item-meta-title {
         max-width: 172px;
@@ -97,11 +99,14 @@ export default {
         overflow: hidden;
         text-overflow:ellipsis;
         a:before {
-          content: '●';
-          font-size: 6px;
+          content: '•';
+          font-size: 20px;
           margin-right: 4px;
           color: #40a9ff;
         }
+      }
+      .ant-card-extra {
+        padding: 12px 0!important;
       }
     }
   }
