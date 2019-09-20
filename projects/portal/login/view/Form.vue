@@ -3,6 +3,14 @@
     :form="form"
     @submit.stop.self.prevent="handleSubmit"
   >
+    <!-- uuid -->
+    <a-form-item>
+      <a-input
+        v-decorator="['uuid', {initialValue: record.uuid}]"
+        type="hidden"
+      >
+      </a-input>
+    </a-form-item>
     <!-- 用户名 -->
     <a-form-item>
       <v-input
@@ -72,16 +80,11 @@
         {{ $t('remember.text') }}
       </a-checkbox>
     </a-form-item>
-    <a-form-item>
-      <a-input
-        v-decorator="['uuid', {initialValue: record.uuid}]"
-        type="hidden"
-      >
-      </a-input>
-    </a-form-item>
+
     <a-form-item>
       <a-button
         type="primary"
+        size="large"
         block
         html-type="submit"
       >

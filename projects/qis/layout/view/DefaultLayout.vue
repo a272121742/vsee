@@ -15,7 +15,7 @@
       </a-spin>
     </transition>
     <!-- 开发辅助区域 -->
-    <helper v-if="$store.state.isDev"></helper>
+    <helper v-if="$store.state.isDev || $store.state.isDebug"></helper>
     <!-- 底部区域 -->
     <a-affix :offset-bottom="0">
       <a-layout-footer>

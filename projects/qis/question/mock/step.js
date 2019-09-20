@@ -248,3 +248,9 @@ mock.post('/activiti/comment/nodeComment', (data) => {
     data: db.insert(data)
   });
 });
+// 再分配责任人
+mock.post('/activiti/running/reAssignTask', (data) => {
+  return mock.result({
+    data: db.insert(data)
+  });
+});

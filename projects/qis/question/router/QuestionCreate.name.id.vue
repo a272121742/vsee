@@ -256,14 +256,10 @@
                     <!-- 责任部门 -->
                     <a-form-item :label="$t('issue.responsibleDepartmentId')">
                       <net-select
-                        v-decorator="[
-                          'responsibleDepartmentId',
-                        ]"
-                        show-search-
+                        v-decorator="['responsibleDepartmentId']"
+                        url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                        :transform="selectOptionSingn"
                         :placeholder="$t('search.please_select')"
-                        :filter-option="filterOption"
-                        url="/sys/dept/list"
-                        :transform="selectOption"
                         :delay="!isEdit"
                         :allow-clear="true"
                       >
@@ -747,6 +743,18 @@ export default {
         });
       }
     },
+    selectOptionSingn (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.name
+        })
+      })
+
+      return optionArray;
+    },
     handleSource (value) {
       this.sourceName = value;
     },
@@ -1020,21 +1028,25 @@ export default {
           });
         }
       } else if (this.name === 'edit') {
-        data.id = this.id;
-        data.optCounter = this.optCounter;
+        this.form.validateFields((err) => {
+          if (!err) {
+            data.id = this.id;
+            data.optCounter = this.optCounter;
 
-        this.editSaveQuestion(data).then(res => {
-          this.businessKey = res.id;
-          this.optCounter = res.optCounter;
-          this.$router.push({
-            name: 'QuestionDetail',
-            params: {
-              id: this.id
-            },
-            query: {
-              form: this.$route.path
-            }
-          })
+            this.editSaveQuestion(data).then(res => {
+              this.businessKey = res.id;
+              this.optCounter = res.optCounter;
+              this.$router.push({
+                name: 'QuestionDetail',
+                params: {
+                  id: this.id
+                },
+                query: {
+                  form: this.$route.path
+                }
+              })
+            })
+          }
         })
       }
     },
@@ -1077,7 +1089,6 @@ export default {
 
     },
     handleReset () {
-      this.form.resetFields();
       this.$router.push({
         path: this.$route.query.form || '/'
       });
@@ -1237,7 +1248,7 @@ export default {
     left: 0px!important;
     width: 100%!important;
     background: rgba(75,75,75,0.85);
-    box-shadow: 0 2px 6px 0 rgba(0,0,0,.65);
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
     .top-buttons {
       width: 1200px!important;
       margin: 0 auto!important;
