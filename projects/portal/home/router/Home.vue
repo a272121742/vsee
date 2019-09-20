@@ -22,7 +22,12 @@
                 @click.stop.prevent="jumpToModule('qis')"
               >
                 <div class="module-container">
-                  <img src="/static/portal/zhiliang.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#iconzhiliang-"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   质量问题分析
@@ -35,7 +40,12 @@
             >
               <div class="module-wrapper">
                 <div class="module-container">
-                  <img src="/static/portal/dashuju.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#icondashuju-"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   大数据平台
@@ -48,7 +58,12 @@
             >
               <div class="module-wrapper">
                 <div class="module-container">
-                  <img src="/static/portal/zhuisu.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#iconzhuisu-"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   整车追溯
@@ -61,7 +76,12 @@
             >
               <div class="module-wrapper">
                 <div class="module-container">
-                  <img src="/static/portal/shouhou.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#iconshouhou-"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   售后质量
@@ -74,7 +94,12 @@
             >
               <div class="module-wrapper">
                 <div class="module-container">
-                  <img src="/static/portal/guocheng.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#iconguocheng-"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   过程质量
@@ -87,7 +112,12 @@
             >
               <div class="module-wrapper">
                 <div class="module-container">
-                  <img src="/static/portal/guocheng.png">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use xlink:href="#iconzhiliang-1"></use>
+                  </svg>
                 </div>
                 <div class="module-link">
                   系统设置
@@ -153,6 +183,9 @@ export default {
         border-color: rgba(0, 0, 0, 0);
         transition: box-shadow 1s ease;
         box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+        .icon {
+          font-size: 48px;
+        }
       }
       .module-link {
         margin-top: 10px;

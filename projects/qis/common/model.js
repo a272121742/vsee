@@ -5,7 +5,8 @@ export const issueColumns = [{
   // 问题编号
   title: 'code',
   dataIndex: 'code',
-  width: 120,
+  width: 130,
+  fixed: true,
   scopedSlots: { customRender: 'code' }
 }, {
   // 标题

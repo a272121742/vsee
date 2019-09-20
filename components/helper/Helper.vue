@@ -34,12 +34,9 @@
       </a-row>
       <a-row>
         刷新页面
-        <async-component
-          path="@comp/button/RefreshButton.vue"
-          style="margin-left: 24px;"
-        >
+        <a-button @click="refresh">
           刷新
-        </async-component>
+        </a-button>
       </a-row>
       <a-row>
         国际化
@@ -87,6 +84,10 @@ export default {
     // 重新加载验证码
     reloadCaptcha () {
       this.$store.dispatch('loadUUID');
+    },
+    // 刷新
+    refresh () {
+      this.$store.dispatch('refresh');
     },
     // 提交授权
     submitAuth (e) {

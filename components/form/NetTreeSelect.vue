@@ -1,9 +1,10 @@
 <template>
   <a-tree-select
-    v-bind="$attrs"
-    v-on="$listeners"
-    :tree-data="data"
     ref="treeSelect"
+    v-bind="$attrs"
+    :value="value"
+    :tree-data="data"
+    v-on="$listeners"
   >
   </a-tree-select>
 </template>
