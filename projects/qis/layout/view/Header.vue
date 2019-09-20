@@ -11,8 +11,31 @@
         <banner
           title="质量问题分析解决平台"
         ></banner>
+        <!-- <a-menu
+          :selected-keys="defaultActiveMenu"
+          mode="horizontal"
+        >
+          <template v-for="item in menus">
+            <a-menu-item
+              v-if="!item.children"
+              :key="item.id"
+              @click="jump(item.url)"
+            >
+              <a-icon
+                v-if="item.icon"
+                :type="item.icon"
+              ></a-icon>
+              <span>{{ item.name }}</span>
+            </a-menu-item>
+            <sub-menu
+              v-else
+              :key="item.id"
+              :menus-info="item"
+            />
+          </template>
+        </a-menu> -->
         <a-menu
-          :selected-keys="custMenu"
+          :selected-keys="defaultActiveMenu"
           mode="horizontal"
         >
           <a-menu-item
@@ -78,7 +101,10 @@ export default {
     };
   },
   computed: {
-    custMenu () {
+    // menus () {
+    //   return this.$store.state.menus;
+    // },
+    defaultActiveMenu () {
       return [this.$route.name || 'Home'];
     },
     user () {
@@ -87,8 +113,13 @@ export default {
   },
   methods: {
     jump (path) {
-      this.$router.push({ path });
-      this.$store.dispatch('refresh');
+      const resolved = this.$router.resolve(path).resolved;
+      if (resolved.name === '404') {
+        this.$message.warning('前端未配置的路由');
+      } else {
+        this.$router.push({ path: resolved.path });
+        this.$store.dispatch('refresh');
+      }
     },
     logoutHandle () {
       this.$store && this.$store.dispatch('layout/logout');

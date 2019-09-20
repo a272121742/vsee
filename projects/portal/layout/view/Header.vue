@@ -47,6 +47,11 @@ export default {
     Banner: () => import('@comp/head/Banner.vue'),
     LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
   },
+  computed: {
+    menus () {
+      return this.$store.menus;
+    }
+  },
   methods: {
     logoutHandle () {
       this.$store.dispatch('login/logout');
