@@ -441,15 +441,8 @@
           >
             提交
           </a-button>
-          <!-- <a-button
-            v-if="pagePermission.button_commit_3"
-            style="marginLeft: 8px"
-            class="saveBtn"
-            @click="handleSave"
-          >
-            保存
-          </a-button> -->
           <a-button
+            v-if="pagePermission.button_commit_3"
             style="marginLeft: 8px"
             class="saveBtn"
             @click="handleSave"
