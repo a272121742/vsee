@@ -1,6 +1,5 @@
 <template>
   <a-button
-    style="border: none;"
     ghost
     shape="circle"
     type="primary"

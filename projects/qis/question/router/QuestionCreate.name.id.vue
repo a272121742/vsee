@@ -50,6 +50,7 @@
         class="cardTitle"
       >
         <a-form
+          ref="form"
           class="ant-advanced-search-form"
           :form="form"
           @submit="handleSearch"
@@ -840,6 +841,7 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
     goBack () {
+      this.form.resetFields();
       this.$router.push({
         path: this.$route.query.form || '/'
       });

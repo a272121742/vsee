@@ -195,7 +195,7 @@ export default {
      */
     fetch () {
       return new Promise((resolve, reject) => {
-        if (this.url) {
+        if (this.url && process.env.NODE_ENV === 'production') {
           $.get(this.url, { listCode: this.id }).then(res => {
             resolve(JSON.parse(res.expression));
           }).catch(err => {
