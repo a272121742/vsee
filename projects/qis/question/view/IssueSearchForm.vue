@@ -55,7 +55,8 @@
           />
         </a-form-item>
       </a-col>
-      <a-col
+      <!-- TODO: 目前需求暂时不需要，待定 -->
+      <!-- <a-col
         :span="8"
       >
         <a-form-item label="$t('search.champion')">
@@ -66,7 +67,7 @@
             placeholder="$t('search.champion')"
           />
         </a-form-item>
-      </a-col>
+      </a-col> -->
       <a-col
         :span="8"
         style="float: right;"
@@ -79,16 +80,19 @@
           >
             <a-button
               type="primary"
+              class="advance-action"
               @click="submitSearch"
             >
               {{ $t('search.search_button') }}
             </a-button>
             <a-button
+              class="advance-action"
               @click="resetSearch"
             >
               {{ $t('search.reset_button') }}
             </a-button>
             <a-button
+              class="advance-action"
               @click="cancelSearch"
             >
               {{ $t('search.cancel_button') }}
@@ -178,5 +182,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+  .advance-action {
+    margin-left: 4px;
+  }
 </style>

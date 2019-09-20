@@ -8,7 +8,7 @@
     "to_portal": "返回TQIS首页",
     "logout": "退出系统"
   },
-  "Server": {
+  "SERVER": {
     "ERROR": {
       "undefined": "错误代码未定义",
       "0": "正常请求",

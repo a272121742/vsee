@@ -144,7 +144,30 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+  /deep/ .ant-table{
+    // 设置表格内容不换行
+    table {
+      // width: 100%; /*必须设置，否则还是会拉长单元格*/
+      table-layout: fixed;/*只有定义表格的算法为fixed,th才有效果*/
+      word-wrap:break-all;
+    }
+    th > div, td {
+      overflow:hidden;/*超出长度的文字隐藏*/
+      text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
+      white-space:nowrap;/*强制不换行*/
+      word-break:keep-all;/*文字不换行*/
+    }
+    // 设置单元格内填充
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 16px;
+    }
+    // 矫正排序按钮的位置
+    .ant-table-column-sorter {
+      right: 16px!important;
+      margin-top: -10px!important;
+    }
+  }
   /deep/ .ant-pagination {
     display: inline-flex;
     li.ant-pagination-item,

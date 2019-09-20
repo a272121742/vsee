@@ -116,27 +116,11 @@ export default {
 </script>
 <style lang="less" scoped>
   .container {
-    margin: 16px 0;
+    margin: 16px auto;
     padding: 4px 16px 0;
     background-color: #FFFFFF;
     border-radius: 4px;
     border-radius: 4px;
-    /deep/ .ant-table{
-      table {
-        width: 100%; /*必须设置，否则还是会拉长单元格*/
-        table-layout: fixed;/*只有定义表格的算法为fixed,th才有效果*/
-        word-wrap:break-all;
-      }
-      th > div, td {
-        overflow:hidden;/*超出长度的文字隐藏*/
-        text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
-        white-space:nowrap;/*强制不换行*/
-        word-break:keep-all;/*文字不换行*/
-      }
-    }
-  }
-  /deep/.ant-table-thead > tr > th, /deep/.ant-table-tbody > tr > td {
-      padding: 16px 11px;
   }
  /deep/ .ant-form-item {
     display: flex;

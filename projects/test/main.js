@@ -31,7 +31,7 @@ const token = store.getters.getToken();
 
 router.beforeEach((to, from, next) => {
   if (process.env.NODE_ENV === 'production' && !token) {
-    window.location.href = `/portal`;
+    window.location.href = `/`;
   }
   NProgress.start(); // 开始进度条
   next();
