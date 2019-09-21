@@ -1397,6 +1397,17 @@
                   </a-form-item>
                 </a-col>
               </a-row>
+              <a-row v-if="record.verifySeven==='0'">
+                <a-col :span="21">
+                  <a-form-item :label="'不通过原因：'">
+                    <a-textarea
+                      v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                      placeholder="请输入"
+                    >
+                    </a-textarea>
+                  </a-form-item>
+                </a-col>
+              </a-row>
             </div>
             <div
               v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
@@ -1725,7 +1736,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent!=3&&backCurrent==3&&backFlag"
+              v-if="stepCurrent==3&&backCurrent==3"
               class="Dcontent D3back"
             >
               <div v-if="pagePermission.A3_1_2">
@@ -2896,7 +2907,7 @@ export default {
     this.formDcontent = this.$form.createForm(this, {
       mapPropsToFields: () => createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6',
+        'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6', 'isPass',
 
         'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
