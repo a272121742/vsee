@@ -922,13 +922,13 @@
               v-if="stepCurrent!=0&&backCurrent==0&&backFlag"
               class="Dcontent D0back"
             >
-              <div
-                class="triangle_border_up"
-                style="left:80px;"
-              >
-                <span></span>
-              </div>
               <div v-if="pagePermission.A0_2||pagePermission.A0_1_2">
+                <div
+                  class="triangle_border_up"
+                  style="left:80px;"
+                >
+                  <span></span>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`立项条件`">
@@ -2309,7 +2309,10 @@
               class="Dcontent D6content"
             >
               <div v-if="pagePermission.A6_1_3">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:896px;"
+                >
                   <span></span>
                 </div>
                 <a-row>
@@ -2360,7 +2363,10 @@
               class="Dcontent D6back"
             >
               <div v-if="pagePermission.A6_1_2">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:896px;"
+                >
                   <span></span>
                 </div>
                 <div class="Dtitle">
