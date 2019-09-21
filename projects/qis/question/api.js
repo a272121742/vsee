@@ -38,7 +38,7 @@ export default {
    */
   examineDetail: (data) => $.post('/activiti/comment/nodeComment', data),
   // 再分配
-  redistribution: (data) => $.post('/activiti/running/reAssignTask', data),
+  redistributionFun: (data) => $.post('/activiti/running/reAssignTask', data),
   /**
    * 措施判定保存
    */

@@ -2,30 +2,55 @@
   <div id="components-form-demo-advanced-search">
     <a-modal
       title="再分配"
-      :visible="visible"
+      :visible="visibleRes"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
+      style="height:232px;"
       @ok="handleUser"
       @cancel="handleCancel"
     >
       <a-form
         class="ant-advanced-search-form"
         :form="rediStribution"
-        style="height:50px;margin-top:20px;"
+        style="margin-top:20px;"
       >
-        <a-col :span="24">
-          <a-form-item :label="`选择责任人`">
-            <net-select
-              v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-              url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
-              :transform="selectOptionChampion"
-              placeholder="请选择"
-              :allow-clear="true"
-              style="width:272px;height:32px;"
-            >
-            </net-select>
-          </a-form-item>
-        </a-col>
+        <a-row>
+          <a-col :span="21">
+            <a-form-item :label="`责任部门`">
+              <net-select
+                v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
+                url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                :transform="selectOption"
+                :delay="true"
+                placeholder="请选择"
+                :allow-clear="true"
+                style="width:272px;height:32px;"
+              >
+              </net-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="21">
+            <a-form-item :label="`责任人`">
+              <net-select
+                v-decorator="[
+                  'champion',
+                  {rules:[{required:true, message:'请选择责任人'}]}
+                ]"
+                :placeholder="$t('search.please_select')"
+                :disabled="!redistributionForm.owerDeptLv1"
+                :delay="true"
+                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${redistributionForm.owerDeptLv1}`"
+                :cache="false"
+                :transform="selectOptionChampion"
+                :allow-clear="true"
+                style="width:272px;height:32px;"
+              >
+              </net-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-modal>
     <a-modal
@@ -1061,9 +1086,30 @@
                       <a-col :span="21">
                         <a-form-item :label="`责任人`">
                           <net-select
-                            v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                            v-decorator="[
+                              'champion',
+                              {rules:[{required:true, message:'请选择责任人'}]}
+                            ]"
+                            :placeholder="$t('search.please_select')"
+                            :disabled="!record.owerDeptLv1"
+                            :delay="true"
                             :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+                            :cache="false"
                             :transform="selectOptionChampion"
+                            :allow-clear="true"
+                            style="width:272px;height:32px;"
+                          >
+                          </net-select>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <!-- <a-row>
+                      <a-col :span="21">
+                        <a-form-item :label="`责任部门`">
+                          <net-select
+                            v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
+                            url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                            :transform="selectOption"
                             :delay="true"
                             placeholder="请选择"
                             :allow-clear="true"
@@ -1073,6 +1119,23 @@
                         </a-form-item>
                       </a-col>
                     </a-row>
+                    <a-row>
+                      <a-col :span="21">
+                        <a-form-item :label="`责任人`">
+                          <net-select
+                            v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
+                            :transform="selectOptionChampion"
+                            :disabled="!record.owerDeptLv1"
+                            :delay="true"
+                            placeholder="请选择"
+                            :allow-clear="true"
+                            style="width:272px;height:32px;"
+                          >
+                          </net-select>
+                        </a-form-item>
+                      </a-col>
+                    </a-row> -->
 
                     <a-row>
                       <a-col :span="21">
@@ -2688,6 +2751,7 @@ export default {
       RejectTrue: true,
       analysisId: '',
       fileNameFlag: true,
+      visibleRes: false,
       visible: false,
       visibleAnalysis: false, // 7钻编辑弹框
       visibleDetail: false, // 7钻详情
@@ -2842,8 +2906,8 @@ export default {
         isNeedIca: '1', // 是否需要围堵措施
         icaDescription: '', // 围堵措施
         // D1
-        owerDeptLv1: [], // 责任部门
-        champion: [], // 责任人
+        owerDeptLv1: '', // 责任部门
+        champion: '', // 责任人
         type: '0', // 判定
         verifySeven: '2', // 7钻审核
         sevenFailReason: '', // 不通过原因
@@ -2889,7 +2953,8 @@ export default {
       // 再分配
 
       redistributionForm: {
-        dtfUser: ''
+        owerDeptLv1: '',
+        champion: ''
       },
       // 7钻分析弹框数据绑定
       recordAnalysis: {
@@ -2929,7 +2994,7 @@ export default {
       onValuesChange: autoUpdateFileds(this, 'record')
     });
     this.rediStribution = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, ['dtfUser'], 'redistributionForm'),
+      mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'], 'redistributionForm'),
       onValuesChange: autoUpdateFileds(this, 'redistributionForm')
     });
     this.AnalysisForm = this.$form.createForm(this, {
@@ -2990,7 +3055,7 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistribution'
+      'redistributionFun'
     ]),
     disabledDate (current) {
       return current && current > moment().endOf('day');
@@ -3256,7 +3321,7 @@ export default {
       //   pageNo: 1
       // }
       // 查看问题详情
-      this.eidtQuestion(this.id).then(res => {
+      const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
         this.detailList = res;
         this.getSysUser({
@@ -3273,7 +3338,7 @@ export default {
         })
         this.processInstanceId = res.processInstanceId
       })
-      this.getStatusCode(this.id).then(res => {
+      const statusCode2 = this.getStatusCode(this.id).then(res => {
         if (res) {
           this.statusCode.statusMaxCode = res.statusMaxCode
           this.statusCode.statusNewCode = res.statusNewCode
@@ -3283,6 +3348,7 @@ export default {
           console.info(Math.floor((res.statusNewCode) / 100000) - 1)
           console.info('stepCurrent:' + this.stepCurrent)
           console.info('stepMax:' + this.stepMax)
+          this.getQuestionStepAll(this.id);
         }
       })
       this.getIssueAutomousRegion(this.id).then(res => {
@@ -3292,6 +3358,31 @@ export default {
           that.pagePermission[item.DETAIL_REGION] = true
         })
         console.info(this.pagePermission)
+      })
+
+      Promise.all([editDetail, statusCode2]).then((res1) => {
+        console.log(res1);
+        if (this.stepCurrent === 2) {
+          const paramExamine = {
+            businessKey: this.issueId,
+            processInstanceId: this.processInstanceId,
+            taskDefList: [
+              'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
+              'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
+              'sid-146F6433-8468-483A-B046-370C99C4F0E2',
+              'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
+              'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
+              'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
+              'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
+              'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
+              'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+            ]
+
+          };
+          this.examineDetail(paramExamine).then(res => {
+            this.examineReason = res.fullMessage;
+          })
+        }
       })
       /* this.getAnalysis(this.id).then(res => {
           this.analysisData = res.list;
@@ -3329,7 +3420,6 @@ export default {
       this.getRecord().then(res => {
         this.dataRecord = res.list;
       });
-      this.getQuestionStepAll(this.id);
     },
     getQuestionStepAll (id) {
       // this.getQuestionStep(this.id).then(res => {
@@ -3381,31 +3471,10 @@ export default {
           this.analysisId = res.id;
         }
       })
-      if (this.stepCurrent === 2) {
-        const paramExamine = {
-          businessKey: this.issueId,
-          processInstanceId: this.processInstanceId,
-          taskDefList: [
-            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
-            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
-            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
-            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
-            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
-            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
-            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
-            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
-            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
-          ]
-
-        };
-        this.examineDetail(paramExamine).then(res => {
-          this.examineReason = res.fullMessage;
-        })
-      }
     },
     // 再分配弹框
     showModal () {
-      this.visible = true
+      this.visibleRes = true;
     },
     handleOk () {
       this.ModalText = 'The modal will be closed after two seconds';
@@ -3416,7 +3485,7 @@ export default {
       }, 2000);
     },
     handleCancel () {
-      this.visible = false
+      this.visibleRes = false
     },
     // 是否需要7钻分析
     determineChange (e) {
@@ -3522,7 +3591,10 @@ export default {
             }
           }
           vm.workFlowSubmit(transData).then(res => {
-            this.taskId = res.taskId;
+            if (res.taskId) {
+              this.taskId = res.taskId;
+            }
+
             vm.$message.success('提交成功');
           });
         }
@@ -3534,13 +3606,13 @@ export default {
         if (!err) {
           const data = this.rediStribution.getFieldsValue();
           const param = {
-            taskId: this.taskId,
+            taskId: this.detailList.taskId,
             variable: {
               champion: data.champion
             }
           }
-          this.rediStribution(param).then(res => {
-            console.log(res);
+          this.redistributionFun(param).then(res => {
+            this.visibleRes = false;
           })
         }
       })
