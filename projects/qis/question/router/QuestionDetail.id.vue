@@ -1042,16 +1042,17 @@
               </a-row>
             </div>
             <div
+              v-if="backCurrent===1"
               class="Dcontent D1content"
             >
-              <div v-if="pagePermission.A1_1_3">
+              <div>
                 <div
                   class="triangle_border_up"
                   style="left:216px;"
                 >
                   <span></span>
                 </div>
-                <div>
+                <div v-if="pagePermission.A1_1_3">
                   <a-row style="margin-left:340px;">
                     <a-col :span="21">
                       <a-form-item>
@@ -1339,7 +1340,7 @@
                         </a-form-item>
                       </a-row>
                     </div>
-                    <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3">
+                    <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3||pagePermission.A1_3_2">
                       <a-row>
                         <a-form-item>
                           <span>6钻分析</span>
@@ -1470,7 +1471,7 @@
               </a-row>
             </div>
             <div
-              v-if="stepCurrent!=1&&backCurrent==1&&backFlag&&pagePermission.A1_1_2"
+              v-if="backCurrent==1&&pagePermission.A1_1_2"
               class="Dcontent D1back"
             >
               <div
@@ -2645,10 +2646,10 @@ const columnsAnalysis = [{
 },
 {
   title: '附件',
-  dataIndex: 'file',
+  dataIndex: 'files',
   align: 'center',
   scopedSlots: {
-    customRender: 'file'
+    customRender: 'files'
   }
 },
 {
@@ -2764,29 +2765,7 @@ export default {
       columnsUpdate,
       AnalysisTitle: '1钻-过程是否正确',
       data: [],
-      analysisData: [
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        },
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        },
-        {
-          standard: '标准',
-          actualSituation: '实际情况',
-          conclusion: '结论',
-          file: '文件',
-          operation: '编辑'
-        }
-      ], // 7钻分析表格
+      analysisData: [], // 7钻分析表格
       updateData: [], // 文件更新表格
       DetailForm: [], // 7钻查看表格
       updateForm: null, // 文件更新弹框表单
@@ -3432,9 +3411,71 @@ export default {
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
         (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
-          item.operation = '操作'
+          item.operation = '查看'
         })
-        this.analysisData = this.issueDefinitionData.sevenDiamondsVos
+        const status = Number(this.detailList.status)
+        const pagePermission = this.pagePermission
+        if (status >= 200200 && status < 200500) {
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < 3; i++) {
+            if (status === 200200) {
+              this.issueDefinitionData.sevenDiamondsVos[i].operation = '编辑'
+            }
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+          }
+          if ((!pagePermission.A1_3_3) && status === 200200) {
+            this.analysisData = []
+          }
+        }
+        if (status >= 200500 && status < 200800) {
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < 4; i++) {
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+          }
+          if (status === 200500) {
+            this.issueDefinitionData.sevenDiamondsVos[3].operation = '编辑'
+            if (!pagePermission.A1_6_3) {
+              this.analysisData.pop()
+            }
+          }
+        }
+        if (status >= 200800 && status < 201100) {
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < 5; i++) {
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+          }
+          if (status === 200800) {
+            this.issueDefinitionData.sevenDiamondsVos[4].operation = '编辑'
+            if (!pagePermission.A1_9_3) {
+              this.analysisData.pop()
+            }
+          }
+        }
+        if (status >= 201100 && status < 201400) {
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < 6; i++) {
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+          }
+          if (status === 201100) {
+            this.issueDefinitionData.sevenDiamondsVos[5].operation = '编辑'
+            if (!pagePermission.A1_12_3) {
+              this.analysisData.pop()
+            }
+          }
+        }
+        if (status >= 201400) {
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < 7; i++) {
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+          }
+          if (status === 201400) {
+            this.issueDefinitionData.sevenDiamondsVos[6].operation = '编辑'
+            if (!pagePermission.A1_15_3) {
+              this.analysisData.pop()
+            }
+          }
+        }
+        console.info(this.analysisData)
       });
       this.rootCause(id).then(res => {
         this.rootCauseData = res || {};
