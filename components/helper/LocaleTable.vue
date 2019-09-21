@@ -1,5 +1,6 @@
 <template>
   <div>
+    搜索 <a-input @change="changeKey" />
     <a-table
       :data-source="data"
       :columns="columns"
@@ -12,7 +13,7 @@
 </template>
 
 <script>
-
+const dataSource = [];
 
 const isObject = val => val && typeof val === 'object';
 function reduceTree (tree1, tree2, arr = [], bef = '') {
@@ -52,7 +53,13 @@ export default {
   created () {
     const msg = this.$i18n.messages;
     const d = reduceTree(msg.zh, msg.en);
+    dataSource.push(...d);
     this.$set(this, 'data', d);
+  },
+  methods: {
+    changeKey (e) {
+      this.$set(this, 'data', dataSource.filter(item => ~item.key.indexOf(e.target.value)));
+    }
   }
 }
 </script>

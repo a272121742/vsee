@@ -16,7 +16,10 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <language-radio />
-          <a-dropdown :trigger="['click', 'hover']">
+          <a-dropdown
+            class="user-info"
+            :trigger="['click', 'hover']"
+          >
             <span>
               <a-avatar icon="user">
               </a-avatar>
@@ -87,6 +90,7 @@ export default {
       flex: 0 1 calc(100% - 128px);
       display: flex;
       .logo {
+        cursor: pointer;
         width: 168px;
         height: 40px;
         margin: 12px 16px 12px 0;
@@ -123,6 +127,10 @@ export default {
     .user-wrapper {
       float: right;
       height: 100%;
+      .user-info {
+        cursor: pointer;
+        display: inline-block;
+      }
     }
   }
 </style>

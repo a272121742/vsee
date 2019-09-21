@@ -8,7 +8,9 @@
     <transition name="page-transition">
       <a-spin :spinning="refreshing">
         <a-layout-content v-if="!refreshing">
-          <router-view class="child-view" />
+          <div class="child-view">
+            <router-view />
+          </div>
         </a-layout-content>
       </a-spin>
     </transition>
