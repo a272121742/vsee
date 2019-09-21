@@ -78,8 +78,8 @@ export default {
     return api.examineDetail(data);
   },
   // 再分配责任人
-  redistribution (store, data) {
-    return api.redistribution(data);
+  redistributionFun (store, data) {
+    return api.redistributionFun(data);
   },
   /**
    * 修改保存问题

@@ -99,7 +99,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': { 
+      'process.env': {
         ...require('../config/dev.env'),
         project: JSON.stringify(utils.project),
         isTest: JSON.stringify(!!process.env.npm_config_test)
@@ -148,10 +148,10 @@ module.exports = new Promise((resolve, reject) => {
         compilationSuccessInfo: {
           messages: [
             `项目： ${utils.project}`,
-            `编辑模式： ${env.testing === 'true' ? '联调开发模式' : '离线开发模式'}`, `您的应用已启动： http://${devWebpackConfig.devServer.host}:${port}`],
+            `编辑模式： ${env.testing === 'true' ? '联调开发模式' : '离线开发模式'}`, `您的应用已启动： http://${devWebpackConfig.devServer.host}:${port}`]
         },
-        onErrors: config.dev.notifyOnErrors ?
-          utils.createNotifierCallback() : undefined
+        onErrors: config.dev.notifyOnErrors
+          ? utils.createNotifierCallback() : undefined
       }))
 
       resolve(devWebpackConfig)
