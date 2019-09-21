@@ -226,7 +226,6 @@
                           'failureDate'
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
-                        :disabled-date="disabledDate"
                         :placeholder="$t('search.please_select')"
                         show-time
                         style="width:261px;"
@@ -412,7 +411,6 @@
                         'productDate'
                       ]"
                       :placeholder="$t('search.please_select')"
-                      :disabled-date="disabledDate"
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:261px;"
@@ -757,9 +755,6 @@ export default {
     },
     handleSource (value) {
       this.sourceName = value;
-    },
-    disabledDate (current) {
-      return current && current > moment().endOf('day');
     },
     // 文件下载
     downFile (info) {
