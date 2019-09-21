@@ -812,7 +812,7 @@
                       src="/static/img/kongxinyuan.png"
                     />
                     <img
-                      v-if="(stepCurrent == stepMax) && stepCurrent < index"
+                      v-if="(stepCurrent >= stepMax) && stepCurrent < index"
                       src="/static/img/huiseyuan.png"
                     />
                     <img
@@ -859,7 +859,7 @@
               </a-steps>
             </div>
             <div
-              v-if="stepCurrent===0&&backFlag===false"
+              v-if="stepCurrent===0&&pagePermission.A0_1_3"
               class="Dcontent D0content"
             >
               <div v-if="pagePermission.A0_1_3">
@@ -943,10 +943,10 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent!=0&&backCurrent==0&&backFlag"
+              v-if="stepCurrent===0&&backCurrent===0"
               class="Dcontent D0back"
             >
-              <div v-if="pagePermission.A0_2||pagePermission.A0_1_2">
+              <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
                 <div
                   class="triangle_border_up"
                   style="left:80px;"
@@ -956,11 +956,11 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`立项条件`">
-                      <p>{{ problemDefinitionData.isProject==='0'?'是':'否' }}</p>
+                      <p>{{ problemDefinitionData.isProject==='1'?'是':'否' }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <div v-if="problemDefinitionData.isProject==='0'">
+                <div v-if="problemDefinitionData.isProject==='1'">
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`需要围堵措施`">
@@ -976,11 +976,11 @@
                     </a-col>
                   </a-row>
                 </div>
-                <div v-if="stepDetail.isProject==='1'">
+                <div v-if="problemDefinitionData.isProject==='0'">
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`理由`">
-                        <p>{{ stepDetail.dissatisfaction }}</p>
+                        <p>{{ problemDefinitionData.dissatisfaction }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1170,7 +1170,7 @@
                             <span>第1钻： 过程是否正确？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 placeholder="请选择"
@@ -1184,7 +1184,7 @@
                             <span>第2钻： 工具是否正确？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 placeholder="请选择"
@@ -1198,7 +1198,7 @@
                             <span>第3钻： 物料是否正确？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 placeholder="请选择"
@@ -1212,7 +1212,7 @@
                             <span>第4钻： 物料规格检测？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser4',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner4',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=SQE`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
@@ -1227,7 +1227,7 @@
                             <span>第5钻： 过程变更？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser5',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner5',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=ME`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
@@ -1242,7 +1242,7 @@
                             <span>第6钻： 部件变更？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser6',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner6',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TC`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
@@ -1257,7 +1257,7 @@
                             <span>第7钻： 是否是极端复杂问题？</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['zuanUser7',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner7',{rules: [{ required: true, message: '请选择责任人' }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TFT`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
@@ -1274,7 +1274,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="statusCode.statusMaxCode > 200100"
+                  v-if="200100 < statusCode.statusMaxCode "
                   class="analysisList clearfix"
                 >
                   <div class="analysisTitle">
@@ -1534,31 +1534,31 @@
                       </li>
                       <li class="clearfix">
                         <span>第1钻： 过程是否正确？</span>
-                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner1 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第2钻： 工具是否正确？</span>
-                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner1 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第3钻： 物料是否正确？</span>
-                        <span>{{ issueDefinitionData.zuanUser1 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner1 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第4钻： 物料规格检测？</span>
-                        <span>{{ issueDefinitionData.zuanUser4 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner4 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第5钻： 过程变更？</span>
-                        <span>{{ issueDefinitionData.zuanUser5 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner5 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第6钻： 部件变更？</span>
-                        <span>{{ issueDefinitionData.zuanUser6 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner6 }}</span>
                       </li>
                       <li class="clearfix">
                         <span>第7钻： 是否是极端复杂问题？</span>
-                        <span>{{ issueDefinitionData.zuanUser7 }}</span>
+                        <span>{{ issueDefinitionData.diamondOwner7 }}</span>
                       </li>
                     </ul>
                   </div>
@@ -2914,11 +2914,11 @@ export default {
         comment: '', // 不通过原因
         // 7钻责任人
         endSeven: '1',
-        zuanUser1: '',
-        zuanUser4: '',
-        zuanUser5: '',
-        zuanUser6: '',
-        zuanUser7: '',
+        diamondOwner1: '',
+        diamondOwner4: '',
+        diamondOwner5: '',
+        diamondOwner6: '',
+        diamondOwner7: '',
         // D2
         rootCauseDescription: '',
         D2file: [],
@@ -2947,7 +2947,7 @@ export default {
         signLeaderId: '',
         Review: '1',
         signRemark: '',
-        isClose: '1',
+        isClose: '0',
         reason: ''
       },
       // 再分配
@@ -2983,9 +2983,9 @@ export default {
     this.formDcontent = this.$form.createForm(this, {
       mapPropsToFields: () => createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'zuanUser1', 'zuanUser4', 'zuanUser5', 'zuanUser6', 'isPass',
+        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
 
-        'zuanUser7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
         'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
         'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
@@ -3346,6 +3346,7 @@ export default {
           this.stepMax = Math.floor((res.statusMaxCode) / 100000) - 1
           this.backCurrent = this.stepCurrent
           console.info(Math.floor((res.statusNewCode) / 100000) - 1)
+          console.info('statusMaxCode:' + this.statusCode.statusMaxCode)
           console.info('stepCurrent:' + this.stepCurrent)
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
@@ -3569,7 +3570,7 @@ export default {
             variables: {
               businessKey: this.id, // 问题id
               comment: data.comment || '0',
-              assigner: data.zuanUser1,
+              assigner: data.diamondOwner1,
               coChair: vm.sysUser.coChair,
               monitor: vm.sysUser.monitor,
               champion: data.champion, // 责任人
@@ -3583,11 +3584,11 @@ export default {
               isLeaderSign: '0', // 领导加签
               isItem: data.isProject, // 是否立项
               isWD: data.isNeedIca, // 是否围堵
-              diamondOwner1: data.zuanUser1,
-              diamondOwner4: data.zuanUser4,
-              diamondOwner5: data.zuanUser5,
-              diamondOwner6: data.zuanUser6,
-              diamondOwner7: data.zuanUser7
+              diamondOwner1: data.diamondOwner1,
+              diamondOwner4: data.diamondOwner4,
+              diamondOwner5: data.diamondOwner5,
+              diamondOwner6: data.diamondOwner6,
+              diamondOwner7: data.diamondOwner7
             }
           }
           vm.workFlowSubmit(transData).then(res => {
@@ -3632,45 +3633,45 @@ export default {
       if (this.stepCurrent === 1) {
         data.optCounter = _this.issueDefinitionData.optCounter;
         _this.analysisData = _this.analysisData || []
-        if (this.record.zuanUser1) {
+        if (this.record.diamondOwner1) {
           _this.analysisData.push({
-            champion: this.record.zuanUser1,
+            champion: this.record.diamondOwner1,
             type: 'DIAMONDS01'
           })
         }
-        if (this.record.zuanUser1) {
+        if (this.record.diamondOwner1) {
           _this.analysisData.push({
-            champion: this.record.zuanUser1,
+            champion: this.record.diamondOwner1,
             type: 'DIAMONDS02'
           })
         }
-        if (this.record.zuanUser1) {
+        if (this.record.diamondOwner1) {
           _this.analysisData.push({
-            champion: this.record.zuanUser1,
+            champion: this.record.diamondOwner1,
             type: 'DIAMONDS03'
           })
         }
-        if (this.record.zuanUser4) {
+        if (this.record.diamondOwner4) {
           _this.analysisData.push({
-            champion: this.record.zuanUser4,
+            champion: this.record.diamondOwner4,
             type: 'DIAMONDS04'
           })
         }
-        if (this.record.zuanUser5) {
+        if (this.record.diamondOwner5) {
           _this.analysisData.push({
-            champion: this.record.zuanUser5,
+            champion: this.record.diamondOwner5,
             type: 'DIAMONDS05'
           })
         }
-        if (this.record.zuanUser6) {
+        if (this.record.diamondOwner6) {
           _this.analysisData.push({
-            champion: this.record.zuanUser6,
+            champion: this.record.diamondOwner6,
             type: 'DIAMONDS06'
           })
         }
-        if (this.record.zuanUser7) {
+        if (this.record.diamondOwner7) {
           _this.analysisData.push({
-            champion: this.record.zuanUser7,
+            champion: this.record.diamondOwner7,
             type: 'DIAMONDS07'
           })
         }
