@@ -943,7 +943,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===0&&backCurrent===0"
+              v-if="backCurrent===0"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -1335,7 +1335,7 @@
                       </a-row>
                       <a-row>
                         <a-form-item :label="'不通过原因：'">
-                          <label>{{ examineReason }}</label>
+                          <label>不通过</label>
                         </a-form-item>
                       </a-row>
                     </div>
@@ -3613,7 +3613,6 @@ export default {
           this.redistributionFun(param).then(res => {
             console.info(res)
             this.visibleRes = false;
-            console.log(res);
           })
         }
       })
