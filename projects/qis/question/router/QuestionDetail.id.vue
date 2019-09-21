@@ -1017,17 +1017,15 @@
               </a-row>
             </div>
             <div
-              v-if="pagePermission.A1_1_3"
               class="Dcontent D1content"
             >
-              <div
-                class="triangle_border_up"
-                style="left:216px;"
-              >
-                <span></span>
-              </div>
-              <!---<div v-if="pagePermission.A1_1_3">-->
-              <div>
+              <div v-if="pagePermission.A1_1_3">
+                <div
+                  class="triangle_border_up"
+                  style="left:216px;"
+                >
+                  <span></span>
+                </div>
                 <div>
                   <a-row style="margin-left:340px;">
                     <a-col :span="21">
