@@ -1211,7 +1211,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="statusCode.statusMaxCode > 200100"
+                  v-if="200100 < statusCode.statusMaxCode "
                   class="analysisList clearfix"
                 >
                   <div class="analysisTitle">
@@ -3281,6 +3281,7 @@ export default {
           this.stepMax = Math.floor((res.statusMaxCode) / 100000) - 1
           this.backCurrent = this.stepCurrent
           console.info(Math.floor((res.statusNewCode) / 100000) - 1)
+          console.info('statusMaxCode:' + this.statusCode.statusMaxCode)
           console.info('stepCurrent:' + this.stepCurrent)
           console.info('stepMax:' + this.stepMax)
         }
