@@ -943,7 +943,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===0&&backCurrent===0"
+              v-if="backCurrent===0"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -1335,7 +1335,7 @@
                       </a-row>
                       <a-row>
                         <a-form-item :label="'不通过原因：'">
-                          <label>{{ examineReason }}</label>
+                          <label>不通过</label>
                         </a-form-item>
                       </a-row>
                     </div>
@@ -3395,27 +3395,32 @@ export default {
         let taskDefListArray = [];
         if (this.stepCurrent === 2) {
           taskDefListArray = [
-            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
-            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
-            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
-            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
-            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
-            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
-            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
-            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
-            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+            'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
+            'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
+            'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
           ]
         } else if (this.stepCurrent === 3) {
           taskDefListArray = [
-            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
-            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
-            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
-            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
-            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
-            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
-            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
-            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
-            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+            'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
+            'sid-CB0A0885-4EAF-4385-9158-00A353532901',
+            'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
+          ]
+        } else if (this.stepCurrent === 4) {
+          taskDefListArray = [
+            'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
+            'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
+            'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
+          ]
+        } else if (this.stepCurrent === 5) {
+          taskDefListArray = [
+            'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
+            'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
+            'sid-07831227-2153-4197-9FBA-73A33696C53E',
+            'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
+          ]
+        } else if (this.stepCurrent === 6) {
+          taskDefListArray = [
+            'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
           ]
         }
         const paramExamine = {
@@ -3657,7 +3662,6 @@ export default {
           this.redistributionFun(param).then(res => {
             console.info(res)
             this.visibleRes = false;
-            console.log(res);
           })
         }
       })
