@@ -3611,6 +3611,7 @@ export default {
             }
           }
           this.redistributionFun(param).then(res => {
+            console.info(res)
             this.visibleRes = false;
           })
         }
