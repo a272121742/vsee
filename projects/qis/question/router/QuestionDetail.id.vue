@@ -19,7 +19,6 @@
               v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
               url="/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT"
               :transform="selectOptionChampion"
-              :delay="true"
               placeholder="请选择"
               :allow-clear="true"
               style="width:272px;height:32px;"
@@ -3534,7 +3533,13 @@ export default {
       this.rediStribution.validateFields((err) => {
         if (!err) {
           const data = this.rediStribution.getFieldsValue();
-          this.rediStribution(data).then(res => {
+          const param = {
+            taskId: this.taskId,
+            variable: {
+              champion: data.champion
+            }
+          }
+          this.rediStribution(param).then(res => {
             console.log(res);
           })
         }
