@@ -1337,7 +1337,7 @@
                       </a-row>
                       <a-row>
                         <a-form-item :label="'不通过原因：'">
-                          <label>不通过</label>
+                          <label>{{ examineReason }}</label>
                         </a-form-item>
                       </a-row>
                     </div>
@@ -3614,6 +3614,7 @@ export default {
           }
           this.redistributionFun(param).then(res => {
             this.visibleRes = false;
+            console.log(res);
           })
         }
       })
