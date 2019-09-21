@@ -68,7 +68,7 @@
         <a-col :span="24">
           <a-form-item :label="`理由`">
             <v-textarea
-              v-decorator="[ 'comment',{rules: [{ required: true, message: '请选择理由' }]} ]"
+              v-decorator="[ 'commentReject',{rules: [{ required: true, message: '请选择理由' }]} ]"
               placeholder="请输入"
               :allow-clear="true"
             />
@@ -1758,7 +1758,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -1773,7 +1772,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -1788,7 +1786,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -1955,7 +1952,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -2006,7 +2002,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -2190,7 +2185,6 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:231px;"
-                        :disabled-date="disabledDate"
                       />
                     </a-form-item>
                   </a-col>
@@ -2972,7 +2966,7 @@ export default {
       },
       // 驳回
       rejectRecord: {
-        comment: ''
+        commentReject: ''
       }
 
     };
@@ -3009,7 +3003,7 @@ export default {
     });
     this.rejectForm = this.$form.createForm(this, {
       mapPropsToFields: () => createFormFields(this, [
-        'rejectForm'
+        'commentReject'
       ], 'rejectRecord'),
       onValuesChange: autoUpdateFileds(this, 'rejectRecord')
     });
@@ -3055,9 +3049,6 @@ export default {
       'examineDetail',
       'redistributionFun'
     ]),
-    disabledDate (current) {
-      return current && current > moment().endOf('day');
-    },
     // 是否需要围堵措施
     conActionChange (e) {
       if (e.target.value === '1') {
@@ -3081,6 +3072,46 @@ export default {
     RejectSubmit () {
       this.visibleReject = false;
       this.isCheckError = '1';
+      const data = this.formDcontent.getFieldsValue();
+      const resComment = this.rejectForm.getFieldsValue().commentReject;
+      const passFlag = '1';
+      const transData = {
+        businessKey: this.id, // 问题id
+        businessTitle: data.title, // 问题title
+        processDefinitionKey: 'IRS1', // IRS1  固定值
+        subSys: 'irs', //  子系统编号
+        taskId: this.detailList.taskId, //  任务id
+        userId: this.userId, //  当前用户id
+        variables: {
+          businessKey: this.id, // 问题id
+          comment: data.comment || '0' || resComment,
+          assigner: data.diamondOwner1,
+          coChair: this.sysUser.coChair,
+          monitor: this.sysUser.monitor,
+          champion: data.champion, // 责任人
+          isDirectSerious: '0', // 是否直接极端严重事情
+          isEnd: this.record.isClose, // 是否关闭
+          isPass: data.verifySeven || this.record.isPass || passFlag, // 审核是否通过
+          isQZEnd: data.endSeven, // 是否结束七钻
+          isAB: (data.gradeName === 'A' || data.gradeName === 'B') ? '0' : '1',
+          isQZ: data.type, // 是否需要七钻
+          isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
+          isLeaderSign: '0', // 领导加签
+          isItem: data.isProject, // 是否立项
+          isWD: data.isNeedIca, // 是否围堵
+          diamondOwner1: data.diamondOwner1,
+          diamondOwner4: data.diamondOwner4,
+          diamondOwner5: data.diamondOwner5,
+          diamondOwner6: data.diamondOwner6,
+          diamondOwner7: data.diamondOwner7
+        }
+      }
+      this.workFlowSubmit(transData).then(res => {
+        if (res.taskId) {
+          this.taskId = res.taskId;
+        }
+        this.$message.success('提交成功');
+      });
     },
     CancelReject () {
       this.visibleReject = false;
@@ -3361,27 +3392,40 @@ export default {
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
         console.log(res1);
+        let taskDefListArray = [];
         if (this.stepCurrent === 2) {
-          const paramExamine = {
-            businessKey: this.issueId,
-            processInstanceId: this.processInstanceId,
-            taskDefList: [
-              'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
-              'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
-              'sid-146F6433-8468-483A-B046-370C99C4F0E2',
-              'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
-              'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
-              'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
-              'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
-              'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
-              'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
-            ]
-
-          };
-          this.examineDetail(paramExamine).then(res => {
-            this.examineReason = res.fullMessage;
-          })
+          taskDefListArray = [
+            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
+            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
+            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
+            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
+            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
+            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
+            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
+            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
+            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+          ]
+        } else if (this.stepCurrent === 3) {
+          taskDefListArray = [
+            'sid-C971CD68-59A7-4DE6-B246-A4CC7EE97258', 'sid-BC2AFB56-3F7C-46E9-A7C4-B41C1D33ED56', 'sid-1E35573C-7714-4412-9586-60EA8983A778',
+            'sid-7EF170A9-AC43-4C30-A15A-42B5BF069718',
+            'sid-146F6433-8468-483A-B046-370C99C4F0E2',
+            'sid-F0F6A48D-0A47-42EE-B420-9D96084BD1D0',
+            'sid-A52A1D59-17AF-4F94-BBE5-63F4E1E77EE3',
+            'sid-0D267EFF-7837-4E6D-9974-8A099EC036F0',
+            'sid-2E90ABEF-3728-4D93-AFBD-3D84FB5309F7',
+            'sid-922F9D59-0F39-43B7-8BB1-C8C50C46F7D6',
+            'sid-634FCB3A-B4AF-4A31-9188-2E812A769346'
+          ]
         }
+        const paramExamine = {
+          businessKey: this.issueId,
+          processInstanceId: this.processInstanceId,
+          taskDefList: taskDefListArray
+        };
+        this.examineDetail(paramExamine).then(res => {
+          this.examineReason = res.fullMessage;
+        })
       })
       /* this.getAnalysis(this.id).then(res => {
           this.analysisData = res.list;
