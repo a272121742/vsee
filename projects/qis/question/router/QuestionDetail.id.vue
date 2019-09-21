@@ -2055,7 +2055,10 @@
                 v-if="pagePermission.A5_3_2"
                 class="examineResult"
               >
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:760px;"
+                >
                   <span></span>
                 </div>
                 <div>
@@ -2171,7 +2174,10 @@
               class="Dcontent D5back"
             >
               <div v-if="pagePermission.A5_1_2">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:760px;"
+                >
                   <span></span>
                 </div>
                 <a-row>
