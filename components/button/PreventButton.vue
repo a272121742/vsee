@@ -17,6 +17,7 @@
     @click.self.stop.prevent="handleClick"
   >
     <!-- slot继承 -->
+    <slot></slot>
     <template
       v-for="(_, slot) of $scopedSlots"
       v-slot:[slot]="scope"

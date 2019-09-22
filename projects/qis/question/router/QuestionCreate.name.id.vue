@@ -17,23 +17,25 @@
           </a-button>
         </div>
         <div class="rightButton">
-          <a-button
+          <prevent-button
             v-if="submitBtn"
+            ref="commitButton"
             type="primary"
             html-type="submit"
             class="submitBtn"
             @click="handleSubmit"
           >
             提交
-          </a-button>
-          <a-button
+          </prevent-button>
+          <prevent-button
+            ref="saveButton"
             :style="{ marginLeft: '8px' }"
             type="primary"
             :class="[actiive]"
             @click="handleSave"
           >
             保存
-          </a-button>
+          </prevent-button>
           <a-button
             :style="{ marginLeft: '8px' }"
             class="cancelBtn"
@@ -580,7 +582,8 @@ export default {
   components: {
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VInput: () => import('@comp/form/VInput.vue'),
-    VTextarea: () => import('@comp/form/VTextarea.vue')
+    VTextarea: () => import('@comp/form/VTextarea.vue'),
+    PreventButton: () => import('@comp/button/PreventButton.vue')
   },
 
   props: ['name', 'id'],
@@ -953,6 +956,7 @@ export default {
                 };
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
+                    this.$refs.commitButton.reset();
                     this.$router.push({
                       path: this.$route.query.form || '/'
                     });
@@ -983,6 +987,7 @@ export default {
                 };
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
+                    this.$refs.commitButton.reset();
                     this.$router.push({
                       path: this.$route.query.form || '/'
                     });
@@ -1020,6 +1025,7 @@ export default {
           this.editSaveQuestion(data).then(res => {
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -1027,6 +1033,7 @@ export default {
         } else {
           this.saveQuestion(data).then(res => {
             this.businessKey = res.id;
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -1041,6 +1048,7 @@ export default {
             this.editSaveQuestion(data).then(res => {
               this.businessKey = res.id;
               this.optCounter = res.optCounter;
+              this.$refs.saveButton.reset();
               this.$router.push({
                 name: 'QuestionDetail',
                 params: {

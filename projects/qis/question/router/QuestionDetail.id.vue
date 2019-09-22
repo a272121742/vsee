@@ -455,23 +455,27 @@
           >
             再分析
           </a-button>
-          <a-button
+          <prevent-button
             v-if="pagePermission.button_submit_3"
+            ref="commitButton"
+            bind="both"
             type="primary"
             html-type="submit"
             class="submitBtn"
             @click="handleSubmit"
           >
             提交
-          </a-button>
-          <a-button
+          </prevent-button>
+          <prevent-button
             v-if="pagePermission.button_commit_3"
+            ref="saveButton"
+            bind="both"
             style="marginLeft: 8px"
             class="saveBtn"
             @click="handleSave"
           >
             保存
-          </a-button>
+          </prevent-button>
           <a-button
             v-if="pagePermission.button_cancel_3"
             style="marginLeft: 8px"
@@ -2715,7 +2719,8 @@ export default {
     // EditableCell: () => import('@@/question/view/EditableCell'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VInput: () => import('@comp/form/VInput.vue'),
-    VTextarea: () => import('@comp/form/VTextarea.vue')
+    VTextarea: () => import('@comp/form/VTextarea.vue'),
+    PreventButton: () => import('@comp/button/PreventButton.vue')
   },
   props: ['id'],
   data () {
@@ -3719,6 +3724,7 @@ export default {
             }
 
             vm.$message.success('提交成功');
+            this.$refs.commitButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3754,6 +3760,7 @@ export default {
         data.optCounter = _this.problemDefinitionData.optCounter;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
+          this.$refs.saveButton.reset();
           this.$router.push({
             path: this.$route.query.form || '/'
           });
@@ -3810,6 +3817,7 @@ export default {
         })
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
+          this.$refs.saveButton.reset();
           this.$router.push({
             path: this.$route.query.form || '/'
           });
@@ -3819,6 +3827,7 @@ export default {
         data.id = this.analysisId;
         data.optCounter = _this.rootCauseData.optCounter;
         this.analysisSave(data).then(res => {
+          this.$refs.saveButton.reset();
           this.optCounter = res.optCounter;
           this.$router.push({
             path: this.$route.query.form || '/'
@@ -3856,6 +3865,7 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
             //  data.optCounter=res.optCounter;
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3870,6 +3880,7 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
           });
+          this.$refs.saveButton.reset();
           this.$router.push({
             path: this.$route.query.form || '/'
           });
@@ -3882,6 +3893,7 @@ export default {
             this.stepEffect = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3895,6 +3907,7 @@ export default {
             this.stepClose = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
