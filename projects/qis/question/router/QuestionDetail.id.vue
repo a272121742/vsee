@@ -1470,7 +1470,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent==1&&pagePermission.A1_1_2"
+              v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
             >
               <div
@@ -2512,7 +2512,7 @@
         </a-card>
       </a-form>
       <a-form
-        v-if="pagePermission.A4"
+        v-if="pagePermission.A4_2"
         class="ant-advanced-search-form"
       >
         <a-collapse :bordered="false">
@@ -2615,7 +2615,7 @@ const columnsRecord = [
 ];
 const columnsAnalysis = [{
 
-  title: '标准要求',
+  title: '责任人',
   dataIndex: 'championName',
   align: 'center',
   scopedSlots: {
@@ -3025,7 +3025,8 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistributionFun'
+      'redistributionFun',
+      'saveSevenDiamonds'
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
@@ -3372,7 +3373,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
-        return res.taskIdOld !== undefined ? res.taskIdOld : '';
+        return res.taskId !== undefined ? res.taskId : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3384,6 +3385,8 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
+        console.info(11111111111111111111111)
+        console.info(res1)
         const taskDefListArray = [];
         if (res1[1]) {
           taskDefListArray.push(res1[1]);
@@ -3798,6 +3801,9 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
+        this.saveSevenDiamonds({
+          sevenDiamondsVOS: _this.analysisData
+        })
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
           this.$router.push({
