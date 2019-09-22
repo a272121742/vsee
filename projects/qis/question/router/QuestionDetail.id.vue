@@ -942,7 +942,7 @@
               </div>
             </div>
             <div
-              v-if="backCurrent===0"
+              v-if="backCurrent===0&&(pagePermission.A0_2_2||pagePermission.A0_1_2)"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -1041,7 +1041,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent===1"
+              v-if="backCurrent===1&&pagePermission.A1_1_3"
               class="Dcontent D1content"
             >
               <div>
@@ -1470,7 +1470,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent==1&&pagePermission.A1_1_2"
+              v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
             >
               <div
@@ -1614,7 +1614,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backCurrent===2&&pagePermission.A2_1_2"
+              v-if="backCurrent===2&&pagePermission.A2_1_2"
               class="Dcontent D2back"
             >
               <div v-if="pagePermission.A2_1_2">
@@ -1793,7 +1793,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent==3&&backCurrent==3"
+              v-if="backCurrent==3"
               class="Dcontent D3back"
             >
               <div v-if="pagePermission.A3_1_2">
@@ -1906,7 +1906,10 @@
                 v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:624px;"
+                >
                   <span></span>
                 </div>
                 <div>
@@ -2009,11 +2012,14 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent === 4&&backCurrent=== 4"
+              v-if="backCurrent===4&&pagePermission.A4_1_2"
               class="Dcontent D4back"
             >
               <div v-if="pagePermission.A4_1_2">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:624px;"
+                >
                   <span></span>
                 </div>
                 <div class="Dtitle">
@@ -2230,7 +2236,7 @@
             </div>
 
             <div
-              v-if="stepCurrent==5&&backCurrent==5"
+              v-if="backCurrent==5"
               class="Dcontent D5back"
             >
               <div v-if="pagePermission.A5_1_2">
@@ -2365,7 +2371,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===6&&backFlag===false"
+              v-if="stepCurrent===6&&pagePermission.A6_1_3"
               class="Dcontent D6content"
             >
               <div v-if="pagePermission.A6_1_3">
@@ -2521,7 +2527,7 @@
         </a-card>
       </a-form>
       <a-form
-        v-if="pagePermission.A4"
+        v-if="pagePermission.A4_2"
         class="ant-advanced-search-form"
       >
         <a-collapse :bordered="false">
@@ -2624,7 +2630,7 @@ const columnsRecord = [
 ];
 const columnsAnalysis = [{
 
-  title: '标准要求',
+  title: '责任人',
   dataIndex: 'championName',
   align: 'center',
   scopedSlots: {
@@ -3035,7 +3041,8 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistributionFun'
+      'redistributionFun',
+      'saveSevenDiamonds'
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
@@ -3816,6 +3823,9 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
+        this.saveSevenDiamonds({
+          sevenDiamondsVOS: _this.analysisData
+        })
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
           this.$router.push({

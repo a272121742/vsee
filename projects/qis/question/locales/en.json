@@ -84,5 +84,97 @@
   "issue_action": {
     "create": "Create",
     "detail": "Detail"
+  },
+  "issue_workflow": {
+    "D0": {
+      "processName": "Issue Definiton",
+      "publish": "Publish or not",
+      "reason": "Reason",
+      "needICA": "Need ICA or not",
+      "ICA": "ICA",
+      "need": "yes",
+      "unneed": "no"
+    },
+    "D1": {
+      "processName": "Find Causer",
+      "confirm": "Confirm resposible person",
+      "needAnalysis": "Need 7 diamonds analysis",
+      "resposibleDepartment": "Resposible Department",
+      "champion": "Champion",
+      "analysis": "7 Diamonds Analysis",
+      "1stDiamond": "1st Diamond",
+      "rightProcess": "Right Process",
+      "2ndDiamond": "2nd Diamond",
+      "rightTools": "Right Tools",
+      "3rdDiamond": "3rd Diamond",
+      "rightMaterials": "Right Materials",
+      "4thDiamond": "4th Diamond",
+      "specification": "Materials to specification",
+      "5thDiamond": "5th Diamond",
+      "processChange": "Process Change",
+      "6thDiamond": "6th Diamond",
+      "partChange": "Part Change",
+      "7thDiamond": "7th Diamond",
+      "complex": "Extremely Complex Issue?",
+      "standard": "Standard requirements",
+      "actual": "Actual situation",
+      "conclusion": "Conclusion"
+    },
+    "D2": {
+      "processName": "Root Cause",
+      "cause": "Conclusion"
+    },
+    "D3": {
+      "processName": "Solution",
+      "shortSolution": "Short term solution",
+      "longSolution": "Long term solution",
+      "pilotVlidate": "Pilot production validation",
+      "longSolutionImplementDate": "Planned date for long term solution implementation",
+      "longSolutionValidationDate": "Planned date for long term solution validation",
+      "closureDate": "Planned closure date"
+    },
+    "D4": {
+      "shortEffect": "Implementation",
+      "sortSolutionImplementDate": "Short term effect",
+      "longTermEffect": "Actual date for short term solution implementation",
+      "longSolutionImplementDate": "Long term effect"
+    },
+    "D5": {
+      "processName": "Feedback",
+      "effectValidation": "Effect validation",
+      "breakpointVIN": "Breakpoint VIN",
+      "breakpointDate": "Breakpoint date",
+      "DocumentUpdated": "Document Updated",
+      "validationConclusion": "Validation Conclusion",
+      "fileName": "File Name",
+      "updated": "Updated or not",
+      "updateContent": "Updated contents",
+      "operation": "Operation",
+      "ECN": "ECN",
+      "DFMEA": "DFMEA",
+      "DVPVPlan": "DV/PV Plan",
+      "PFMEA": "PFMEA",
+      "controlPlan": "Control plan",
+      "flowChart": "Process flow chart",
+      "ois": " OIS",
+      "addUpdateFile": "Add update file"
+    },
+    "D6": {
+      "addPreventList": "Add prevent recurrence issue list",
+      "needReview": "Need leader review",
+      "leader": "Leader"
+    },
+    "attachment": "Attachment",
+    "approvalResult": "Approval result",
+    "rejectReason": "Reason for rejection",
+    "pass": "Pass",
+    "reject": "Reject",
+    "yes": "Yes",
+    "no": "No",
+    "resposibleDepartment": "Resposible Department",
+    "champion": "Champion",
+    "isReview": "Review or not",
+    "reviewed": "Reviewed",
+    "remark": "Remark"
   }
 }
