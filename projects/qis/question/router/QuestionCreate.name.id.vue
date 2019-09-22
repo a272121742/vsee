@@ -745,7 +745,7 @@ export default {
     // 验证手机号
     phoneVer (rule, value, callback) {
       var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
-      if (!myreg.test(value)) {
+      if (value && !myreg.test(value)) {
         callback(new Error('请输入11位有效手机号'));
       } else {
         callback();

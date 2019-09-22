@@ -3239,7 +3239,7 @@ export default {
       const zh = regzh.test(value);
       const regen = new RegExp('[a-zA-Z]+', 'g');
       const en = regen.test(value);
-      if (!zh || !en) {
+      if (value && (!zh || !en)) {
         callback(new Error('必须同时含有中文和英文'));
       } else {
         callback();
@@ -3372,7 +3372,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
-        return res.taskId !== undefined ? res.taskId : '';
+        return res.taskIdOld !== undefined ? res.taskIdOld : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3423,9 +3423,11 @@ export default {
           processInstanceId: this.processInstanceId,
           taskDefList: taskDefListArray
         };
-        this.examineDetail(paramExamine).then(res => {
-          this.examineReason = res.fullMessage;
-        })
+        if (taskDefListArray.length) {
+          this.examineDetail(paramExamine).then(res => {
+            this.examineReason = res.fullMessage;
+          })
+        }
       })
       /* this.getAnalysis(this.id).then(res => {
           this.analysisData = res.list;
