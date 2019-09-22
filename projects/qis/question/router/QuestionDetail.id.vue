@@ -3519,7 +3519,7 @@ export default {
           for (let i = 0; i < 6; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
-          if (status === 201100 || status ===  201300) {
+          if (status === 201100 || status === 201300) {
             this.issueDefinitionData.sevenDiamondsVos[5].operation = '编辑'
             if (!pagePermission.A1_12_3) {
               this.analysisData.pop()
@@ -3670,7 +3670,7 @@ export default {
           const data = this.formDcontent.getFieldsValue();
           if (Number(vm.detailList.status) === 201500) {
             data.endSeven = '1'
-          }       
+          }
           const transData = {
             businessKey: this.id, // 问题id
             businessTitle: data.title, // 问题title
