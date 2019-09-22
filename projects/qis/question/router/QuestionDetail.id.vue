@@ -1041,7 +1041,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent===1"
+              v-if="backCurrent===1&&pagePermission.A1_1_3"
               class="Dcontent D1content"
             >
               <div>
@@ -1614,7 +1614,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backCurrent===2&&pagePermission.A2_1_2"
+              v-if="backCurrent===2&&pagePermission.A2_1_2"
               class="Dcontent D2back"
             >
               <div v-if="pagePermission.A2_1_2">
@@ -1793,7 +1793,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent==3&&backCurrent==3"
+              v-if="backCurrent==3"
               class="Dcontent D3back"
             >
               <div v-if="pagePermission.A3_1_2">
@@ -1906,7 +1906,10 @@
                 v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:624px;"
+                >
                   <span></span>
                 </div>
                 <div>
@@ -2009,11 +2012,14 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent === 4&&backCurrent=== 4"
+              v-if="backCurrent=== 4"
               class="Dcontent D4back"
             >
               <div v-if="pagePermission.A4_1_2">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:624px;"
+                >
                   <span></span>
                 </div>
                 <div class="Dtitle">
@@ -2224,7 +2230,7 @@
             </div>
 
             <div
-              v-if="stepCurrent==5&&backCurrent==5"
+              v-if="backCurrent==5"
               class="Dcontent D5back"
             >
               <div v-if="pagePermission.A5_1_2">
@@ -3373,7 +3379,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
-        return res.taskId !== undefined ? res.taskId : '';
+        return res.taskIdOld !== undefined ? res.taskIdOld : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3385,8 +3391,6 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        console.info(11111111111111111111111)
-        console.info(res1)
         const taskDefListArray = [];
         if (res1[1]) {
           taskDefListArray.push(res1[1]);
