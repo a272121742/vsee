@@ -61,10 +61,11 @@ export const issueTableMix = {
       const {
         page, limit, order, orderField
       } = this;
+      const type = Number(this.activeKey);
       this.getIssuePage({
-        page, limit, order, orderField, ...config
+        page, limit, order, orderField, type, ...config
       }).then(res => {
-        if (Number(this.activeKey) === config.type) {
+        if (type === config.type) {
           this.data = res.list;
           this.total = res.total;
         }

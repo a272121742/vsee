@@ -83,6 +83,100 @@
   },
   "issue_action": {
     "create": "创建问题",
-    "detail": "详情"
+    "detail": "详情",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "issue_workflow": {
+    "D0": {
+      "processName": "问题立项",
+      "publish": "是否立项",
+      "reason": "理由",
+      "needICA": "是否需要围堵措施",
+      "ICA": "围堵措施",
+      "need": "需要",
+      "unneed": "不需要"
+    },
+    "D1": {
+      "processName": "责任判定",
+      "confirm": "直接判定",
+      "needAnalysis": "需要7钻分析",
+      "resposibleDepartment": "责任部门",
+      "champion": "问题责任人",
+      "analysis": "7钻分析",
+      "1stDiamond": "第1钻",
+      "rightProcess": "过程是否正确",
+      "2ndDiamond": "第2钻",
+      "rightTools": "工具是否正确",
+      "3rdDiamond": "第3钻",
+      "rightMaterials": "物料是否正确",
+      "4thDiamond": "第4钻",
+      "specification": "物料规格检查",
+      "5thDiamond": "第5钻",
+      "processChange": "过程变更",
+      "6thDiamond": "第6钻",
+      "partChange": "部件变更",
+      "7thDiamond": "第7钻",
+      "complex": "是否极端复杂问题",
+      "standard": "标准要求",
+      "actual": "实际情况",
+      "conclusion": "结论"
+    },
+    "D2": {
+      "processName": "原因分析",
+      "cause": "根本原因"
+    },
+    "D3": {
+      "processName": "制定措施",
+      "shortSolution": "短期措施",
+      "longSolution": "长期措施",
+      "pilotVlidate": "小批量验证",
+      "longSolutionImplementDate": "长期措施实施计划日期",
+      "longSolutionValidationDate": "长期措施验证计划日期",
+      "closureDate": "计划关闭日期"
+    },
+    "D4": {
+      "shortEffect": "短期效果",
+      "sortSolutionImplementDate": "短期效果实施日期",
+      "longTermEffect": "长期措施实施描述",
+      "longSolutionImplementDate": "长期措施实施日期"
+    },
+    "D5": {
+      "processName": "效果验证",
+      "effectValidation": "效果验证",
+      "breakpointVIN": "断点VIN",
+      "breakpointDate": "断点时间",
+      "DocumentUpdated": "涉及文件更新",
+      "validationConclusion": "验证结果",
+      "fileName": "文件名称",
+      "updated": "是否更新",
+      "updateContent": "更新内容",
+      "operation": "操作",
+      "ECN": "ECN",
+      "DFMEA": "DFMEA",
+      "DVPVPlan": "DV/PV计划",
+      "PFMEA": "PFMEA",
+      "controlPlan": "控制计划",
+      "flowChart": "过程流程图",
+      "ois": "操作指导书",
+      "addUpdateFile": "添加更新文件"
+    },
+    "D6": {
+      "addPreventList": "是否需要进入再发防止库",
+      "needReview": "是否加签",
+      "leader": "加签领导"
+    },
+    "attachment": "附件",
+    "approvalResult": "是否通过审核",
+    "rejectReason": "不通过理由",
+    "pass": "通过",
+    "reject": "不通过",
+    "yes": "是",
+    "no": "否",
+    "resposibleDepartment": "责任部门",
+    "champion": "问题责任人",
+    "isReview": "是否审阅",
+    "reviewed": "已审阅",
+    "remark": "备注"
   }
 }
