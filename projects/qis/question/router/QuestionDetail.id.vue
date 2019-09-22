@@ -3467,7 +3467,7 @@ export default {
         if (status >= 200200 && status < 200500) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 3; i++) {
-            if (status === 200200) {
+            if (status === 200200 || ((pagePermission.A1_3_3) && status === 200500)) {
               this.issueDefinitionData.sevenDiamondsVos[i].operation = '编辑'
             }
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
