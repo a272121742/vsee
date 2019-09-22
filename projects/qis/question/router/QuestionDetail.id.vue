@@ -942,7 +942,7 @@
               </div>
             </div>
             <div
-              v-if="backCurrent===0"
+              v-if="backCurrent===0&&(pagePermission.A0_2_2||pagePermission.A0_1_2)"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -2012,7 +2012,7 @@
               </div>
             </div>
             <div
-              v-if="backCurrent=== 4"
+              v-if="backCurrent===4&&pagePermission.A4_1_2"
               class="Dcontent D4back"
             >
               <div v-if="pagePermission.A4_1_2">
@@ -2365,7 +2365,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===6&&backFlag===false"
+              v-if="stepCurrent===6&&pagePermission.A6_1_3"
               class="Dcontent D6content"
             >
               <div v-if="pagePermission.A6_1_3">
