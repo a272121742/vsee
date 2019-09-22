@@ -943,7 +943,7 @@
               </div>
             </div>
             <div
-              v-if="backCurrent===0"
+              v-if="backCurrent===0&&(pagePermission.A0_2_2||pagePermission.A0_1_2)"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -964,11 +964,11 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`需要围堵措施`">
-                        <p>{{ problemDefinitionData.isNeedIca }}</p>
+                        <p>{{ problemDefinitionData.isNeedIca == '1' ? '是' : '否' }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
-                  <a-row v-if="problemDefinitionData.isNeedIca==='0'">
+                  <a-row v-if="problemDefinitionData.isNeedIca==='1'">
                     <a-col :span="21">
                       <a-form-item :label="`围堵措施`">
                         <p>{{ problemDefinitionData.icaDescription }}</p>
@@ -1343,7 +1343,7 @@
                     <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3||pagePermission.A1_3_2">
                       <a-row>
                         <a-form-item>
-                          <span>6钻分析</span>
+                          <span>{{ sevenTitle }}</span>
                         </a-form-item>
                       </a-row>
                       <a-table
@@ -1358,7 +1358,7 @@
                         >
                           <a
                             href="javascript:;"
-                            @click="showAnalysis(row)"
+                            @click="showAnalysis(row, text)"
                           >{{ row.operation }}</a>
                         </span>
                       </a-table>
@@ -1471,7 +1471,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent==1&&pagePermission.A1_1_2"
+              v-if="backCurrent==1&&pagePermission.A1_1_2&&(issueDefinitionData.type==='0')"
               class="Dcontent D1back"
             >
               <div
@@ -1481,7 +1481,7 @@
                 <span></span>
               </div>
               <div class="backTitle">
-                <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
+                <p>{{ issueDefinitionData.type==='0'?'直接判定':'7钻分析' }}</p>
               </div>
               <div v-if="issueDefinitionData.type==='0'">
                 <a-row>
@@ -1520,7 +1520,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="issueDefinitionData.type==='2'">
+              <div v-if="issueDefinitionData.type==='1'">
                 <div class="processList clearfix">
                   <div class="processTitle">
                     7钻分析责任人:
@@ -2724,6 +2724,8 @@ export default {
         button_redistribution_3: false
 
       },
+      // 7钻分析标题
+      sevenTitle: '',
       // 流程状态
       statusCode: {
         statusMaxCode: 0,
@@ -3026,7 +3028,8 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistributionFun'
+      'redistributionFun',
+      'saveSevenDiamonds'
     ]),
     // 是否需要围堵措施
     conActionChange (e) {
@@ -3145,29 +3148,31 @@ export default {
       return optionArray;
     },
 
-    showAnalysis (param) {
+    showAnalysis (param, index) {
       this.visibleAnalysis = true;
       this.DetailForm = param
-      /* if (index === 2) {
-           this.AnalysisTitle ='2钻-工具是否正确'
-         }
-         if (index === 3) {
-           this.AnalysisTitle ='3钻-物料是否正确'
-         }
-         if (index === 4) {
-           this.AnalysisTitle ='4钻-物料规则检测'
-         }
-         if (index === 5) {
-           this.AnalysisTitle ='5钻-过程变更'
-         }
-         if (index === 6) {
-           this.AnalysisTitle ='6钻-部件变更'
-         }
-         if (index === 7) {
-           this.AnalysisTitle ='7钻-是否是极端复杂问题'
-         } */
-
-
+      console.info(index)
+      if (param.type === 'DIAMONDS01') {
+        this.AnalysisTitle = '1钻-过程是否正确'
+      }
+      if (param.type === 'DIAMONDS02') {
+        this.AnalysisTitle = '2钻-工具是否正确'
+      }
+      if (param.type === 'DIAMONDS03') {
+        this.AnalysisTitle = '3钻-物料是否正确'
+      }
+      if (param.type === 'DIAMONDS04') {
+        this.AnalysisTitle = '4钻-物料规则检测'
+      }
+      if (param.type === 'DIAMONDS05') {
+        this.AnalysisTitle = '5钻-过程变更'
+      }
+      if (param.type === 'DIAMONDS06') {
+        this.AnalysisTitle = '6钻-部件变更'
+      }
+      if (param.type === 'DIAMONDS07') {
+        this.AnalysisTitle = '7钻-是否是极端复杂问题'
+      }
       this.AnalysisForm = this.$form.createForm(this, {
 
         mapPropsToFields: () => {
@@ -3189,7 +3194,6 @@ export default {
             })
           };
         }
-
       });
     },
     showUpdate (param) {
@@ -3411,36 +3415,6 @@ export default {
           this.examineReason = res.fullMessage;
         })
       })
-      /* this.getAnalysis(this.id).then(res => {
-          this.analysisData = res.list;
-          if (this.analysisData.length === 0) {
-            this.analysisData = [{
-              id: '8',
-              standard: '',
-              actualSituation: '',
-              conclusion: '',
-              file: '',
-              operation: '编辑'
-            },
-              {
-                id: '9',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              },
-              {
-                id: '10',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              }
-            ];
-          }
-        }) */
       this.getFilePage().then(res => {
         this.dataFile = res.list;
       });
@@ -3459,12 +3433,16 @@ export default {
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
+        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item, index) => {
           item.operation = '查看'
+          this.issueDefinitionData['diamondOwner' + (index + 1)] = item.championName
         })
+        console.info(this.issueDefinitionData)
         const status = Number(this.detailList.status)
         const pagePermission = this.pagePermission
+        // 控制显示
         if (status >= 200200 && status < 200500) {
+          this.sevenTitle = '1-3钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 3; i++) {
             if (status === 200200 || ((pagePermission.A1_3_3) && status === 200500)) {
@@ -3477,6 +3455,7 @@ export default {
           }
         }
         if (status >= 200500 && status < 200800) {
+          this.sevenTitle = '4钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 4; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3489,6 +3468,7 @@ export default {
           }
         }
         if (status >= 200800 && status < 201100) {
+          this.sevenTitle = '5钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 5; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3501,6 +3481,7 @@ export default {
           }
         }
         if (status >= 201100 && status < 201400) {
+          this.sevenTitle = '6钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 6; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3513,6 +3494,7 @@ export default {
           }
         }
         if (status >= 201400) {
+          this.sevenTitle = '7钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 7; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3765,6 +3747,7 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
+        this.saveSevenDiamonds(_this.analysisData);
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
         })
