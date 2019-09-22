@@ -1470,7 +1470,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent==1&&pagePermission.A1_1_2"
+              v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
             >
               <div
@@ -2615,7 +2615,7 @@ const columnsRecord = [
 ];
 const columnsAnalysis = [{
 
-  title: '标准要求',
+  title: '责任人',
   dataIndex: 'championName',
   align: 'center',
   scopedSlots: {
@@ -3025,7 +3025,8 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistributionFun'
+      'redistributionFun',
+      'saveSevenDiamonds'
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
@@ -3798,6 +3799,9 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
+        this.saveSevenDiamonds({
+          sevenDiamondsVOS: _this.analysisData
+        })
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
           this.$router.push({
