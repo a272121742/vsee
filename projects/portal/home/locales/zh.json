@@ -6,5 +6,11 @@
     "quickEntry": "快捷入口",
     "announcement": "公告",
     "todo": "待办"
-  }
+  },
+  "app": {
+    "ISSUE": "质量信息追溯平台",
+    "AFTERSALES": "售后质量模块",
+    "MANUFACTURING": "过程质量模块",
+    "ADMIN": "系统设置"
+  } 
 }
