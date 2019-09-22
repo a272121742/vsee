@@ -2617,6 +2617,14 @@ const columnsRecord = [
 const columnsAnalysis = [{
 
   title: '标准要求',
+  dataIndex: 'championName',
+  align: 'center',
+  scopedSlots: {
+    customRender: 'championName'
+  }
+}, {
+
+  title: '标准要求',
   dataIndex: 'standard',
   align: 'center',
   scopedSlots: {
@@ -2886,7 +2894,7 @@ export default {
         sevenFailReason: '', // 不通过原因
         comment: '', // 不通过原因
         // 7钻责任人
-        endSeven: '1',
+        endSeven: '0',
         diamondOwner1: '',
         diamondOwner4: '',
         diamondOwner5: '',
@@ -3504,6 +3512,11 @@ export default {
             if (!pagePermission.A1_15_3) {
               this.analysisData.pop()
             }
+          }
+          if (status === 201500) {
+            // this.record.endSeven = '1'
+            console.info('111111111111111111')
+            console.info(this.record)
           }
         }
         console.info(this.analysisData)
