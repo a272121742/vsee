@@ -1379,7 +1379,7 @@
                         </a-col>
                       </a-row>
                       <div v-if=" record.verifySeven==='1' ">
-                        <a-row>
+                        <a-row v-if="!pagePermission.A1_16_3">
                           <a-col :span="21">
                             <a-form-item :label="'结束7钻分析：'">
                               <a-radio-group
@@ -3481,12 +3481,12 @@ export default {
         if (status >= 200200 && status < 200500) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 3; i++) {
-            if (status === 200200 || ((pagePermission.A1_3_3) && status === 200500)) {
+            if (status === 200400 || status === 200200 || ((pagePermission.A1_3_3))) {
               this.issueDefinitionData.sevenDiamondsVos[i].operation = '编辑'
             }
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
-          if ((!pagePermission.A1_3_3) && status === 200200) {
+          if ((!pagePermission.A1_3_3) && (status === 200200 || status === 200400)) {
             this.analysisData = []
           }
         }
@@ -3495,7 +3495,7 @@ export default {
           for (let i = 0; i < 4; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
-          if (status === 200500) {
+          if (status === 200500 || status === 200700) {
             this.issueDefinitionData.sevenDiamondsVos[3].operation = '编辑'
             if (!pagePermission.A1_6_3) {
               this.analysisData.pop()
@@ -3507,7 +3507,7 @@ export default {
           for (let i = 0; i < 5; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
-          if (status === 200800) {
+          if (status === 200800 || status === 201000) {
             this.issueDefinitionData.sevenDiamondsVos[4].operation = '编辑'
             if (!pagePermission.A1_9_3) {
               this.analysisData.pop()
@@ -3519,7 +3519,7 @@ export default {
           for (let i = 0; i < 6; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
-          if (status === 201100) {
+          if (status === 201100 || status ===  201300) {
             this.issueDefinitionData.sevenDiamondsVos[5].operation = '编辑'
             if (!pagePermission.A1_12_3) {
               this.analysisData.pop()
@@ -3533,16 +3533,14 @@ export default {
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
             }
           }
-          if (status === 201400) {
+          if (status === 201400 || status === 201600) {
             this.issueDefinitionData.sevenDiamondsVos[6].operation = '编辑'
             if (!pagePermission.A1_15_3) {
               this.analysisData.pop()
             }
           }
           if (status === 201500) {
-            // this.record.endSeven = '1'
-            console.info('111111111111111111')
-            console.info(this.record)
+            this.record.endSeven = '1'
           }
         }
         console.info(this.analysisData)
@@ -3670,6 +3668,9 @@ export default {
       this.formDcontent.validateFields((err) => {
         if (!err) {
           const data = this.formDcontent.getFieldsValue();
+          if (Number(vm.detailList.status) === 201500) {
+            data.endSeven = '1'
+          }       
           const transData = {
             businessKey: this.id, // 问题id
             businessTitle: data.title, // 问题title
