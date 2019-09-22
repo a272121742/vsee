@@ -2512,7 +2512,7 @@
         </a-card>
       </a-form>
       <a-form
-        v-if="pagePermission.A4"
+        v-if="pagePermission.A4_2"
         class="ant-advanced-search-form"
       >
         <a-collapse :bordered="false">
@@ -3373,7 +3373,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
-        return res.taskIdOld !== undefined ? res.taskIdOld : '';
+        return res.taskId !== undefined ? res.taskId : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3385,6 +3385,8 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
+        console.info(11111111111111111111111)
+        console.info(res1)
         const taskDefListArray = [];
         if (res1[1]) {
           taskDefListArray.push(res1[1]);
