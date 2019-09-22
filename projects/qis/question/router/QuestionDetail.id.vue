@@ -334,11 +334,8 @@
               >
                 <a-upload
                   name="file"
-
                   :multiple="true"
-
                   :headers="headers"
-
                   @change="handleChange"
                 >
                   <a-button>
@@ -488,7 +485,7 @@
       </div>
     </a-affix>
     <div class="formConetnt">
-      <div class="messageForm">
+      <div class="shadown-block-normal messageForm">
         <a-form
           :form="form"
           layout="vertical"
@@ -785,7 +782,7 @@
         </a-form>
       </div>
       <a-form
-        class="ant-advanced-search-form"
+        class="shadown-block-normal ant-advanced-search-form"
         :form="formDcontent"
       >
         <a-card
@@ -2532,7 +2529,7 @@
       </a-form>
       <a-form
         v-if="pagePermission.A4_2"
-        class="ant-advanced-search-form"
+        class="shadown-block-normal ant-advanced-search-form"
       >
         <a-collapse :bordered="false">
           <a-collapse-panel
@@ -2544,7 +2541,7 @@
                 row-key="id"
                 :data-source="dataRecord"
                 :columns="columnsRecord"
-                :pagination="{defaultPageSize: 10}"
+                :pagination="true"
               >
               </a-table>
             </div>
@@ -4013,14 +4010,15 @@ export default {
   #components-form-demo-advanced-search {
 
      .formConetnt{
-        margin-top: 40px;
+        margin-top: 0px;
      }
       .messageForm{
-      /deep/ .ant-row{
-        height: 40px;
-        line-height: 40px;
+        margin-bottom: 16px;
+        /deep/ .ant-row{
+          height: 40px;
+          line-height: 40px;
+        }
       }
-    }
     // .UserModal{
     //  /deep/.ant-modal-footer{
     //       padding:10px 5px;
@@ -4568,7 +4566,7 @@ export default {
 
   .ant-advanced-search-form {
     border-radius: 6px;
-    margin-top: -40px;
+    margin-bottom: 16px;
 
     /deep/ .ant-form-item {
       display: flex;

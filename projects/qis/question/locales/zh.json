@@ -1,5 +1,7 @@
 {
   "issue": {
+    "basicInfo": "基本信息",
+    "additionalInfo": "补充信息",
     "calibrationVersion": "标定版本号",
     "code": "问题编号",
     "confirmationVersion": "配置字版本号",
@@ -29,7 +31,7 @@
     "maintenanceStation": "维修网点",
     "manufactureBase": "生产基地",
     "masterIssueId": "主问题ID",
-    "milage": "故障里程(Km)",
+    "milage": "故障里程",
     "optCounter": "操作次数",
     "partId": "零件号",
     "preliminaryInvestigation": "初步排查情况",
@@ -85,7 +87,13 @@
     "create": "创建问题",
     "detail": "详情",
     "edit": "编辑",
-    "delete": "删除"
+    "delete": "删除",
+    "back": "返回",
+    "commit": "提交",
+    "save": "保存",
+    "cancel": "取消",
+    "upload": "上传文件",
+    "download": "下载文件"
   },
   "issue_workflow": {
     "D0": {
@@ -178,5 +186,8 @@
     "isReview": "是否审阅",
     "reviewed": "已审阅",
     "remark": "备注"
+  },
+  "validate": {
+    "not_number": "{0}不是数字"
   }
 }

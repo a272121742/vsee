@@ -108,7 +108,15 @@ export default {
     //   return this.$store.state.menus;
     // },
     defaultActiveMenu () {
-      return [this.$route.name || 'Home'];
+      const name = this.$route.name || 'Home';
+      switch (name) {
+      case 'QuestionCreate':
+      case 'QuestionDetail':
+      case 'QuestionSuccess':
+        return ['List'];
+      default:
+        return [name];
+      }
     },
     user () {
       return this.$store.state.userInfo;

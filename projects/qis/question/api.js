@@ -8,7 +8,7 @@ export default {
   // 查看某个问题的附件
   getFilePage: () => ('/question/annex/page'),
   // 查看某个问题的操作记录
-  getRecord: () => $.get('/question/action/page'),
+  getRecord: (id) => $.get('/issue/v1/workflow/operationHistory', { issue_id: id }),
   // oldTest
   getQuestionStep: () => $.get('/getAll/mock'),
   // 问题定义查询
