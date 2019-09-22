@@ -297,20 +297,20 @@
             <a-col :span="17">
               <a-form-item
                 :label="`是否更新`"
-                style="margin-bottom:0;"
+                style="margin-top:20px;margin-bottom:0;height:50px;"
               >
                 <a-radio-group
                   v-decorator="[
                     'isUpdae',
                     {rules:[{required: true,message: '请选择是否更新'}]}
                   ]"
-
                   :options="updateRadio"
+                  @change="updateRadioChange"
                 />
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row>
+          <a-row v-if="updateContentFlag">
             <a-col :span="22">
               <a-form-item
                 :label="`更新内容`"
@@ -2204,6 +2204,12 @@
                             slot-scope="text, row"
                           >
                             <a
+                              v-if="pagePermission.A5_1_3"
+                              href="javascript:;"
+                              @click="showUpdate(row)"
+                            >编辑</a>
+                            <a
+                              v-if="pagePermission.A5_1_1"
                               href="javascript:;"
                               @click="showUpdate(row)"
                             >查看</a>
@@ -2449,7 +2455,7 @@
                 </a-row>
               </div>
               <div
-                v-if="pagePermission.A6_2_1"
+                v-if="pagePermission.A6_2_3"
                 class="examine"
               >
                 <div class="Dtitle">
@@ -2479,7 +2485,10 @@
                   </a-col>
                 </a-row>
               </div>
-              <div class="examine">
+              <div
+                v-if="pagePermission.A6_2_1"
+                class="examine"
+              >
                 <div class="Dtitle">
                   <span>加签审阅</span>
                 </div>
@@ -2748,6 +2757,7 @@ export default {
       // 再分配弹框
       ModalText: 'Content of the modal',
       fileModalTitle: '添加更新文件',
+      updateContentFlag: false, // 更新内容标识
       RejectTrue: true,
       analysisId: '',
       fileNameFlag: true,
@@ -3053,6 +3063,14 @@ export default {
         this.signLeaderFlag = true;
       } else {
         this.signLeaderFlag = false;
+      }
+    },
+    // 是否更新
+    updateRadioChange (e) {
+      if (e.target.value === '1') {
+        this.updateContentFlag = true;
+      } else {
+        this.updateContentFlag = false;
       }
     },
     // 驳回

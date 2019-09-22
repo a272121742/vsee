@@ -273,7 +273,7 @@
                           'frequency',
                         ]"
                         allow-clear
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_input')"
                       />
                     </a-form-item>
                   </a-col>
@@ -289,7 +289,7 @@
                           {rules: [{validator: phoneVer}]}
                         ]"
                         allow-clear
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_input')"
                       />
                     </a-form-item>
                   </a-col>
@@ -304,9 +304,9 @@
                       <v-textarea
                         v-decorator="[
                           'description',
-                          {rules: [{ required: true, message:$t('search.please_select')+$t('issue.description') }]}
+                          {rules: [{ required: true, message:$t('search.please_input')+$t('issue.description') }]}
                         ]"
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_input')"
                         allow-clear
                       />
                     </a-form-item>
@@ -951,6 +951,7 @@ export default {
                     assigner: vm.monitor
                   }
                 };
+                debugger;
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
                     this.$router.push({
