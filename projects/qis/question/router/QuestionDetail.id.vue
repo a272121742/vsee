@@ -647,7 +647,6 @@
                   <a-form-item
                     class="form-item-flex-2"
                     :label="`问题描述:`"
-                    :label-col="{span:2}"
                   >
                     <p v-if="detailList.description">
                       {{ detailList.description }}
@@ -943,7 +942,7 @@
               </div>
             </div>
             <div
-              v-if="backCurrent===0&&(pagePermission.A0_2_2||pagePermission.A0_1_2)"
+              v-if="backCurrent===0"
               class="Dcontent D0back"
             >
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
@@ -964,11 +963,11 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`需要围堵措施`">
-                        <p>{{ problemDefinitionData.isNeedIca == '1' ? '是' : '否' }}</p>
+                        <p>{{ problemDefinitionData.isNeedIca }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
-                  <a-row v-if="problemDefinitionData.isNeedIca==='1'">
+                  <a-row v-if="problemDefinitionData.isNeedIca==='0'">
                     <a-col :span="21">
                       <a-form-item :label="`围堵措施`">
                         <p>{{ problemDefinitionData.icaDescription }}</p>
@@ -1336,14 +1335,14 @@
                       </a-row>
                       <a-row>
                         <a-form-item :label="'不通过原因：'">
-                          <label>不通过</label>
+                          <label>{{ examineReason }}</label>
                         </a-form-item>
                       </a-row>
                     </div>
                     <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3||pagePermission.A1_3_2">
                       <a-row>
                         <a-form-item>
-                          <span>{{ sevenTitle }}</span>
+                          <span>6钻分析</span>
                         </a-form-item>
                       </a-row>
                       <a-table
@@ -1358,7 +1357,7 @@
                         >
                           <a
                             href="javascript:;"
-                            @click="showAnalysis(row, text)"
+                            @click="showAnalysis(row)"
                           >{{ row.operation }}</a>
                         </span>
                       </a-table>
@@ -1471,7 +1470,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent==1&&pagePermission.A1_1_2&&(issueDefinitionData.type==='0')"
+              v-if="backCurrent==1&&pagePermission.A1_1_2"
               class="Dcontent D1back"
             >
               <div
@@ -1481,7 +1480,7 @@
                 <span></span>
               </div>
               <div class="backTitle">
-                <p>{{ issueDefinitionData.type==='0'?'直接判定':'7钻分析' }}</p>
+                <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
               </div>
               <div v-if="issueDefinitionData.type==='0'">
                 <a-row>
@@ -1520,7 +1519,7 @@
                   </a-col>
                 </a-row>
               </div>
-              <div v-if="issueDefinitionData.type==='1'">
+              <div v-if="issueDefinitionData.type==='2'">
                 <div class="processList clearfix">
                   <div class="processTitle">
                     7钻分析责任人:
@@ -2180,7 +2179,7 @@
                     <a-form-item :label="`断点时间`">
                       <a-date-picker
                         v-decorator="[
-                          'breakpointDate ',
+                          'breakpointDate',
                           {rules: [{ required: true, message: '请选择断点时间' }]}
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
@@ -2732,8 +2731,6 @@ export default {
         button_redistribution_3: false
 
       },
-      // 7钻分析标题
-      sevenTitle: '',
       // 流程状态
       statusCode: {
         statusMaxCode: 0,
@@ -2960,18 +2957,10 @@ export default {
 
     };
   },
+
   created () {
     this.formDcontent = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
-
-        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
-        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
-        'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
-        'reason'
-      ], 'record'),
+      mapPropsToFields: this.mapPropsToFieldsForm,
       onValuesChange: autoUpdateFileds(this, 'record')
     });
     this.rediStribution = this.$form.createForm(this, {
@@ -3036,9 +3025,20 @@ export default {
       'getIssueAutomousRegion',
       'getStatusCode',
       'examineDetail',
-      'redistributionFun',
-      'saveSevenDiamonds'
+      'redistributionFun'
     ]),
+    mapPropsToFieldsForm () {
+      return createFormFields(this, [
+        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
+        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
+
+        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
+        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
+        'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+        'reason'
+      ], 'record')
+    },
     // 是否需要围堵措施
     conActionChange (e) {
       if (e.target.value === '1') {
@@ -3156,31 +3156,29 @@ export default {
       return optionArray;
     },
 
-    showAnalysis (param, index) {
+    showAnalysis (param) {
       this.visibleAnalysis = true;
       this.DetailForm = param
-      console.info(index)
-      if (param.type === 'DIAMONDS01') {
-        this.AnalysisTitle = '1钻-过程是否正确'
-      }
-      if (param.type === 'DIAMONDS02') {
-        this.AnalysisTitle = '2钻-工具是否正确'
-      }
-      if (param.type === 'DIAMONDS03') {
-        this.AnalysisTitle = '3钻-物料是否正确'
-      }
-      if (param.type === 'DIAMONDS04') {
-        this.AnalysisTitle = '4钻-物料规则检测'
-      }
-      if (param.type === 'DIAMONDS05') {
-        this.AnalysisTitle = '5钻-过程变更'
-      }
-      if (param.type === 'DIAMONDS06') {
-        this.AnalysisTitle = '6钻-部件变更'
-      }
-      if (param.type === 'DIAMONDS07') {
-        this.AnalysisTitle = '7钻-是否是极端复杂问题'
-      }
+      /* if (index === 2) {
+           this.AnalysisTitle ='2钻-工具是否正确'
+         }
+         if (index === 3) {
+           this.AnalysisTitle ='3钻-物料是否正确'
+         }
+         if (index === 4) {
+           this.AnalysisTitle ='4钻-物料规则检测'
+         }
+         if (index === 5) {
+           this.AnalysisTitle ='5钻-过程变更'
+         }
+         if (index === 6) {
+           this.AnalysisTitle ='6钻-部件变更'
+         }
+         if (index === 7) {
+           this.AnalysisTitle ='7钻-是否是极端复杂问题'
+         } */
+
+
       this.AnalysisForm = this.$form.createForm(this, {
 
         mapPropsToFields: () => {
@@ -3202,6 +3200,7 @@ export default {
             })
           };
         }
+
       });
     },
     showUpdate (param) {
@@ -3254,9 +3253,9 @@ export default {
           if (this.AnalysisForm === '') {
             data.id = this.AnalysisForm.id;
           }
-          /** this.sevenDiamonds(data).then(res => {
+          this.sevenDiamonds(data).then(res => {
             console.info(res)
-          }) */
+          })
           this.analysisData.forEach((item) => {
             if (item.id === data.id) {
               item.id = data.id;
@@ -3340,6 +3339,8 @@ export default {
       //   pageSize: 10,
       //   pageNo: 1
       // }
+      // 表单回显
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
@@ -3371,6 +3372,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
+        return res.taskId !== undefined ? res.taskId : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3382,38 +3384,38 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        console.log(res1);
-        let taskDefListArray = [];
-        if (this.stepCurrent === 2) {
-          taskDefListArray = [
-            'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
-            'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
-            'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
-          ]
-        } else if (this.stepCurrent === 3) {
-          taskDefListArray = [
-            'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
-            'sid-CB0A0885-4EAF-4385-9158-00A353532901',
-            'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
-          ]
-        } else if (this.stepCurrent === 4) {
-          taskDefListArray = [
-            'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
-            'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
-            'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
-          ]
-        } else if (this.stepCurrent === 5) {
-          taskDefListArray = [
-            'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
-            'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
-            'sid-07831227-2153-4197-9FBA-73A33696C53E',
-            'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
-          ]
-        } else if (this.stepCurrent === 6) {
-          taskDefListArray = [
-            'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
-          ]
-        }
+        const taskDefListArray = [];
+        taskDefListArray.push(res1[1]);
+        // if (this.stepCurrent === 2) {
+        //   taskDefListArray = [
+        //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
+        //     'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
+        //     'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
+        //   ]
+        // } else if (this.stepCurrent === 3) {
+        //   taskDefListArray = [
+        //     'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
+        //     'sid-CB0A0885-4EAF-4385-9158-00A353532901',
+        //     'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
+        //   ]
+        // } else if (this.stepCurrent === 4) {
+        //   taskDefListArray = [
+        //     'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
+        //     'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
+        //     'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
+        //   ]
+        // } else if (this.stepCurrent === 5) {
+        //   taskDefListArray = [
+        //     'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
+        //     'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
+        //     'sid-07831227-2153-4197-9FBA-73A33696C53E',
+        //     'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
+        //   ]
+        // } else if (this.stepCurrent === 6) {
+        //   taskDefListArray = [
+        //     'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
+        //   ]
+        // }
         const paramExamine = {
           businessKey: this.issueId,
           processInstanceId: this.processInstanceId,
@@ -3423,6 +3425,36 @@ export default {
           this.examineReason = res.fullMessage;
         })
       })
+      /* this.getAnalysis(this.id).then(res => {
+          this.analysisData = res.list;
+          if (this.analysisData.length === 0) {
+            this.analysisData = [{
+              id: '8',
+              standard: '',
+              actualSituation: '',
+              conclusion: '',
+              file: '',
+              operation: '编辑'
+            },
+              {
+                id: '9',
+                standard: '',
+                actualSituation: '',
+                conclusion: '',
+                file: '',
+                operation: '编辑'
+              },
+              {
+                id: '10',
+                standard: '',
+                actualSituation: '',
+                conclusion: '',
+                file: '',
+                operation: '编辑'
+              }
+            ];
+          }
+        }) */
       this.getFilePage().then(res => {
         this.dataFile = res.list;
       });
@@ -3441,16 +3473,12 @@ export default {
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item, index) => {
+        (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
           item.operation = '查看'
-          this.issueDefinitionData['diamondOwner' + (index + 1)] = item.championName
         })
-        console.info(this.issueDefinitionData)
         const status = Number(this.detailList.status)
         const pagePermission = this.pagePermission
-        // 控制显示
         if (status >= 200200 && status < 200500) {
-          this.sevenTitle = '1-3钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 3; i++) {
             if (status === 200200 || ((pagePermission.A1_3_3) && status === 200500)) {
@@ -3463,7 +3491,6 @@ export default {
           }
         }
         if (status >= 200500 && status < 200800) {
-          this.sevenTitle = '4钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 4; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3476,7 +3503,6 @@ export default {
           }
         }
         if (status >= 200800 && status < 201100) {
-          this.sevenTitle = '5钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 5; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3489,7 +3515,6 @@ export default {
           }
         }
         if (status >= 201100 && status < 201400) {
-          this.sevenTitle = '6钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 6; i++) {
             this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
@@ -3502,10 +3527,11 @@ export default {
           }
         }
         if (status >= 201400) {
-          this.sevenTitle = '7钻分析'
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 7; i++) {
-            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+            if (this.issueDefinitionData.sevenDiamondsVos) {
+              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+            }
           }
           if (status === 201400) {
             this.issueDefinitionData.sevenDiamondsVos[6].operation = '编辑'
@@ -3569,7 +3595,8 @@ export default {
       }, 2000);
     },
     handleCancel () {
-      this.visibleRes = false
+      this.rediStribution.resetFields();
+      this.visibleRes = false;
     },
     // 是否需要7钻分析
     determineChange (e) {
@@ -3680,6 +3707,9 @@ export default {
             }
 
             vm.$message.success('提交成功');
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         }
       });
@@ -3712,6 +3742,9 @@ export default {
         data.optCounter = _this.problemDefinitionData.optCounter;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       if (this.stepCurrent === 1) {
@@ -3760,11 +3793,11 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
-        this.saveSevenDiamonds({
-          sevenDiamondsVOS: _this.analysisData
-        });
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       if (this.stepCurrent === 2) {
@@ -3772,10 +3805,18 @@ export default {
         data.optCounter = _this.rootCauseData.optCounter;
         this.analysisSave(data).then(res => {
           this.optCounter = res.optCounter;
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       data.issueId = this.id;
-
+      if (data.failureDate) {
+        data.failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (data.createDate) {
+        data.failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (data.estimatedClosureTime) {
         data.estimatedClosureTime = data.estimatedClosureTime.format('YYYY-MM-DD HH:mm:ss');
       }
@@ -3788,7 +3829,9 @@ export default {
       if (data.icaExecTime) {
         data.icaExecTime = data.icaExecTime.format('YYYY-MM-DD HH:mm:ss');
       }
-
+      if (data.breakpointDate) {
+        data.breakpointDate = data.breakpointDate.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (this.stepCurrent === 3) {
         data.id = this.stepId;
         data.optCounter = this.optCounter;
@@ -3798,6 +3841,9 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
             //  data.optCounter=res.optCounter;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         });
       } else if (this.stepCurrent === 4) {
@@ -3809,6 +3855,9 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
           });
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         });
       } else if (this.stepCurrent === 5) {
         data.id = this.stepId;
@@ -3818,6 +3867,9 @@ export default {
             this.stepEffect = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         })
       } else if (this.stepCurrent === 6) {
@@ -3828,6 +3880,9 @@ export default {
             this.stepClose = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           })
         })
       }

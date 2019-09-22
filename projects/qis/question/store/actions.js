@@ -183,9 +183,5 @@ export default {
   // 获取流程进度
   getStatusCode (store, id) {
     return api.getStatusCode(id)
-  },
-  // 保存7钻
-  saveSevenDiamonds (store, data) {
-    return api.saveSevenDiamonds(data)
   }
 };

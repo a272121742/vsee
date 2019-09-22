@@ -286,6 +286,7 @@
                       <v-input
                         v-decorator="[
                           'contact',
+                          {rules: [{validator: phoneVer}]}
                         ]"
                         allow-clear
                         :placeholder="$t('search.please_select')"
@@ -739,6 +740,15 @@ export default {
           this.faultTreeIds2Title = this.record.faultTreeIds2Name; // 功能标题，
           this.codeTitle = this.record.faultTreeIds3Name; // 故障代码标题
         });
+      }
+    },
+    // 验证手机号
+    phoneVer (rule, value, callback) {
+      var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      if (!myreg.test(value)) {
+        callback(new Error('请输入11位有效手机号'));
+      } else {
+        callback();
       }
     },
     selectOptionSingn (input) {
