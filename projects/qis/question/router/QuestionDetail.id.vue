@@ -1883,7 +1883,7 @@
                   />
                 </a-form-item>
                 <a-form-item
-                  v-if="record.isPass"
+                  v-if="record.isPass==='0'"
                   :label="`不通过理由`"
                 >
                   <v-textarea
@@ -2086,7 +2086,7 @@
                   />
                 </a-form-item>
                 <a-form-item
-                  v-if="record.isPass"
+                  v-if="record.isPass==='0'"
                   :label="`不通过理由`"
                 >
                   <v-textarea
@@ -2291,7 +2291,7 @@
                   />
                 </a-form-item>
                 <a-form-item
-                  v-if="record.isPass"
+                  v-if="record.isPass==='0'"
                   :label="`不通过理由`"
                 >
                   <v-textarea
@@ -2342,7 +2342,7 @@
                     />
                   </a-form-item>
                   <a-form-item
-                    v-if="record.isPass"
+                    v-if="record.isPass==='0'"
                     :label="`不通过理由`"
                   >
                     <v-textarea
@@ -3377,7 +3377,9 @@ export default {
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
         const taskDefListArray = [];
-        taskDefListArray.push(res1[1]);
+        if (res1[1]) {
+          taskDefListArray.push(res1[1]);
+        }
         // if (this.stepCurrent === 2) {
         //   taskDefListArray = [
         //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
