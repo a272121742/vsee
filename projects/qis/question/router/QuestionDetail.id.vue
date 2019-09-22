@@ -647,7 +647,6 @@
                   <a-form-item
                     class="form-item-flex-2"
                     :label="`问题描述:`"
-                    :label-col="{span:2}"
                   >
                     <p v-if="detailList.description">
                       {{ detailList.description }}
@@ -1336,7 +1335,7 @@
                       </a-row>
                       <a-row>
                         <a-form-item :label="'不通过原因：'">
-                          <label>不通过</label>
+                          <label>{{ examineReason }}</label>
                         </a-form-item>
                       </a-row>
                     </div>
@@ -2180,7 +2179,7 @@
                     <a-form-item :label="`断点时间`">
                       <a-date-picker
                         v-decorator="[
-                          'breakpointDate ',
+                          'breakpointDate',
                           {rules: [{ required: true, message: '请选择断点时间' }]}
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
@@ -2950,18 +2949,10 @@ export default {
 
     };
   },
+
   created () {
     this.formDcontent = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
-
-        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
-        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
-        'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
-        'reason'
-      ], 'record'),
+      mapPropsToFields: this.mapPropsToFieldsForm,
       onValuesChange: autoUpdateFileds(this, 'record')
     });
     this.rediStribution = this.$form.createForm(this, {
@@ -3028,6 +3019,18 @@ export default {
       'examineDetail',
       'redistributionFun'
     ]),
+    mapPropsToFieldsForm () {
+      return createFormFields(this, [
+        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
+        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
+
+        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
+        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
+        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
+        'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+        'reason'
+      ], 'record')
+    },
     // 是否需要围堵措施
     conActionChange (e) {
       if (e.target.value === '1') {
@@ -3328,6 +3331,8 @@ export default {
       //   pageSize: 10,
       //   pageNo: 1
       // }
+      // 表单回显
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
@@ -3359,6 +3364,7 @@ export default {
           console.info('stepMax:' + this.stepMax)
           this.getQuestionStepAll(this.id);
         }
+        return res.taskId !== undefined ? res.taskId : '';
       })
       this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {}
@@ -3370,38 +3376,38 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        console.log(res1);
-        let taskDefListArray = [];
-        if (this.stepCurrent === 2) {
-          taskDefListArray = [
-            'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
-            'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
-            'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
-          ]
-        } else if (this.stepCurrent === 3) {
-          taskDefListArray = [
-            'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
-            'sid-CB0A0885-4EAF-4385-9158-00A353532901',
-            'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
-          ]
-        } else if (this.stepCurrent === 4) {
-          taskDefListArray = [
-            'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
-            'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
-            'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
-          ]
-        } else if (this.stepCurrent === 5) {
-          taskDefListArray = [
-            'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
-            'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
-            'sid-07831227-2153-4197-9FBA-73A33696C53E',
-            'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
-          ]
-        } else if (this.stepCurrent === 6) {
-          taskDefListArray = [
-            'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
-          ]
-        }
+        const taskDefListArray = [];
+        taskDefListArray.push(res1[1]);
+        // if (this.stepCurrent === 2) {
+        //   taskDefListArray = [
+        //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
+        //     'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
+        //     'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
+        //   ]
+        // } else if (this.stepCurrent === 3) {
+        //   taskDefListArray = [
+        //     'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
+        //     'sid-CB0A0885-4EAF-4385-9158-00A353532901',
+        //     'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
+        //   ]
+        // } else if (this.stepCurrent === 4) {
+        //   taskDefListArray = [
+        //     'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
+        //     'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
+        //     'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
+        //   ]
+        // } else if (this.stepCurrent === 5) {
+        //   taskDefListArray = [
+        //     'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
+        //     'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
+        //     'sid-07831227-2153-4197-9FBA-73A33696C53E',
+        //     'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
+        //   ]
+        // } else if (this.stepCurrent === 6) {
+        //   taskDefListArray = [
+        //     'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
+        //   ]
+        // }
         const paramExamine = {
           businessKey: this.issueId,
           processInstanceId: this.processInstanceId,
@@ -3515,7 +3521,9 @@ export default {
         if (status >= 201400) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 7; i++) {
-            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+            if (this.issueDefinitionData.sevenDiamondsVos) {
+              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+            }
           }
           if (status === 201400) {
             this.issueDefinitionData.sevenDiamondsVos[6].operation = '编辑'
@@ -3574,7 +3582,8 @@ export default {
       }, 2000);
     },
     handleCancel () {
-      this.visibleRes = false
+      this.rediStribution.resetFields();
+      this.visibleRes = false;
     },
     // 是否需要7钻分析
     determineChange (e) {
@@ -3685,6 +3694,9 @@ export default {
             }
 
             vm.$message.success('提交成功');
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         }
       });
@@ -3717,6 +3729,9 @@ export default {
         data.optCounter = _this.problemDefinitionData.optCounter;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       if (this.stepCurrent === 1) {
@@ -3767,6 +3782,9 @@ export default {
         data.sevenDiamondsVos = _this.analysisData;
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       if (this.stepCurrent === 2) {
@@ -3774,10 +3792,18 @@ export default {
         data.optCounter = _this.rootCauseData.optCounter;
         this.analysisSave(data).then(res => {
           this.optCounter = res.optCounter;
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         })
       }
       data.issueId = this.id;
-
+      if (data.failureDate) {
+        data.failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (data.createDate) {
+        data.failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (data.estimatedClosureTime) {
         data.estimatedClosureTime = data.estimatedClosureTime.format('YYYY-MM-DD HH:mm:ss');
       }
@@ -3790,7 +3816,9 @@ export default {
       if (data.icaExecTime) {
         data.icaExecTime = data.icaExecTime.format('YYYY-MM-DD HH:mm:ss');
       }
-
+      if (data.breakpointDate) {
+        data.breakpointDate = data.breakpointDate.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (this.stepCurrent === 3) {
         data.id = this.stepId;
         data.optCounter = this.optCounter;
@@ -3800,6 +3828,9 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
             //  data.optCounter=res.optCounter;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         });
       } else if (this.stepCurrent === 4) {
@@ -3811,6 +3842,9 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
           });
+          this.$router.push({
+            path: this.$route.query.form || '/'
+          });
         });
       } else if (this.stepCurrent === 5) {
         data.id = this.stepId;
@@ -3820,6 +3854,9 @@ export default {
             this.stepEffect = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           });
         })
       } else if (this.stepCurrent === 6) {
@@ -3830,6 +3867,9 @@ export default {
             this.stepClose = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
           })
         })
       }
