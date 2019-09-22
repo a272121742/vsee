@@ -3246,9 +3246,9 @@ export default {
           if (this.AnalysisForm === '') {
             data.id = this.AnalysisForm.id;
           }
-          this.sevenDiamonds(data).then(res => {
+          /** this.sevenDiamonds(data).then(res => {
             console.info(res)
-          })
+          }) */
           this.analysisData.forEach((item) => {
             if (item.id === data.id) {
               item.id = data.id;
@@ -3747,7 +3747,9 @@ export default {
           })
         }
         data.sevenDiamondsVos = _this.analysisData;
-        this.saveSevenDiamonds(_this.analysisData);
+        this.saveSevenDiamonds({
+          sevenDiamondsVOS: _this.analysisData
+        });
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
         })
