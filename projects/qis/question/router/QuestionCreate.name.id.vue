@@ -142,7 +142,7 @@
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds1"
-                        :delay="!isEdit"
+                        :delay="!isEdit || !record.faultTreeIds1"
                         :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
                         :cache="false"
                         :transform="selectOption"
@@ -164,7 +164,7 @@
                         ]"
                         show-search
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
-                        :delay="!isEdit"
+                        :delay="!isEdit || !record.faultTreeIds2"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds2"
                         :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
