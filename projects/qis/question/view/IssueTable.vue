@@ -2,6 +2,7 @@
   <a-table
     row-key="id"
     :data-source="data"
+    :loading="loading"
     :scroll="{ x: true }"
     :pagination="{total: total, current: page, pageSize, showTotal, showQuickJumper: true}"
     v-on="$listeners"
@@ -64,6 +65,10 @@ export default {
     data: {
       type: Array,
       default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
     /**
      * 总数，从上层组件获取，上层组件通过服务端获取

@@ -12,6 +12,7 @@ export default {
        * 表格数据，从服务端获取
        */
       data: [],
+      loading: false,
       /**
        * 表格总数
        */
@@ -44,15 +45,21 @@ export default {
       'getIssuePage'
     ]),
     request (config) {
-      const {
-        page, limit, order, orderField, filters
-      } = this;
-      this.getIssuePage({
-        page, limit, order, orderField, ...config, ...filters
-      }).then(res => {
-        this.data = res.list;
-        this.total = res.total;
-      });
+      if (!this.loading) {
+        this.loading = true;
+        const {
+          page, limit, order, orderField, filters
+        } = this;
+        this.getIssuePage({
+          page, limit, order, orderField, ...config, ...filters
+        }).then(res => {
+          this.data = res.list;
+          this.total = res.total;
+          this.$nextTick(() => {
+            this.loading = false;
+          })
+        });
+      }
     },
     handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
       current && (this.page = current);

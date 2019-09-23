@@ -9,6 +9,7 @@
     <issue-table
       col-update-url="/sys/customlist?listCode=issue-advance-column"
       :data="data"
+      :loading="loading"
       :total="total"
       :page="page"
       :page-size.sync="limit"
