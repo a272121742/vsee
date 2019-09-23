@@ -50,8 +50,8 @@ export const issueTableMix = {
     }
   },
   created () {
-    this.request({ type: 0 });
-    this.request({ type: 1 });
+    // this.request({ type: 0 });
+    // this.request({ type: 1 });
   },
   methods: {
     ...mapActions([

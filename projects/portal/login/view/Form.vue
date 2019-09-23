@@ -153,7 +153,6 @@ export default {
         if (!err) {
           this.login(loginInfo).then(res => {
             if (res.token) {
-              this.$store.commit('setLoginStatus', res.token);
               const goPage = this.$route.query.redirect || '/';
               if (this.$router.matcher.match(goPage).name === '404') {
                 this.$router.push({ path: '/' });
