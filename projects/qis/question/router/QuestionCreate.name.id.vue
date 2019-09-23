@@ -706,15 +706,14 @@ export default {
     }
   },
   watch: {
-    id: {
+    name: {
       handler: 'init',
       immediate: true
     }
   },
-  // created () {
-  //   // 初始化
-  //   this.init();
-  // },
+  activated () {
+    this.init();
+  },
   methods: {
     moment,
     ...mapActions([
