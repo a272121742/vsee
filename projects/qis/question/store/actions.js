@@ -167,34 +167,6 @@ export default {
   getIssuePage (store, param) {
     return api.getIssuePage(param);
   },
-  /**
-   * 获取待办问题清单
-   * @author loong.qian
-   */
-  getIssueTodoPage (store, param) {
-    return store.dispatch('getIssuePage', { ...param, type: 1 });
-  },
-  /**
-   * 获取待发问题清单
-   * @author loong.qian
-   */
-  getIssueDraftPage (store, param) {
-    return store.dispatch('getIssuePage', { ...param, type: 0 });
-  },
-  /**
-   * 获取已办问题清单
-   * @author loong.qian
-   */
-  getIssueDonePage (store, param) {
-    return store.dispatch('getIssuePage', { ...param, type: 2 });
-  },
-  /**
-   * 获取已发问题清单
-   * @author loong.qian
-   */
-  getIssuePublishedPage (store, param) {
-    return store.dispatch('getIssuePage', { ...param, type: 3 });
-  },
   // 原因分析保存
   // 问题定义保存
   analysisSave (store, data) {

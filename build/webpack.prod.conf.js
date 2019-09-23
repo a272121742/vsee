@@ -1,18 +1,19 @@
+"use strict";
 
-const path = require('path');
+const path = require("path");
 const os = require('os');
-const merge = require('webpack-merge');
+const merge = require("webpack-merge");
 
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 
-const utils = require('./utils');
-const config = require('../config');
-const baseWebpackConfig = require('./webpack.base.conf');
+const utils = require("./utils");
+const config = require("../config");
+const baseWebpackConfig = require("./webpack.base.conf");
 
 const project = process.env.npm_config_project;
 
@@ -30,7 +31,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   module: {
     // 调用utils.styleLoaders的方法
     rules: utils.styleLoaders({
-      // 开启调试的模式。默认为true
+      //开启调试的模式。默认为true
       sourceMap: config.build.productionSourceMap,
       extract: true,
       usePostCSS: true
@@ -59,7 +60,7 @@ const webpackConfig = merge(baseWebpackConfig, {
           chunks: 'all',
           test: /antd/,
           priority: 100,
-          name: 'vendors'
+          name: 'vendors',
         }
       }
     },
@@ -70,21 +71,21 @@ const webpackConfig = merge(baseWebpackConfig, {
         cache: true,
         sourceMap: config.build.productionSourceMap,
         terserOptions: {
-          // 警告：true保留警告，false不保留
+          //警告：true保留警告，false不保留
           warnings: false,
           // 提取出出现多次但是没有定义成变量去引用的静态值
           reduce_vars: true,
           compress: {
-            // 打印语句：true去掉，false保留
+            //打印语句：true去掉，false保留
             drop_console: true,
             // 内嵌定义了但是只用到一次的变量
-            collapse_vars: true
+            collapse_vars: true,
           },
           output: {
             // 最紧凑的输出
             beautify: false,
             // 删除所有的注释
-            comments: false
+            comments: false,
           }
         }
       }),
@@ -124,7 +125,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: config.build.index,
-      template: 'index.html',
+      template: "index.html",
       inject: true,
       hash: true,
       minify: {
@@ -142,7 +143,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
+        minifyURLs: true,
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
@@ -155,9 +156,9 @@ const webpackConfig = merge(baseWebpackConfig, {
 
     // copy custom static assets
     new CopyWebpackPlugin([{
-      from: path.resolve(__dirname, '../static'),
+      from: path.resolve(__dirname, "../static"),
       to: path.resolve(config.build.assetsRoot, '../static'),
-      ignore: ['.*']
+      ignore: [".*"]
     }]),
 
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
@@ -180,14 +181,14 @@ if (process.env.npm_config_ftp) {
 
 // 如果开启了生产环境的Gzip压缩
 if (config.build.productionGzip) {
-  const CompressionWebpackPlugin = require('compression-webpack-plugin');
+  const CompressionWebpackPlugin = require("compression-webpack-plugin");
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
       // asset: "[path].gz[query]", // 1.x.x 改为此属性
-      filename: '[path].gz[query]', // 2.x.x 改为此属性
-      algorithm: 'gzip',
+      filename: "[path].gz[query]", // 2.x.x 改为此属性
+      algorithm: "gzip",
       test: new RegExp(
-        '\\.(' + config.build.productionGzipExtensions.join('|') + ')$'
+        "\\.(" + config.build.productionGzipExtensions.join("|") + ")$"
       ),
       threshold: 10240,
       minRatio: 0.8
@@ -196,10 +197,11 @@ if (config.build.productionGzip) {
 }
 
 if (config.build.bundleAnalyzerReport) {
-  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
     .BundleAnalyzerPlugin;
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
+
 
 
 module.exports = webpackConfig;

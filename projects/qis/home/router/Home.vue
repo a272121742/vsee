@@ -14,8 +14,8 @@
       class="row2 shadown-block-normal"
     >
       <a-tabs
-        :animated="false"
-        @change="changeTab"
+        :active-key="activeKey"
+        @change="changeTable"
       >
         <a-tab-pane
           key="1"
@@ -25,18 +25,13 @@
             {{ $t('issue_status.todo') }}
             <a-badge
               show-zero
-              :count="dotoTableConfig.total"
+              :count="total1"
               :number-style="{
                 backgroundColor: 'rgba(0,0,0,0.09)',
                 color: 'rgba(0,0,0,0.85)',
               }"
             />
           </template>
-          <issue-todo-table
-            v-if="defaultActiveKey === '1'"
-            col-update-url="/sys/customlist?listCode=issue-todo-columns"
-            v-bind.sync="dotoTableConfig"
-          ></issue-todo-table>
         </a-tab-pane>
         <a-tab-pane
           key="0"
@@ -46,35 +41,21 @@
             {{ $t('issue_status.draft') }}
             <a-badge
               show-zero
-              :count="draftTableConfig.total"
+              :count="total0"
               :number-style="{
                 backgroundColor: 'rgba(0,0,0,0.09)',
                 color: 'rgba(0,0,0,0.85)',
               }"
             />
           </span>
-          <issue-draft-table
-            v-if="defaultActiveKey === '0'"
-            col-update-url="/sys/customlist?listCode=issue-draft-columns"
-            v-bind.sync="draftTableConfig"
-          ></issue-draft-table>
         </a-tab-pane>
-        <template
-          slot="renderTabBar"
-          slot-scope="props, DefaultTabBar"
-        >
-          <component
-            :is="DefaultTabBar"
-            {...props}
-          />
-        </template>
         <template #tabBarExtraContent>
           <a-button
             v-if="showSearch"
             icon="search"
             type="primary"
             :ghost="true"
-            @click="() => dotoTableConfig.showForm = !dotoTableConfig.showForm"
+            @click="() => hideForm = !hideForm"
           >
             <!-- 搜索按钮 -->
             {{ $t('search.search_button') }}
@@ -90,15 +71,44 @@
           </a-button>
         </template>
       </a-tabs>
+      <!-- 搜索表单 -->
+      <issue-search-form
+        :hide="hideForm"
+        @hidden="hiddenForm"
+        @change="request"
+      />
+      <!-- 数据列表 -->
+      <issue-table
+        col-update-url="/sys/customlist?listCode=issue-columns"
+        :data="data"
+        :total="total"
+        :page="page"
+        :page-size.sync="limit"
+        @change="handleTableChange"
+      >
+        <span
+          slot="action"
+          slot-scope="record"
+        >
+          <a
+            href="javascript:;"
+            @click="goToDetail(record.id)"
+          >
+            <!-- 详情链接 -->
+            {{ $t('issue_action.detail') }}
+          </a>
+        </span>
+      </issue-table>
     </a-row>
   </div>
 </template>
 
 <script>
-import issueTab from '@@cmd/issue-tab.js';
+import { issueTableMix } from '@@cmd/issue-table.js';
+
 export default {
-  name: 'Home',
-  mixins: [issueTab]
+  name: 'QuestionList',
+  mixins: [issueTableMix]
 }
 </script>
 

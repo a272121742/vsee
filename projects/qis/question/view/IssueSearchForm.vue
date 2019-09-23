@@ -105,7 +105,6 @@
 </template>
 
 <script>
-import { clone } from 'ramda';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 import { transform1, transform2 } from '@@cmd/model.js';
 
@@ -123,6 +122,13 @@ export default {
     return {
       form: null,
       record: {}
+    }
+  },
+  watch: {
+    hide (value) {
+      if (value) {
+        this.resetSearch();
+      }
     }
   },
   created () {
@@ -144,7 +150,6 @@ export default {
      * 提交搜索内容
      */
     submitSearch () {
-      this.cache = clone(this.record);
       this.$emit('change', this.record);
     },
     /**
@@ -153,7 +158,7 @@ export default {
     resetSearch () {
       this.$set(this, 'record', {});
       this.form.updateFields(this.mapPropsToFields());
-      this.submitSearch();
+      this.$emit('change', this.record);
     },
     /**
      * 取消搜索
