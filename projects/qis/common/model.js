@@ -27,6 +27,7 @@ const gradeName = {
   title: 'gradeName',
   dataIndex: 'gradeName',
   width: 150,
+  align: 'center',
   scopedSlots: { customRender: 'gradeName' },
   sorter: true
 };
@@ -49,6 +50,7 @@ const status = {
   title: 'status',
   dataIndex: 'status',
   width: 110,
+  align: 'center',
   scopedSlots: { customRender: 'status' },
   sorter: true
 };
@@ -57,6 +59,7 @@ const projectDate = {
   title: 'projectDate',
   dataIndex: 'projectDate',
   width: 150,
+  align: 'center',
   scopedSlots: { customRender: 'projectDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
@@ -67,6 +70,7 @@ const receiveDate = {
   title: 'receiveDate',
   dataIndex: 'receiveDate',
   width: 150,
+  align: 'center',
   scopedSlots: { customRender: 'receiveDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
@@ -77,6 +81,7 @@ const createDate = {
   title: 'createDate',
   dataIndex: 'createDate',
   width: 150,
+  align: 'center',
   scopedSlots: { customRender: 'createDate' },
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
