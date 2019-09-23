@@ -705,14 +705,16 @@ export default {
       return this.name !== 'create';
     }
   },
-  created () {
-    this.form = this.$form.createForm(this, {
-      mapPropsToFields: this.mapPropsToFields,
-      onValuesChange: autoUpdateFileds(this, 'record')
-    });
-    // 初始化
-    this.init();
+  watch: {
+    id: {
+      handler: 'init',
+      immediate: true
+    }
   },
+  // created () {
+  //   // 初始化
+  //   this.init();
+  // },
   methods: {
     moment,
     ...mapActions([
@@ -728,6 +730,10 @@ export default {
     ]),
     // 初始化
     init () {
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields: this.mapPropsToFields,
+        onValuesChange: autoUpdateFileds(this, 'record')
+      });
       this.form.resetFields();
       if (this.name === 'create') {
         this.questionTitle = '创建问题';

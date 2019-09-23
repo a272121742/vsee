@@ -2988,36 +2988,15 @@ export default {
 
     };
   },
-
-  created () {
-    this.formDcontent = this.$form.createForm(this, {
-      mapPropsToFields: this.mapPropsToFieldsForm,
-      onValuesChange: autoUpdateFileds(this, 'record')
-    });
-    this.rediStribution = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'], 'redistributionForm'),
-      onValuesChange: autoUpdateFileds(this, 'redistributionForm')
-    });
-    this.AnalysisForm = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'id', 'standard', 'actualSituation', 'conclusion', 'file'
-      ], 'recordAnalysis'),
-      onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
-    });
-    this.updateForm = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
-      ], 'recordUpdate'),
-      onValuesChange: autoUpdateFileds(this, 'recordUpdate')
-    });
-    this.rejectForm = this.$form.createForm(this, {
-      mapPropsToFields: () => createFormFields(this, [
-        'commentReject'
-      ], 'rejectRecord'),
-      onValuesChange: autoUpdateFileds(this, 'rejectRecord')
-    });
-    this.request();
+  watch: {
+    id: {
+      handler: 'init',
+      immediate: true
+    }
   },
+  // created () {
+  //   this.init();
+  // },
   methods: {
     moment,
     ...mapActions([
@@ -3069,6 +3048,35 @@ export default {
         'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
         'reason'
       ], 'record')
+    },
+    init () {
+      this.formDcontent = this.$form.createForm(this, {
+        mapPropsToFields: this.mapPropsToFieldsForm,
+        onValuesChange: autoUpdateFileds(this, 'record')
+      });
+      this.rediStribution = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'], 'redistributionForm'),
+        onValuesChange: autoUpdateFileds(this, 'redistributionForm')
+      });
+      this.AnalysisForm = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'id', 'standard', 'actualSituation', 'conclusion', 'file'
+        ], 'recordAnalysis'),
+        onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
+      });
+      this.updateForm = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'id', 'fileName', 'isUpdae', 'updateContent', 'fileList'
+        ], 'recordUpdate'),
+        onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+      });
+      this.rejectForm = this.$form.createForm(this, {
+        mapPropsToFields: () => createFormFields(this, [
+          'commentReject'
+        ], 'rejectRecord'),
+        onValuesChange: autoUpdateFileds(this, 'rejectRecord')
+      });
+      this.request();
     },
     // 是否需要围堵措施
     conActionChange (e) {
