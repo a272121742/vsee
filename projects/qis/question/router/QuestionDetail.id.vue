@@ -890,7 +890,7 @@
                       <a-form-item :label="`理由`">
                         <a-textarea
                           v-decorator="[
-                            'dissatisfaction',
+                            'comment',
                             {rules: [{ required: true, message: '请输入理由' }]}
                           ]"
                           placeholder="请输入"
@@ -984,7 +984,7 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`理由`">
-                        <p>{{ problemDefinitionData.dissatisfaction }}</p>
+                        <p>{{ examineReason }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1446,34 +1446,7 @@
                 </div>
               </div>
             </div>
-            <div v-if="pagePermission.A2_2_3">
-              <a-form-item>
-                <span>
-                  审核
-                </span>
-              </a-form-item>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="'审核：'">
-                    <a-radio-group
-                      v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                      :options="verifyRadio"
-                    />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row v-if="record.verifySeven==='0'">
-                <a-col :span="21">
-                  <a-form-item :label="'不通过原因：'">
-                    <a-textarea
-                      v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
-                      placeholder="请输入"
-                    >
-                    </a-textarea>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </div>
+
             <div
               v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
@@ -1569,9 +1542,38 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_3"
+              v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_2"
               class="Dcontent D2content"
             >
+              <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
+                <a-form-item>
+                  <span>
+                    审核
+                  </span>
+                </a-form-item>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="'审核：'">
+                      <a-radio-group
+                        v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                        :options="verifyRadio"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row v-if="record.verifySeven==='0'">
+                  <a-col :span="21">
+                    <a-form-item :label="'不通过原因：'">
+                      <a-textarea
+                        v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                        placeholder="请输入"
+                      >
+                      </a-textarea>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
+
               <div v-if="pagePermission.A2_1_3">
                 <div
                   class="triangle_border_up"
@@ -3439,10 +3441,10 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        const taskDefListArray = [];
-        if (res1[1]) {
-          taskDefListArray.push(res1[1]);
-        }
+        const taskDefListArray = res1[1];
+        // if (res1[1]) {
+        //   taskDefListArray = res1[1];
+        // }
         // if (this.stepCurrent === 2) {
         //   taskDefListArray = [
         //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
@@ -3480,7 +3482,7 @@ export default {
         };
         if (taskDefListArray.length) {
           this.examineDetail(paramExamine).then(res => {
-            this.examineReason = res.fullMessage;
+            this.examineReason = res.MESSAGE;
           })
         }
       })

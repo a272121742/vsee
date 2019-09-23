@@ -36,7 +36,7 @@ export default {
   /**
    * 工作流中的审核
    */
-  examineDetail: (data) => $.post('/activiti/comment/nodeComment', data),
+  examineDetail: (data) => $.get('/issue/v1/workflow/comment/nodeComment', data),
   // 再分配
   redistributionFun: (data) => $.post('/activiti/running/reAssignTask', data),
   /**
