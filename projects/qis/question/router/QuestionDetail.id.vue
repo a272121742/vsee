@@ -2220,6 +2220,11 @@
                               href="javascript:;"
                               @click="showUpdate(row)"
                             >查看</a>
+                            <a
+                              v-if="row.DelFlag===3"
+                              href="javascript:;"
+                              @click="showUpdate(row)"
+                            >删除</a>
                           </span>
                         </a-table>
                         <div
@@ -3308,10 +3313,10 @@ export default {
         if (!err) {
           this.visibleUpdate = false;
           // const data = this.updateForm.getFieldsValue();
-
           if (this.fileNameFlag === true) {
             const data = this.updateForm.getFieldsValue();
             data.issueId = this.id;
+            data.delFlag = 2;
             if (!data.id) {
               this.addFile(data).then(() => {
                 this.updateFile(this.id).then(res => {
@@ -3329,6 +3334,7 @@ export default {
             const data = this.updateForm.getFieldsValue();
             data.issueId = this.id;
             data.fileName = this.fileModalTitle;
+            data.delFlag = 0;
             if (!data.id) {
               this.addFile(data).then(() => {
                 this.updateFile(this.id).then(res => {
@@ -3456,36 +3462,6 @@ export default {
           })
         }
       })
-      /* this.getAnalysis(this.id).then(res => {
-          this.analysisData = res.list;
-          if (this.analysisData.length === 0) {
-            this.analysisData = [{
-              id: '8',
-              standard: '',
-              actualSituation: '',
-              conclusion: '',
-              file: '',
-              operation: '编辑'
-            },
-              {
-                id: '9',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              },
-              {
-                id: '10',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              }
-            ];
-          }
-        }) */
       this.getFilePage().then(res => {
         this.dataFile = res.list;
       });
@@ -3494,10 +3470,6 @@ export default {
       });
     },
     getQuestionStepAll (id) {
-      // this.getQuestionStep(this.id).then(res => {
-      //  this.stepDetail = res;
-      // this.updateData = res.updateList;
-      // });
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         this.updateData = this.problemDefinitionData.updateList;
@@ -3784,48 +3756,51 @@ export default {
       if (this.stepCurrent === 1) {
         data.optCounter = _this.issueDefinitionData.optCounter;
         _this.analysisData = _this.analysisData || []
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS01'
-          })
+        if (!_this.analysisData.length) {
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS01'
+            })
+          }
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS02'
+            })
+          }
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS03'
+            })
+          }
+          if (this.record.diamondOwner4) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner4,
+              type: 'DIAMONDS04'
+            })
+          }
+          if (this.record.diamondOwner5) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner5,
+              type: 'DIAMONDS05'
+            })
+          }
+          if (this.record.diamondOwner6) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner6,
+              type: 'DIAMONDS06'
+            })
+          }
+          if (this.record.diamondOwner7) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner7,
+              type: 'DIAMONDS07'
+            })
+          }
         }
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS02'
-          })
-        }
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS03'
-          })
-        }
-        if (this.record.diamondOwner4) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner4,
-            type: 'DIAMONDS04'
-          })
-        }
-        if (this.record.diamondOwner5) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner5,
-            type: 'DIAMONDS05'
-          })
-        }
-        if (this.record.diamondOwner6) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner6,
-            type: 'DIAMONDS06'
-          })
-        }
-        if (this.record.diamondOwner7) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner7,
-            type: 'DIAMONDS07'
-          })
-        }
+
         data.sevenDiamondsVos = _this.analysisData;
         this.saveSevenDiamonds({
           sevenDiamondsVOS: _this.analysisData
