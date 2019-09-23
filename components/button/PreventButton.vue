@@ -18,7 +18,7 @@
   >
     <!-- slot继承 -->
     <slot></slot>
-    <!-- <template
+    <template
       v-for="(_, slot) of $scopedSlots"
       v-slot:[slot]="scope"
     >
@@ -26,7 +26,7 @@
         :name="slot"
         v-bind="scope"
       />
-    </template> -->
+    </template>
   </a-button>
 </template>
 

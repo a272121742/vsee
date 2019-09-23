@@ -34,7 +34,7 @@ const token = store.getters.getToken();
 
 router.beforeEach((to, from, next) => {
   if (process.env.NODE_ENV === 'production' && !token) {
-    store.commit('logout');
+    window.location.href = `/`;
   }
   NProgress.start(); // 开始进度条
   next();

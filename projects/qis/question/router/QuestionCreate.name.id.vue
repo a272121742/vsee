@@ -20,8 +20,8 @@
           <prevent-button
             v-if="submitBtn"
             ref="commitButton"
-            bind="both"
             type="primary"
+            html-type="submit"
             class="submitBtn"
             @click="handleSubmit"
           >
@@ -30,7 +30,6 @@
           </prevent-button>
           <prevent-button
             ref="saveButton"
-            bind="both"
             :style="{ marginLeft: '8px' }"
             type="primary"
             :class="[actiive]"
@@ -143,7 +142,7 @@
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds1"
-                        :delay="!isEdit || !record.faultTreeIds1"
+                        :delay="!isEdit"
                         :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
                         :cache="false"
                         :transform="selectOption"
@@ -165,7 +164,7 @@
                         ]"
                         show-search
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
-                        :delay="!isEdit || !record.faultTreeIds2"
+                        :delay="!isEdit"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds2"
                         :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
@@ -984,6 +983,7 @@ export default {
                     assigner: vm.monitor
                   }
                 };
+                debugger;
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
                     this.$refs.commitButton.reset();
@@ -1027,7 +1027,6 @@ export default {
             })
           }
         }
-        this.$refs.commitButton.reset();
       });
     },
     handleSave () {
