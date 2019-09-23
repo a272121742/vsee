@@ -1442,7 +1442,7 @@
                 </div>
               </div>
             </div>
-           
+
             <div
               v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
@@ -1591,35 +1591,35 @@
               v-if="backCurrent===2&&pagePermission.A2_1_2"
               class="Dcontent D2back"
             >
-               <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
-              <a-form-item>
-                <span>
-                  审核
-                </span>
-              </a-form-item>
-              <a-row>
-                <a-col :span="21">
-                  <a-form-item :label="'审核：'">
-                    <a-radio-group
-                      v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                      :options="verifyRadio"
-                    />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row v-if="record.verifySeven==='0'">
-                <a-col :span="21">
-                  <a-form-item :label="'不通过原因：'">
-                    <a-textarea
-                      v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
-                      placeholder="请输入"
-                    >
-                    </a-textarea>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-            </div>
-            
+              <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
+                <a-form-item>
+                  <span>
+                    审核
+                  </span>
+                </a-form-item>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="'审核：'">
+                      <a-radio-group
+                        v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                        :options="verifyRadio"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row v-if="record.verifySeven==='0'">
+                  <a-col :span="21">
+                    <a-form-item :label="'不通过原因：'">
+                      <a-textarea
+                        v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                        placeholder="请输入"
+                      >
+                      </a-textarea>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
+
               <div v-if="pagePermission.A2_1_2">
                 <div
                   class="triangle_border_up"
@@ -3517,9 +3517,8 @@ export default {
           for (let i = 0; i < 3; i++) {
             if (status === 200400 || status === 200200 || ((pagePermission.A1_3_3))) {
               this.issueDefinitionData.sevenDiamondsVos[i].operation = '编辑'
-              this.statusCode.maxDiamonds =3
+              this.statusCode.maxDiamonds = 3
             }
-           
           }
           if ((!pagePermission.A1_3_3) && (status === 200200 || status === 200400)) {
             this.analysisData = []
@@ -3528,11 +3527,10 @@ export default {
         if (status >= 200500 && status < 200800) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 4; i++) {
-            if(this.issueDefinitionData.sevenDiamondsVos[i].standard){
-               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-               this.statusCode.maxDiamonds = i;
+            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
+              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+              this.statusCode.maxDiamonds = i;
             }
-            
           }
           if (status === 200500 || status === 200700) {
             this.issueDefinitionData.sevenDiamondsVos[3].operation = '编辑'
@@ -3544,11 +3542,10 @@ export default {
         if (status >= 200800 && status < 201100) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 5; i++) {
-            if(this.issueDefinitionData.sevenDiamondsVos[i].standard){
+            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-               this.statusCode.maxDiamonds = i;
+              this.statusCode.maxDiamonds = i;
             }
-            
           }
           if (status === 200800 || status === 201000) {
             this.issueDefinitionData.sevenDiamondsVos[4].operation = '编辑'
@@ -3560,11 +3557,10 @@ export default {
         if (status >= 201100 && status < 201400) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 6; i++) {
-            if(this.issueDefinitionData.sevenDiamondsVos[i].standard){
+            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-               this.statusCode.maxDiamonds = i;
+              this.statusCode.maxDiamonds = i;
             }
-            
           }
           if (status === 201100 || status === 201300) {
             this.issueDefinitionData.sevenDiamondsVos[5].operation = '编辑'
@@ -3577,11 +3573,10 @@ export default {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 7; i++) {
             if (this.issueDefinitionData.sevenDiamondsVos) {
-              if(this.issueDefinitionData.sevenDiamondsVos[i].standard){
-                 this.statusCode.maxDiamonds = i;
-                 this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
+              if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
+                this.statusCode.maxDiamonds = i;
+                this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
               }
-              
             }
           }
           if (status === 201400 || status === 201600) {
