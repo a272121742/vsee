@@ -261,7 +261,10 @@
       @ok="updateOk"
       @cancel="updateCancel"
     >
-      <div class="fileEdit">
+      <div
+        v-if="updateEditFlag"
+        class="fileEdit"
+      >
         <a-form
           class="ant-advanced-search-form"
           :form="updateForm"
@@ -350,12 +353,13 @@
           </a-row>
         </a-form>
       </div>
-      <!-- <div class="fileEdit"
-           style="display:none;"
+      <div
+        v-if="updateFindFlag"
+        class="fileEdit"
       >
         <a-form
           class="ant-advanced-search-form"
-          :form="updateForm"
+          :form="updateData"
         >
           <a-row v-show="false">
             <a-col :span="17">
@@ -417,7 +421,7 @@
             </a-col>
           </a-row>
         </a-form>
-      </div> -->
+      </div>
     </a-modal>
     <a-affix
       :offset-top="64"
@@ -492,7 +496,7 @@
           @submit="handleSearch"
         >
           <a-card
-            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_3"
+            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_1"
             title="问题详情"
             class="cardTitle"
           >
@@ -1900,11 +1904,10 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===4&&backFlag===false"
+              v-if="stepCurrent===4&&backFlag===false&&pagePermission.A4_3_2"
               class="Dcontent D4content"
             >
               <div
-                v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
                 <div
@@ -2218,12 +2221,12 @@
                             <a
                               v-if="pagePermission.A5_1_1"
                               href="javascript:;"
-                              @click="showUpdate(row)"
+                              @click="UpdateFind(row)"
                             >查看</a>
                             <a
-                              v-if="row.DelFlag===3"
+                              v-if="row.DelFlag===2"
                               href="javascript:;"
-                              @click="showUpdate(row)"
+                              @click="DelUpdate(row)"
                             >删除</a>
                           </span>
                         </a-table>
@@ -2771,6 +2774,8 @@ export default {
       ModalText: 'Content of the modal',
       fileModalTitle: '添加更新文件',
       updateContentFlag: false, // 更新内容标识
+      updateEditFlag: false, // 编辑弹框
+      updateFindFlag: false, // 查看弹框
       RejectTrue: true,
       analysisId: '',
       fileNameFlag: true,
@@ -3055,7 +3060,6 @@ export default {
       return createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
         'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
-
         'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
         'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
@@ -3129,9 +3133,11 @@ export default {
         }
       }
       this.workFlowSubmit(transData).then(res => {
-        if (res.taskId) {
-          this.taskId = res.taskId;
-        }
+        // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
+        // if (res.taskId) {
+        //   this.taskId = res.taskId;
+        // }
+        console.log(res);
         this.$message.success('提交成功');
       });
     },
@@ -3237,6 +3243,7 @@ export default {
     },
     showUpdate (param) {
       this.visibleUpdate = true;
+      this.updateEditFlag = true;
       if (param) {
         this.fileNameFlag = false;
         this.fileModalTitle = param.fileName;
@@ -3264,6 +3271,19 @@ export default {
       } else {
         this.fileNameFlag = true;
       }
+    },
+    UpdateFind (param) {
+      this.visibleUpdate = true;
+      this.updateFindFlag = true;
+      this.updateData = param;
+    },
+    DelUpdate (param) {
+      param.delFlag = 1;
+      this.editFile(param).then(() => {
+        this.updateFile(this.id).then(res => {
+          this.updateData = res;
+        })
+      })
     },
     // 校验中英文
     languageVer (rule, value, callback) {
@@ -3372,8 +3392,6 @@ export default {
       //   pageSize: 10,
       //   pageNo: 1
       // }
-      // 表单回显
-      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
@@ -3391,6 +3409,10 @@ export default {
           this.sysUser.monitor = res2.id
         })
         this.processInstanceId = res.processInstanceId
+        // taskId改为从问题详情读取 2019/9/23 16：44
+        if (res.taskId) {
+          this.taskId = res.taskId;
+        }
       })
       const statusCode2 = this.getStatusCode(this.id).then(res => {
         if (res) {
@@ -3413,7 +3435,6 @@ export default {
         res.forEach(item => {
           that.pagePermission[item.DETAIL_REGION] = true
         })
-        console.info(this.pagePermission)
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
@@ -3548,9 +3569,12 @@ export default {
         }
         console.info(this.analysisData)
       });
-      this.rootCause(id).then(res => {
-        this.rootCauseData = res || {};
+      this.$nextTick(() => {
+        this.rootCause(id).then(res => {
+          this.rootCauseData = res || {};
+        })
       })
+
 
       this.updateFile(this.id).then(res => {
         if (res.length === 0) {
@@ -3582,6 +3606,7 @@ export default {
           this.analysisId = res.id;
         }
       })
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     // 再分配弹框
     showModal () {
@@ -3706,12 +3731,12 @@ export default {
             }
           }
           vm.workFlowSubmit(transData).then(res => {
-            if (res.taskId) {
-              this.taskId = res.taskId;
-            }
-
+            // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
+            // if (res.taskId) {
+            //   this.taskId = res.taskId;
+            // }
+            console.log(res);
             vm.$message.success('提交成功');
-            this.$refs.commitButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
