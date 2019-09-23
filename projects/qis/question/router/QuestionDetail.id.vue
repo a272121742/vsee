@@ -968,11 +968,11 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`需要围堵措施`">
-                        <p>{{ problemDefinitionData.isNeedIca }}</p>
+                        <p>{{ problemDefinitionData.isNeedIca==='1'?'是':'否' }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
-                  <a-row v-if="problemDefinitionData.isNeedIca==='0'">
+                  <a-row v-if="problemDefinitionData.isNeedIca==='1'">
                     <a-col :span="21">
                       <a-form-item :label="`围堵措施`">
                         <p>{{ problemDefinitionData.icaDescription }}</p>
@@ -1464,14 +1464,14 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任部门`">
-                      <p>{{ issueDefinitionData.owerDeptLv1 }}</p>
+                      <p>{{ issueDefinitionData.owerDeptLv1Name }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`责任人`">
-                      <p>{{ issueDefinitionData.champion }}</p>
+                      <p>{{ issueDefinitionData.championName }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1820,21 +1820,21 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`长期措施`">
-                      <p>{{ stepDetail.pcaDescription }}</p>
+                      <p>{{ stepMeasures.pcaDescription }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`长期措施实施计划日期`">
-                      <p>{{ stepDetail.pcaPlanTime }}</p>
+                      <p>{{ stepMeasures.pcaPlanTime }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`长期措施验证计划日期:`">
-                      <p>{{ stepDetail.pcaExecTime }}</p>
+                      <p>{{ stepMeasures.pcaExecTime }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1906,7 +1906,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===4&&backFlag===false&&pagePermission.A4_3_2"
+              v-if="stepCurrent===4&&backFlag===false&&pagePermission.A4_3_3"
               class="Dcontent D4content"
             >
               <div
@@ -2466,7 +2466,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`进入再发防止库`">
-                      <p>{{ stepClose.recurrencePrevention }}</p>
+                      <p>{{ stepClose.recurrencePrevention==='1'?'是':'否' }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
