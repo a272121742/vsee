@@ -65,10 +65,8 @@ export const issueTableMix = {
       this.getIssuePage({
         page, limit, order, orderField, type, ...config
       }).then(res => {
-        if (type === config.type) {
-          this.data = res.list;
-          this.total = res.total;
-        }
+        this.$set(this, 'data', res.list);
+        this.total = res.total;
         if (config.type === 0) {
           this.total0 = res.total;
         }

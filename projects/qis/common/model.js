@@ -77,5 +77,5 @@ const transformField = mapping => list => {
 };
 
 export const transform1 = transformField({ value: 'id', label: 'name' });
-export const transform2 = transformField({ value: 'id', label: 'dictName' });
+export const transform2 = transformField({ value: 'dictValue', label: 'dictName' });
 export const transform3 = transformField({ value: 'id', label: 'nameZh' });
