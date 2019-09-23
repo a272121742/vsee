@@ -730,6 +730,7 @@ export default {
     ]),
     // 初始化
     init () {
+      this.$set(this, 'record', {});
       this.form = this.$form.createForm(this, {
         mapPropsToFields: this.mapPropsToFields,
         onValuesChange: autoUpdateFileds(this, 'record')
