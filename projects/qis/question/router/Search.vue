@@ -7,7 +7,7 @@
     <a-divider style="margin: 12px 0 12px 0;"></a-divider>
     <!-- 数据列表 -->
     <issue-table
-      col-update-url="/sys/customlist?listCode=issue-column"
+      col-update-url="/sys/customlist?listCode=issue-advance-column"
       :data="data"
       :total="total"
       :page="page"
@@ -31,7 +31,9 @@
 </template>
 
 <script>
+// import { issueTableMix } from '@@cmd/issue-table.js';
 import { createNamespacedHelpers } from 'vuex';
+
 const { mapActions } = createNamespacedHelpers('question');
 
 export default {
@@ -40,6 +42,7 @@ export default {
     AdvanceSearchForm: () => import('../view/AdvanceSearchForm.vue'),
     IssueTable: () => import('../view/IssueTable.vue')
   },
+  // mixins: [issueTableMix],
   data () {
     return {
       /**
