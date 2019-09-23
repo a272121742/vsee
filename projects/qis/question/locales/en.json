@@ -186,5 +186,8 @@
     "isReview": "Review or not",
     "reviewed": "Reviewed",
     "remark": "Remark"
+  },
+  "validate": {
+    "not_number": "{0} not a number"
   }
 }

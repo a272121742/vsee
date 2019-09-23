@@ -2,7 +2,7 @@
   <a-table
     row-key="id"
     :data-source="data"
-    :scroll="{ x: 1300 }"
+    :scroll="{ x: true }"
     :pagination="{total: total, current: page, pageSize, showSizeChanger: false, pageSizeOptions: ['10', '20', '50'], showTotal, showQuickJumper: true}"
     v-on="$listeners"
   >
@@ -65,6 +65,13 @@ export default {
       type: Array,
       default: () => []
     },
+    // /**
+    //  * 列配置
+    //  */
+    // columns: {
+    //   type: Array,
+    //   default: () => []
+    // },
     /**
      * 总数，从上层组件获取，上层组件通过服务端获取
      */
@@ -96,9 +103,6 @@ export default {
   },
   data () {
     return {
-      /**
-       * 列信息
-       */
       columns: issueColumns
     }
   },
@@ -152,10 +156,10 @@ export default {
       word-wrap:break-all;
     }
     th > div, td {
-      overflow:hidden;/*超出长度的文字隐藏*/
-      text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
-      white-space:nowrap;/*强制不换行*/
-      word-break:keep-all;/*文字不换行*/
+      overflow: hidden;/*超出长度的文字隐藏*/
+      text-overflow: ellipsis;/*文字隐藏以后添加省略号*/
+      white-space: nowrap;/*强制不换行*/
+      word-break: keep-all;/*文字不换行*/
     }
     // 设置单元格内填充
     .ant-table-thead > tr > th,
