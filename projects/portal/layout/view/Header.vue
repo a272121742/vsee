@@ -27,8 +27,8 @@
             </span>
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a href="javascript:;">
-                  {{ $t('user_action.manual') }}
+                <a href="/">
+                  {{ $t('user_action.to_portal') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="1">

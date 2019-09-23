@@ -261,7 +261,10 @@
       @ok="updateOk"
       @cancel="updateCancel"
     >
-      <div class="fileEdit">
+      <div
+        v-if="updateEditFlag"
+        class="fileEdit"
+      >
         <a-form
           class="ant-advanced-search-form"
           :form="updateForm"
@@ -350,12 +353,13 @@
           </a-row>
         </a-form>
       </div>
-      <!-- <div class="fileEdit"
-           style="display:none;"
+      <div
+        v-if="updateFindFlag"
+        class="fileEdit"
       >
         <a-form
           class="ant-advanced-search-form"
-          :form="updateForm"
+          :form="updateData"
         >
           <a-row v-show="false">
             <a-col :span="17">
@@ -417,7 +421,7 @@
             </a-col>
           </a-row>
         </a-form>
-      </div> -->
+      </div>
     </a-modal>
     <a-affix
       :offset-top="64"
@@ -492,16 +496,12 @@
           @submit="handleSearch"
         >
           <a-card
-<<<<<<< HEAD
-            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A2_3"
-=======
-            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_3"
->>>>>>> parent of 50834a9... 涉及文件更新
+            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_1"
             title="问题详情"
             class="cardTitle"
           >
             <img
-              v-if="pagePermission.A1_3||pagePermission.A2_3"
+              v-if="pagePermission.A1_3"
               src="/static/question/editIcon.png"
               class="editIcon"
               @click="editDetail"
@@ -890,7 +890,7 @@
                       <a-form-item :label="`理由`">
                         <a-textarea
                           v-decorator="[
-                            'comment',
+                            'dissatisfaction',
                             {rules: [{ required: true, message: '请输入理由' }]}
                           ]"
                           placeholder="请输入"
@@ -984,7 +984,7 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`理由`">
-                        <p>{{ examineReason }}</p>
+                        <p>{{ problemDefinitionData.dissatisfaction }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1046,7 +1046,7 @@
               </a-row>
             </div>
             <div
-              v-if="backCurrent===1"
+              v-if="backCurrent===1&&pagePermission.A1_1_3"
               class="Dcontent D1content"
             >
               <div>
@@ -1285,42 +1285,42 @@
                   </div>
                   <div class="analysisStep">
                     <ul>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
+                      <li class="activefirst">
                         <span>第1钻</span>
                         <p>过程是否正确</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
+                      <li class="activefirst">
                         <div></div>
                         <span>第2钻</span>
                         <p>工具是否正确</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
+                      <li class="activefirst">
                         <div></div>
                         <span>第3钻</span>
                         <p>物料是否正确</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=200500&&statusCode.maxDiamonds>=3}">
+                      <li class="stepRemove">
                         <div></div>
                         <span>第4钻</span>
                         <p>物料规则检测</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=200800&&statusCode.maxDiamonds>=4}">
+                      <li>
                         <div></div>
                         <span>第5钻</span>
                         <p>过程变更</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=201100&&statusCode.maxDiamonds>=52}">
+                      <li class="active">
                         <div></div>
                         <span>第6钻</span>
                         <p>部件变更</p>
                         <div></div>
                       </li>
-                      <li :class="{'activefirst': statusCode.statusNewCode>=201400&&statusCode.maxDiamonds>=6}">
+                      <li clasdataRecords="active">
                         <div></div>
                         <span>第7钻</span>
                         <p>是否是极端复杂问题</p>
@@ -1367,7 +1367,7 @@
                         </span>
                       </a-table>
                     </div>
-                    <div v-if="(pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3)">
+                    <div v-if="pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3||pagePermission.A2_2_3">
                       <a-form-item>
                         <span>
                           审核
@@ -1446,7 +1446,34 @@
                 </div>
               </div>
             </div>
-
+            <div v-if="pagePermission.A2_2_3">
+              <a-form-item>
+                <span>
+                  审核
+                </span>
+              </a-form-item>
+              <a-row>
+                <a-col :span="21">
+                  <a-form-item :label="'审核：'">
+                    <a-radio-group
+                      v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                      :options="verifyRadio"
+                    />
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row v-if="record.verifySeven==='0'">
+                <a-col :span="21">
+                  <a-form-item :label="'不通过原因：'">
+                    <a-textarea
+                      v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                      placeholder="请输入"
+                    >
+                    </a-textarea>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+            </div>
             <div
               v-if="backCurrent==1&&pagePermission.A1_1_2&& issueDefinitionData.type==='0'"
               class="Dcontent D1back"
@@ -1595,35 +1622,6 @@
               v-if="backCurrent===2&&pagePermission.A2_1_2"
               class="Dcontent D2back"
             >
-              <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
-                <a-form-item>
-                  <span>
-                    审核
-                  </span>
-                </a-form-item>
-                <a-row>
-                  <a-col :span="21">
-                    <a-form-item :label="'审核：'">
-                      <a-radio-group
-                        v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                        :options="verifyRadio"
-                      />
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-                <a-row v-if="record.verifySeven==='0'">
-                  <a-col :span="21">
-                    <a-form-item :label="'不通过原因：'">
-                      <a-textarea
-                        v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
-                        placeholder="请输入"
-                      >
-                      </a-textarea>
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-              </div>
-
               <div v-if="pagePermission.A2_1_2">
                 <div
                   class="triangle_border_up"
@@ -1906,11 +1904,10 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===4&&backFlag===false"
+              v-if="stepCurrent===4&&backFlag===false&&pagePermission.A4_3_2"
               class="Dcontent D4content"
             >
               <div
-                v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
                 <div
@@ -2224,12 +2221,12 @@
                             <a
                               v-if="pagePermission.A5_1_1"
                               href="javascript:;"
-                              @click="showUpdate(row)"
+                              @click="UpdateFind(row)"
                             >查看</a>
                             <a
-                              v-if="row.DelFlag===3"
+                              v-if="row.DelFlag===2"
                               href="javascript:;"
-                              @click="showUpdate(row)"
+                              @click="DelUpdate(row)"
                             >删除</a>
                           </span>
                         </a-table>
@@ -2762,8 +2759,7 @@ export default {
       // 流程状态
       statusCode: {
         statusMaxCode: 0,
-        statusNewCode: 0,
-        maxDiamonds: 0
+        statusNewCode: 0
       },
       // SM SC
       sysUser: {
@@ -2778,6 +2774,8 @@ export default {
       ModalText: 'Content of the modal',
       fileModalTitle: '添加更新文件',
       updateContentFlag: false, // 更新内容标识
+      updateEditFlag: false, // 编辑弹框
+      updateFindFlag: false, // 查看弹框
       RejectTrue: true,
       analysisId: '',
       fileNameFlag: true,
@@ -3062,7 +3060,6 @@ export default {
       return createFormFields(this, [
         'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
         'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
-
         'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
         'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
@@ -3136,9 +3133,11 @@ export default {
         }
       }
       this.workFlowSubmit(transData).then(res => {
-        if (res.taskId) {
-          this.taskId = res.taskId;
-        }
+        // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
+        // if (res.taskId) {
+        //   this.taskId = res.taskId;
+        // }
+        console.log(res);
         this.$message.success('提交成功');
       });
     },
@@ -3244,6 +3243,7 @@ export default {
     },
     showUpdate (param) {
       this.visibleUpdate = true;
+      this.updateEditFlag = true;
       if (param) {
         this.fileNameFlag = false;
         this.fileModalTitle = param.fileName;
@@ -3271,6 +3271,19 @@ export default {
       } else {
         this.fileNameFlag = true;
       }
+    },
+    UpdateFind (param) {
+      this.visibleUpdate = true;
+      this.updateFindFlag = true;
+      this.updateData = param;
+    },
+    DelUpdate (param) {
+      param.delFlag = 1;
+      this.editFile(param).then(() => {
+        this.updateFile(this.id).then(res => {
+          this.updateData = res;
+        })
+      })
     },
     // 校验中英文
     languageVer (rule, value, callback) {
@@ -3320,10 +3333,10 @@ export default {
         if (!err) {
           this.visibleUpdate = false;
           // const data = this.updateForm.getFieldsValue();
-
           if (this.fileNameFlag === true) {
             const data = this.updateForm.getFieldsValue();
             data.issueId = this.id;
+            data.delFlag = 2;
             if (!data.id) {
               this.addFile(data).then(() => {
                 this.updateFile(this.id).then(res => {
@@ -3341,6 +3354,7 @@ export default {
             const data = this.updateForm.getFieldsValue();
             data.issueId = this.id;
             data.fileName = this.fileModalTitle;
+            data.delFlag = 0;
             if (!data.id) {
               this.addFile(data).then(() => {
                 this.updateFile(this.id).then(res => {
@@ -3378,8 +3392,6 @@ export default {
       //   pageSize: 10,
       //   pageNo: 1
       // }
-      // 表单回显
-      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
@@ -3397,6 +3409,10 @@ export default {
           this.sysUser.monitor = res2.id
         })
         this.processInstanceId = res.processInstanceId
+        // taskId改为从问题详情读取 2019/9/23 16：44
+        if (res.taskId) {
+          this.taskId = res.taskId;
+        }
       })
       const statusCode2 = this.getStatusCode(this.id).then(res => {
         if (res) {
@@ -3419,14 +3435,13 @@ export default {
         res.forEach(item => {
           that.pagePermission[item.DETAIL_REGION] = true
         })
-        console.info(this.pagePermission)
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        const taskDefListArray = res1[1];
-        // if (res1[1]) {
-        //   taskDefListArray.push(res1[1]);
-        // }
+        const taskDefListArray = [];
+        if (res1[1]) {
+          taskDefListArray.push(res1[1]);
+        }
         // if (this.stepCurrent === 2) {
         //   taskDefListArray = [
         //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
@@ -3464,40 +3479,10 @@ export default {
         };
         if (taskDefListArray.length) {
           this.examineDetail(paramExamine).then(res => {
-            this.examineReason = res.MESSAGE;
+            this.examineReason = res.fullMessage;
           })
         }
       })
-      /* this.getAnalysis(this.id).then(res => {
-          this.analysisData = res.list;
-          if (this.analysisData.length === 0) {
-            this.analysisData = [{
-              id: '8',
-              standard: '',
-              actualSituation: '',
-              conclusion: '',
-              file: '',
-              operation: '编辑'
-            },
-              {
-                id: '9',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              },
-              {
-                id: '10',
-                standard: '',
-                actualSituation: '',
-                conclusion: '',
-                file: '',
-                operation: '编辑'
-              }
-            ];
-          }
-        }) */
       this.getFilePage().then(res => {
         this.dataFile = res.list;
       });
@@ -3506,10 +3491,6 @@ export default {
       });
     },
     getQuestionStepAll (id) {
-      // this.getQuestionStep(this.id).then(res => {
-      //  this.stepDetail = res;
-      // this.updateData = res.updateList;
-      // });
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         this.updateData = this.problemDefinitionData.updateList;
@@ -3526,8 +3507,8 @@ export default {
           for (let i = 0; i < 3; i++) {
             if (status === 200400 || status === 200200 || ((pagePermission.A1_3_3))) {
               this.issueDefinitionData.sevenDiamondsVos[i].operation = '编辑'
-              this.statusCode.maxDiamonds = 3
             }
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
           if ((!pagePermission.A1_3_3) && (status === 200200 || status === 200400)) {
             this.analysisData = []
@@ -3536,10 +3517,7 @@ export default {
         if (status >= 200500 && status < 200800) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 4; i++) {
-            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-              this.statusCode.maxDiamonds = i;
-            }
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
           if (status === 200500 || status === 200700) {
             this.issueDefinitionData.sevenDiamondsVos[3].operation = '编辑'
@@ -3551,10 +3529,7 @@ export default {
         if (status >= 200800 && status < 201100) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 5; i++) {
-            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-              this.statusCode.maxDiamonds = i;
-            }
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
           if (status === 200800 || status === 201000) {
             this.issueDefinitionData.sevenDiamondsVos[4].operation = '编辑'
@@ -3566,10 +3541,7 @@ export default {
         if (status >= 201100 && status < 201400) {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 6; i++) {
-            if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-              this.statusCode.maxDiamonds = i;
-            }
+            this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
           }
           if (status === 201100 || status === 201300) {
             this.issueDefinitionData.sevenDiamondsVos[5].operation = '编辑'
@@ -3582,10 +3554,7 @@ export default {
           // eslint-disable-next-line no-plusplus
           for (let i = 0; i < 7; i++) {
             if (this.issueDefinitionData.sevenDiamondsVos) {
-              if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-                this.statusCode.maxDiamonds = i;
-                this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
-              }
+              this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i])
             }
           }
           if (status === 201400 || status === 201600) {
@@ -3600,9 +3569,12 @@ export default {
         }
         console.info(this.analysisData)
       });
-      this.rootCause(id).then(res => {
-        this.rootCauseData = res || {};
+      this.$nextTick(() => {
+        this.rootCause(id).then(res => {
+          this.rootCauseData = res || {};
+        })
       })
+
 
       this.updateFile(this.id).then(res => {
         if (res.length === 0) {
@@ -3634,6 +3606,7 @@ export default {
           this.analysisId = res.id;
         }
       })
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     // 再分配弹框
     showModal () {
@@ -3758,12 +3731,12 @@ export default {
             }
           }
           vm.workFlowSubmit(transData).then(res => {
-            if (res.taskId) {
-              this.taskId = res.taskId;
-            }
-
+            // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
+            // if (res.taskId) {
+            //   this.taskId = res.taskId;
+            // }
+            console.log(res);
             vm.$message.success('提交成功');
-            this.$refs.commitButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3808,48 +3781,51 @@ export default {
       if (this.stepCurrent === 1) {
         data.optCounter = _this.issueDefinitionData.optCounter;
         _this.analysisData = _this.analysisData || []
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS01'
-          })
+        if (!_this.analysisData.length) {
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS01'
+            })
+          }
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS02'
+            })
+          }
+          if (this.record.diamondOwner1) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner1,
+              type: 'DIAMONDS03'
+            })
+          }
+          if (this.record.diamondOwner4) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner4,
+              type: 'DIAMONDS04'
+            })
+          }
+          if (this.record.diamondOwner5) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner5,
+              type: 'DIAMONDS05'
+            })
+          }
+          if (this.record.diamondOwner6) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner6,
+              type: 'DIAMONDS06'
+            })
+          }
+          if (this.record.diamondOwner7) {
+            _this.analysisData.push({
+              champion: this.record.diamondOwner7,
+              type: 'DIAMONDS07'
+            })
+          }
         }
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS02'
-          })
-        }
-        if (this.record.diamondOwner1) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner1,
-            type: 'DIAMONDS03'
-          })
-        }
-        if (this.record.diamondOwner4) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner4,
-            type: 'DIAMONDS04'
-          })
-        }
-        if (this.record.diamondOwner5) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner5,
-            type: 'DIAMONDS05'
-          })
-        }
-        if (this.record.diamondOwner6) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner6,
-            type: 'DIAMONDS06'
-          })
-        }
-        if (this.record.diamondOwner7) {
-          _this.analysisData.push({
-            champion: this.record.diamondOwner7,
-            type: 'DIAMONDS07'
-          })
-        }
+
         data.sevenDiamondsVos = _this.analysisData;
         this.saveSevenDiamonds({
           sevenDiamondsVOS: _this.analysisData

@@ -28,7 +28,6 @@ const gradeName = {
   dataIndex: 'gradeName',
   width: 150,
   scopedSlots: { customRender: 'gradeName' },
-  align: 'center',
   sorter: true
 };
 // 问题分类
@@ -51,7 +50,6 @@ const status = {
   dataIndex: 'status',
   width: 110,
   scopedSlots: { customRender: 'status' },
-  align: 'center',
   sorter: true
 };
 // 立项日期
@@ -60,7 +58,6 @@ const projectDate = {
   dataIndex: 'projectDate',
   width: 150,
   scopedSlots: { customRender: 'projectDate' },
-  align: 'center',
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
@@ -71,7 +68,6 @@ const receiveDate = {
   dataIndex: 'receiveDate',
   width: 150,
   scopedSlots: { customRender: 'receiveDate' },
-  align: 'center',
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
@@ -82,7 +78,6 @@ const createDate = {
   dataIndex: 'createDate',
   width: 150,
   scopedSlots: { customRender: 'createDate' },
-  align: 'center',
   customRender (date) {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }

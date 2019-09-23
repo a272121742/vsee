@@ -16,6 +16,9 @@
       :visible="visible"
       @close="hide"
     >
+      <a-row>
+        发布日期：{{ buildDate }}
+      </a-row>
       <a-row v-if="!isLogin">
         开发人员专用，授权验证（按回车直接提交）
         <async-component
@@ -59,6 +62,7 @@ export default {
   data () {
     const vm = this;
     return {
+      buildDate: process.env,
       top: 80,
       visible: false,
       isLogin: vm.$store.state.isLogin

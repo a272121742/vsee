@@ -20,8 +20,8 @@
           <prevent-button
             v-if="submitBtn"
             ref="commitButton"
+            bind="both"
             type="primary"
-            html-type="submit"
             class="submitBtn"
             @click="handleSubmit"
           >
@@ -30,6 +30,7 @@
           </prevent-button>
           <prevent-button
             ref="saveButton"
+            bind="both"
             :style="{ marginLeft: '8px' }"
             type="primary"
             :class="[actiive]"
@@ -983,7 +984,6 @@ export default {
                     assigner: vm.monitor
                   }
                 };
-                debugger;
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
                     this.$refs.commitButton.reset();
@@ -1027,6 +1027,7 @@ export default {
             })
           }
         }
+        this.$refs.commitButton.reset();
       });
     },
     handleSave () {

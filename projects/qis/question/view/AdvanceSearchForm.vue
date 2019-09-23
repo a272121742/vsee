@@ -88,7 +88,7 @@
             allow-clear
             show-search
             :filter-option="filterOption"
-            :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+            :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds2}`"
             :cache="false"
             :disabled="!record.faultTreeIds2"
             :delay="!record.faultTreeIds2"

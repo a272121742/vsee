@@ -11,7 +11,7 @@
       row-key="id"
       :loading="loading"
       :data-source="data"
-      :scroll="{ x: true }"
+      :scroll="{ x: 1300 }"
       :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
       @change="handleTableChange"
     >
