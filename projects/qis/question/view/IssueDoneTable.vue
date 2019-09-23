@@ -1,10 +1,12 @@
 <template>
+  <!-- 表格 -->
   <a-table
     row-key="id"
+    :loading="loading"
     :data-source="data"
     :scroll="{ x: true }"
-    :pagination="{total: total, current: page, pageSize, showSizeChanger: false, pageSizeOptions: ['10', '20', '50'], showTotal, showQuickJumper: true}"
-    v-on="$listeners"
+    :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
+    @change="handleTableChange"
   >
     <template v-for="col in columns">
       <a-table-column
@@ -23,7 +25,6 @@
         </template>
       </a-table-column>
     </template>
-
     <a-table-column
       key="action"
       fixed="right"
@@ -40,10 +41,13 @@
         ></col-provider>
       </template>
       <template slot-scope="text, record">
-        <slot
-          name="action"
-          v-bind="record"
-        ></slot>
+        <a
+          href="javascript:;"
+          @click="goToDetail(record.id)"
+        >
+          <!-- 详情链接 -->
+          {{ $t('issue_action.detail') }}
+        </a>
       </template>
     </a-table-column>
   </a-table>
@@ -51,47 +55,22 @@
 
 <script>
 import { clone } from 'ramda';
-import { issueColumns } from '@@cmd/model.js';
+import { issueDoneColumns } from '@@cmd/model.js';
+import { createNamespacedHelpers } from 'vuex';
+const { mapActions } = createNamespacedHelpers('question');
 
 export default {
+  name: 'IssueDraftTable',
   components: {
     ColProvider: () => import('@comp/table/ColProvider.vue')
   },
   props: {
     /**
-     * 数据，从上层组件获取，上层组件通过服务端获取
-     */
-    data: {
-      type: Array,
-      default: () => []
-    },
-    // /**
-    //  * 列配置
-    //  */
-    // columns: {
-    //   type: Array,
-    //   default: () => []
-    // },
-    /**
-     * 总数，从上层组件获取，上层组件通过服务端获取
+     * 总数（sync）
      */
     total: {
       type: Number,
       default: 0
-    },
-    /**
-     * 当前页
-     */
-    page: {
-      type: Number,
-      default: 1
-    },
-    /**
-     * 分页数量
-     */
-    pageSize: {
-      type: Number,
-      default: 10
     },
     /**
      * 列更新地址
@@ -103,9 +82,38 @@ export default {
   },
   data () {
     return {
-      columns: issueColumns
+      /**
+       * 列信息
+       */
+      columns: issueDoneColumns,
+      /**
+       * 表格数据，从服务端获取
+       */
+      data: [],
+      loading: false,
+      /**
+       * 当前页
+       */
+      page: 1,
+      /**
+       * 每页数
+       */
+      pageSize: 10,
+      /**
+       * 分页数
+       */
+      limit: 10,
+      /**
+       * 排序方式： `asc`或者`desc`
+       */
+      order: '',
+      /**
+       * 排序字段
+       */
+      orderField: ''
     }
   },
+
   computed: {
     // 计算「更新列配置」的api
     url () {
@@ -116,7 +124,14 @@ export default {
       return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
     }
   },
+  created () {
+    this.request();
+  },
   methods: {
+    ...mapActions({
+      // 分页查询已办列表
+      getData: 'getIssueDonePage'
+    }),
     /**
      * 当列配置更新时，重新映射
      */
@@ -132,7 +147,7 @@ export default {
       return newCol;
     },
     /**
-     * 显示总数
+     * 显示总数(分页组件使用)
      */
     showTotal (total) {
       if (this.data.length) {
@@ -142,6 +157,55 @@ export default {
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
+    },
+    /**
+     * 请求数据
+     */
+    request (config) {
+      if (!this.loading) {
+        this.loading = true;
+        const {
+          page, limit, order, orderField
+        } = this;
+        this.getData({
+          page, limit, order, orderField, ...config
+        }).then(res => {
+          this.$set(this, 'data', res.list);
+          this.$emit('update:total', res.total);
+          this.$nextTick(() => {
+            this.loading = false;
+          })
+        });
+      }
+    },
+    /**
+     * 表格分页、筛选、排序切换时
+     */
+    handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
+      current && (this.page = current);
+      pageSize && (this.limit = pageSize);
+      order && (this.order = order.slice(0, -3));
+      field && (this.orderField = field);
+      this.request();
+    },
+    /**
+     * 搜索（根据表单传过来的条件）
+     */
+    search (filters) {
+      this.page = 1;
+      this.request(filters);
+    },
+    // 查看详情
+    goToDetail (record) {
+      this.$router.push({
+        name: 'QuestionDetail',
+        params: {
+          id: record
+        },
+        query: {
+          form: this.$route.path
+        }
+      });
     }
   }
 }
@@ -156,10 +220,10 @@ export default {
       word-wrap:break-all;
     }
     th > div, td {
-      overflow: hidden;/*超出长度的文字隐藏*/
-      text-overflow: ellipsis;/*文字隐藏以后添加省略号*/
-      white-space: nowrap;/*强制不换行*/
-      word-break: keep-all;/*文字不换行*/
+      overflow:hidden;/*超出长度的文字隐藏*/
+      text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
+      white-space:nowrap;/*强制不换行*/
+      word-break:keep-all;/*文字不换行*/
     }
     // 设置单元格内填充
     .ant-table-thead > tr > th,

@@ -1,9 +1,7 @@
 
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
-/**
- * 表格，准备废弃
- */
+
 export const issueTableMix = {
   components: {
     IssueSearchForm: () => import('@@/question/view/IssueSearchForm.vue'),
@@ -67,8 +65,10 @@ export const issueTableMix = {
       this.getIssuePage({
         page, limit, order, orderField, type, ...config
       }).then(res => {
-        this.$set(this, 'data', res.list);
-        this.total = res.total;
+        if (type === config.type) {
+          this.data = res.list;
+          this.total = res.total;
+        }
         if (config.type === 0) {
           this.total0 = res.total;
         }
