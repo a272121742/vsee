@@ -1,7 +1,6 @@
-/* eslint-disable vue/attribute-hyphenation */
-/* eslint-disable vue/attribute-hyphenation */
 <template>
   <div id="components-form-demo-advanced-search">
+    <!-- 顶部悬停按钮组 -->
     <a-affix
       :offset-top="64"
     >
@@ -13,7 +12,8 @@
             @click="goBack"
           >
             <a-icon type="rollback" />
-            返回
+            <!-- 「返回」按钮 -->
+            {{ $t('issue_action.back') }}
           </a-button>
         </div>
         <div class="rightButton">
@@ -25,7 +25,8 @@
             class="submitBtn"
             @click="handleSubmit"
           >
-            提交
+            <!-- 「提交」按钮 -->
+            {{ $t('issue_action.commit') }}
           </prevent-button>
           <prevent-button
             ref="saveButton"
@@ -34,19 +35,21 @@
             :class="[actiive]"
             @click="handleSave"
           >
-            保存
+            <!-- 「保存」按钮 -->
+            {{ $t('issue_action.save') }}
           </prevent-button>
           <a-button
             :style="{ marginLeft: '8px' }"
             class="cancelBtn"
             @click="handleReset"
           >
-            取消
+            <!-- 「取消」按钮 -->
+            {{ $t('issue_action.cancel') }}
           </a-button>
         </div>
       </div>
     </a-affix>
-    <div class="formConetnt">
+    <div class="shadown-block-normal formConetnt">
       <a-card
         :title="questionTitle"
         class="cardTitle"
@@ -62,12 +65,17 @@
               <a-icon
                 :type="BaseIcon"
                 style="margin-right:10px"
-              />基本信息
+              />
+              <!-- 「基本信息」文本 -->
+              {{ $t('issue.basicInfo') }}
             </div>
             <div>
               <div :class="[BaseContent]">
                 <div class="pageTitle">
-                  <span>问题标题：</span>
+                  <span>
+                    <!-- 「问题标题」文本 -->
+                    {{ $t('issue.title') }}：
+                  </span>
                   <div
                     v-if="carTitle||faultTreeIds2Title||codeTitle"
                     style="display:inline-block;"
@@ -79,40 +87,40 @@
                 </div>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <!-- 车型名称 -->
+                    <!-- 「车型名称」下拉 -->
                     <a-form-item :label="$t('issue.vehicleModelName')">
                       <net-select
                         v-decorator="[
                           'vehicleModelId',
-                          {rules:[
-                            {
-                              required:true,
-                              message:$t('search.please_select')+$t('issue.vehicleModelName')
-                            }]}
+                          {rules: [{
+                            required:true, message:$t('search.please_select') + $t('issue.vehicleModelName')
+                          }]}
                         ]"
                         url="/masterdata/v1/vehiclemodel"
                         show-search
                         :transform="selectOption"
                         :filter-option="filterOption"
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
                         :allow-clear="true"
                         @change="vehicleModelIdChange"
                       ></net-select>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <!-- 所属系统 -->
+                    <!-- 「所属系统」下拉 -->
                     <a-form-item :label="$t('issue.faultTreeIds1')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds1',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds1')}]}
+                          {rules:[{
+                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds1')
+                          }]}
                         ]"
                         url="/issue/v1/faultcategory?p_id=0"
                         show-search
                         :transform="selectOption"
                         :delay="!isEdit"
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
                         :filter-option="filterOption"
                         :allow-clear="true"
                         @change="handleSystem"
@@ -120,16 +128,18 @@
                       </net-select>
                     </a-form-item>
                   </a-col>
-                  <!-- 所属功能 -->
                   <a-col :span="6">
+                    <!-- 「所属功能」下拉 -->
                     <a-form-item :label="$t('issue.faultTreeIds2')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds2',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds2')}]}
+                          {rules:[{
+                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds2')
+                          }]}
                         ]"
                         show-search
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds1"
                         :delay="!isEdit"
@@ -142,16 +152,18 @@
                       </net-select>
                     </a-form-item>
                   </a-col>
-                  <!-- 故障代码 -->
                   <a-col :span="6">
+                    <!-- 「故障代码」下拉 -->
                     <a-form-item :label="$t('issue.faultTreeIds3')">
                       <net-select
                         v-decorator="[
                           'faultTreeIds3',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.faultTreeIds3')}]}
+                          {rules:[{
+                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds3')
+                          }]}
                         ]"
                         show-search
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
                         :delay="!isEdit"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds2"
@@ -167,15 +179,17 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <!-- 问题分类 -->
+                    <!-- 「问题分类」下拉 -->
                     <a-form-item :label="$t('issue.source')">
                       <net-select
                         v-decorator="[
                           'source',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.source')}]}
+                          {rules:[{
+                            required:true, message:$t('search.please_select') + $t('issue.source')
+                          }]}
                         ]"
                         show-search
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.source')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_source"
                         :transform="selectOptiondict"
@@ -186,15 +200,17 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <!-- 严重等级 -->
+                    <!-- 「问题严重等级」下拉 -->
                     <a-form-item :label="$t('issue.grade')">
                       <net-select
                         v-decorator="[
                           'grade',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.grade')}]}
+                          {rules:[{
+                            required:true, message: $t('search.please_select') + $t('issue.grade')
+                          }]}
                         ]"
                         show-search
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.grade')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_grade"
                         :transform="selectOptiondict"
@@ -204,15 +220,17 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <!-- 问题阶段 -->
+                    <!-- 「问题阶段」下拉 -->
                     <a-form-item :label="$t('issue.projectPhase')">
                       <net-select
                         v-decorator="[
                           'projectPhase',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.projectPhase')}]}
+                          {rules:[{
+                            required:true, message: $t('search.please_select')+$t('issue.projectPhase')
+                          }]}
                         ]"
                         show-search-
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select')+$t('issue.projectPhase')"
                         :filter-option="filterOption"
                         url="/sys/dict?dictType=issue_phase"
                         :transform="selectOptiondict"
@@ -222,13 +240,14 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
+                    <!-- 「问题发生日期」时间日期 -->
                     <a-form-item :label="$t('issue.failureDate')">
                       <a-date-picker
                         v-decorator="[
                           'failureDate'
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.failureDate')"
                         show-time
                         style="width:261px;"
                       />
@@ -237,15 +256,17 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <!-- 生产基地 -->
+                    <!-- 「生产基地」下拉 -->
                     <a-form-item :label="$t('issue.manufactureBase')">
                       <net-select
                         v-decorator="[
                           'manufactureBaseId',
-                          {rules:[{required:true, message:$t('search.please_select')+$t('issue.manufactureBase')}]}
+                          {rules:[{
+                            required:true, message: $t('search.please_select')+$t('issue.manufactureBase')
+                          }]}
                         ]"
                         show-search-
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select')+$t('issue.manufactureBase')"
                         :filter-option="filterOption"
                         url="/masterdata/v1/manufactureBase"
                         :transform="selectOptionBase"
@@ -254,13 +275,13 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <!-- 责任部门 -->
+                    <!-- 「责任部门」下拉 -->
                     <a-form-item :label="$t('issue.responsibleDepartmentId')">
                       <net-select
                         v-decorator="['responsibleDepartmentId']"
                         url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                         :transform="selectOptionSingn"
-                        :placeholder="$t('search.please_select')"
+                        :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
                         :delay="!isEdit"
                         :allow-clear="true"
                       >
@@ -268,19 +289,19 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <!-- 问题频次 -->
+                    <!-- 「问题频次」输入 -->
                     <a-form-item :label="$t('issue.frequency')">
                       <v-input
                         v-decorator="[
                           'frequency',
                         ]"
                         allow-clear
-                        :placeholder="$t('search.please_input')"
+                        :placeholder="$t('search.please_input') + $t('issue.frequency')"
                       />
                     </a-form-item>
                   </a-col>
-                  <!-- 相关人手机 -->
                   <a-col :span="6">
+                    <!-- 「相关人手机」输入 -->
                     <a-form-item
                       :label="$t('issue.contact')"
                       class="quesetionContact"
@@ -291,13 +312,13 @@
                           {rules: [{validator: phoneVer}]}
                         ]"
                         allow-clear
-                        :placeholder="$t('search.please_input')"
+                        :placeholder="$t('search.please_input') + $t('issue.contact')"
                       />
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
-                  <!-- 问题描述 -->
+                  <!-- 「问题描述」输入 -->
                   <a-col :span="16">
                     <a-form-item
                       class="form-item-flex-2"
@@ -306,15 +327,18 @@
                       <v-textarea
                         v-decorator="[
                           'description',
-                          {rules: [{ required: true, message:$t('search.please_input')+$t('issue.description') }]}
+                          {rules: [{
+                            required: true, message: $t('search.please_input') + $t('issue.description')
+                          }]}
                         ]"
-                        :placeholder="$t('search.please_input')"
+                        :placeholder="$t('search.please_input') + $t('issue.description')"
                         allow-clear
                       />
                     </a-form-item>
                   </a-col>
                   <a-col :span="8">
-                    <a-form-item :label="`附件`">
+                    <!-- 「附件」上传 -->
+                    <a-form-item :label="$t('issue_workflow.attachment')">
                       <a-upload
                         action="/api/issue/v1/file/upload?recType=10021003"
                         :headers="headers"
@@ -325,8 +349,9 @@
                         @preview="downFile"
                         @change="handleChange"
                       >
-                        <a-button>
-                          <a-icon type="upload" /> 上传文件
+                        <a-button icon="upload">
+                          <!-- 「上传文件」文本 -->
+                          {{ $t('issue_action.upload') }}
                         </a-button>
                       </a-upload>
                     </a-form-item>
@@ -344,23 +369,24 @@
                 :type="SuppelyIcon"
                 style="margin-right:10px"
               />
-              补充信息
+              {{ $t('issue.additionalInfo') }}
             </div>
             <div :class="supplyContent">
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <!-- VIN -->
+                  <!-- 「VIN」输入 -->
                   <a-form-item :label="$t('issue.vinNo')">
                     <v-input
                       v-decorator="[
                         'vinNo',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.vinNo')"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
+                  <!-- 「祸首件」下拉 -->
                   <a-form-item :label="$t('issue.firstCausePart')">
                     <net-select
                       v-decorator="[
@@ -369,13 +395,14 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/part"
-                      :placeholder="$t('search.please_select')"
+                      :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
+                  <!-- 「零件号」下拉 -->
                   <a-form-item :label="$t('issue.partId')">
                     <net-select
                       v-decorator="[
@@ -384,13 +411,14 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/part"
-                      :placeholder="$t('search.please_select')"
+                      :placeholder="$t('search.please_select') + $t('issue.partId')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
+                  <!-- 「供应商名称」下拉 -->
                   <a-form-item :label="$t('issue.supplierId')">
                     <net-select
                       v-decorator="[
@@ -399,7 +427,7 @@
                       show-search-
                       :filter-option="filterOption"
                       url="/masterdata/v1/supplier"
-                      :placeholder="$t('search.please_select')"
+                      :placeholder="$t('search.please_select') + $t('issue.supplierId')"
                       :transform="selectOption"
                       :allow-clear="true"
                     ></net-select>
@@ -408,108 +436,109 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
+                  <!-- 「生产时间」时间日期 -->
                   <a-form-item :label="$t('issue.productDate')">
                     <a-date-picker
                       v-decorator="[
                         'productDate'
                       ]"
-                      :placeholder="$t('search.please_select')"
+                      :placeholder="$t('search.please_select') + $t('issue.productDate')"
                       format="YYYY-MM-DD HH:mm:ss"
                       show-time
                       style="width:261px;"
                     />
                   </a-form-item>
                 </a-col>
-                <!-- 试验类型 -->
                 <a-col :span="6">
+                  <!-- 「试验类型」下拉-->
                   <a-form-item :label="$t('issue.testType')">
                     <net-select
                       v-decorator="[
                         'testType',
                       ]"
-                      show-search-
-
+                      show-search
                       :filter-option="filterOption"
-
                       url="/sys/dict?dictType=issue_test_type"
-
-                      :placeholder="$t('search.please_select')"
-
+                      :placeholder="$t('search.please_select') + $t('issue.testType')"
                       :transform="selectOptiondict"
-
                       :allow-clear="true"
                     ></net-select>
                   </a-form-item>
                 </a-col>
-                <!-- 故障里程 -->
                 <a-col :span="6">
-                  <a-form-item :label="$t('issue.milage')">
+                  <!-- 「故障里程」输入 -->
+                  <a-form-item :label="$t('issue.milage') + '(Km)'">
                     <v-input
                       v-decorator="[
                         'milage',
+                        {rules: [{
+                          type: 'number',
+                          message: $t('validate.not_number', [$t('issue.milage')])
+                        }]}
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.milage')"
                     />
                   </a-form-item>
                 </a-col>
-                <!-- 维修网点 -->
                 <a-col :span="6">
+                  <!-- 「维修网点」输入 -->
                   <a-form-item :label="$t('issue.maintenanceStation')">
                     <v-input
                       v-decorator="[
                         'maintenanceStation',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.maintenanceStation')"
                     />
                   </a-form-item>
                 </a-col>
               </a-row>
-              <!-- 软件版本号 -->
               <a-row :gutter="24">
                 <a-col :span="6">
+                  <!-- 「软件版本号」输入 -->
                   <a-form-item :label="$t('issue.softwareVersion')">
                     <v-input
                       v-decorator="[
                         'softwareVersion',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.softwareVersion')"
                     />
                   </a-form-item>
                 </a-col>
-                <!-- 标定版本号 -->
                 <a-col :span="6">
+                  <!-- 「标定版本号」输入 -->
                   <a-form-item :label="$t('issue.calibrationVersion')">
                     <v-input
                       v-decorator="[
                         'calibrationVersion',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.calibrationVersion')"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
+                  <!-- 「硬件版本号」输入 -->
                   <a-form-item :label="$t('issue.hardwareVersion')">
                     <v-input
                       v-decorator="[
                         'hardwareVersion',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.hardwareVersion')"
                     />
                   </a-form-item>
                 </a-col>
-                <!-- 配置字版本号 -->
                 <a-col :span="6">
+                  <!-- 「配置字版本号」输入 -->
                   <a-form-item :label="$t('issue.confirmationVersion')">
                     <v-input
                       v-decorator="[
                         'confirmationVersion',
                       ]"
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.confirmationVersion')"
                       allow-clear
                     />
                   </a-form-item>
@@ -517,38 +546,38 @@
               </a-row>
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <!-- 工况信息 -->
+                  <!-- 「工况信息」输入 -->
                   <a-form-item :label="$t('issue.workConditionInfo')">
                     <v-textarea
                       v-decorator="[
                         'workConditionInfo',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.workConditionInfo')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
-                <!-- 初步排查情况 -->
                 <a-col :span="6">
+                  <!-- 「初步排查情况」输入 -->
                   <a-form-item :label="$t('issue.preliminaryInvestigation')">
                     <v-textarea
                       v-decorator="[
                         'preliminaryInvestigation',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.preliminaryInvestigation')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
-                <!-- 备注 -->
                 <a-col :span="12">
+                  <!-- 「备注」输入 -->
                   <a-form-item :label="$t('issue.remark')">
                     <v-textarea
                       v-decorator="[
                         'remark',
                       ]"
                       allow-clear
-                      :placeholder="$t('search.please_input')"
+                      :placeholder="$t('search.please_input') + $t('issue.remark')"
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
@@ -1132,7 +1161,7 @@ export default {
 <style lang="less" scoped>
   #components-form-demo-advanced-search {
     .formConetnt{
-      margin-top:0px;
+      margin-bottom: 16px;
      }
     .BaseContent {
       height: 0;

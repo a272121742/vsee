@@ -334,11 +334,8 @@
               >
                 <a-upload
                   name="file"
-
                   :multiple="true"
-
                   :headers="headers"
-
                   @change="handleChange"
                 >
                   <a-button>
@@ -488,19 +485,19 @@
       </div>
     </a-affix>
     <div class="formConetnt">
-      <div class="messageForm">
+      <div class="shadown-block-normal messageForm">
         <a-form
           :form="form"
           layout="vertical"
           @submit="handleSearch"
         >
           <a-card
-            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_3"
+            v-if="pagePermission.A2_2||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A2_3"
             title="问题详情"
             class="cardTitle"
           >
             <img
-              v-if="pagePermission.A1_3"
+              v-if="pagePermission.A1_3||pagePermission.A2_3"
               src="/static/question/editIcon.png"
               class="editIcon"
               @click="editDetail"
@@ -785,7 +782,7 @@
         </a-form>
       </div>
       <a-form
-        class="ant-advanced-search-form"
+        class="shadown-block-normal ant-advanced-search-form"
         :form="formDcontent"
       >
         <a-card
@@ -889,7 +886,7 @@
                       <a-form-item :label="`理由`">
                         <a-textarea
                           v-decorator="[
-                            'dissatisfaction',
+                            'comment',
                             {rules: [{ required: true, message: '请输入理由' }]}
                           ]"
                           placeholder="请输入"
@@ -983,7 +980,7 @@
                   <a-row>
                     <a-col :span="21">
                       <a-form-item :label="`理由`">
-                        <p>{{ problemDefinitionData.dissatisfaction }}</p>
+                        <p>{{ examineReason }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -2532,7 +2529,7 @@
       </a-form>
       <a-form
         v-if="pagePermission.A4_2"
-        class="ant-advanced-search-form"
+        class="shadown-block-normal ant-advanced-search-form"
       >
         <a-collapse :bordered="false">
           <a-collapse-panel
@@ -2544,7 +2541,7 @@
                 row-key="id"
                 :data-source="dataRecord"
                 :columns="columnsRecord"
-                :pagination="{defaultPageSize: 10}"
+                :pagination="true"
               >
               </a-table>
             </div>
@@ -3414,10 +3411,10 @@ export default {
       })
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
-        const taskDefListArray = [];
-        if (res1[1]) {
-          taskDefListArray.push(res1[1]);
-        }
+        const taskDefListArray = res1[1];
+        // if (res1[1]) {
+        //   taskDefListArray.push(res1[1]);
+        // }
         // if (this.stepCurrent === 2) {
         //   taskDefListArray = [
         //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
@@ -3455,7 +3452,7 @@ export default {
         };
         if (taskDefListArray.length) {
           this.examineDetail(paramExamine).then(res => {
-            this.examineReason = res.fullMessage;
+            this.examineReason = res.MESSAGE;
           })
         }
       })
@@ -4013,14 +4010,15 @@ export default {
   #components-form-demo-advanced-search {
 
      .formConetnt{
-        margin-top: 40px;
+        margin-top: 0px;
      }
       .messageForm{
-      /deep/ .ant-row{
-        height: 40px;
-        line-height: 40px;
+        margin-bottom: 16px;
+        /deep/ .ant-row{
+          height: 40px;
+          line-height: 40px;
+        }
       }
-    }
     // .UserModal{
     //  /deep/.ant-modal-footer{
     //       padding:10px 5px;
@@ -4568,7 +4566,7 @@ export default {
 
   .ant-advanced-search-form {
     border-radius: 6px;
-    margin-top: -40px;
+    margin-bottom: 16px;
 
     /deep/ .ant-form-item {
       display: flex;

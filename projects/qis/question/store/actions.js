@@ -121,8 +121,8 @@ export default {
     return api.getFilePage();
   },
   // 查看某个问题的操作记录
-  getRecord () {
-    return api.getRecord();
+  getRecord (store, id) {
+    return api.getRecord(id);
   },
   // oldTest
   getQuestionStep (store, id) {

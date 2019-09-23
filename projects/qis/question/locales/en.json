@@ -1,5 +1,7 @@
 {
   "issue": {
+    "basicInfo": "Basic Info",
+    "additionalInfo": "Additional Info",
     "calibrationVersion": "Calibration Version",
     "code": "Issue Number",
     "confirmationVersion": "Confirmation Version Nr.",
@@ -29,7 +31,7 @@
     "maintenanceStation": "Maintenance Station",
     "manufactureBase": "Plant",
     "masterIssueId": "Master Issue ID",
-    "milage": "Milage(Km)",
+    "milage": "Milage",
     "optCounter": "Opt Counter",
     "partId": "Part Number",
     "preliminaryInvestigation": "Preliminary Investigation",
@@ -83,7 +85,15 @@
   },
   "issue_action": {
     "create": "Create",
-    "detail": "Detail"
+    "detail": "Detail",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "commit": "Commit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "upload": "Upload",
+    "download": "Download"
   },
   "issue_workflow": {
     "D0": {

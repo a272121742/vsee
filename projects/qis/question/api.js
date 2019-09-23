@@ -8,7 +8,7 @@ export default {
   // 查看某个问题的附件
   getFilePage: () => ('/question/annex/page'),
   // 查看某个问题的操作记录
-  getRecord: () => $.get('/question/action/page'),
+  getRecord: (id) => $.get('/issue/v1/workflow/operationHistory', { issue_id: id }),
   // oldTest
   getQuestionStep: () => $.get('/getAll/mock'),
   // 问题定义查询
@@ -36,7 +36,7 @@ export default {
   /**
    * 工作流中的审核
    */
-  examineDetail: (data) => $.post('/activiti/comment/nodeComment', data),
+  examineDetail: (data) => $.get('issue/v1/workflow/comment/nodeComment', data),
   // 再分配
   redistributionFun: (data) => $.post('/activiti/running/reAssignTask', data),
   /**
