@@ -1,7 +1,9 @@
 
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
-
+/**
+ * 表格，准备废弃
+ */
 export const issueTableMix = {
   components: {
     IssueSearchForm: () => import('@@/question/view/IssueSearchForm.vue'),
