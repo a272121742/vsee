@@ -2756,6 +2756,7 @@ export default {
         button_redistribution_3: false
 
       },
+      routerFlag: true,
       // 流程状态
       statusCode: {
         statusMaxCode: 0,
@@ -3691,6 +3692,7 @@ export default {
       }
     },
     handleSubmit () {
+      this.routerFlag = false;
       this.handleSave()
       const vm = this
       this.formDcontent.validateFields((err) => {
@@ -3773,9 +3775,11 @@ export default {
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
           this.$refs.saveButton.reset();
-          this.$router.push({
-            path: this.$route.query.form || '/'
-          });
+          if (this.routerFlag) {
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          }
         })
       }
       if (this.stepCurrent === 1) {
@@ -3833,9 +3837,11 @@ export default {
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
           this.$refs.saveButton.reset();
-          this.$router.push({
-            path: this.$route.query.form || '/'
-          });
+          if (this.routerFlag) {
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          }
         })
       }
       if (this.stepCurrent === 2) {
@@ -3844,9 +3850,11 @@ export default {
         this.analysisSave(data).then(res => {
           this.$refs.saveButton.reset();
           this.optCounter = res.optCounter;
-          this.$router.push({
-            path: this.$route.query.form || '/'
-          });
+          if (this.routerFlag) {
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          }
         })
       }
       data.issueId = this.id;
@@ -3881,9 +3889,11 @@ export default {
             this.stepId = res.id;
             //  data.optCounter=res.optCounter;
             this.$refs.saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
+            if (this.routerFlag) {
+              this.$router.push({
+                path: this.$route.query.form || '/'
+              });
+            }
           });
         });
       } else if (this.stepCurrent === 4) {
@@ -3923,9 +3933,11 @@ export default {
             this.optCounter = res.optCounter;
             this.stepId = res.id;
             this.$refs.saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
+            if (this.routerFlag) {
+              this.$router.push({
+                path: this.$route.query.form || '/'
+              });
+            }
           })
         })
       }
