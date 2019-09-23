@@ -1542,7 +1542,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_2"
+              v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_3"
               class="Dcontent D2content"
             >
               <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
