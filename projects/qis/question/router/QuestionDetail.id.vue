@@ -1545,35 +1545,6 @@
               v-if="stepCurrent===2&&backFlag===false&&pagePermission.A2_1_3"
               class="Dcontent D2content"
             >
-              <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
-                <a-form-item>
-                  <span>
-                    审核
-                  </span>
-                </a-form-item>
-                <a-row>
-                  <a-col :span="21">
-                    <a-form-item :label="'审核：'">
-                      <a-radio-group
-                        v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                        :options="verifyRadio"
-                      />
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-                <a-row v-if="record.verifySeven==='0'">
-                  <a-col :span="21">
-                    <a-form-item :label="'不通过原因：'">
-                      <a-textarea
-                        v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
-                        placeholder="请输入"
-                      >
-                      </a-textarea>
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-              </div>
-
               <div v-if="pagePermission.A2_1_3">
                 <div
                   class="triangle_border_up"
@@ -1659,6 +1630,35 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
+
+                <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
+                  <a-form-item>
+                    <span>
+                      审核
+                    </span>
+                  </a-form-item>
+                  <a-row>
+                    <a-col :span="21">
+                      <a-form-item :label="'审核：'">
+                        <a-radio-group
+                          v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                          :options="verifyRadio"
+                        />
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row v-if="record.verifySeven==='0'">
+                    <a-col :span="21">
+                      <a-form-item :label="'不通过原因：'">
+                        <a-textarea
+                          v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
+                          placeholder="请输入"
+                        >
+                        </a-textarea>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                </div>
               </div>
             </div>
             <div
@@ -1906,10 +1906,11 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===4&&backFlag===false&&pagePermission.A4_3_3"
+              v-if="stepCurrent===4&&backFlag===false"
               class="Dcontent D4content"
             >
               <div
+                v-if="pagePermission.A4_3_2"
                 class="examineResult"
               >
                 <div
