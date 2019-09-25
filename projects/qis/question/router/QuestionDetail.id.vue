@@ -21,7 +21,6 @@
                 v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
                 url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                 :transform="selectOption"
-                :delay="true"
                 placeholder="请选择"
                 :allow-clear="true"
                 style="width:272px;height:32px;"
@@ -461,7 +460,6 @@
             ref="commitButton"
             bind="both"
             type="primary"
-            html-type="submit"
             class="submitBtn"
             @click="handleSubmit"
           >
@@ -841,7 +839,7 @@
                   @click="goto(2)"
                 />
                 <a-step
-                  title="措施判定"
+                  title="措施制定"
                   style="cursor:pointer;"
                   @click="goto(3)"
                 />
@@ -1106,40 +1104,6 @@
                         </a-form-item>
                       </a-col>
                     </a-row>
-                    <!-- <a-row>
-                      <a-col :span="21">
-                        <a-form-item :label="`责任部门`">
-                          <net-select
-                            v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
-                            url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                            :transform="selectOption"
-                            :delay="true"
-                            placeholder="请选择"
-                            :allow-clear="true"
-                            style="width:272px;height:32px;"
-                          >
-                          </net-select>
-                        </a-form-item>
-                      </a-col>
-                    </a-row>
-                    <a-row>
-                      <a-col :span="21">
-                        <a-form-item :label="`责任人`">
-                          <net-select
-                            v-decorator="[ 'champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
-                            :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
-                            :transform="selectOptionChampion"
-                            :disabled="!record.owerDeptLv1"
-                            :delay="true"
-                            placeholder="请选择"
-                            :allow-clear="true"
-                            style="width:272px;height:32px;"
-                          >
-                          </net-select>
-                        </a-form-item>
-                      </a-col>
-                    </a-row> -->
-
                     <a-row>
                       <a-col :span="21">
                         <a-form-item :label="`附件`">
@@ -1687,7 +1651,7 @@
               </div>
               <div v-if="pagePermission.A3_1_3">
                 <div class="Dtitle">
-                  <span>措施判定</span>
+                  <span>措施制定</span>
                 </div>
                 <a-row>
                   <a-col :span="21">
@@ -1761,6 +1725,9 @@
                       <a-date-picker
                         v-decorator="[
                           'pcaPlanTime',
+                          {rules: [
+                            { required: true, message: '请选择长期措施实施计划日期' },
+                          ]}
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
@@ -1774,7 +1741,10 @@
                     <a-form-item :label="`长期措施验证计划日期:`">
                       <a-date-picker
                         v-decorator="[
-                          'pcaExecTime ',
+                          'pcaExecTime',
+                          {rules: [
+                            { required: true, message: '请选择长期措施验证计划日期' },
+                          ]}
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
@@ -1789,6 +1759,9 @@
                       <a-date-picker
                         v-decorator="[
                           'estimatedClosureTime',
+                          {rules: [
+                            { required: true, message: '请选择计划关闭日期' },
+                          ]}
                         ]"
                         format="YYYY-MM-DD HH:mm:ss"
                         show-time
@@ -1808,7 +1781,7 @@
                   <span></span>
                 </div>
                 <div class="Dtitle">
-                  <span>措施判定</span>
+                  <span>措施制定</span>
                 </div>
                 <a-row>
                   <a-col :span="21">
@@ -2180,7 +2153,7 @@
                     <a-form-item :label="`断点VIN`">
                       <v-input
                         v-decorator="[
-                          'breakpointVin ',
+                          'breakpointVin',
                           {rules: [{ required: true, message: '请输入断点VIN' }]}
                         ]"
                         placeholder="请输入"
@@ -2812,6 +2785,8 @@ export default {
       problemDefinitionData: {},
       issueDefinitionData: {},
       rootCauseData: {}, // 根本原因
+      icaId: '', // 短期措施ID
+      smallBatchValidationId: '', // 小批量验证id
       stepClose: [],
       editFlag: false,
       expand: false,
@@ -3041,11 +3016,11 @@ export default {
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
-        'isProject', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime',
-        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass',
-        'diamondOwner7', 'rootcause', 'D2file', 'icaDescription', 'pcaDescription',
-        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation',
-        'icaExecDescription', 'icaExecTime', 'pcaDescription', 'pcaExecTime',
+        'isProject', 'comment', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
+        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass', 'rootCauseDescription',
+        'diamondOwner7', 'rootcause', 'D2file', 'pcaDescription',
+        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation', 'isSign', 'signLeaderId', 'Review', 'signRemark',
+        'icaExecDescription', 'icaExecTime', 'pcaDescription',
         'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
         'reason'
       ], 'record')
@@ -3400,10 +3375,6 @@ export default {
       }
     },
     request () {
-      // const param = {
-      //   pageSize: 10,
-      //   pageNo: 1
-      // }
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
         console.info(this.id)
@@ -3451,45 +3422,12 @@ export default {
 
       Promise.all([editDetail, statusCode2]).then((res1) => {
         const taskDefListArray = res1[1];
-        // if (res1[1]) {
-        //   taskDefListArray = res1[1];
-        // }
-        // if (this.stepCurrent === 2) {
-        //   taskDefListArray = [
-        //     'sid-3C72440A-46DF-4827-951E-7EB325EF8265', 'sid-92EA1F57-2AB2-4550-907D-02065CDCC4CC', 'sid-39B47A13-B949-4839-89B6-27312E139677',
-        //     'sid-F8B3F208-1583-435F-BC70-3D59A23B76DA',
-        //     'sid-7F87C7D4-7EAD-4202-AE67-449265741DC1'
-        //   ]
-        // } else if (this.stepCurrent === 3) {
-        //   taskDefListArray = [
-        //     'sid-D54A33D6-AFAC-4035-95D5-67A6B17D842A', 'sid-5597F7EE-E514-4A93-A3CF-DFDCAAF7EFAA', 'sid-FDBBD1DC-171A-4B87-9F36-D01077A6BFE1',
-        //     'sid-CB0A0885-4EAF-4385-9158-00A353532901',
-        //     'sid-427A4A41-ED1F-46DB-8059-D3DA02572084'
-        //   ]
-        // } else if (this.stepCurrent === 4) {
-        //   taskDefListArray = [
-        //     'sid-A4DEDD9A-D0AD-4411-B2F9-67D7DB8A9A4D', 'sid-450D14B9-057C-4678-B8E0-726055C5D1F1', 'sid-B804C592-779D-4082-AB49-02922A89FDFE',
-        //     'sid-D29BE65E-C81B-4AB5-A85E-461115AEE7FB',
-        //     'sid-270E2150-9601-4A5D-9FDB-B424FEC8BC34'
-        //   ]
-        // } else if (this.stepCurrent === 5) {
-        //   taskDefListArray = [
-        //     'sid-9CF4B3EC-1123-43A5-A029-AC3DB90F4C92', 'sid-BBD840C1-129B-4B57-BDFF-2700209D7098', 'sid-81C016C6-3F8D-4E2B-B0D8-ECE375F8FAEC',
-        //     'sid-54F24C86-294B-43C8-B50E-8AF4ACE4E7B9',
-        //     'sid-07831227-2153-4197-9FBA-73A33696C53E',
-        //     'sid-8A84AE17-CA13-4C47-90A0-9F0AD36FF626'
-        //   ]
-        // } else if (this.stepCurrent === 6) {
-        //   taskDefListArray = [
-        //     'sid-9E1F23E8-0FE9-4FC6-8568-33B5C1B40C40', 'sid-479DEF33-3494-41E4-8A25-2EAFDD08A74C'
-        //   ]
-        // }
         const paramExamine = {
           businessKey: this.issueId,
           processInstanceId: this.processInstanceId,
           taskDefList: taskDefListArray
         };
-        if (taskDefListArray.length) {
+        if (taskDefListArray) {
           this.examineDetail(paramExamine).then(res => {
             this.examineReason = res.MESSAGE;
           })
@@ -3506,9 +3444,18 @@ export default {
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         this.updateData = this.problemDefinitionData.updateList;
+        this.record.isProject = res.isProject;
+        this.record.comment = res.comment;
+        this.record.isNeedIca = res.isNeedIca;
+        this.record.icaDescription = res.icaDescription;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
+        this.record.type = res.type;
+        this.record.owerDeptLv1 = res.owerDeptLv1;
+        this.record.champion = res.champion;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
           item.operation = '查看'
         })
@@ -3581,12 +3528,11 @@ export default {
         }
         console.info(this.analysisData)
       });
-      this.$nextTick(() => {
-        this.rootCause(id).then(res => {
-          this.rootCauseData = res || {};
-        })
+      this.rootCause(id).then(res => {
+        this.rootCauseData = res || {};
+        this.record.rootCauseDescription = res.rootCauseDescription;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
-
 
       this.updateFile(this.id).then(res => {
         if (res.length === 0) {
@@ -3603,15 +3549,39 @@ export default {
 
       this.MeasureDetail(this.id).then(res => {
         this.stepMeasures = res;
+        this.icaId = res.icaId;
+        this.smallBatchValidationId = res.smallBatchValidationId;
+        this.record.icaDescription = res.icaDescription;
+        this.record.pcaDescription = res.pcaDescription;
+        this.record.smallBatchValidation = res.smallBatchValidation;
+        this.record.pcaPlanTime = res.pcaPlanTime;
+        this.record.pcaExecTime = res.pcaExecTime;
+        this.record.estimatedClosureTime = res.estimatedClosureTime;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.ImplementationDetail(this.id).then(res => {
         this.stepImplementation = res;
+        this.record.icaExecDescription = res.icaExecDescription;
+        this.record.icaExecTime = res.icaExecTime;
+        this.record.pcaDescription = res.pcaDescription;
+        this.record.pcaExecTime = res.pcaExecTime;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.effectDetail(this.id).then(res => {
         this.stepEffect = res;
+        this.record.description = res.description;
+        this.record.breakpointVin = res.breakpointVin;
+        this.record.breakpointDate = res.breakpointDate;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.closeDetail(this.id).then(res => {
         this.stepClose = res;
+        this.record.recurrencePrevention = res.recurrencePrevention;
+        this.record.isSign = res.isSign;
+        this.record.signLeaderId = res.signLeaderId;
+        this.record.Review = res.Review;
+        this.record.signRemark = res.signRemark;
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.analysisDetail(this.id).then(res => {
         if (res) {
@@ -3625,12 +3595,8 @@ export default {
       this.visibleRes = true;
     },
     handleOk () {
-      this.ModalText = 'The modal will be closed after two seconds';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
+      this.rediStribution.resetFields();
+      this.visible = false;
     },
     handleCancel () {
       this.rediStribution.resetFields();
@@ -3785,8 +3751,8 @@ export default {
         data.optCounter = _this.problemDefinitionData.optCounter;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
-          this.$refs.saveButton.reset();
           if (this.routerFlag) {
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3847,8 +3813,8 @@ export default {
         })
         this.issueDefinitionAdd(data).then(res => {
           this.optCounter = res.optCounter;
-          this.$refs.saveButton.reset();
           if (this.routerFlag) {
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3859,9 +3825,9 @@ export default {
         data.id = this.analysisId;
         data.optCounter = _this.rootCauseData.optCounter;
         this.analysisSave(data).then(res => {
-          this.$refs.saveButton.reset();
           this.optCounter = res.optCounter;
           if (this.routerFlag) {
+            this.$refs.saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -3893,14 +3859,16 @@ export default {
       if (this.stepCurrent === 3) {
         data.id = this.stepId;
         data.optCounter = this.optCounter;
+        data.icaId = this.icaId;
+        data.smallBatchValidationId = this.smallBatchValidationId;
+        data.issueId = this.id;
         this.MeasureDecisionSave(data).then(() => {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
-            //  data.optCounter=res.optCounter;
-            this.$refs.saveButton.reset();
             if (this.routerFlag) {
+              this.$refs.saveButton.reset();
               this.$router.push({
                 path: this.$route.query.form || '/'
               });
@@ -3910,16 +3878,21 @@ export default {
       } else if (this.stepCurrent === 4) {
         data.id = this.stepId;
         data.optCounter = this.optCounter;
+        data.icaId = this.icaId;
+        data.smallBatchValidationId = this.smallBatchValidationId;
+        data.issueId = this.id;
         this.MeasureDecisionSave(data).then(() => {
           this.ImplementationDetail(this.id).then(res => {
             this.stepImplementation = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
           });
-          this.$refs.saveButton.reset();
-          this.$router.push({
-            path: this.$route.query.form || '/'
-          });
+          if (this.routerFlag) {
+            this.$refs.saveButton.reset();
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          }
         });
       } else if (this.stepCurrent === 5) {
         data.id = this.stepId;
@@ -3929,10 +3902,12 @@ export default {
             this.stepEffect = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
-            this.$refs.saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
+            if (this.routerFlag) {
+              this.$refs.saveButton.reset();
+              this.$router.push({
+                path: this.$route.query.form || '/'
+              });
+            }
           });
         })
       } else if (this.stepCurrent === 6) {
@@ -3943,8 +3918,8 @@ export default {
             this.stepClose = res;
             this.optCounter = res.optCounter;
             this.stepId = res.id;
-            this.$refs.saveButton.reset();
             if (this.routerFlag) {
+              this.$refs.saveButton.reset();
               this.$router.push({
                 path: this.$route.query.form || '/'
               });
