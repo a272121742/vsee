@@ -8,6 +8,14 @@
     "to_portal": "TQIS portal",
     "logout": "logout"
   },
+  "portal_link": {
+    "issue": "Issue Resolution System",
+    "bigdata": "Quality Bigdata platform",
+    "traceability": "Quality Information Traceability System",
+    "aftersales": "Aftersales Quality System",
+    "manufacturing": "Manufacturing Quality System",
+    "system": "System Setup"
+  },
   "SERVER": {
     "ERROR": {
       "undefined": "Error Code Undefined",

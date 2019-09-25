@@ -8,6 +8,14 @@
     "to_portal": "返回TQIS首页",
     "logout": "退出系统"
   },
+  "portal_link": {
+    "issue": "质量问题分析解决平台",
+    "bigdata": "质量大数据平台",
+    "traceability": "质量信息追溯平台",
+    "aftersales": "售后质量模块",
+    "manufacturing": "过程质量模块",
+    "system": "系统设置"
+  },
   "SERVER": {
     "ERROR": {
       "undefined": "错误代码未定义",

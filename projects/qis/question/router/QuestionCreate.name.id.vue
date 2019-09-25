@@ -606,6 +606,7 @@ const {
 } = createNamespacedHelpers('question');
 
 const isDev = process.env.NODE_ENV === 'development';
+const api = process.env.api;
 
 export default {
   name: 'QuestionCreate',
@@ -807,15 +808,15 @@ export default {
     },
     // 文件下载
     downFile (info) {
-      const locationUrl = isDev ? 'http://106.75.63.69:8091' : window.location.origin;
+      const locationUrl = isDev ? api : window.location.origin;
       const a = document.createElement('a');
       a.download = info.name;
       if (info.url !== undefined) {
-        const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
+        const url = locationUrl + '/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
         a.href = decodeURI(url);
       } else {
         const dataFile = info.response.data;
-        const url = locationUrl + '/mojo-gateway/oss/ossFile/download?path=' + encodeURIComponent(dataFile.path) + '&originalFilename=' + encodeURIComponent(dataFile.originalFilename) + '&token=' + this.$store.getters.getToken();
+        const url = locationUrl + '/oss/ossFile/download?path=' + encodeURIComponent(dataFile.path) + '&originalFilename=' + encodeURIComponent(dataFile.originalFilename) + '&token=' + this.$store.getters.getToken();
         a.href = decodeURI(url);
       }
 

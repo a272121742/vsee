@@ -14,6 +14,29 @@
         >
           <a-row :gutter="16">
             <a-col
+              v-for="(m, index) in modules"
+              :key="index"
+              class="module-center"
+              :span="8"
+            >
+              <div
+                class="module-wrapper"
+                @click.stop.prevent="jumpToModule(m.path)"
+              >
+                <div class="module-container">
+                  <svg
+                    class="icon"
+                    aria-hidden="true"
+                  >
+                    <use :xlink:href="m.icon"></use>
+                  </svg>
+                </div>
+                <div class="module-link">
+                  {{ $t(`portal_link.${m.name}`) }}
+                </div>
+              </div>
+            </a-col>
+            <!-- <a-col
               class="module-center"
               :span="8"
             >
@@ -123,7 +146,7 @@
                   系统设置
                 </div>
               </div>
-            </a-col>
+            </a-col> -->
           </a-row>
         </a-card>
       </a-col>
@@ -142,9 +165,38 @@ export default {
     Announcement: () => import('../view/Announcement.vue'),
     Todo: () => import('../view/Todo.vue')
   },
+  data () {
+    return {
+      modules: [{
+        name: 'issue',
+        path: '/qis',
+        icon: '#iconzhiliang-'
+      }, {
+        name: 'bigdata',
+        path: '/',
+        icon: '#icondashuju-'
+      }, {
+        name: 'traceability',
+        path: '/',
+        icon: '#iconzhuisu-'
+      }, {
+        name: 'aftersales',
+        path: '/',
+        icon: '#iconshouhou-'
+      }, {
+        name: 'manufacturing',
+        path: '/',
+        icon: '#iconguocheng-'
+      }, {
+        name: 'system',
+        path: '/sys',
+        icon: '#iconzhiliang-1'
+      }]
+    }
+  },
   methods: {
-    jumpToModule (module) {
-      window.location.href = '/' + module;
+    jumpToModule (url) {
+      window.location.href = url;
     }
   }
 }
