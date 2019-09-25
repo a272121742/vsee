@@ -69,7 +69,6 @@
             <v-textarea
               v-decorator="[ 'commentReject',{rules: [{ required: true, message: '请选择理由' }]} ]"
               placeholder="请输入"
-              :allow-clear="true"
             />
             </net-select>
           </a-form-item>
@@ -98,7 +97,6 @@
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -113,7 +111,6 @@
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -128,7 +125,6 @@
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -143,7 +139,6 @@
                 ]"
                 style="width:340px;height:56px;"
                 placeholder="请输入"
-                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -323,7 +318,6 @@
                     {rules:[{required: true,message: '请输入更新内容'}]}
                   ]"
                   placeholder="请输入"
-                  allow-clear
                   style="width:340px; height:56px;"
                 />
               </a-form-item>
@@ -917,7 +911,7 @@
                     <a-col :span="21">
                       <a-form-item :label="`围堵措施`">
                         <a-textarea
-                          v-decorator="[ 'icaDescription',{rules: [{ required: true, message: '请输入围堵措施' }]}]"
+                          v-decorator="[ 'icaDescriptionD1',{rules: [{ required: true, message: '请输入围堵措施' }]}]"
                           placeholder="请输入"
                           style="width:572px;height:88px;"
                         ></a-textarea>
@@ -973,7 +967,7 @@
                   <a-row v-if="problemDefinitionData.isNeedIca==='1'">
                     <a-col :span="21">
                       <a-form-item :label="`围堵措施`">
-                        <p>{{ problemDefinitionData.icaDescription }}</p>
+                        <p>{{ problemDefinitionData.icaDescriptionD1 }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1074,7 +1068,6 @@
                             v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
                             url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                             :transform="selectOption"
-                            :delay="true"
                             placeholder="请选择"
                             :allow-clear="true"
                             style="width:272px;height:32px;"
@@ -1093,7 +1086,6 @@
                             ]"
                             :placeholder="$t('search.please_select')"
                             :disabled="!record.owerDeptLv1"
-                            :delay="true"
                             :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                             :cache="false"
                             :transform="selectOptionChampion"
@@ -1626,7 +1618,7 @@
               </div>
             </div>
             <div
-              v-if="stepCurrent===3&&backFlag===false"
+              v-if="stepCurrent===3&&backFlag===false&&pagePermission.A3_3_2"
               class="Dcontent D3content"
             >
               <!-- <div v-if="pagePermission.A3_4_2">
@@ -1663,7 +1655,6 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -1681,7 +1672,6 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -1835,14 +1825,14 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`小批量验证`">
-                      <p>{{ stepDetail.smallBatchValidation }}</p>
+                      <p>{{ stepMeasures.smallBatchValidation }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`计划关闭日期`">
-                      <p>{{ stepDetail.estimatedClosureTime }}</p>
+                      <p>{{ stepMeasures.estimatedClosureTime }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1872,7 +1862,6 @@
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
-                    allow-clear
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -1920,7 +1909,6 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -1944,7 +1932,7 @@
                     <a-form-item :label="`长期措施实施描述(中英文)`">
                       <v-textarea
                         v-decorator="[
-                          'pcaDescription',
+                          'pcaExecDescription',
                           {rules: [
                             { required: true, message: '请输入长期措施' },
                             {validator: languageVer}
@@ -1952,7 +1940,6 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -2022,7 +2009,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`长期措施实施描述`">
-                      <p>{{ stepImplementation.pcaDescription }}</p>
+                      <p>{{ stepImplementation.pcaExecDescription }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2081,7 +2068,6 @@
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
-                    allow-clear
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -2126,7 +2112,6 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -2297,7 +2282,6 @@
                       {rules: [{ required: true, message: '请输入不通过理由' }]}
                     ]"
                     placeholder="请输入"
-                    allow-clear
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -2317,7 +2301,6 @@
                         ]}
                       ]"
                       placeholder="请输入"
-                      allow-clear
                       style="width:572px;height:88px;"
                     />
                   </a-form-item>
@@ -2348,7 +2331,6 @@
                         {rules: [{ required: true, message: '请输入不通过理由' }]}
                       ]"
                       placeholder="请输入"
-                      allow-clear
                       style="width:572px;height:88px;"
                     />
                   </a-form-item>
@@ -2470,7 +2452,6 @@
                       <v-textarea
                         v-decorator="[ 'signRemark' ]"
                         placeholder="请输入"
-                        :allow-clear="true"
                       />
                     </a-form-item>
                   </a-col>
@@ -2764,7 +2745,14 @@ export default {
       visibleReject: false,
       isCheckError: '0', // 验证不通过需要回到7钻
       signLeaderFlag: false, // 加签领导
-      optCounter: '',
+      optCounterD0: '',
+      optCounterD1: '',
+      optCounterD2: '',
+      optCounterD3: '',
+      optCounterD4: '',
+      optCounterD5: '',
+      optCounterD6: '',
+      icaOptCounter: '',
       columns,
       columnsRecord,
       columnsAnalysis,
@@ -2820,6 +2808,8 @@ export default {
           value: 1
         }
       ],
+      id1: '', // 措施判定id
+      id2: '', // 措施实施id
       conActionFlag: true, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
       showMoreFlag: false, // 查看更多
@@ -2889,7 +2879,7 @@ export default {
         dissatisfaction: '', // 不满足理由
         Remarks: '', // 备注
         isNeedIca: '1', // 是否需要围堵措施
-        icaDescription: '', // 围堵措施
+        icaDescriptionD1: '', // 围堵措施
         // D1
         owerDeptLv1: '', // 责任部门
         champion: '', // 责任人
@@ -2917,6 +2907,7 @@ export default {
         smallBatchValidation: '',
         isPass: '0',
         // D4
+        pcaExecDescription: '',
         icaExecDescription: '',
         icaExecTime: null,
         // pcaDescription: null,
@@ -3016,11 +3007,11 @@ export default {
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
-        'isProject', 'comment', 'isNeedIca', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
+        'isProject', 'comment', 'isNeedIca', 'icaDescriptionD1', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
         'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass', 'rootCauseDescription',
         'diamondOwner7', 'rootcause', 'D2file', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation', 'isSign', 'signLeaderId', 'Review', 'signRemark',
-        'icaExecDescription', 'icaExecTime', 'pcaDescription',
+        'icaExecDescription', 'icaExecTime', 'pcaExecDescription',
         'description', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
         'reason'
       ], 'record')
@@ -3429,7 +3420,9 @@ export default {
         };
         if (taskDefListArray) {
           this.examineDetail(paramExamine).then(res => {
-            this.examineReason = res.MESSAGE;
+            if (res.MESSAGE) {
+              this.examineReason = res.MESSAGE;
+            }
           })
         }
       })
@@ -3443,16 +3436,23 @@ export default {
     getQuestionStepAll (id) {
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
+        this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
         this.updateData = this.problemDefinitionData.updateList;
-        this.record.isProject = res.isProject;
+        if (res.isProject) {
+          this.record.isProject = res.isProject;
+        }
         this.record.comment = res.comment;
         this.record.isNeedIca = res.isNeedIca;
-        this.record.icaDescription = res.icaDescription;
+        this.record.icaDescriptionD1 = res.icaDescription;
+        console.log(this.record);
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
-        this.record.type = res.type;
+        this.optCounterD0 = res.optCounter;
+        if (res.type) {
+          this.record.type = res.type;
+        }
         this.record.owerDeptLv1 = res.owerDeptLv1;
         this.record.champion = res.champion;
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
@@ -3530,7 +3530,10 @@ export default {
       });
       this.rootCause(id).then(res => {
         this.rootCauseData = res || {};
-        this.record.rootCauseDescription = res.rootCauseDescription;
+        this.optCounterD1 = res.optCounter;
+        if (res.rootCauseDescription) {
+          this.record.rootCauseDescription = res.rootCauseDescription;
+        }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
 
@@ -3549,26 +3552,42 @@ export default {
 
       this.MeasureDetail(this.id).then(res => {
         this.stepMeasures = res;
+        this.optCounterD3 = res.optCounter;
         this.icaId = res.icaId;
+        this.id1 = res.id;
         this.smallBatchValidationId = res.smallBatchValidationId;
         this.record.icaDescription = res.icaDescription;
         this.record.pcaDescription = res.pcaDescription;
         this.record.smallBatchValidation = res.smallBatchValidation;
-        this.record.pcaPlanTime = res.pcaPlanTime;
-        this.record.pcaExecTime = res.pcaExecTime;
-        this.record.estimatedClosureTime = res.estimatedClosureTime;
+        if (res.pcaPlanTime) {
+          this.record.pcaPlanTime = moment(res.pcaPlanTime).format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (res.pcaExecTime) {
+          this.record.pcaExecTime = moment(res.pcaExecTime).format('YYYY-MM-DD HH:mm:ss');
+        }
+        if (res.estimatedClosureTime) {
+          this.record.estimatedClosureTime = res.estimatedClosureTime;
+        }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.ImplementationDetail(this.id).then(res => {
         this.stepImplementation = res;
+        this.optCounterD4 = res.optCounter;
+        this.icaOptCounter = res.icaOptCounter;
+        this.id2 = res.id;
         this.record.icaExecDescription = res.icaExecDescription;
-        this.record.icaExecTime = res.icaExecTime;
-        this.record.pcaDescription = res.pcaDescription;
-        this.record.pcaExecTime = res.pcaExecTime;
+        if (this.record.icaExecTime) {
+          this.record.icaExecTime = moment(res.icaExecTime).format('YYYY-MM-DD HH:mm:ss');
+        }
+        this.record.pcaExecDescription = res.pcaExecDescription;
+        if (res.pcaExecTime) {
+          this.record.pcaExecTime = moment(res.pcaExecTime).format('YYYY-MM-DD HH:mm:ss');
+        }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.effectDetail(this.id).then(res => {
         this.stepEffect = res;
+        this.optCounterD5 = res.optCounter;
         this.record.description = res.description;
         this.record.breakpointVin = res.breakpointVin;
         this.record.breakpointDate = res.breakpointDate;
@@ -3576,6 +3595,7 @@ export default {
       })
       this.closeDetail(this.id).then(res => {
         this.stepClose = res;
+        this.optCounterD6 = res.optCounter;
         this.record.recurrencePrevention = res.recurrencePrevention;
         this.record.isSign = res.isSign;
         this.record.signLeaderId = res.signLeaderId;
@@ -3586,6 +3606,7 @@ export default {
       this.analysisDetail(this.id).then(res => {
         if (res) {
           this.analysisId = res.id;
+          this.optCounterD2 = res.optCounter;
         }
       })
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
@@ -3746,11 +3767,13 @@ export default {
       // const thisCopy=this;
       // eslint-disable-next-line no-underscore-dangle
       const _this = this;
-      data.issueId = this.id;
+      data.issueId = this.stepId;
       if (this.stepCurrent === 0) {
-        data.optCounter = _this.problemDefinitionData.optCounter;
+        data.optCounter = this.optCounterD0;
+        data.icaDescription = this.record.icaDescriptionD1;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
+          this.optCounterD0 = res.optCounter;
           if (this.routerFlag) {
             this.$refs.saveButton.reset();
             this.$router.push({
@@ -3760,7 +3783,7 @@ export default {
         })
       }
       if (this.stepCurrent === 1) {
-        data.optCounter = _this.issueDefinitionData.optCounter;
+        data.optCounter = this.optCounterD1;
         _this.analysisData = _this.analysisData || []
         if (!_this.analysisData.length) {
           if (this.record.diamondOwner1) {
@@ -3812,7 +3835,7 @@ export default {
           sevenDiamondsVOS: _this.analysisData
         })
         this.issueDefinitionAdd(data).then(res => {
-          this.optCounter = res.optCounter;
+          this.optCounterD1 = res.optCounter;
           if (this.routerFlag) {
             this.$refs.saveButton.reset();
             this.$router.push({
@@ -3823,9 +3846,9 @@ export default {
       }
       if (this.stepCurrent === 2) {
         data.id = this.analysisId;
-        data.optCounter = _this.rootCauseData.optCounter;
+        data.optCounter = this.optCounterD2;
         this.analysisSave(data).then(res => {
-          this.optCounter = res.optCounter;
+          this.optCounterD2 = res.optCounter;
           if (this.routerFlag) {
             this.$refs.saveButton.reset();
             this.$router.push({
@@ -3857,15 +3880,15 @@ export default {
         data.breakpointDate = data.breakpointDate.format('YYYY-MM-DD HH:mm:ss');
       }
       if (this.stepCurrent === 3) {
-        data.id = this.stepId;
-        data.optCounter = this.optCounter;
+        data.optCounter = this.optCounterD3;
         data.icaId = this.icaId;
         data.smallBatchValidationId = this.smallBatchValidationId;
         data.issueId = this.id;
+        data.id = this.id1;
         this.MeasureDecisionSave(data).then(() => {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
-            this.optCounter = res.optCounter;
+            this.optCounterD3 = res.optCounter;
             this.stepId = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
@@ -3876,15 +3899,18 @@ export default {
           });
         });
       } else if (this.stepCurrent === 4) {
-        data.id = this.stepId;
-        data.optCounter = this.optCounter;
+        data.id = this.id2;
+        data.optCounter = this.optCounterD4;
+        data.icaOptCounter = this.icaOptCounter;
         data.icaId = this.icaId;
         data.smallBatchValidationId = this.smallBatchValidationId;
         data.issueId = this.id;
+        data.pcaExecDescription = this.record.pcaExecDescription;
         this.MeasureDecisionSave(data).then(() => {
           this.ImplementationDetail(this.id).then(res => {
             this.stepImplementation = res;
-            this.optCounter = res.optCounter;
+            this.optCounterD4 = res.optCounter;
+            this.icaOptCounter = res.icaOptCounter;
             this.stepId = res.id;
           });
           if (this.routerFlag) {
@@ -3896,11 +3922,11 @@ export default {
         });
       } else if (this.stepCurrent === 5) {
         data.id = this.stepId;
-        data.optCounter = this.optCounter;
+        data.optCounter = this.optCounterD5;
         this.effectSave(data).then(() => {
           this.effectDetail(this.id).then(res => {
             this.stepEffect = res;
-            this.optCounter = res.optCounter;
+            this.optCounterD5 = res.optCounter;
             this.stepId = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
@@ -3912,11 +3938,11 @@ export default {
         })
       } else if (this.stepCurrent === 6) {
         data.id = this.stepId;
-        data.optCounter = this.optCounter;
+        data.optCounter = this.optCounterD6;
         this.closeSave(data).then(() => {
           this.closeDetail(this.id).then(res => {
             this.stepClose = res;
-            this.optCounter = res.optCounter;
+            this.optCounterD6 = res.optCounter;
             this.stepId = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
