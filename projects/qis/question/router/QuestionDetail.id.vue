@@ -1508,10 +1508,22 @@
                 >
                   <span></span>
                 </div>
+                <div
+                  v-if="pagePermission.A2_3_2"
+                  class="examineResult"
+                >
+                  <div>审核结果</div>
+                  <a-form-item :label="`审核`">
+                    <p>不通过</p>
+                  </a-form-item>
+                  <a-form-item :label="`不通过理由`">
+                    <p>{{ examineReason }}</p>
+                  </a-form-item>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`根本原因（中英文）`">
-                      <a-textarea
+                      <v-textarea
                         v-decorator="[
                           'rootCauseDescription',
                           {
@@ -1521,7 +1533,7 @@
                         ]"
                         placeholder="请输入"
                         style="width:572px;height:88px;"
-                      ></a-textarea>
+                      ></v-textarea>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1621,11 +1633,6 @@
               v-if="stepCurrent===3&&backFlag===false&&pagePermission.A3_3_2"
               class="Dcontent D3content"
             >
-              <!-- <div v-if="pagePermission.A3_4_2">
-                <p>
-                  该问题正在措施制定中
-                </p>
-              </div> -->
               <div
                 v-if="pagePermission.A3_3_2"
                 class="examineResult"
@@ -2075,7 +2082,7 @@
             </div>
 
             <div
-              v-if="stepCurrent===5&&backFlag===false"
+              v-if="stepCurrent===5&&backFlag===false&&pagePermission.A5_3_2"
               class="Dcontent D5content"
             >
               <div
@@ -2408,7 +2415,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`关闭人`">
-                      <p>{{ stepClose.creator }}</p>
+                      <p>{{ stepClose.creatorName }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2810,6 +2817,11 @@ export default {
       ],
       id1: '', // 措施判定id
       id2: '', // 措施实施id
+      idDef: '', // 问题定义id
+      idRes: '', // 责任判定id
+      idReason: '', // 原因分析id
+      idEffct: '', // 效果验证id
+      idClose: '', // 关闭id
       conActionFlag: true, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
       showMoreFlag: false, // 查看更多
@@ -2905,7 +2917,7 @@ export default {
         estimatedClosureTime: null,
         fileList: '',
         smallBatchValidation: '',
-        isPass: '0',
+        isPass: '1',
         // D4
         pcaExecDescription: '',
         icaExecDescription: '',
@@ -3438,6 +3450,7 @@ export default {
         this.problemDefinitionData = res || {};
         this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
         this.updateData = this.problemDefinitionData.updateList;
+        this.idDef = this.id;
         if (res.isProject) {
           this.record.isProject = res.isProject;
         }
@@ -3450,6 +3463,7 @@ export default {
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
         this.optCounterD0 = res.optCounter;
+        this.idRes = res.id;
         if (res.type) {
           this.record.type = res.type;
         }
@@ -3526,11 +3540,11 @@ export default {
             this.record.endSeven = '1'
           }
         }
-        console.info(this.analysisData)
       });
       this.rootCause(id).then(res => {
         this.rootCauseData = res || {};
         this.optCounterD1 = res.optCounter;
+        this.idReason = res.id;
         if (res.rootCauseDescription) {
           this.record.rootCauseDescription = res.rootCauseDescription;
         }
@@ -3560,13 +3574,17 @@ export default {
         this.record.pcaDescription = res.pcaDescription;
         this.record.smallBatchValidation = res.smallBatchValidation;
         if (res.pcaPlanTime) {
-          this.record.pcaPlanTime = moment(res.pcaPlanTime).format('YYYY-MM-DD HH:mm:ss');
+          const date1 = new Date(res.pcaPlanTime);
+          this.record.pcaPlanTime = moment(date1);
+          console.log(this.record.pcaPlanTime);
         }
         if (res.pcaExecTime) {
-          this.record.pcaExecTime = moment(res.pcaExecTime).format('YYYY-MM-DD HH:mm:ss');
+          const date2 = new Date(res.pcaExecTime);
+          this.record.pcaExecTime = moment(date2)
         }
         if (res.estimatedClosureTime) {
-          this.record.estimatedClosureTime = res.estimatedClosureTime;
+          const date3 = new Date(res.estimatedClosureTime);
+          this.record.estimatedClosureTime = moment(date3);
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
@@ -3577,25 +3595,30 @@ export default {
         this.id2 = res.id;
         this.record.icaExecDescription = res.icaExecDescription;
         if (this.record.icaExecTime) {
-          this.record.icaExecTime = moment(res.icaExecTime).format('YYYY-MM-DD HH:mm:ss');
+          const date4 = new Date(res.icaExecTime);
+          this.record.icaExecTime = moment(date4);
         }
         this.record.pcaExecDescription = res.pcaExecDescription;
         if (res.pcaExecTime) {
-          this.record.pcaExecTime = moment(res.pcaExecTime).format('YYYY-MM-DD HH:mm:ss');
+          const date5 = new Date(res.pcaExecTime);
+          this.record.pcaExecTime = moment(date5);
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.effectDetail(this.id).then(res => {
         this.stepEffect = res;
+        this.idEffct = res.id;
         this.optCounterD5 = res.optCounter;
         this.record.description = res.description;
         this.record.breakpointVin = res.breakpointVin;
-        this.record.breakpointDate = res.breakpointDate;
+        const date6 = new Date(res.breakpointDate);
+        this.record.breakpointDate = moment(date6);
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       })
       this.closeDetail(this.id).then(res => {
         this.stepClose = res;
         this.optCounterD6 = res.optCounter;
+        this.idClose = res.id;
         this.record.recurrencePrevention = res.recurrencePrevention;
         this.record.isSign = res.isSign;
         this.record.signLeaderId = res.signLeaderId;
@@ -3771,6 +3794,7 @@ export default {
       if (this.stepCurrent === 0) {
         data.optCounter = this.optCounterD0;
         data.icaDescription = this.record.icaDescriptionD1;
+        data.id = this.idDef;
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res
           this.optCounterD0 = res.optCounter;
@@ -3784,6 +3808,7 @@ export default {
       }
       if (this.stepCurrent === 1) {
         data.optCounter = this.optCounterD1;
+        data.id = this.idRes;
         _this.analysisData = _this.analysisData || []
         if (!_this.analysisData.length) {
           if (this.record.diamondOwner1) {
@@ -3845,7 +3870,7 @@ export default {
         })
       }
       if (this.stepCurrent === 2) {
-        data.id = this.analysisId;
+        data.id = this.idReason;
         data.optCounter = this.optCounterD2;
         this.analysisSave(data).then(res => {
           this.optCounterD2 = res.optCounter;
@@ -3889,7 +3914,7 @@ export default {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
             this.optCounterD3 = res.optCounter;
-            this.stepId = res.id;
+            this.id1 = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
               this.$router.push({
@@ -3911,7 +3936,7 @@ export default {
             this.stepImplementation = res;
             this.optCounterD4 = res.optCounter;
             this.icaOptCounter = res.icaOptCounter;
-            this.stepId = res.id;
+            this.id2 = res.id;
           });
           if (this.routerFlag) {
             this.$refs.saveButton.reset();
@@ -3921,13 +3946,13 @@ export default {
           }
         });
       } else if (this.stepCurrent === 5) {
-        data.id = this.stepId;
+        data.id = this.idEffct;
         data.optCounter = this.optCounterD5;
         this.effectSave(data).then(() => {
           this.effectDetail(this.id).then(res => {
             this.stepEffect = res;
             this.optCounterD5 = res.optCounter;
-            this.stepId = res.id;
+            this.idEffct = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
               this.$router.push({
@@ -3937,13 +3962,13 @@ export default {
           });
         })
       } else if (this.stepCurrent === 6) {
-        data.id = this.stepId;
+        data.id = this.idClose;
         data.optCounter = this.optCounterD6;
         this.closeSave(data).then(() => {
           this.closeDetail(this.id).then(res => {
             this.stepClose = res;
             this.optCounterD6 = res.optCounter;
-            this.stepId = res.id;
+            this.idClose = res.id;
             if (this.routerFlag) {
               this.$refs.saveButton.reset();
               this.$router.push({
