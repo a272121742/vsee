@@ -471,11 +471,7 @@
                   <a-form-item :label="$t('issue.milage') + '(Km)'">
                     <v-input
                       v-decorator="[
-                        'milage',
-                        {rules: [{
-                          type: 'number',
-                          message: $t('validate.not_number', [$t('issue.milage')])
-                        }]}
+                        'milage'
                       ]"
                       allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.milage')"
@@ -1034,7 +1030,6 @@ export default {
             })
           }
         }
-        this.$refs.commitButton.reset();
       });
     },
     handleSave () {
