@@ -36,117 +36,6 @@
                 </div>
               </div>
             </a-col>
-            <!-- <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div
-                class="module-wrapper"
-                @click.stop.prevent="jumpToModule('qis')"
-              >
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#iconzhiliang-"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  质量问题分析
-                </div>
-              </div>
-            </a-col>
-            <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div class="module-wrapper">
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#icondashuju-"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  大数据平台
-                </div>
-              </div>
-            </a-col>
-            <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div class="module-wrapper">
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#iconzhuisu-"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  整车追溯
-                </div>
-              </div>
-            </a-col>
-            <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div class="module-wrapper">
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#iconshouhou-"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  售后质量
-                </div>
-              </div>
-            </a-col>
-            <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div class="module-wrapper">
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#iconguocheng-"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  过程质量
-                </div>
-              </div>
-            </a-col>
-            <a-col
-              class="module-center"
-              :span="8"
-            >
-              <div class="module-wrapper">
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use xlink:href="#iconzhiliang-1"></use>
-                  </svg>
-                </div>
-                <div class="module-link">
-                  系统设置
-                </div>
-              </div>
-            </a-col> -->
           </a-row>
         </a-card>
       </a-col>
@@ -192,14 +81,14 @@ export default {
         path: '/sys',
         icon: '#iconzhiliang-1'
       }]
-    }
+    };
   },
   methods: {
     jumpToModule (url) {
       window.location.href = url;
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -208,6 +97,11 @@ export default {
     margin: 16px 0;
     border-radius: 4px;
     border-radius: 4px;
+  }
+  .announcement-card {
+    /deep/ .ant-card-extra {
+      padding: 12px 0;
+    }
   }
   .module-card {
     /deep/ .ant-card-body {
@@ -226,6 +120,7 @@ export default {
       }
       .module-container {
         display: flex;
+        margin: 0 auto;
         justify-content: center;
         align-items: center;
         width: 100px;
@@ -240,6 +135,7 @@ export default {
         }
       }
       .module-link {
+        display: inline-block;
         margin-top: 10px;
         margin-bottom: 28px;
         text-align: center;

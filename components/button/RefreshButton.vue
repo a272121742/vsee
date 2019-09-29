@@ -29,5 +29,5 @@ export default {
       this.$store.dispatch('refresh');
     }
   }
-}
+};
 </script>

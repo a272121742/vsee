@@ -18,9 +18,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ text }}
+              {{ text ? text : ' ' }}
             </template>
-            {{ text }}
+            {{ text ? text : ' ' }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -42,6 +42,7 @@
       </template>
       <template slot-scope="text, record">
         <a
+          v-permission="'issue:record:detail'"
           href="javascript:;"
           @click="goToDetail(record.id)"
         >
@@ -111,7 +112,7 @@ export default {
        * 排序字段
        */
       orderField: ''
-    }
+    };
   },
 
   computed: {
@@ -153,7 +154,7 @@ export default {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
         const pageCount = Math.ceil(total / this.pageSize);
-        const pageText = this.$t('pagination.page')
+        const pageText = this.$t('pagination.page');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
@@ -174,7 +175,7 @@ export default {
           this.$emit('update:total', res.total);
           this.$nextTick(() => {
             this.loading = false;
-          })
+          });
         });
       }
     },
@@ -208,7 +209,7 @@ export default {
       });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

@@ -43,15 +43,15 @@ mock.get('/sys/menu/nav', () => {
       url: '/question/search'
     }]
   });
-})
+});
 
 mock.get('/sys/user/info', () => {
   return mock.result({
     data: {}
-  })
+  });
 });
 mock.get('/sys/menu/permissions', () => {
   return mock.result({
     data: ['qis:list:create']
   });
-})
+});

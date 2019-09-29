@@ -30,6 +30,7 @@
     "irtId": "问题管理小组ID",
     "maintenanceStation": "维修网点",
     "manufactureBase": "生产基地",
+    "manufactureBaseId": "生产基地",
     "masterIssueId": "主问题ID",
     "milage": "故障里程",
     "optCounter": "操作次数",
@@ -38,6 +39,7 @@
     "productDate": "生产时间",
     "projectDate": "立项日期",
     "projectPhase": "问题阶段",
+    "projectPhaseName": "问题阶段",
     "receiveDate": "接收日期",
     "relevanceIssuesId": "重复关联问题",
     "remark": "备注",
@@ -66,7 +68,11 @@
     "title_search": "标题搜索",
     "advance_search": "高级搜索",
     "please_input": "请输入",
-    "please_select": "请选择"
+    "please_select": "请选择",
+    "expand_button": "展开",
+    "collapse_button": "收缩",
+    "begin_date": "开始时间",
+    "end_date": "结束时间"
   },
   "pagination": {
     "total": "共",
@@ -144,10 +150,12 @@
       "closureDate": "计划关闭日期"
     },
     "D4": {
+      "processName": "制定实施",
       "shortEffect": "短期效果",
       "sortSolutionImplementDate": "短期效果实施日期",
       "longTermEffect": "长期措施实施描述",
       "longSolutionImplementDate": "长期措施实施日期"
+      
     },
     "D5": {
       "processName": "效果验证",
@@ -170,6 +178,7 @@
       "addUpdateFile": "添加更新文件"
     },
     "D6": {
+      "processName": "问题关闭",
       "addPreventList": "是否需要进入再发防止库",
       "needReview": "是否加签",
       "leader": "加签领导"

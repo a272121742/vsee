@@ -32,7 +32,6 @@
         是否代理（暂时不要切换，没做好）
         <a-switch
           default-checked
-          @change="onProxyChange"
         />
       </a-row>
       <a-row>
@@ -66,7 +65,7 @@ export default {
       top: 80,
       visible: false,
       isLogin: vm.$store.state.isLogin
-    }
+    };
   },
   computed: {
     authUrl () {
@@ -109,14 +108,14 @@ export default {
       }).finally(() => {
         this.reloadCaptcha();
       });
-    },
-    onProxyChange (checked) {
-      checked
-        ? ($.instance.defaults.baseURL = '/api')
-        : ($.instance.defaults.baseURL = '/');
     }
+    // onProxyChange (checked) {
+    //   checked
+    //     ? ($.instance.defaults.baseURL = '/api')
+    //     : ($.instance.defaults.baseURL = '/');
+    // }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

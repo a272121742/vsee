@@ -54,7 +54,7 @@ export default {
     background-color: transparent!important;
   }
   /deep/ .ant-affix {
-    z-index: 1;
+    z-index: 5000;
   }
   .ant-layout-content {
     overflow-x: hidden;

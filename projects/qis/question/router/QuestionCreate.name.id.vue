@@ -8,8 +8,8 @@
         <div class="backButton">
           <a-button
             slot="tabBarExtraContent"
-            class="backBtn"
             @click="goBack"
+            class="backBtn"
           >
             <a-icon type="rollback" />
             <!-- 「返回」按钮 -->
@@ -18,31 +18,31 @@
         </div>
         <div class="rightButton">
           <prevent-button
-            v-if="submitBtn"
             ref="commitButton"
+            v-if="submitBtn"
+            @click="handleSubmit"
             bind="both"
             type="primary"
             class="submitBtn"
-            @click="handleSubmit"
           >
             <!-- 「提交」按钮 -->
             {{ $t('issue_action.commit') }}
           </prevent-button>
           <prevent-button
             ref="saveButton"
-            bind="both"
             :style="{ marginLeft: '8px' }"
-            type="primary"
             :class="[actiive]"
             @click="handleSave"
+            bind="both"
+            type="primary"
           >
             <!-- 「保存」按钮 -->
             {{ $t('issue_action.save') }}
           </prevent-button>
           <a-button
             :style="{ marginLeft: '8px' }"
-            class="cancelBtn"
             @click="handleReset"
+            class="cancelBtn"
           >
             <!-- 「取消」按钮 -->
             {{ $t('issue_action.cancel') }}
@@ -57,9 +57,9 @@
       >
         <a-form
           ref="form"
-          class="ant-advanced-search-form"
           :form="form"
           @submit="handleSearch"
+          class="ant-advanced-search-form"
         >
           <div>
             <div class="collapse-title">
@@ -82,8 +82,8 @@
                     style="display:inline-block;"
                   >
                     <span class="carTitle">{{ carTitle }}</span>
-                    <span class="faultTreeIds2Title"> {{ faultTreeIds2Title }}</span>
-                    <span class="codeTitle">{{ codeTitle }}</span>
+                    <span class="faultTreeIds2Title"> {{ (faultTreeIds2Title || '').substr(faultTreeIds2Title.indexOf('-'),faultTreeIds2Title.length) }}</span>
+                    <span class="codeTitle">{{ (codeTitle || '').substr((codeTitle || '').indexOf('-'), (codeTitle || '').length) }}</span>
                   </div>
                 </div>
                 <a-row :gutter="24">
@@ -94,16 +94,16 @@
                         v-decorator="[
                           'vehicleModelId',
                           {rules: [{
-                            required:true, message:$t('search.please_select') + $t('issue.vehicleModelName')
+                            required: valiRequire, message:$t('search.please_select') + $t('issue.vehicleModelName')
                           }]}
                         ]"
-                        url="/masterdata/v1/vehiclemodel"
-                        show-search
                         :transform="selectOption"
                         :filter-option="filterOption"
                         :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
                         :allow-clear="true"
                         @change="vehicleModelIdChange"
+                        url="/masterdata/v1/vehiclemodel"
+                        show-search
                       ></net-select>
                     </a-form-item>
                   </a-col>
@@ -114,17 +114,16 @@
                         v-decorator="[
                           'faultTreeIds1',
                           {rules:[{
-                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds1')
+                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds1')
                           }]}
                         ]"
-                        url="/issue/v1/faultcategory?p_id=0"
-                        show-search
                         :transform="selectOption"
-                        :delay="!isEdit"
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
                         :filter-option="filterOption"
                         :allow-clear="true"
                         @change="handleSystem"
+                        url="/issue/v1/faultcategory?p_id=0"
+                        show-search
                       >
                       </net-select>
                     </a-form-item>
@@ -136,10 +135,9 @@
                         v-decorator="[
                           'faultTreeIds2',
                           {rules:[{
-                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds2')
+                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds2')
                           }]}
                         ]"
-                        show-search
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
                         :filter-option="filterOption"
                         :disabled="!record.faultTreeIds1"
@@ -149,6 +147,7 @@
                         :transform="selectOption"
                         :allow-clear="true"
                         @change="faultTreeIds2Change"
+                        show-search
                       >
                       </net-select>
                     </a-form-item>
@@ -160,10 +159,9 @@
                         v-decorator="[
                           'faultTreeIds3',
                           {rules:[{
-                            required:true, message:$t('search.please_select') + $t('issue.faultTreeIds3')
+                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds3')
                           }]}
                         ]"
-                        show-search
                         :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
                         :delay="!isEdit || !record.faultTreeIds2"
                         :filter-option="filterOption"
@@ -173,6 +171,7 @@
                         :transform="selectOption"
                         :allow-clear="true"
                         @change="faultTreeIds3Change"
+                        show-search
                       >
                       </net-select>
                     </a-form-item>
@@ -186,16 +185,16 @@
                         v-decorator="[
                           'source',
                           {rules:[{
-                            required:true, message:$t('search.please_select') + $t('issue.source')
+                            required: valiRequire, message:$t('search.please_select') + $t('issue.source')
                           }]}
                         ]"
-                        show-search
                         :placeholder="$t('search.please_select') + $t('issue.source')"
                         :filter-option="filterOption"
-                        url="/sys/dict?dictType=issue_source"
                         :transform="selectOptiondict"
                         :allow-clear="true"
                         @change="handleSource"
+                        show-search
+                        url="/sys/dict?dictType=issue_source"
                       >
                       </net-select>
                     </a-form-item>
@@ -207,15 +206,15 @@
                         v-decorator="[
                           'grade',
                           {rules:[{
-                            required:true, message: $t('search.please_select') + $t('issue.grade')
+                            required: valiRequire, message: $t('search.please_select') + $t('issue.grade')
                           }]}
                         ]"
-                        show-search
                         :placeholder="$t('search.please_select') + $t('issue.grade')"
                         :filter-option="filterOption"
-                        url="/sys/dict?dictType=issue_grade"
                         :transform="selectOptiondict"
                         :allow-clear="true"
+                        show-search
+                        url="/sys/dict?dictType=issue_grade"
                       >
                       </net-select>
                     </a-form-item>
@@ -227,15 +226,15 @@
                         v-decorator="[
                           'projectPhase',
                           {rules:[{
-                            required:true, message: $t('search.please_select')+$t('issue.projectPhase')
+                            required: valiRequire, message: $t('search.please_select')+$t('issue.projectPhase')
                           }]}
                         ]"
-                        show-search-
                         :placeholder="$t('search.please_select')+$t('issue.projectPhase')"
                         :filter-option="filterOption"
-                        url="/sys/dict?dictType=issue_phase"
                         :transform="selectOptiondict"
                         :allow-clear="true"
+                        show-search-
+                        url="/sys/dict?dictType=issue_phase"
                       >
                       </net-select>
                     </a-form-item>
@@ -247,8 +246,8 @@
                         v-decorator="[
                           'failureDate'
                         ]"
-                        format="YYYY-MM-DD HH:mm:ss"
                         :placeholder="$t('search.please_select') + $t('issue.failureDate')"
+                        format="YYYY-MM-DD HH:mm:ss"
                         show-time
                         style="width:261px;"
                       />
@@ -263,15 +262,15 @@
                         v-decorator="[
                           'manufactureBaseId',
                           {rules:[{
-                            required:true, message: $t('search.please_select')+$t('issue.manufactureBase')
+                            required: valiRequire, message: $t('search.please_select')+$t('issue.manufactureBase')
                           }]}
                         ]"
-                        show-search-
                         :placeholder="$t('search.please_select')+$t('issue.manufactureBase')"
                         :filter-option="filterOption"
-                        url="/masterdata/v1/manufactureBase"
                         :transform="selectOptionBase"
                         :allow-clear="true"
+                        show-search-
+                        url="/masterdata/v1/manufactureBase"
                       />
                     </a-form-item>
                   </a-col>
@@ -280,11 +279,11 @@
                     <a-form-item :label="$t('issue.responsibleDepartmentId')">
                       <net-select
                         v-decorator="['responsibleDepartmentId']"
-                        url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                         :transform="selectOptionSingn"
                         :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
                         :delay="!isEdit"
                         :allow-clear="true"
+                        url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                       >
                       </net-select>
                     </a-form-item>
@@ -296,8 +295,8 @@
                         v-decorator="[
                           'frequency',
                         ]"
-                        allow-clear
                         :placeholder="$t('search.please_input') + $t('issue.frequency')"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -312,8 +311,8 @@
                           'contact',
                           {rules: [{validator: phoneVer}]}
                         ]"
-                        allow-clear
                         :placeholder="$t('search.please_input') + $t('issue.contact')"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -322,14 +321,14 @@
                   <!-- 「问题描述」输入 -->
                   <a-col :span="16">
                     <a-form-item
-                      class="form-item-flex-2"
                       :label="$t('issue.description')"
+                      class="form-item-flex-2"
                     >
                       <v-textarea
                         v-decorator="[
                           'description',
                           {rules: [{
-                            required: true, message: $t('search.please_input') + $t('issue.description')
+                            required: valiRequire, message: $t('search.please_input') + $t('issue.description')
                           }]}
                         ]"
                         :placeholder="$t('search.please_input') + $t('issue.description')"
@@ -341,14 +340,14 @@
                     <!-- 「附件」上传 -->
                     <a-form-item :label="$t('issue_workflow.attachment')">
                       <a-upload
-                        action="/api/issue/v1/file/upload?recType=10021003"
                         :headers="headers"
-                        name="file"
                         :multiple="true"
                         :file-list="fileList"
                         :remove="removeFile"
                         @preview="downFile"
                         @change="handleChange"
+                        :action="uploadUrl"
+                        name="file"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -363,8 +362,8 @@
           </div>
           <div>
             <div
-              class="collapse-title"
               @click="SuppelyOpen"
+              class="collapse-title"
             >
               <a-icon
                 :type="SuppelyIcon"
@@ -381,8 +380,8 @@
                       v-decorator="[
                         'vinNo',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.vinNo')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -393,12 +392,12 @@
                       v-decorator="[
                         'firstCausePart',
                       ]"
-                      show-search-
                       :filter-option="filterOption"
-                      url="/masterdata/v1/part"
                       :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
                       :transform="selectOption"
                       :allow-clear="true"
+                      show-search-
+                      url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
                 </a-col>
@@ -409,12 +408,12 @@
                       v-decorator="[
                         'partId',
                       ]"
-                      show-search-
                       :filter-option="filterOption"
-                      url="/masterdata/v1/part"
                       :placeholder="$t('search.please_select') + $t('issue.partId')"
                       :transform="selectOption"
                       :allow-clear="true"
+                      show-search-
+                      url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
                 </a-col>
@@ -425,12 +424,12 @@
                       v-decorator="[
                         'supplierId',
                       ]"
-                      show-search-
                       :filter-option="filterOption"
-                      url="/masterdata/v1/supplier"
                       :placeholder="$t('search.please_select') + $t('issue.supplierId')"
                       :transform="selectOption"
                       :allow-clear="true"
+                      show-search-
+                      url="/masterdata/v1/supplier"
                     ></net-select>
                   </a-form-item>
                 </a-col>
@@ -457,12 +456,12 @@
                       v-decorator="[
                         'testType',
                       ]"
-                      show-search
                       :filter-option="filterOption"
-                      url="/sys/dict?dictType=issue_test_type"
                       :placeholder="$t('search.please_select') + $t('issue.testType')"
                       :transform="selectOptiondict"
                       :allow-clear="true"
+                      show-search
+                      url="/sys/dict?dictType=issue_test_type"
                     ></net-select>
                   </a-form-item>
                 </a-col>
@@ -473,8 +472,8 @@
                       v-decorator="[
                         'milage'
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.milage')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -485,8 +484,8 @@
                       v-decorator="[
                         'maintenanceStation',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.maintenanceStation')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -499,8 +498,8 @@
                       v-decorator="[
                         'softwareVersion',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.softwareVersion')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -511,8 +510,8 @@
                       v-decorator="[
                         'calibrationVersion',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.calibrationVersion')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -523,8 +522,8 @@
                       v-decorator="[
                         'hardwareVersion',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.hardwareVersion')"
+                      allow-clear
                     />
                   </a-form-item>
                 </a-col>
@@ -549,8 +548,8 @@
                       v-decorator="[
                         'workConditionInfo',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.workConditionInfo')"
+                      allow-clear
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
@@ -561,8 +560,8 @@
                       v-decorator="[
                         'preliminaryInvestigation',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.preliminaryInvestigation')"
+                      allow-clear
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
@@ -573,8 +572,8 @@
                       v-decorator="[
                         'remark',
                       ]"
-                      allow-clear
                       :placeholder="$t('search.please_input') + $t('issue.remark')"
+                      allow-clear
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
@@ -587,6 +586,7 @@
   </div>
 </template>
 <script>
+import attachmentMix from '@@cmd/issue-attachment.js';
 import {
   createFormFields,
   autoUpdateFileds
@@ -601,9 +601,6 @@ const {
   mapActions
 } = createNamespacedHelpers('question');
 
-const isDev = process.env.NODE_ENV === 'development';
-const api = process.env.api;
-
 export default {
   name: 'QuestionCreate',
   components: {
@@ -612,13 +609,17 @@ export default {
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
-
+  mixins: [attachmentMix],
   props: ['name', 'id'],
   data () {
     const {
       $store
     } = this;
     return {
+      // 必填开关
+      valiRequire: true,
+      // 上传地址
+      uploadUrl: $store.getters.getUrl('/issue/v1/file/upload?recType=10021003'),
       businessKey: null,
       businessTitle: '',
       sourceName: '',
@@ -655,10 +656,6 @@ export default {
         sm: {
           span: 16
         }
-      },
-      headers: {
-        authorization: 'authorization-text',
-        token: $store.getters.getToken()
       },
       // 数据模板
       record: {
@@ -703,7 +700,7 @@ export default {
     }
   },
   watch: {
-    name: {
+    id: {
       handler: 'init',
       immediate: true
     }
@@ -755,7 +752,7 @@ export default {
               status: 'done'
             };
             fileListArray.push(fileObject);
-          })
+          });
           this.fileList = fileListArray;
           // this.dataFileList = fileListArray;
           this.optCounter = res.optCounter;
@@ -794,34 +791,14 @@ export default {
         optionArray.push({
           value: item.id,
           label: item.name
-        })
-      })
+        });
+      });
 
       return optionArray;
     },
     handleSource (value) {
       this.sourceName = value;
     },
-    // 文件下载
-    downFile (info) {
-      const locationUrl = isDev ? api : window.location.origin;
-      const a = document.createElement('a');
-      a.download = info.name;
-      if (info.url !== undefined) {
-        const url = locationUrl + '/oss/ossFile/download?path=' + encodeURIComponent(info.url) + '&originalFilename=' + encodeURIComponent(info.name) + '&token=' + this.$store.getters.getToken();
-        a.href = decodeURI(url);
-      } else {
-        const dataFile = info.response.data;
-        const url = locationUrl + '/oss/ossFile/download?path=' + encodeURIComponent(dataFile.path) + '&originalFilename=' + encodeURIComponent(dataFile.originalFilename) + '&token=' + this.$store.getters.getToken();
-        a.href = decodeURI(url);
-      }
-
-      // a.href = locationUrl + '/api/oss/ossFile/download?path=1.pdb&originalFilename=3.pdb';
-      a.click();
-      a.remove();
-      return false;
-    },
-
     // 基本信息是否展开
     BaseOpen () {
       if (this.DetailBase) {
@@ -836,12 +813,12 @@ export default {
     },
     SuppelyOpen () {
       if (this.DetailSuppely) {
-        this.supplyContent = 'ContentDiv'
+        this.supplyContent = 'ContentDiv';
         this.SuppelyIcon = 'down';
         this.DetailSuppely = false;
       } else {
         this.SuppelyIcon = 'right';
-        this.supplyContent = 'supplyContent'
+        this.supplyContent = 'supplyContent';
         this.DetailSuppely = true;
       }
     },
@@ -852,8 +829,8 @@ export default {
         optionArray.push({
           value: item.id,
           label: item.name
-        })
-      })
+        });
+      });
 
       return optionArray;
     },
@@ -864,8 +841,8 @@ export default {
         optionArray.push({
           value: item.id,
           label: item.nameZh + ' ' + item.nameEn
-        })
-      })
+        });
+      });
 
       return optionArray;
     },
@@ -876,8 +853,8 @@ export default {
         optionArray.push({
           value: item.dictValue,
           label: item.dictName
-        })
-      })
+        });
+      });
 
       return optionArray;
     },
@@ -887,7 +864,7 @@ export default {
       this.record.faultTreeIds1 = value;
     },
     filterOption (input, option) {
-      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     goBack () {
       this.form.resetFields();
@@ -924,13 +901,20 @@ export default {
       }
     },
     handleSubmit () {
+      this.valiRequire = true;
+      const commitButton = this.$refs.commitButton;
       this.form.validateFields((err) => {
         if (!err) {
+          const hide = this.$message.loading('正在提交中...', 0);
           const data = this.form.getFieldsValue();
           const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
           data.faultTreeIds = tree;
+          const title2 = this.faultTreeIds2Title;
+          const title3 = this.codeTitle;
 
-          const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
+          const fault2 = title2.substr(title2.indexOf('-'), title2.length);
+          const fault3 = title3.substr(title3.indexOf('-'), title3.length);
+          const title = this.carTitle + fault2 + fault3;
 
           data.title = title;
           this.businessTitle = title;
@@ -945,30 +929,29 @@ export default {
           }
 
           const id = this.$store.getters.getUser().id;
-          const vm = this
+          const vm = this;
           const param1 = {
             issueSource: this.sourceName,
             type: 'coChair'
-          }
+          };
           const param2 = {
             issueSource: this.sourceName,
             type: 'monitor'
-          }
+          };
           const cocharFunction = vm.getSysUser(param1).then(res => {
             vm.coChair = vm.coChair ? vm.coChair : res.id;
             return vm.coChair;
-          })
+          });
           const monitorFunction = vm.getSysUser(param2).then(res => {
             vm.monitor = vm.monitor ? vm.monitor : res.id;
             return vm.monitor;
-          })
+          });
           // vm.coChair = vm.coChair ? vm.coChair : cocharId;
           // vm.monitor = vm.monitor ? vm.monitor : monitorId;
           if (this.businessKey) {
             data.id = this.id;
             data.optCounter = this.optCounter;
             Promise.all([cocharFunction, monitorFunction]).then((result) => {
-              console.log(result);
               this.editSaveQuestion(data).then(res => {
                 this.businessKey = res.id;
                 this.optCounter = res.optCounter;
@@ -989,14 +972,19 @@ export default {
                 };
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
-                    this.$refs.commitButton.reset();
-                    this.$router.push({
-                      path: this.$route.query.form || '/'
-                    });
+                    setTimeout(() => {
+                      hide();
+                      this.$message.success('提交成功', 1).then(() => {
+                        commitButton.reset();
+                        this.$router.push({
+                          path: this.$route.query.form || '/'
+                        });
+                      });
+                    }, 200);
                   }
                 });
-              })
-            })
+              });
+            });
           } else {
             data.id = this.id;
             data.optCounter = this.optCounter;
@@ -1020,24 +1008,44 @@ export default {
                 };
                 this.workFlowSubmit(param).then(res2 => {
                   if (res2) {
-                    this.$refs.commitButton.reset();
-                    this.$router.push({
-                      path: this.$route.query.form || '/'
-                    });
+                    setTimeout(() => {
+                      hide();
+                      this.$message.success('提交成功', 1).then(() => {
+                        commitButton.reset();
+                        this.$router.push({
+                          path: this.$route.query.form || '/'
+                        });
+                      });
+                    }, 200);
                   }
                 });
               });
-            })
+            });
           }
+        } else {
+          commitButton.reset();
         }
       });
     },
     handleSave () {
+      this.valiRequire = false;
+      const saveButton = this.$refs.saveButton;
+      this.$nextTick(() => {
+        saveButton.reset();
+        this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
+      });
+      
+      const hide = this.$message.loading('正在保存中...', 0);
       const data = this.form.getFieldsValue();
 
       const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
       data.faultTreeIds = tree;
-      const title = this.carTitle + '-' + this.faultTreeIds2Title + '-' + this.codeTitle;
+      const title2 = this.faultTreeIds2Title;
+      const title3 = this.codeTitle;
+
+      const fault2 = title2.substr(title2.indexOf('-'), title2.length);
+      const fault3 = title3.substr(title3.indexOf('-'), title3.length);
+      const title = this.carTitle + fault2 + fault3;
 
       data.title = title;
       // 日期格式化
@@ -1058,74 +1066,74 @@ export default {
           this.editSaveQuestion(data).then(res => {
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
-            this.$refs.saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
-          })
+            setTimeout(() => {
+              hide();
+              this.$message.success('保存成功', 1).then(() => {
+                saveButton.reset();
+                this.$router.push({
+                  path: this.$route.query.form || '/'
+                });
+              });
+            }, 200);
+          });
         } else {
           this.saveQuestion(data).then(res => {
             this.businessKey = res.id;
-            this.$refs.saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
+            setTimeout(() => {
+              hide();
+              this.$message.success('保存成功', 1).then(() => {
+                saveButton.reset();
+                this.$router.push({
+                  path: this.$route.query.form || '/'
+                });
+              });
+            }, 200);
           });
         }
       } else if (this.name === 'edit') {
-        this.form.validateFields((err) => {
-          if (!err) {
-            data.id = this.id;
-            data.optCounter = this.optCounter;
+        data.id = this.id;
+        data.optCounter = this.optCounter;
 
-            this.editSaveQuestion(data).then(res => {
-              this.businessKey = res.id;
-              this.optCounter = res.optCounter;
-              this.$refs.saveButton.reset();
+        this.editSaveQuestion(data).then(res => {
+          this.businessKey = res.id;
+          this.optCounter = res.optCounter;
+          setTimeout(() => {
+            hide();
+            this.$message.success('保存成功', 1).then(() => {
+              saveButton.reset();
               this.$router.push({
-                name: 'QuestionDetail',
-                params: {
-                  id: this.id
-                },
-                query: {
-                  form: this.$route.path
-                }
-              })
-            })
-          }
-        })
+                path: this.$route.query.form || '/'
+              });
+            });
+          }, 200);
+        });
       }
     },
     handleSearch (e) {
       e.preventDefault();
     },
     handleChange (info) {
-      let fileList = [...info.fileList];
-      fileList = fileList.map((file) => {
+      const fileList = info.fileList.map((file) => {
         const result = file;
         if (file.response) {
-          // Component will show file.url as link
           result.url = file.response.url;
         }
         return result;
       });
       this.fileList = fileList;
       const status = info.file.status;
-
       if (status === 'done') {
         if (info.file.response !== undefined) {
-          this.dataFileList.push(info.file.response.data)
+          this.dataFileList.push(info.file.response.data);
         }
       }
-
-      console.log(this.dataFileList);
     },
     // 删除文件
     removeFile (file) {
       const index = this.fileList.indexOf(file);
       const newFileList = this.fileList.slice();
       newFileList.splice(index, 1);
-      this.fileList = newFileList
+      this.fileList = newFileList;
       const newDataList = this.dataFileList.slice();
       newDataList.splice(index, 1);
       this.dataFileList = newDataList;
@@ -1155,7 +1163,7 @@ export default {
         'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
         'hardwareVersion', 'confirmationVersion', 'vinNo', 'productDate', 'maintenanceStation', 'milage',
         'remark', 'workConditionInfo', 'preliminaryInvestigation'
-      ], 'record')
+      ], 'record');
     }
   }
 };
@@ -1293,7 +1301,7 @@ export default {
   /deep/ .ant-affix {
     left: 0px!important;
     width: 100%!important;
-    background: rgba(75,75,75,0.85);
+    background: rgba(0, 0, 0, 0.6);
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
     .top-buttons {
       width: 1200px!important;
@@ -1303,7 +1311,7 @@ export default {
   .top-buttons {
     overflow: hidden;
     padding: 16px 0;
-    z-index:9999;
+    z-index:5000;
 
     .rightButton {
       float: right;

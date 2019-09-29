@@ -3,7 +3,10 @@
     <h1 :class="{'ant-list-item-meta-title': true, 'ant-list-item-meta-title-center': !desc}">
       {{ title }}
     </h1>
-    <div v-if="desc" class="ant-list-item-meta-description">
+    <div
+      v-if="desc"
+      class="ant-list-item-meta-description"
+    >
       {{ desc }}
     </div>
   </div>
@@ -12,7 +15,7 @@
 <script>
 export default {
   props: ['title', 'desc']
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -42,5 +45,5 @@ export default {
       color: #0097E0;
     }
   }
-  
+
 </style>

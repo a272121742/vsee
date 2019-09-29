@@ -30,6 +30,7 @@
     "irtId": "Irt ID",
     "maintenanceStation": "Maintenance Station",
     "manufactureBase": "Plant",
+    "manufactureBaseId": "Plant",
     "masterIssueId": "Master Issue ID",
     "milage": "Milage",
     "optCounter": "Opt Counter",
@@ -38,6 +39,7 @@
     "productDate": "Production Date",
     "projectDate": "Issue Publish Date",
     "projectPhase": "Project Phase",
+    "projectPhaseName": "Project Phase",
     "receiveDate": "Receive Date",
     "relevanceIssuesId": "Relevance Issues ID",
     "remark": "Remark",
@@ -59,14 +61,18 @@
     "champion": "champion"
   },
   "search": {
-    "inquire_button": "Search",
+    "find_button": "Search",
     "search_button": "Search",
     "reset_button": "Reset",
     "cancel_button": "Cancel",
     "title_search": "Title",
-    "advance_search": "Multiple Search",
+    "advance_search": "Multiple",
     "please_input": "Please Input ",
-    "please_select": "Please Select "
+    "please_select": "Please Select ",
+    "expand_button": "Expand",
+    "collapse_button": "Collapse",
+    "begin_date": "Begin Date",
+    "end_date": "End Date"
   },
   "pagination": {
     "total": "Total",
@@ -144,10 +150,11 @@
       "closureDate": "Planned closure date"
     },
     "D4": {
-      "shortEffect": "Implementation",
-      "sortSolutionImplementDate": "Short term effect",
-      "longTermEffect": "Actual date for short term solution implementation",
-      "longSolutionImplementDate": "Long term effect"
+      "processName": "Implementation",
+      "shortEffect": "Short term effect",
+      "sortSolutionImplementDate": "Actual date for short term solution implementation",
+      "longTermEffect": "Long term effect",
+      "longSolutionImplementDate": "Actual date for long term solution implementation"
     },
     "D5": {
       "processName": "Feedback",
@@ -170,6 +177,7 @@
       "addUpdateFile": "Add update file"
     },
     "D6": {
+      "processName": "Issue Closure",
       "addPreventList": "Add prevent recurrence issue list",
       "needReview": "Need leader review",
       "leader": "Leader"

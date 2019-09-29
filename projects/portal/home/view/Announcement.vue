@@ -1,11 +1,11 @@
 <template>
   <a-card :title="$t('title.announcement')">
     <router-link
+      v-if="false"
       slot="extra"
       to="/announcement/list"
     >
       <a-button
-
         type="link"
       >
         {{ $t('link.more') }}

@@ -72,7 +72,7 @@ export default {
       src: '',
       // 加载状态
       spinning: false
-    }
+    };
   },
   watch: {
     value (value) {
@@ -100,9 +100,11 @@ export default {
         } else {
           this.fetch({ responseType: 'arraybuffer' }).then(res => {
             if (/^data:image\/(png|jpe?g|gif|svg);base64,/.test(res)) {
+              console.log('is Array base64');
               this.src = res;
             } else if (res instanceof ArrayBuffer) {
-              this.src = 'data:image/png;base64,' + btoa(new Uint8Array(res).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+              console.log('is Array Buffer');
+              this.src = 'data:image/png;base64,' + btoa(new Uint8Array(res).reduce((data, byte) => data + String.fromCharCode(byte), ''));
             }
             this.spinning = false;
             // !first && this.$emit('change');
@@ -111,7 +113,7 @@ export default {
       }
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

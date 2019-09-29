@@ -21,6 +21,7 @@ import 'nprogress/nprogress.css';
 import '@@cmd/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
+import 'promise-polyfill/src/polyfill';
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制

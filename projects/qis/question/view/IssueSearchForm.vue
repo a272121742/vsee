@@ -93,9 +93,10 @@
             </a-button>
             <a-button
               class="advance-action"
+              type="link"
               @click="cancelSearch"
             >
-              {{ $t('search.cancel_button') }}
+              {{ $t('search.collapse_button') }} <a-icon type="up" />
             </a-button>
           </span>
         </a-form-item>
@@ -123,7 +124,7 @@ export default {
     return {
       form: null,
       record: {}
-    }
+    };
   },
   created () {
     this.form = this.$form.createForm(this, {
@@ -164,7 +165,7 @@ export default {
     },
     // 本地搜索通用函数
     filterOption (input, option) {
-      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     /**
      * 转换net-select获取的参数
@@ -173,11 +174,11 @@ export default {
     transformGrade: transform2,
     transformSource: transform2
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
   .advance-action {
-    margin-left: 4px;
+    margin-left: 8px;
   }
 </style>

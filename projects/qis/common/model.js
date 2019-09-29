@@ -41,7 +41,7 @@ const sourceName = {
 // 问题阶段
 const projectPhase = {
   title: 'projectPhase',
-  dataIndex: 'projectPhase',
+  dataIndex: 'projectPhaseName',
   width: 140,
   scopedSlots: { customRender: 'projectPhase' }
 };
@@ -61,7 +61,7 @@ const projectDate = {
   width: 150,
   align: 'center',
   scopedSlots: { customRender: 'projectDate' },
-  customRender (date) {
+  customRender (date = '') {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
 };
@@ -72,7 +72,7 @@ const receiveDate = {
   width: 150,
   align: 'center',
   scopedSlots: { customRender: 'receiveDate' },
-  customRender (date) {
+  customRender (date = '') {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
 };
@@ -83,7 +83,7 @@ const createDate = {
   width: 150,
   align: 'center',
   scopedSlots: { customRender: 'createDate' },
-  customRender (date) {
+  customRender (date = '') {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
 };

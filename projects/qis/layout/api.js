@@ -6,4 +6,4 @@ export default {
   getUserInfo: () => $.get('/sys/user/info'),
   getMenus: () => $.get('/sys/menu/nav', { appCode: 'ADMIN' }),
   logout: () => $.post('/auth/logout')
-}
+};

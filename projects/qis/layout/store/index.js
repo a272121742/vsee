@@ -48,6 +48,8 @@ export default {
     getMenus ({ commit }) {
       api.getMenus && api.getMenus().then(menus => {
         commit('setMenus', menus, { root: true });
+      }).catch(err => {
+        commit('setToken', void 0, { root: true });
       });
     },
     /**
@@ -56,10 +58,10 @@ export default {
     getWorkflows ({ commit }) {
       api.getWorkflows && api.getWorkflows().then(workflows => {
         commit('setWorkflows', workflows, { root: true });
-      })
+      });
     },
     logout ({ dispatch }) {
-      dispatch('logout', void 0, { root: true })
+      dispatch('logout', void 0, { root: true });
       return api.logout();
     }
   }

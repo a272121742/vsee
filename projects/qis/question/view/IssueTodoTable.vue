@@ -25,9 +25,9 @@
           <template slot-scope="text">
             <a-tooltip>
               <template #title>
-                {{ text }}
+                {{ text ? text : ' ' }}
               </template>
-              {{ text }}
+              {{ text ? text : ' ' }}
             </a-tooltip>
           </template>
         </a-table-column>
@@ -49,6 +49,7 @@
         </template>
         <template slot-scope="text, record">
           <a
+            v-permission="'issue:record:detail'"
             href="javascript:;"
             @click="goToDetail(record.id)"
           >

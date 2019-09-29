@@ -18,6 +18,7 @@
         @change="changeTab"
       >
         <a-tab-pane
+          v-permission="'issue:home:todo'"
           key="1"
         >
           <template slot="tab">
@@ -39,6 +40,7 @@
           ></issue-todo-table>
         </a-tab-pane>
         <a-tab-pane
+          v-permission="'issue:home:draft'"
           key="0"
         >
           <span slot="tab">
@@ -70,6 +72,7 @@
         </template>
         <template #tabBarExtraContent>
           <a-button
+            v-permission="'issue:home:todo:search'"
             v-if="showSearch"
             icon="search"
             type="primary"
@@ -80,7 +83,7 @@
             {{ $t('search.search_button') }}
           </a-button>
           <a-button
-            v-permission="'issue:owner:create'"
+            v-permission="'issue:home:todo:create'"
             icon="plus-circle"
             type="primary"
             @click="createQuestion"
@@ -99,7 +102,7 @@ import issueTab from '@@cmd/issue-tab.js';
 export default {
   name: 'Home',
   mixins: [issueTab]
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -132,5 +135,8 @@ export default {
   }
   /deep/ .ant-form-item-control-wrapper {
     flex: 1;
+  }
+  .ant-btn {
+    margin-left: 12px;
   }
 </style>

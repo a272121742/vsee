@@ -53,7 +53,7 @@ export default {
   }
   // 设置头部固定
   /deep/ .affix-header .ant-affix {
-    z-index: 100;
+    z-index: 5000;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }
   // 设置内容区域中，多余部分隐藏
@@ -65,7 +65,7 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 100;
+    z-index: 5000;
     text-align: center;
     padding: 8px 0;
     background-color: transparent!important;

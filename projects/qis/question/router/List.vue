@@ -6,6 +6,7 @@
       @change="changeTab"
     >
       <a-tab-pane
+        v-permission="'issue:list:todo'"
         key="1"
       >
         <template slot="tab">
@@ -27,6 +28,7 @@
         ></issue-todo-table>
       </a-tab-pane>
       <a-tab-pane
+        v-permission="'issue:list:draft'"
         key="0"
       >
         <span slot="tab">
@@ -48,6 +50,7 @@
         ></issue-draft-table>
       </a-tab-pane>
       <a-tab-pane
+        v-permission="'issue:list:done'"
         key="2"
       >
         <span slot="tab">
@@ -60,6 +63,7 @@
         ></issue-done-table>
       </a-tab-pane>
       <a-tab-pane
+        v-permission="'issue:list:published'"
         key="3"
       >
         <span slot="tab">
@@ -82,6 +86,7 @@
       </template>
       <template #tabBarExtraContent>
         <a-button
+          v-permission="'issue:list:todo:search'"
           v-if="showSearch"
           icon="search"
           type="primary"
@@ -92,7 +97,7 @@
           {{ $t('search.search_button') }}
         </a-button>
         <a-button
-          v-permission="'issue:owner:create'"
+          v-permission="'issue:list:todo:create'"
           icon="plus-circle"
           type="primary"
           @click="createQuestion"
@@ -110,12 +115,7 @@ import issueTab from '@@cmd/issue-tab.js';
 export default {
   name: 'QuestionList',
   mixins: [issueTab]
-  // data () {
-  //   return {
-  //     defaultActiveKey: '1'
-  //   }
-  // }
-}
+};
 
 </script>
 <style lang="less" scoped>
@@ -134,5 +134,8 @@ export default {
   }
   /deep/ .ant-form-item-control-wrapper {
     flex: 1;
+  }
+  .ant-btn {
+    margin-left: 12px;
   }
 </style>

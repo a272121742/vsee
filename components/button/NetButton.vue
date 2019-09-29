@@ -1,10 +1,10 @@
 <template>
   <a-button
+    ref="button"
     v-bind="$attrs"
+    :loading="loading"
     v-on="$listeners"
     @click="handleAjax"
-    :loading="loading"
-    ref="button"
   >
     <slot></slot>
   </a-button>
@@ -24,6 +24,6 @@ export default {
       this.fetch();
     }
   }
-}
+};
 
 </script>

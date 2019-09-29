@@ -2,15 +2,21 @@
 <template>
   <div class="clear-input">
     <a-textarea
-      v-bind="$attrs"
-      v-on="$listeners"
       ref="input"
+      v-bind="$attrs"
       :value="text"
+      v-on="$listeners"
       @change="e => text = e.target.value"
     >
-       <!-- slot继承 -->
-      <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-        <slot :name="slot" v-bind="scope"/>
+      <!-- slot继承 -->
+      <template
+        v-for="(_, slot) of $scopedSlots"
+        v-slot:[slot]="scope"
+      >
+        <slot
+          :name="slot"
+          v-bind="scope"
+        />
       </template>
     </a-textarea>
     <span
@@ -40,7 +46,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     allowClear: {
       type: Boolean,
@@ -50,8 +56,8 @@ export default {
   data () {
     const value = this.value || '';
     return {
-      text: value,
-    }
+      text: value
+    };
   },
   watch: {
     value (value) {
@@ -60,11 +66,11 @@ export default {
   },
   methods: {
     clear () {
-      this.$emit('change', {target: {value: null}});
+      this.$emit('change', { target: { value: null } });
       this.text = null;
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

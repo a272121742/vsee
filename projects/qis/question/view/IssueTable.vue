@@ -17,9 +17,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ text }}
+              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ text }}
+            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -102,7 +102,7 @@ export default {
   data () {
     return {
       columns: issueColumns
-    }
+    };
   },
   computed: {
     // 计算「更新列配置」的api
@@ -136,13 +136,13 @@ export default {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
         const pageCount = Math.ceil(total / this.pageSize);
-        const pageText = this.$t('pagination.page')
+        const pageText = this.$t('pagination.page');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

@@ -2,6 +2,7 @@
   <div class="container shadown-block-normal">
     <!-- 搜索表单 -->
     <advance-search-form
+      v-permission="'issue:advance:search'"
       @change="search"
     />
     <a-divider style="margin: 12px 0 12px 0;"></a-divider>
@@ -20,6 +21,7 @@
         slot-scope="record"
       >
         <a
+          v-permission="'issue:record:detail'"
           href="javascript:;"
           @click="goToDetail(record.id)"
         >

@@ -1,21 +1,27 @@
 <template>
   <a-input
+    ref="input"
     class="clear-input"
     v-bind="$attrs"
-    v-on="$listeners"
     :value="text"
+    v-on="$listeners"
     @change="e => text = e.target.value"
-    ref="input"
   >
     <!-- slot继承 -->
-    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope"/>
+    <template
+      v-for="(_, slot) of $scopedSlots"
+      v-slot:[slot]="scope"
+    >
+      <slot
+        :name="slot"
+        v-bind="scope"
+      />
     </template>
     <template v-if="allowClear">
       <a-icon
         v-show="text"
-        class="allow-clear"
         slot="suffix"
+        class="allow-clear"
         type="close-circle"
         theme="filled"
         @click="clear"
@@ -36,7 +42,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     /**
      * 是否允许自动清除
@@ -49,8 +55,8 @@ export default {
   data () {
     const value = this.value || '';
     return {
-      text: value,
-    }
+      text: value
+    };
   },
   watch: {
     value (value) {
@@ -59,11 +65,11 @@ export default {
   },
   methods: {
     clear () {
-      this.$emit('change', {target: {value: null}});
+      this.$emit('change', { target: { value: null } });
       this.text = null;
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

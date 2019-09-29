@@ -19,6 +19,7 @@ import 'nprogress/nprogress.css';
 
 // 加载全局自定义皮肤
 import '@@cmd/global.less';
+import 'promise-polyfill/src/polyfill'
 
 import AsyncComponent from '@comp/AsyncComponent';
 Vue.component('async-component', AsyncComponent);

@@ -138,7 +138,7 @@ export default {
       window.location.href = '/';
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

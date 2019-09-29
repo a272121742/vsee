@@ -54,7 +54,14 @@ export default {
       data: []
     }
   },
-  created () {
+  // created () {
+  //   const { url, delay } = this;
+  //   url && !delay && this.fetch().then(data => {
+  //     this.data = data || [];
+  //   });
+  //   this.data = this.$attrs.options || [];
+  // },
+  activated () {
     const { url, delay } = this;
     url && !delay && this.fetch().then(data => {
       this.data = data || [];
