@@ -81,6 +81,10 @@ export default {
   redistributionFun (store, data) {
     return api.redistributionFun(data);
   },
+  // 修改后台当前责任人
+  updateChampionFun (store, data) {
+    return api.updateChampionFun(data);
+  },
   /**
    * 修改保存问题
    */

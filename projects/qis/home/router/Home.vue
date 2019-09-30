@@ -6,7 +6,7 @@
       <a-card class="banner-card">
         <img
           slot="cover"
-          src="/static/portal/portal_banner.png"
+          src="/static/question/issue_banner.png"
         >
       </a-card>
     </a-row>

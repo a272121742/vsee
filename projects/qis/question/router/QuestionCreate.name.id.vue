@@ -247,7 +247,7 @@
                           'failureDate'
                         ]"
                         :placeholder="$t('search.please_select') + $t('issue.failureDate')"
-                        format="YYYY-MM-DD HH:mm:ss"
+                        format="YYYY-MM-DD HH:mm"
                         show-time
                         style="width:261px;"
                       />
@@ -313,6 +313,8 @@
                         ]"
                         :placeholder="$t('search.please_input') + $t('issue.contact')"
                         allow-clear
+                        max=11
+                        len=11
                       />
                     </a-form-item>
                   </a-col>
@@ -379,6 +381,7 @@
                     <v-input
                       v-decorator="[
                         'vinNo',
+                         {rules: [{validator: vinVer}]}
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.vinNo')"
                       allow-clear
@@ -775,6 +778,15 @@ export default {
         });
       }
     },
+     //验证VIN
+     vinVer (rule, value, callback) {
+      var myreg = /^[A-Z0-9]{17}$/;
+      if (value && !myreg.test(value) ) {
+        callback(new Error('请输入正确的VIN'));
+      } else {
+        callback();
+      }
+    },
     // 验证手机号
     phoneVer (rule, value, callback) {
       var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
@@ -907,6 +919,10 @@ export default {
         if (!err) {
           const hide = this.$message.loading('正在提交中...', 0);
           const data = this.form.getFieldsValue();
+           if(data.milage===undefined){
+             data.milage='';
+          }
+          data.fileList = this.dataFileList;
           const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
           data.faultTreeIds = tree;
           const title2 = this.faultTreeIds2Title;
@@ -1034,10 +1050,12 @@ export default {
         saveButton.reset();
         this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
       });
-      
+
       const hide = this.$message.loading('正在保存中...', 0);
       const data = this.form.getFieldsValue();
-
+      if(data.milage===undefined){
+         data.milage='';
+      }
       const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
       data.faultTreeIds = tree;
       const title2 = this.faultTreeIds2Title;
@@ -1077,6 +1095,7 @@ export default {
             }, 200);
           });
         } else {
+          console.log(data);
           this.saveQuestion(data).then(res => {
             this.businessKey = res.id;
             setTimeout(() => {

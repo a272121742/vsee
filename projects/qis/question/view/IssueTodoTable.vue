@@ -37,7 +37,7 @@
         fixed="right"
       >
         <template #title>
-          <col-provider
+          <!-- <col-provider
             v-if="url && id"
             :id="id"
             :url="url"
@@ -45,7 +45,7 @@
             :transform="$t.bind(_self)"
             :mapping="mapping"
             locale-path="issue"
-          ></col-provider>
+          ></col-provider> -->
         </template>
         <template slot-scope="text, record">
           <a

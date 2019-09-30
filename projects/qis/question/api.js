@@ -39,6 +39,8 @@ export default {
   examineDetail: (data) => $.get('/issue/v1/workflow/comment/nodeComment', data),
   // 再分配
   redistributionFun: (data) => $.post('/activiti/running/reAssignTask', data),
+  // 再分配修改后台用户
+  updateChampionFun: (data) => $.put('/issue/v1/issue/setIssueAssigner', data),
   /**
    * 措施判定保存
    */
