@@ -20,8 +20,8 @@
         }]"
         allow-clear
         autocomplete="off"
-        size="large"
         :placeholder="$t('username.placeholder')"
+        size="large"
         class="background-white-50"
       >
         <a-icon
@@ -40,8 +40,8 @@
         }]"
         autocomplete="off"
         allow-clear
-        size="large"
         :placeholder="$t('password.placeholder')"
+        size="large"
         class="background-white-50"
       >
         <a-icon
@@ -59,11 +59,11 @@
         }]"
         autocomplete="off"
         allow-clear
-        size="large"
         :url="`/auth/captcha?uuid=${record.uuid}`"
+        size="large"
         :placeholder="$t('captcha.placeholder')"
-        class="background-white-50"
         @click-captcha="captchaChange"
+        class="background-white-50"
       >
         <a-icon
           slot="prefix"
@@ -126,7 +126,7 @@ export default {
        * 是否记住密码
        */
       remember: false
-    }
+    };
   },
   created () {
     this.recovery();
@@ -151,7 +151,7 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
-          this.login(loginInfo).then(res => {
+          this.$store.dispatch('login', loginInfo).then(res => {
             if (res.token) {
               this.$store.commit('setLoginStatus', res.token);
               const goPage = this.$route.query.redirect || '/';
@@ -169,7 +169,7 @@ export default {
           }).catch(errCode => {
             this.$message.error(this.$t(errCode));
             this.captchaChange();
-          })
+          });
         }
       });
     },
@@ -186,7 +186,7 @@ export default {
       this.record.uuid = getUUID();
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

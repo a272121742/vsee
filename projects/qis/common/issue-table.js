@@ -3,8 +3,8 @@ const { mapActions } = createNamespacedHelpers('question');
 
 export default {
   components: {
-    AdvanceSearchForm: () => import('@@/question/view/AdvanceSearchForm.vue'),
-    IssueTable: () => import('@@/question/view/IssueTable.vue')
+    AdvanceSearchForm: () => import('~/question/view/AdvanceSearchForm.vue'),
+    IssueTable: () => import('~/question/view/IssueTable.vue')
   },
   data () {
     return {

@@ -17,8 +17,8 @@
         <div class="content-box">
           <language-radio />
           <a-dropdown
-            class="user-info"
             :trigger="['click', 'hover']"
+            class="user-info"
           >
             <span>
               <a-avatar icon="user">
@@ -60,7 +60,7 @@ export default {
       this.$store.dispatch('login/logout');
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

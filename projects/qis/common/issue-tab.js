@@ -1,9 +1,9 @@
 export default {
   components: {
-    IssueTodoTable: () => import('@@/question/view/IssueTodoTable.vue'),
-    IssueDraftTable: () => import('@@/question/view/IssueDraftTable.vue'),
-    IssueDoneTable: () => import('@@/question/view/IssueDoneTable.vue'),
-    IssuePublishedTable: () => import('@@/question/view/IssuePublishedTable.vue')
+    IssueTodoTable: () => import('~/question/view/IssueTodoTable.vue'),
+    IssueDraftTable: () => import('~/question/view/IssueDraftTable.vue'),
+    IssueDoneTable: () => import('~/question/view/IssueDoneTable.vue'),
+    IssuePublishedTable: () => import('~/question/view/IssuePublishedTable.vue')
   },
   data () {
     return {

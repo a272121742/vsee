@@ -1,4 +1,10 @@
 import mock from '@lib/mock.js';
+import { Random } from 'mockjs';
+
+mock.get('/auth/captcha', uuid => {
+  console.log('发送图片', uuid);
+  return Random.dataImage('128x38', Random.string('lower', 6));
+});
 
 mock.get('/sys/menu/nav', () => {
   return mock.result({

@@ -1,8 +1,8 @@
 <template>
   <a-input
     ref="input"
-    class="clear-input"
     v-bind="$attrs"
+    class="clear-input"
     :value="text"
     v-on="$listeners"
     @change="e => text = e.target.value"
@@ -19,18 +19,18 @@
     </template>
     <template v-if="allowClear">
       <a-icon
-        v-show="text"
         slot="suffix"
+        v-show="text"
         class="allow-clear"
         type="close-circle"
-        theme="filled"
         @click="clear"
+        theme="filled"
       />
     </template>
     <a-spin
       slot="suffix"
-      class="captcha"
       :spinning="spinning"
+      class="captcha"
     >
       <img
         :src="src"
@@ -100,10 +100,8 @@ export default {
         } else {
           this.fetch({ responseType: 'arraybuffer' }).then(res => {
             if (/^data:image\/(png|jpe?g|gif|svg);base64,/.test(res)) {
-              console.log('is Array base64');
               this.src = res;
             } else if (res instanceof ArrayBuffer) {
-              console.log('is Array Buffer');
               this.src = 'data:image/png;base64,' + btoa(new Uint8Array(res).reduce((data, byte) => data + String.fromCharCode(byte), ''));
             }
             this.spinning = false;

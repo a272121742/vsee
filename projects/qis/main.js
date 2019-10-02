@@ -18,10 +18,9 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
 // 加载全局自定义皮肤
-import '@@cmd/global.less';
+import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
-import 'promise-polyfill/src/polyfill';
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制
@@ -29,7 +28,6 @@ import('@dir/v-permission.js');
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
-
 const token = store.getters.getToken();
 // 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）
 
@@ -75,6 +73,6 @@ new Vue({
           <router-view />
         </a-locale-provider>
       </div>
-    )
+    );
   }
 });

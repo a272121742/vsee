@@ -56,7 +56,7 @@
 
 <script>
 import { clone } from 'ramda';
-import { issueDraftColumns } from '@@cmd/model.js';
+import { issueDraftColumns } from '~~/model.js';
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
 

@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import issueTableMix from '@@cmd/issue-table.js';
+import issueTableMix from '~~/issue-table.js';
 
 export default {
   name: 'IssueList',

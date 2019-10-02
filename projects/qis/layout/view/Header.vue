@@ -51,8 +51,8 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <a-dropdown
-            class="user-info"
             :trigger="['click', 'hover']"
+            class="user-info"
           >
             <div>
               <a-avatar icon="user">
@@ -133,7 +133,7 @@ export default {
       }
     },
     logoutHandle () {
-      this.$store && this.$store.dispatch('layout/logout');
+      this.$store.dispatch('logout');
       // TODO: 做好多应用重定向
       window.location.href = '/';
     }

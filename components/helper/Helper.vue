@@ -4,17 +4,17 @@
     :style="{ position: 'fixed', top: `${top}px`, right: '0px'}"
   >
     <a-button
+      @click="show"
       type="primary"
       icon="setting"
-      @click="show"
     >
       配置
     </a-button>
     <a-drawer
-      title="开发人员配置（生产环境不可见）"
       :width="800"
       :visible="visible"
       @close="hide"
+      title="开发人员配置（生产环境不可见）"
     >
       <a-row>
         发布日期：{{ buildDate }}
@@ -22,18 +22,19 @@
       <a-row v-if="!isLogin">
         开发人员专用，授权验证（按回车直接提交）
         <async-component
-          path="@comp/form/CaptchaInput.vue"
           :url="authUrl"
           @click-captcha="reloadCaptcha"
           @keyup.enter="submitAuth"
+          path="@comp/form/CaptchaInput.vue"
         />
       </a-row>
-      <a-row>
-        是否代理（暂时不要切换，没做好）
+      <!-- <a-row>
+        是否代理
         <a-switch
+          @change="onProxyChange"
           default-checked
         />
-      </a-row>
+      </a-row> -->
       <a-row>
         刷新页面
         <a-button @click="refresh">
@@ -53,6 +54,7 @@
 
 <script>
 import $ from '@lib/ajax.js';
+
 
 export default {
   components: {
@@ -108,12 +110,10 @@ export default {
       }).finally(() => {
         this.reloadCaptcha();
       });
+    },
+    onProxyChange (checked) {
+      this.$store.commit('mock', !checked);
     }
-    // onProxyChange (checked) {
-    //   checked
-    //     ? ($.instance.defaults.baseURL = '/api')
-    //     : ($.instance.defaults.baseURL = '/');
-    // }
   }
 };
 </script>

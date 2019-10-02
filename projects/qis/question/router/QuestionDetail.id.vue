@@ -2689,7 +2689,7 @@
   </div>
 </template>
 <script>
-import attachmentMix from '@@cmd/issue-attachment.js';
+import attachmentMix from '~~/issue-attachment.js';
 import { autoUpdateFileds, createFormFields } from '@util/formhelper.js';
 import { createNamespacedHelpers } from 'vuex';
 import moment from 'moment';
@@ -2860,7 +2860,7 @@ const columnsUpdate = [{
 export default {
   name: 'QuestionDetail',
   components: {
-    // EditableCell: () => import('@@/question/view/EditableCell'),
+    // EditableCell: () => import('~/question/view/EditableCell'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),

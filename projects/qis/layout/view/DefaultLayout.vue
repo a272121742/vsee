@@ -30,18 +30,24 @@ export default {
     LayoutHeader: () => import('./Header.vue'),
     Helper: () => import('@comp/helper/Helper.vue')
   },
+  // data () {
+  //   return {
+  //     blocking: true
+  //   };
+  // },
   computed: {
     refreshing () {
       return this.$store.state.refresh;
     }
   },
   created () {
-    if (this.$store) {
-      this.$store.dispatch('layout/getMenus');
-      this.$store.dispatch('layout/getPermissions');
-      this.$store.dispatch('layout/getWorkflows');
-      this.$store.dispatch('layout/getUserInfo');
-    }
+    this.$store.dispatch('fetchUser').then(res => {
+      this.$store.dispatch('fetchMenus');
+      this.$store.dispatch('fetchPermissions');
+      this.blocking = false;
+    }).catch(err => {
+      this.$message.error(this.$t(err));
+    });
   }
 };
 </script>

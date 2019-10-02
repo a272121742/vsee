@@ -589,7 +589,7 @@
   </div>
 </template>
 <script>
-import attachmentMix from '@@cmd/issue-attachment.js';
+import attachmentMix from '~~/issue-attachment.js';
 import {
   createFormFields,
   autoUpdateFileds

@@ -108,7 +108,7 @@
 <script>
 import { clone } from 'ramda';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
-import { transform1, transform2 } from '@@cmd/model.js';
+import { transform1, transform2 } from '~~/model.js';
 
 export default {
   components: {

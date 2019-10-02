@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import issueTab from '@@cmd/issue-tab.js';
+import issueTab from '~~/issue-tab.js';
 export default {
   name: 'Home',
   mixins: [issueTab]

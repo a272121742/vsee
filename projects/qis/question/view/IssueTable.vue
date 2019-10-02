@@ -52,7 +52,7 @@
 
 <script>
 import { clone } from 'ramda';
-import { issueColumns } from '@@cmd/model.js';
+import { issueColumns } from '~~/model.js';
 
 export default {
   components: {

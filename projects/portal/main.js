@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 // 加载皮肤组件
 import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.less'
+import 'ant-design-vue/dist/antd.less';
 
 // 加载本地路由
 import { router } from '@lib/auto-router.js';
@@ -18,8 +18,7 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
 // 加载全局自定义皮肤
-import '@@cmd/global.less';
-import 'promise-polyfill/src/polyfill'
+import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
 Vue.component('async-component', AsyncComponent);
@@ -29,7 +28,6 @@ Vue.component('async-component', AsyncComponent);
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
-
 if (store.state.allowLogin) {
   router.beforeEach((to, from, next) => {
     NProgress.start(); // 开始进度条
@@ -37,6 +35,7 @@ if (store.state.allowLogin) {
     const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
     // 是否已经登陆
     const isLogin = store.state.isLogin;
+    console.log(toLogin, isLogin);
     // 已经通过登陆时，如果进入的不是登陆，直接放行
     if (isLogin && !toLogin) {
       next();
@@ -85,7 +84,7 @@ new Vue({
   beforeCreate () {
     this.$store && this.$store.dispatch('loadLanguage').then(locale => {
       import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-        this.$set(this, 'locale', res.default)
+        this.$set(this, 'locale', res.default);
       });
       if (locale !== 'zh_CN') {
         moment.locale('en');
@@ -101,6 +100,6 @@ new Vue({
           <router-view />
         </a-locale-provider>
       </div>
-    )
+    );
   }
 });
