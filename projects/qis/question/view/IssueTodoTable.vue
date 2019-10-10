@@ -8,12 +8,12 @@
     />
     <!-- 表格 -->
     <a-table
-      row-key="id"
       :loading="loading"
       :data-source="data"
       :scroll="{ x: true }"
       :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
       @change="handleTableChange"
+      row-key="id"
     >
       <template v-for="col in columns">
         <a-table-column
@@ -25,9 +25,9 @@
           <template slot-scope="text">
             <a-tooltip>
               <template #title>
-                {{ text ? text : ' ' }}
+                {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
               </template>
-              {{ text ? text : ' ' }}
+              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
             </a-tooltip>
           </template>
         </a-table-column>
@@ -50,8 +50,8 @@
         <template slot-scope="text, record">
           <a
             v-permission="'issue:record:detail'"
-            href="javascript:;"
             @click="goToDetail(record.id)"
+            href="javascript:;"
           >
             <!-- 详情链接 -->
             {{ $t('issue_action.detail') }}
@@ -71,8 +71,8 @@ const { mapActions } = createNamespacedHelpers('question');
 export default {
   name: 'IssueTodoTable',
   components: {
-    IssueSearchForm: () => import('./IssueSearchForm.vue'),
-    ColProvider: () => import('@comp/table/ColProvider.vue')
+    IssueSearchForm: () => import('./IssueSearchForm.vue')
+    // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
   props: {
     /**
@@ -88,14 +88,14 @@ export default {
     showForm: {
       type: Boolean,
       default: false
-    },
+    }
     /**
      * 列更新地址
      */
-    colUpdateUrl: {
-      type: String,
-      default: ''
-    }
+    // colUpdateUrl: {
+    //   type: String,
+    //   default: ''
+    // }
   },
   data () {
     return {
@@ -128,21 +128,21 @@ export default {
        * 排序字段
        */
       orderField: ''
-    }
+    };
   },
 
-  computed: {
-    // 计算「更新列配置」的api
-    url () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
-    },
-    // 计算「更新列配置」传过来的id值
-    id () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
-    }
-  },
+  // computed: {
+  //   // 计算「更新列配置」的api
+  //   url () {
+  //     return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
+  //   },
+  //   // 计算「更新列配置」传过来的id值
+  //   id () {
+  //     return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
+  //   }
+  // },
   created () {
-    this.request();
+    this.request({}, true);
   },
   methods: {
     ...mapActions({
@@ -170,7 +170,7 @@ export default {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
         const pageCount = Math.ceil(total / this.pageSize);
-        const pageText = this.$t('pagination.page')
+        const pageText = this.$t('pagination.page');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
@@ -178,7 +178,7 @@ export default {
     /**
      * 请求数据
      */
-    request (config) {
+    request (config, init = false) {
       if (!this.loading) {
         this.loading = true;
         const {
@@ -188,10 +188,10 @@ export default {
           page, limit, order, orderField, ...config
         }).then(res => {
           this.$set(this, 'data', res.list);
-          this.$emit('update:total', res.total);
+          init && this.$emit('update:total', res.total);
           this.$nextTick(() => {
             this.loading = false;
-          })
+          });
         });
       }
     },
@@ -209,7 +209,6 @@ export default {
      * 搜索（根据表单传过来的条件）
      */
     search (filters) {
-      console.log(filters);
       this.page = 1;
       this.request(filters);
     },
@@ -232,7 +231,7 @@ export default {
       });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

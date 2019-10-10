@@ -38,7 +38,7 @@ export default {
       columns,
       data: []
 
-    }
+    };
   },
   created () {
     this.fetch();
@@ -49,9 +49,8 @@ export default {
     ]),
     fetch () {
       this.getOrderList().then(res => {
-        console.log(res);
         this.data = res.data;
-      })
+      });
     },
     viewOrder (id) {
       this.$router.push({
@@ -62,7 +61,7 @@ export default {
       });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

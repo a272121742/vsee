@@ -9,19 +9,19 @@
           >
         </a-card>
         <a-card
+          :title="$t('title.appEntry')"
           class="shadown-block-normal module-card"
-          :title="$t('title.quickEntry')"
         >
           <a-row :gutter="16">
             <a-col
               v-for="(m, index) in modules"
               :key="index"
-              class="module-center"
               :span="8"
+              class="module-center"
             >
               <div
-                class="module-wrapper"
                 @click.stop.prevent="jumpToModule(m.path)"
+                class="module-wrapper"
               >
                 <div class="module-container">
                   <svg

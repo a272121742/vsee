@@ -247,8 +247,7 @@
                           'failureDate'
                         ]"
                         :placeholder="$t('search.please_select') + $t('issue.failureDate')"
-                        format="YYYY-MM-DD HH:mm"
-                        show-time
+                        :format="GLOBAL_SELECT_DATE_FORMAT"
                         style="width:261px;"
                       />
                     </a-form-item>
@@ -313,8 +312,8 @@
                         ]"
                         :placeholder="$t('search.please_input') + $t('issue.contact')"
                         allow-clear
-                        max=11
-                        len=11
+                        max="11"
+                        len="11"
                       />
                     </a-form-item>
                   </a-col>
@@ -335,6 +334,7 @@
                         ]"
                         :placeholder="$t('search.please_input') + $t('issue.description')"
                         allow-clear
+                        maxlength="254"
                       />
                     </a-form-item>
                   </a-col>
@@ -381,7 +381,7 @@
                     <v-input
                       v-decorator="[
                         'vinNo',
-                         {rules: [{validator: vinVer}]}
+                        {rules: [{validator: vinVer}]}
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.vinNo')"
                       allow-clear
@@ -446,8 +446,7 @@
                         'productDate'
                       ]"
                       :placeholder="$t('search.please_select') + $t('issue.productDate')"
-                      format="YYYY-MM-DD HH:mm:ss"
-                      show-time
+                      :format="GLOBAL_SELECT_DATE_FORMAT"
                       style="width:261px;"
                     />
                   </a-form-item>
@@ -549,9 +548,10 @@
                   <a-form-item :label="$t('issue.workConditionInfo')">
                     <v-textarea
                       v-decorator="[
-                        'workConditionInfo',
+                        'workConditionInfo'
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.workConditionInfo')"
+                      maxlength="2000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -564,6 +564,7 @@
                         'preliminaryInvestigation',
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.preliminaryInvestigation')"
+                      maxlength="2000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -576,6 +577,7 @@
                         'remark',
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.remark')"
+                      maxlength="2000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -590,6 +592,7 @@
 </template>
 <script>
 import attachmentMix from '~~/issue-attachment.js';
+import timeFormatMix from '~~/time-format.js';
 import {
   createFormFields,
   autoUpdateFileds
@@ -612,7 +615,7 @@ export default {
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
-  mixins: [attachmentMix],
+  mixins: [attachmentMix, timeFormatMix],
   props: ['name', 'id'],
   data () {
     const {
@@ -778,10 +781,10 @@ export default {
         });
       }
     },
-     //验证VIN
-     vinVer (rule, value, callback) {
+    // 验证VIN
+    vinVer (rule, value, callback) {
       var myreg = /^[A-Z0-9]{17}$/;
-      if (value && !myreg.test(value) ) {
+      if (value && !myreg.test(value)) {
         callback(new Error('请输入正确的VIN'));
       } else {
         callback();
@@ -919,8 +922,8 @@ export default {
         if (!err) {
           const hide = this.$message.loading('正在提交中...', 0);
           const data = this.form.getFieldsValue();
-           if(data.milage===undefined){
-             data.milage='';
+          if (data.milage === undefined) {
+            data.milage = '';
           }
           data.fileList = this.dataFileList;
           const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
@@ -1053,8 +1056,8 @@ export default {
 
       const hide = this.$message.loading('正在保存中...', 0);
       const data = this.form.getFieldsValue();
-      if(data.milage===undefined){
-         data.milage='';
+      if (data.milage === undefined) {
+        data.milage = '';
       }
       const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
       data.faultTreeIds = tree;
@@ -1095,7 +1098,6 @@ export default {
             }, 200);
           });
         } else {
-          console.log(data);
           this.saveQuestion(data).then(res => {
             this.businessKey = res.id;
             setTimeout(() => {
@@ -1156,7 +1158,6 @@ export default {
       const newDataList = this.dataFileList.slice();
       newDataList.splice(index, 1);
       this.dataFileList = newDataList;
-      console.log(this.dataFileList);
     },
     gradeChange () {
 

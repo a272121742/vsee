@@ -18,47 +18,46 @@
         @change="changeTab"
       >
         <a-tab-pane
-          v-permission="'issue:home:todo'"
           key="1"
+          v-if="$store.getters.hasPermission('issue:home:todo')"
         >
           <template slot="tab">
             <!-- 待办事项 1 = todo -->
             {{ $t('issue_status.todo') }}
             <a-badge
-              show-zero
               :count="dotoTableConfig.total"
               :number-style="{
                 backgroundColor: 'rgba(0,0,0,0.09)',
                 color: 'rgba(0,0,0,0.85)',
               }"
+              show-zero
             />
           </template>
           <issue-todo-table
             v-if="defaultActiveKey === '1'"
-            col-update-url="/sys/customlist?listCode=issue-todo-columns"
             v-bind.sync="dotoTableConfig"
           ></issue-todo-table>
         </a-tab-pane>
         <a-tab-pane
-          v-permission="'issue:home:draft'"
           key="0"
+          v-if="$store.getters.hasPermission('issue:home:draft')"
         >
           <span slot="tab">
             <!-- 待发事项（草稿）0 = draft -->
             {{ $t('issue_status.draft') }}
             <a-badge
-              show-zero
               :count="draftTableConfig.total"
               :number-style="{
                 backgroundColor: 'rgba(0,0,0,0.09)',
                 color: 'rgba(0,0,0,0.85)',
               }"
+              show-zero
             />
           </span>
           <issue-draft-table
             v-if="defaultActiveKey === '0'"
-            col-update-url="/sys/customlist?listCode=issue-draft-columns"
             v-bind.sync="draftTableConfig"
+            col-update-url="/sys/customlist?listCode=issue-draft-columns"
           ></issue-draft-table>
         </a-tab-pane>
         <template
@@ -74,19 +73,19 @@
           <a-button
             v-permission="'issue:home:todo:search'"
             v-if="showSearch"
-            icon="search"
-            type="primary"
             :ghost="true"
             @click="() => dotoTableConfig.showForm = !dotoTableConfig.showForm"
+            icon="search"
+            type="primary"
           >
             <!-- 搜索按钮 -->
             {{ $t('search.search_button') }}
           </a-button>
           <a-button
             v-permission="'issue:home:todo:create'"
+            @click="createQuestion"
             icon="plus-circle"
             type="primary"
-            @click="createQuestion"
           >
             <!-- 创建问题按钮 -->
             {{ $t('issue_action.create') }}

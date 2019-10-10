@@ -18,16 +18,16 @@
     >
     </net-tree-select>
     <net-button
-      url="/getdata"
       @fetch="fetch"
+      url="/getdata"
       @click="fetch"
     >
       ajax按钮
     </net-button>
     <prevent-button
       ref="preventButton"
-      bind="both"
       @click="preventClick"
+      bind="both"
     >
       阻止二次提交
     </prevent-button>
@@ -67,11 +67,11 @@ export default {
           console.log('重置完成，可以点击了');
           this.$refs.preventButton.reset();
         }, 4000);
-      })
+      });
     },
     handleClick () {
       console.log('handle click');
     }
   }
-}
+};
 </script>

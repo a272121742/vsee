@@ -91,7 +91,7 @@ export default {
       this.$store.dispatch('refresh');
     },
     logoutHandle () {
-      this.$store && this.$store.dispatch('layout/logout');
+      this.$store && this.$store.dispatch('logout');
       // TODO: 做好多应用重定向
       window.location.href = '/';
     }

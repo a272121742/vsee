@@ -2,7 +2,10 @@
   <a-layout-header>
     <div class="header-index-wide">
       <div class="header-index-left">
-        <div class="logo">
+        <div
+          @click="toPortal"
+          class="logo"
+        >
         </div>
         <a-divider
           type="vertical"
@@ -52,12 +55,15 @@ export default {
   },
   computed: {
     menus () {
-      return this.$store.menus;
+      return this.$store.state.menus;
     }
   },
   methods: {
+    toPortal () {
+      window.location.href = '/';
+    },
     logoutHandle () {
-      this.$store.dispatch('login/logout');
+      this.$store.dispatch('logout');
     }
   }
 };

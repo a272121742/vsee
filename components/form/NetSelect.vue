@@ -8,8 +8,8 @@
     @dropdownVisibleChange="dropdownVisibleChange"
   >
     <a-spin
-      v-if="fetching"
       slot="notFoundContent"
+      v-if="fetching"
       size="small"
     >
       <a-icon
@@ -52,23 +52,27 @@ export default {
        * 数据项
        */
       data: []
+    };
+  },
+  watch: {
+    delay (value) {
+      !value && this.init();
     }
   },
-  // created () {
-  //   const { url, delay } = this;
-  //   url && !delay && this.fetch().then(data => {
-  //     this.data = data || [];
-  //   });
-  //   this.data = this.$attrs.options || [];
-  // },
+  created () {
+    this.init();
+  },
   activated () {
-    const { url, delay } = this;
-    url && !delay && this.fetch().then(data => {
-      this.data = data || [];
-    });
-    this.data = this.$attrs.options || [];
+    this.init();
   },
   methods: {
+    init () {
+      const { url, delay } = this;
+      url && !delay && this.fetch().then(data => {
+        this.data = data || [];
+      });
+      this.data = this.$attrs.options || [];
+    },
     dropdownVisibleChange (visible) {
       // 如果是展开状态，并且未获得数据时，加载数据
       if (visible && (!this.data.length || !this.cache)) {
@@ -79,5 +83,5 @@ export default {
       }
     }
   }
-}
+};
 </script>

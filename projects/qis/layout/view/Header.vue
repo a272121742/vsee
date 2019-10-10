@@ -2,14 +2,17 @@
   <a-layout-header>
     <div class="header-index-wide">
       <div class="header-index-left">
-        <div class="logo">
+        <div
+          @click="toPortal"
+          class="logo"
+        >
         </div>
         <a-divider
           type="vertical"
           style="height: 17px; margin: 25px 0; background: #0C9CE0"
         ></a-divider>
         <banner
-          title="质量问题分析解决平台"
+          :title="$t('SystemName')"
         ></banner>
         <!-- <a-menu
           :selected-keys="defaultActiveMenu"
@@ -42,7 +45,7 @@
             v-for="menu in menus"
             :key="menu.key"
             :title="$t(menu.key)"
-            @click="jump(menu.path)"
+            @click="jump(menu.url)"
           >
             {{ $t(menu.key) }}
           </a-menu-item>
@@ -51,7 +54,8 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <a-dropdown
-            :trigger="['click', 'hover']"
+            :trigger="['click']"
+            :getPopupContainer="getPopupContainer"
             class="user-info"
           >
             <div>
@@ -91,24 +95,35 @@ export default {
   },
   data () {
     return {
-      menus: [{
-        key: 'Home',
-        path: '/'
-      }, {
-        key: 'List',
-        path: '/question/list'
-      }, {
-        key: 'Search',
-        path: '/question/search'
-      }]
+      menuMap: {
+        '/home/home': 'Home',
+        '/question/list': 'List',
+        '/question/search': 'Search'
+      }
+      // menus: [{
+      //   url: '/',
+      //   key: 'Home'
+      // }, {
+      //   url: '/question/list',
+      //   key: 'List'
+      // }, {
+      //   url: '/question/search',
+      //   key: 'Search'
+      // }]
     };
   },
   computed: {
-    // menus () {
-    //   return this.$store.state.menus;
-    // },
+    menus () {
+      const { menuMap } = this;
+      return this.$store.state.menus.map(menu => {
+        return {
+          url: menu.url,
+          key: menuMap[menu.url]
+        };
+      });
+    },
     defaultActiveMenu () {
-      const name = this.$route.name || 'Home';
+      const name = this.$route.name;
       switch (name) {
       case 'QuestionCreate':
       case 'QuestionDetail':
@@ -123,6 +138,9 @@ export default {
     }
   },
   methods: {
+    toPortal () {
+      window.location.href = '/';
+    },
     jump (path) {
       const resolved = this.$router.resolve(path).resolved;
       if (resolved.name === '404') {
@@ -132,10 +150,13 @@ export default {
         this.$store.dispatch('refresh');
       }
     },
+    getPopupContainer () {
+      return document.querySelector('.user-info');
+    },
     logoutHandle () {
       this.$store.dispatch('logout');
       // TODO: 做好多应用重定向
-      window.location.href = '/';
+      // window.location.href = '/';
     }
   }
 };
@@ -168,6 +189,7 @@ export default {
       flex: 0 1 calc(100% - 128px);
       display: flex;
       .logo {
+        cursor: pointer;
         width: 168px;
         height: 40px;
         margin: 12px 16px 12px 0;

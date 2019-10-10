@@ -21,6 +21,7 @@ import 'nprogress/nprogress.css';
 import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
+import { debounce } from '@util/fnhelper.js';
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制
@@ -31,11 +32,49 @@ Vue.use(Antd);
 const token = store.getters.getToken();
 // 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）
 
+
 router.beforeEach((to, from, next) => {
+  console.log('to', to);
+  /**
+   * 查找去向
+   * @param {*} menus 服务端传回的地址
+   * @param {*} flag 标记，是需要服务端验证，默认`false`
+   */
+  function findNext (menus = []) {
+    const urlList = menus.map(item => item.url);
+    if (~['/403', '/404', '/500'].indexOf(to.path)) {
+      return true;
+    }
+    // 本地找不到这个地址
+    if (router.matcher.match(to.path).name === '404') {
+      return { path: '404' };
+    }
+    // 服务端未配置这个地址
+    if (!~urlList.indexOf(to.path)) {
+      if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
+        return { path: urlList[0] };
+      }
+      if (!~['/home/home', '/question/list', '/question/search'].indexOf(to.path)) {
+        return true;
+      }
+      return { path: '404' };
+    }
+    if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
+      return { path: urlList[0] };
+    }
+    return true;
+  }
   if (process.env.NODE_ENV === 'production' && !token) {
     store.commit('logout');
   }
   NProgress.start(); // 开始进度条
+  if (!store.state.menus.length) {
+    store.dispatch('fetchMenus').then(res => {
+      next(findNext(res));
+    });
+  } else {
+    next(findNext(store.state.menus));
+  }
   next();
 });
 router.afterEach(() => {
@@ -65,6 +104,12 @@ new Vue({
         moment.locale('zh-cn');
       }
     });
+  },
+  mounted () {
+    window.addEventListener('scroll', debounce(() => {
+      document.querySelectorAll('input:focus').forEach(item => item.blur());
+      document.querySelectorAll('.ant-select-open').forEach(item => item.click());
+    }, 400));
   },
   render () {
     return (

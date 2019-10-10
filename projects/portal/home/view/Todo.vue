@@ -44,7 +44,7 @@ export default {
       this.getTodoPage({ limit: 9 }).then(res => {
         this.data = res.list;
         this.total = res.total;
-      })
+      });
     },
     format (str) {
       return moment(str).format('YYYY-MM-DD');

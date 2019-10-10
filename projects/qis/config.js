@@ -5,7 +5,7 @@ export const LOGIN_CACHE_KEY = 'cache_login_info';
 
 // 授权API
 export const AUTH_API = {
-  login: '',
+  login: '/auth/login',
   logout: '/auth/logout'
 };
 export const GLOBAL_API = {

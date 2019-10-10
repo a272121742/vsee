@@ -21,6 +21,7 @@ import 'nprogress/nprogress.css';
 import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
+import { debounce } from '@util/fnhelper.js';
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制
@@ -35,9 +36,11 @@ if (store.state.allowLogin) {
     const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
     // 是否已经登陆
     const isLogin = store.state.isLogin;
-    console.log(toLogin, isLogin);
     // 已经通过登陆时，如果进入的不是登陆，直接放行
     if (isLogin && !toLogin) {
+      if (to.path === '/') {
+        next({ path: '/home/home' });
+      }
       next();
     }
     // 已经通过登陆时，如果进入的是登陆，跳转到主页
@@ -56,11 +59,17 @@ if (store.state.allowLogin) {
       });
     }
     // 登陆过但不是登陆界面就直接放行，或者没登陆但进入的是登陆界面直接放行
+    if (to.path === '/') {
+      next({ path: '/home/home' });
+    }
     next(true);
   });
 } else {
   router.beforeEach((to, from, next) => {
     NProgress.start(); // 完成进度条
+    if (to.path === '/') {
+      next({ path: '/home/home' });
+    }
     next();
   });
 }
@@ -80,6 +89,12 @@ new Vue({
     return {
       locale: null
     };
+  },
+  mounted () {
+    window.addEventListener('scroll', debounce(() => {
+      document.querySelectorAll('input:focus').forEach(item => item.blur());
+      document.querySelectorAll('.ant-select-open').forEach(item => item.click());
+    }, 400));
   },
   beforeCreate () {
     this.$store && this.$store.dispatch('loadLanguage').then(locale => {

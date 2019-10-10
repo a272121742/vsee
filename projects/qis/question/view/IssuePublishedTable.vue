@@ -1,8 +1,8 @@
 <template>
   <!-- 表格 -->
   <a-table
-    row-key="id"
     :loading="loading"
+    row-key="id"
     :data-source="data"
     :scroll="{ x: true }"
     :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
@@ -18,9 +18,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ text ? text : ' ' }}
+              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ text ? text : ' ' }}
+            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -43,8 +43,8 @@
       <template slot-scope="text, record">
         <a
           v-permission="'issue:record:detail'"
-          href="javascript:;"
           @click="goToDetail(record.id)"
+          href="javascript:;"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -112,7 +112,7 @@ export default {
        * 排序字段
        */
       orderField: ''
-    }
+    };
   },
 
   computed: {
@@ -154,7 +154,7 @@ export default {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
         const pageCount = Math.ceil(total / this.pageSize);
-        const pageText = this.$t('pagination.page')
+        const pageText = this.$t('pagination.page');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
@@ -176,7 +176,7 @@ export default {
           this.total = res.total;
           this.$nextTick(() => {
             this.loading = false;
-          })
+          });
         });
       }
     },
@@ -210,7 +210,7 @@ export default {
       });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

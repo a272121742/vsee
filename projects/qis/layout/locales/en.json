@@ -1,7 +1,11 @@
 {
+  "SystemName": "Issue Resolution System",
   "Home": "Home",
   "List": "My Issue",
   "Search": "Issue Search",
+  "IRS首页": "Home",
+  "我的问题": "My Issue",
+  "问题检索": "Issue Search",
   "user_action": {
     "manual": "user manual",
     "editinfo": "edit info",

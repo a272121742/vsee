@@ -1,7 +1,7 @@
 <template>
   <a-affix
     :offset-top="top"
-    :style="{ position: 'fixed', top: `${top}px`, right: '0px'}"
+    :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 6000}"
   >
     <a-button
       @click="show"
@@ -14,18 +14,16 @@
       :width="800"
       :visible="visible"
       @close="hide"
+      :z-index="6000"
       title="开发人员配置（生产环境不可见）"
     >
       <a-row>
         发布日期：{{ buildDate }}
       </a-row>
-      <a-row v-if="!isLogin">
+      <a-row>
         开发人员专用，授权验证（按回车直接提交）
         <async-component
-          :url="authUrl"
-          @click-captcha="reloadCaptcha"
-          @keyup.enter="submitAuth"
-          path="@comp/form/CaptchaInput.vue"
+          path="@comp/helper/LoginForm.vue"
         />
       </a-row>
       <!-- <a-row>
@@ -36,10 +34,18 @@
         />
       </a-row> -->
       <a-row>
-        刷新页面
-        <a-button @click="refresh">
-          刷新
-        </a-button>
+        刷新页面：
+        <a-button-group>
+          <a-button
+            @click="reload"
+            style="margin-right: 0px;"
+          >
+            重载页面
+          </a-button>
+          <a-button @click="refresh">
+            刷新内容
+          </a-button>
+        </a-button-group>
       </a-row>
       <a-row>
         国际化
@@ -91,6 +97,9 @@ export default {
       this.$store.dispatch('loadUUID');
     },
     // 刷新
+    reload () {
+      this.$store.dispatch('reload');
+    },
     refresh () {
       this.$store.dispatch('refresh');
     },
@@ -119,6 +128,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  /deep/ .ant-drawer {
+    z-index: 6000;
+  }
   /deep/ .ant-btn {
     width: auto;
     margin-right: -50px;

@@ -3,9 +3,9 @@
     "more": "查看更多"
   },
   "title": {
-    "quickEntry": "快捷入口",
+    "appEntry": "应用入口",
     "announcement": "公告",
-    "todo": "待办"
+    "todo": "待办事项"
   },
   "app": {
     "ISSUE": "质量信息追溯平台",

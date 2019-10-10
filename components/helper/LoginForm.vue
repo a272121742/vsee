@@ -13,23 +13,30 @@
     </a-form-item>
     <!-- 用户名 -->
     <a-form-item>
-      <v-input
+      <a-select
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
         }]"
         :placeholder="$t('username.placeholder')"
+        :dropdown-style="{'z-index': 6001}"
         allow-clear
         autocomplete="off"
         size="large"
-        class="background-white-50"
       >
         <a-icon
           slot="prefix"
           type="user"
           style="color: rgba(0,0,0,.25)"
         />
-      </v-input>
+        <a-select-option
+          v-for="(act, index) in accounts"
+          :key="index"
+          :value="act"
+        >
+          {{ act.slice(0, -12) }}
+        </a-select-option>
+      </a-select>
     </a-form-item>
     <!-- 密码 -->
     <a-form-item>
@@ -42,7 +49,6 @@
         autocomplete="off"
         allow-clear
         size="large"
-        class="background-white-50"
       >
         <a-icon
           slot="prefix"
@@ -63,7 +69,6 @@
         autocomplete="off"
         allow-clear
         size="large"
-        class="background-white-50"
       >
         <a-icon
           slot="prefix"
@@ -72,15 +77,6 @@
         />
       </captcha-input>
     </a-form-item> -->
-    <a-form-item>
-      <a-checkbox
-        :checked="remember"
-        @change="e => remember = e.target.checked"
-      >
-        {{ $t('remember.text') }}
-      </a-checkbox>
-    </a-form-item>
-
     <a-form-item>
       <a-button
         type="primary"
@@ -96,14 +92,11 @@
 
 <script>
 import { getUUID } from '@util/datahelper.js';
-import { createNamespacedHelpers } from 'vuex';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
-
-const { mapActions } = createNamespacedHelpers('login');
 
 export default {
   components: {
-    VInput: () => import('@comp/form/VInput.vue'),
+    // VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
     Password: () => import('@comp/form/Password.vue')
   },
@@ -118,18 +111,40 @@ export default {
        */
       record: {
         username: null,
-        password: null,
+        password: '1234',
         // captcha: null,
         uuid: getUUID()
       },
-      /**
-       * 是否记住密码
-       */
-      remember: false
+      accounts: [
+        'suwei1@bjev.com.cn',
+        'wangxueying@bjev.com.cn',
+        'raomiaotao@bjev.com.cn',
+        'wangchunjie@bjev.com.cn',
+        'baijie@bjev.com.cn',
+        'zhangliquan@bjev.com.cn',
+        'tianxiongwei@bjev.com.cn',
+        'zhangpeng@bjev.com.cn',
+        'chaihonggen@bjev.com.cn',
+        'houjun@bjev.com.cn',
+        'tianyuli@bjev.com.cn',
+        'liujie1@bjev.com.cn',
+        'chenguoqi@bjev.com.cn',
+        'wangtao@bjev.com.cn',
+        'liyuan@bjev.com.cn',
+        'liulizhi@bjev.com.cn',
+        'sunshuailong@bjev.com.cn',
+        'duxiangzheng@bjev.com.cn',
+        'lixifu@bjev.com.cn',
+        'zhangshouyuan@bjev.com.cn',
+        'shendawei@bjev.com.cn',
+        'xuehongwei@bjev.com.cn',
+        'renxianfei@bjev.com.cn',
+        'liyongfei@bjev.com.cn',
+        'qiaozenan@bjev.com.cn'
+      ]
     };
   },
   created () {
-    this.recovery();
     const { mapPropsToFields, onValuesChange } = this;
     this.form = this.$form.createForm(this, {
       mapPropsToFields,
@@ -137,60 +152,32 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['login']),
-    /**
-     * 还原用户缓存
-     */
-    recovery () {
-      const cache = this.$store.getters.getLoginCache();
-      if (cache) {
-        this.remember = true;
-        this.record.username = cache.username;
-        this.record.password = cache.password;
-      }
-    },
     /**
      * 提交数据
      */
     handleSubmit () {
       this.form.validateFields((err, loginInfo) => {
+        this.$store.dispatch('logout');
         if (!err) {
           this.$store.dispatch('login', loginInfo).then(res => {
             if (res.token) {
               this.$store.commit('setLoginStatus', res.token);
-              const goPage = this.$route.query.redirect || '/';
-              if (this.$router.matcher.match(goPage).name === '404') {
-                this.$router.push({ path: '/' });
-              } else {
-                this.$router.push({ path: this.$route.query.redirect });
-              }
-              if (this.remember) {
-                this.$store.commit('cacheLoginInfo', loginInfo);
-              } else {
-                this.$store.commit('cleanLoginInfo', loginInfo);
-              }
             }
           }).catch(errCode => {
             this.$message.error(this.$t(errCode));
-            this.record.captcha = null;
-            this.form.updateFields(this.mapPropsToFields());
-            this.captchaChange();
+          }).finally(() => {
+            this.$store.dispatch('reload');
+            this.$store.dispatch('refresh');
           });
         }
       });
     },
     /**
-     * 记住用户名密码
-     */
-    clickRemember (e) {
-      this.remember = e.target.value;
-    },
-    /**
      * 验证码更新
      */
-    captchaChange () {
-      this.record.uuid = getUUID();
-    },
+    // captchaChange () {
+    //   this.record.uuid = getUUID();
+    // },
     /**
      * 数据映射
      */
@@ -207,10 +194,53 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-  .background-white-50 {
-    /deep/ input {
-      background: rgba(255, 255, 255, 0.5);
+<i18n>
+{
+  "zh": {
+    "username": {
+      "label": "用户名",
+      "placeholder": "请输入用户名",
+      "required_message": "用户名不能为空"
+    },
+    "password": {
+      "label": "密码",
+      "placeholder": "请输入用户密码",
+      "required_message": "密码不能为空"
+    },
+    "captcha": {
+      "label": "验证码",
+      "placeholder": "请输入验证码",
+      "required_message": "验证码不能为空"
+    },
+    "remember": {
+      "text": "记住用户名和密码"
+    },
+    "login": {
+      "submit": "登录"
+    }
+  },
+  "en": {
+    "username": {
+      "label": "Username",
+      "placeholder": "please input username",
+      "required_message": "username is required"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "please input password",
+      "required_message": "password is required"
+    },
+    "captcha": {
+      "label": "Captcha",
+      "placeholder": "please input captcha",
+      "required_message": "captcha id required"
+    },
+    "remember": {
+      "text": "remember username and password"
+    },
+    "login": {
+      "submit": "Login"
     }
   }
-</style>
+}
+</i18n>

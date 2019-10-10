@@ -33,15 +33,28 @@ export default {
   computed: {
     refreshing () {
       return this.$store.state.refresh;
+    },
+    reloading () {
+      return this.$store.state.reload;
     }
   },
-  created () {
-    this.$store.dispatch('fetchUser').then(res => {
-      this.$store.dispatch('fetchMenus');
-      this.$store.dispatch('fetchPermissions');
-    }).catch(err => {
-      this.$message.error(this.$t(err));
-    });
+  watch: {
+    reloading: {
+      handler (value) {
+        !value && this.init();
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    init () {
+      this.$store.dispatch('fetchUser').then(() => {
+        this.$store.dispatch('fetchPermissions');
+        this.blocking = false;
+      }).catch(err => {
+        err && this.$message.error(this.$t(err));
+      });
+    }
   }
 };
 </script>
@@ -53,8 +66,11 @@ export default {
   }
   // 设置头部固定
   /deep/ .affix-header .ant-affix {
-    z-index: 5000;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+  // 设置所有的affix悬浮层次为5000
+  /deep/ .affix-header {
+    z-index: 5000;
   }
   // 设置内容区域中，多余部分隐藏
   .ant-layout-content {

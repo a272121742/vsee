@@ -217,11 +217,10 @@
           /> -->
           <a-range-picker
             v-decorator="['failureDate']"
-            :showTime="{ format: 'YYYY-MM-DD HH:mm' }"
             :placeholder="[$t('search.begin_date'), $t('search.end_date')]"
+            :format="GLOBAL_SELECT_DATE_FORMAT"
             allow-clear
             style="width: 100%;"
-            format="YY/MM/DD HH:mm"
           />
         </a-form-item>
       </a-col>
@@ -267,6 +266,7 @@
 <script>
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 import { transform1, transform2, transform3 } from '~~/model.js';
+import timeFormatMix from '~~/time-format.js';
 import { omit } from 'ramda';
 
 export default {
@@ -274,6 +274,7 @@ export default {
     VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
+  mixins: [timeFormatMix],
   data () {
     return {
       advanced: false,

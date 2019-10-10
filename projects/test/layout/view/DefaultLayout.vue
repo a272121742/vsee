@@ -53,8 +53,14 @@ export default {
     // 覆盖`ant design`的样式，必须
     background-color: transparent!important;
   }
+  // 设置头部固定
+  /deep/ .affix-header .ant-affix {
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+  // 设置所有的affix悬浮层次为5000
   /deep/ .ant-affix {
     z-index: 5000;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }
   .ant-layout-content {
     overflow-x: hidden;

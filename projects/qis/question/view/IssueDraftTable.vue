@@ -1,9 +1,9 @@
 <template>
   <!-- 表格 -->
   <a-table
-    row-key="id"
     :loading="loading"
     :data-source="data"
+    row-key="id"
     :scroll="{ x: true }"
     :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
     @change="handleTableChange"
@@ -18,9 +18,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ text ? text : ' ' }}
+              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ text ? text : ' ' }}
+            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -43,8 +43,8 @@
       <template slot-scope="text, record">
         <a
           v-permission="'issue:record:detail'"
-          href="javascript:;"
           @click="goToDetail(record.id)"
+          href="javascript:;"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -126,7 +126,7 @@ export default {
     }
   },
   created () {
-    this.request();
+    this.request({}, true);
   },
   methods: {
     ...mapActions({
@@ -162,7 +162,7 @@ export default {
     /**
      * 请求数据
      */
-    request (config) {
+    request (config, init = false) {
       if (!this.loading) {
         this.loading = true;
         const {
@@ -172,7 +172,7 @@ export default {
           page, limit, order, orderField, ...config
         }).then(res => {
           this.$set(this, 'data', res.list);
-          this.$emit('update:total', res.total);
+          init && this.$emit('update:total', res.total);
           this.$nextTick(() => {
             this.loading = false;
           });
