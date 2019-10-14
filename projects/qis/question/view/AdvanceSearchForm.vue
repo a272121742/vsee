@@ -20,7 +20,22 @@
           />
         </a-form-item>
       </a-col>
-
+      <a-col
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 问题编号 -->
+        <a-form-item :label="$t('issue.code')">
+          <v-input
+            v-decorator="[
+              'code'
+            ]"
+            :placeholder="$t('search.please_input') + $t('issue.code')"
+            autocomplete="off"
+            allow-clear
+          />
+        </a-form-item>
+      </a-col>
       <a-col
         v-if="advanced"
         :span="6"
@@ -207,16 +222,38 @@
       >
         <!-- 问题发生日期 -->
         <a-form-item :label="$t('issue.failureDate')">
-          <!-- <a-date-picker
-            v-decorator="['failureDate']"
-            show-time
-            allow-clear
-            style="width: 100%;"
-            format="YYYY-MM-DD HH:mm:ss"
-            :placeholder="$t('search.please_select') + $t('issue.failureDate')"
-          /> -->
           <a-range-picker
             v-decorator="['failureDate']"
+            :placeholder="[$t('search.begin_date'), $t('search.end_date')]"
+            :format="GLOBAL_SELECT_DATE_FORMAT"
+            allow-clear
+            style="width: 100%;"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 问题关闭日期 -->
+        <a-form-item :label="$t('issue.closeDate')">
+          <a-range-picker
+            v-decorator="['closeDate']"
+            :placeholder="[$t('search.begin_date'), $t('search.end_date')]"
+            :format="GLOBAL_SELECT_DATE_FORMAT"
+            allow-clear
+            style="width: 100%;"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 问题计划关闭日期 -->
+        <a-form-item :label="$t('issue.planCloseDate')">
+          <a-range-picker
+            v-decorator="['planCloseDate']"
             :placeholder="[$t('search.begin_date'), $t('search.end_date')]"
             :format="GLOBAL_SELECT_DATE_FORMAT"
             allow-clear
@@ -312,9 +349,16 @@ export default {
      * 提交搜索内容
      */
     submitSearch () {
-      const record = omit(['failureDate'], this.record);
-      this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format('YYYY-MM-DD HH:mm:00'));
-      this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format('YYYY-MM-DD HH:mm:00'));
+      const record = omit(['failureDate', 'closeDate', 'planCloseDate'], this.record);
+      // 问题发生日期转换时间段
+      this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format('YYYY-MM-DD 00:00:00'));
+      this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format('YYYY-MM-DD 00:00:00'));
+      // 问题关闭日期转换时间段
+      this.record.closeDate && this.record.closeDate[0] && (record.closeDateStart = this.record.closeDate[0].format('YYYY-MM-DD 00:00:00'));
+      this.record.closeDate && this.record.closeDate[1] && (record.closeDateEnd = this.record.closeDate[1].format('YYYY-MM-DD 00:00:00'));
+      // 问题发生日期转换时间段
+      this.record.planCloseDate && this.record.planCloseDate[0] && (record.planCloseDateStart = this.record.planCloseDate[0].format('YYYY-MM-DD 00:00:00'));
+      this.record.planCloseDate && this.record.planCloseDate[1] && (record.planCloseDateEnd = this.record.planCloseDate[1].format('YYYY-MM-DD 00:00:00'));
       this.$emit('change', record);
     },
     /**

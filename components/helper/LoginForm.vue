@@ -20,7 +20,9 @@
         }]"
         :placeholder="$t('username.placeholder')"
         :dropdown-style="{'z-index': 6001}"
+        @change="handleSubmit"
         allow-clear
+        show-search
         autocomplete="off"
         size="large"
       >
@@ -140,7 +142,14 @@ export default {
         'xuehongwei@bjev.com.cn',
         'renxianfei@bjev.com.cn',
         'liyongfei@bjev.com.cn',
-        'qiaozenan@bjev.com.cn'
+        'qiaozenan@bjev.com.cn',
+        'hanzhiqiang@bjev.com.cn',
+        'liuyundong@bjev.com.cn',
+        'liyunduan@bjev.com.cn',
+        'duheng@bjev.com.cn',
+        'luolinlan@bjev.com.cn',
+        'shijunbo@bjev.com.cn',
+        'yanliguo@bjev.com.cn'
       ]
     };
   },

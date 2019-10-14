@@ -20,10 +20,13 @@
               <net-select
                 v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
                 :transform="selectOption"
+                :filter-option="filterOption"
                 :allow-clear="true"
+                @change="owerDeptChange"
                 url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                 placeholder="请选择"
                 style="width:272px;height:32px;"
+                show-search
               >
               </net-select>
             </a-form-item>
@@ -43,8 +46,10 @@
                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${redistributionForm.owerDeptLv1}`"
                 :cache="false"
                 :transform="selectOptionChampion"
+                :filter-option="filterOption"
                 :allow-clear="true"
                 style="width:272px;height:32px;"
+                show-search
               >
               </net-select>
             </a-form-item>
@@ -64,13 +69,17 @@
         class="ant-advanced-search-form"
         style="height:60px;margin-top:10px;"
       >
-        <a-col :span="24">
-          <a-form-item :label="`理由`">
+        <a-col
+          :span="24"
+        >
+          <a-form-item
+            :label="`理由`"
+          >
             <v-textarea
               v-decorator="[ 'commentReject',{rules: [{ required: true, min: 1, message: '请选择理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
               placeholder="请输入"
-            />
-            </net-select>
+            >
+            </v-textarea>
           </a-form-item>
         </a-col>
       </a-form>
@@ -147,14 +156,14 @@
         <a-row>
           <a-col :span="18">
             <a-form-item label="附件">
-              <!-- 七钻分析 -->
+              <!-- 七钻分析 TODO:这里dataFile会有问题-->
               <a-upload
                 :headers="headers"
                 :multiple="true"
                 :file-list="recordAnalysis.file"
-                :remove="removeFile(recordAnalysis.file)"
-                @preview="downFile"
-                @change="handleChange"
+                :remove="file => removeFile(dataFile)(file)"
+                @preview="download"
+                @change="info => changeFileList(dataFile, recordAnalysis.file)(info)"
                 :action="getUploadUrl('/issue/v1/file/upload?recType=10021005')"
                 name="file"
               >
@@ -178,9 +187,7 @@
       wrap-class-name="visibleDetail"
       width="600px"
     >
-      <a-form
-        :form="DetailForm"
-      >
+      <a-form :form="DetailForm">
         <a-row v-show="false">
           <a-col :span="10">
             <a-form-item
@@ -246,12 +253,12 @@
                 >
                   <a-icon type="paper-clip" />
                   <span
-                    :title="file.originalFilename"
+                    :title="file.name"
                     style="height: 28px;"
                     class="ant-upload-list-item-name"
                   >
-                    <a :href="downloadHref(file.path, file.originalFilename)">
-                      {{ file.originalFilename }}
+                    <a :href="getDownloadURL(file.url, file.name)">
+                      {{ file.name }}
                     </a>
                   </span>
                 </span>
@@ -294,12 +301,12 @@
             </a-col>
           </a-row>
           <a-row v-show="fileNameFlag">
-            <a-col :span="17">
+            <a-col :span="22">
               <a-form-item :label="`文件名称`">
                 <v-input
                   v-decorator="[
                     'fileName',
-                    {rules:[{required: true,message: '请输入文件名称'}]}
+                    {rules:[{required: fileNameFlag,message: '请输入文件名称'}]}
                   ]"
                   placeholder="请输入"
                   allow-clear
@@ -308,10 +315,10 @@
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="17">
+            <a-col :span="22">
               <a-form-item
                 :label="`是否更新`"
-                style="margin-top:20px;margin-bottom:0;height:50px;"
+                style="margin-bottom:0;height:50px;"
               >
                 <a-radio-group
                   v-decorator="[
@@ -327,9 +334,7 @@
           </a-row>
           <a-row v-if="updateContentFlag">
             <a-col :span="22">
-              <a-form-item
-                :label="`更新内容`"
-              >
+              <a-form-item :label="`更新内容`">
                 <v-textarea
                   v-decorator="[
                     'updateContent',
@@ -342,7 +347,7 @@
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="17">
+            <a-col :span="22">
               <a-form-item
                 :label="`附件`"
               >
@@ -351,9 +356,9 @@
                   :headers="headers"
                   :multiple="true"
                   :file-list="updateFiles"
-                  :remove="removeFile(updateFiles)"
-                  @preview="downFile"
-                  @change="handleUpdateChange"
+                  :remove="file => removeFile(recordUpdate.files)(file)"
+                  @preview="download"
+                  @change="info => changeFileList(recordUpdate.files, updateFiles)(info)"
                   :action="getUploadUrl('/issue/v1/file/upload?recType=10021011')"
                   name="file"
                 >
@@ -376,7 +381,7 @@
           class="ant-advanced-search-form"
         >
           <a-row v-show="false">
-            <a-col :span="17">
+            <a-col :span="20">
               <a-form-item :label="`id`">
                 <p v-if="updateData.id">
                   {{ updateData.id }}
@@ -385,52 +390,65 @@
             </a-col>
           </a-row>
           <a-row v-show="fileNameFlag">
-            <a-col :span="17">
+            <a-col :span="20">
               <a-form-item :label="`文件名称`">
                 <p>{{ updateData.fileName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="17">
+            <a-col :span="20">
               <a-form-item
                 :label="`是否更新`"
-                style="margin-bottom:0;"
+                style="margin-top:-24px;margin-bottom:0;"
               >
-                <p>{{ updateData.isUpdae==='1'?'是':'否' }}</p>
+                <p>{{ updateData.isUpdaeName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="17">
-              <a-form-item
-                :label="`更新内容`"
-              >
+            <a-col :span="20">
+              <a-form-item :label="`更新内容`">
                 <p>{{ updateData.updateContent }}</p>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="17">
-              <a-form-item
-                :label="`附件`"
-              >
-                <!-- 效果验证 -->
-                <!-- <a-upload
-                  :headers="headers"
-                  :multiple="true"
-                  :file-list="dataFile"
-                  :remove="removeFile(recordUpdate)"
-                  @preview="downFile"
-                  @change="handleChange"
-                  :action="getUploadUrl('/issue/v1/file/upload?recType=10021010')"
-                  name="file"
+            <a-col :span="20">
+              <a-form-item :label="`附件`">
+                <!-- 效果验证-涉及文件更新附件查看 -->
+                <div
+                  v-if="updateFiles && updateFiles.length"
+                  class="ant-upload-list ant-upload-list-text"
+                  style="z-index: 2; position: absolute; width: 360px; height: 80px; overflow-y: auto;"
                 >
-                  <a-button icon="upload">
-                    「上传文件」文本
-                    {{ $t('issue_action.upload') }}
-                  </a-button>
-                </a-upload> -->
+                  <div
+                    v-for="(file, index) in updateFiles"
+                    :key="index"
+                    class="ant-upload-list-item ant-upload-list-item-done"
+                  >
+                    <div class="ant-upload-list-item-info">
+                      <span>
+                        <a-icon type="paper-clip" />
+                        <span
+                          :title="file.originalFilename"
+                          style="height: 28px;"
+                          class="ant-upload-list-item-name"
+                        >
+                          <a
+                            :title="file.originalFilename"
+                            :href="getDownloadURL(file.path, file.originalFilename)"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="ant-upload-list-item-name"
+                          >
+                            {{ file.originalFilename }}
+                          </a>
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </a-form-item>
             </a-col>
           </a-row>
@@ -439,7 +457,6 @@
     </a-modal>
     <a-affix
       :offset-top="64"
-      @change="offsetChange"
     >
       <div class="top-buttons">
         <div class="backButton">
@@ -534,7 +551,7 @@
 
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`车型:`">
+                    <a-form-item :label="`车型名称:`">
                       <p v-if="detailList.vehicleModelName">
                         {{ detailList.vehicleModelName }}
                       </p>
@@ -559,7 +576,7 @@
                       <p
                         v-if="detailList.faultTreeIds3Name"
                         :title="detailList.faultTreeIds3Name"
-                        style="width:164px;overflow:hidden;white-space: nowrap;text-overflow: ellipsis;"
+                        class="faultCodeClass"
                       >
                         {{ detailList.faultTreeIds3Name }}
                       </p>
@@ -575,7 +592,7 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题等级:`">
+                    <a-form-item :label="`问题严重等级:`">
                       <p v-if="detailList.gradeName">
                         {{ detailList.gradeName }}
                       </p>
@@ -589,7 +606,7 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`故障发生日期:`">
+                    <a-form-item :label="`问题发生日期:`">
                       <p v-if="detailList.failureDate">
                         {{ detailList.failureDate | GLOBAL_SELECT_DATE_FORMAT }}
                       </p>
@@ -679,7 +696,7 @@
                               >
                                 <a
                                   :title="file.originalFilename"
-                                  :href="downloadHref(file.path, file.originalFilename)"
+                                  :href="getDownloadURL(file.path, file.originalFilename)"
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   class="ant-upload-list-item-name"
@@ -691,7 +708,7 @@
                           </div>
                         </div>
                       </div>
-                    <!-- <div
+                      <!-- <div
                       v-if="detailList.fileList && detailList.fileList.length"
                       class="ant-upload-list-item-info"
                     >
@@ -704,7 +721,7 @@
                           :title="file.originalFilename"
                           class="ant-upload-list-item-name"
                         >
-                          <a :href="downloadHref(file.path, file.originalFilename)">
+                          <a :href="getDownloadURL(file.path, file.originalFilename)">
                             {{ file.originalFilename }}
                           </a>
                         </span>
@@ -876,14 +893,12 @@
           class="cardTitle"
         >
           <div class="ant-advanced-search-form">
-            <div
-              class="step"
-            >
+            <div class="step">
               <a-steps :current="stepCurrent">
                 <a-popover
                   slot="progressDot"
                   :visible="false"
-                  slot-scope="{index, status}"
+                  slot-scope="{index}"
                 >
                   <!-- <template slot="content">
                     <span>step {{ index }} status: {{ status }}</span>
@@ -1016,10 +1031,10 @@
                       <a-upload
                         :headers="headers"
                         :multiple="true"
-                        :file-list="dataFile"
-                        :remove="removeFile(dataFile)"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :file-list="d0FileList"
+                        :remove="file => removeFile(record.fileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d0FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021004')"
                         name="file"
                       >
@@ -1095,12 +1110,12 @@
                         >
                           <a-icon type="paper-clip" />
                           <span
-                            :title="file.originalFilename"
+                            :title="file.name"
                             style="height: 28px;"
                             class="ant-upload-list-item-name"
                           >
-                            <a :href="downloadHref(file.path, file.originalFilename)">
-                              {{ file.originalFilename }}
+                            <a :href="getDownloadURL(file.url, file.name)">
+                              {{ file.name }}
                             </a>
                           </span>
                         </span>
@@ -1111,7 +1126,7 @@
               </div>
             </div>
             <div
-              v-if="(pagePermission.A0_3_2||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A3_4_2||pagePermission.A4_4_2||pagePermission.A5_6_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)"
+              v-if="((pagePermission.A0_3_2&&pagePermission.A0_1_1)||pagePermission.A1_2_2||pagePermission.A2_4_2||pagePermission.A3_4_2||pagePermission.A4_4_2||pagePermission.A5_6_2||pagePermission.A6_3_2)&&(backCurrent === stepCurrent)"
               class="Dcontent D0back"
             >
               <a-row>
@@ -1119,7 +1134,7 @@
                   :span="24"
                   style="text-align:center;"
                 >
-                  <p v-if="pagePermission.A0_3_2">
+                  <p v-if="pagePermission.A0_3_2&&pagePermission.A0_1_1">
                     该问题正在立项中
                   </p>
                   <p v-if="pagePermission.A1_2_2">
@@ -1173,11 +1188,14 @@
                           <net-select
                             v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
                             :transform="selectOption"
+                            :filter-option="filterOption"
                             :allow-clear="true"
                             :delay="false"
+                            @change="DeptChange"
                             url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                             placeholder="请选择"
                             style="width:272px;height:32px;"
+                            show-search
                           >
                           </net-select>
                         </a-form-item>
@@ -1197,8 +1215,10 @@
                             :cache="false"
                             :delay="false"
                             :transform="selectOptionChampion"
+                            :filter-option="filterOption"
                             :allow-clear="true"
                             style="width:272px;height:32px;"
+                            show-search
                           >
                           </net-select>
                         </a-form-item>
@@ -1211,10 +1231,10 @@
                           <a-upload
                             :headers="headers"
                             :multiple="true"
-                            :file-list="dataFile"
-                            :remove="removeFile(dataFile)"
-                            @preview="downFile"
-                            @change="handleChange"
+                            :file-list="d1FileList"
+                            :remove="file => removeFile(record.fileList)(file)"
+                            @preview="download"
+                            @change="info => changeFileList(record.fileList, d1FileList)(info)"
                             :action="getUploadUrl('/issue/v1/file/upload?recType=10021006')"
                             name="file"
                           >
@@ -1398,7 +1418,9 @@
                     </ul>
                   </div>
                   <div class="analysisTable">
-                    <div v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2">
+                    <div
+                      v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2"
+                    >
                       <a-row>
                         <span>审核结果：</span>
                       </a-row>
@@ -1413,7 +1435,9 @@
                         </a-form-item>
                       </a-row>
                     </div>
-                    <div v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3||pagePermission.A1_3_2">
+                    <div
+                      v-if="pagePermission.A1_3_3||pagePermission.A1_6_3||pagePermission.A1_9_3||pagePermission.A1_12_3||pagePermission.A1_15_3||pagePermission.A1_3_2"
+                    >
                       <a-row>
                         <a-form-item>
                           <span>6钻分析</span>
@@ -1436,7 +1460,9 @@
                         </span>
                       </a-table>
                     </div>
-                    <div v-if="pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3||pagePermission.A2_2_3">
+                    <div
+                      v-if="pagePermission.A1_4_3||pagePermission.A1_7_3||pagePermission.A1_10_3||pagePermission.A1_13_3||pagePermission.A1_16_3||pagePermission.A2_2_3"
+                    >
                       <a-row>
                         <a-col :span="21">
                           <a-form-item :label="'审核：'">
@@ -1558,12 +1584,12 @@
                         >
                           <a-icon type="paper-clip" />
                           <span
-                            :title="file.originalFilename"
+                            :title="file.name"
                             style="height: 28px;"
                             class="ant-upload-list-item-name"
                           >
-                            <a :href="downloadHref(file.path, file.originalFilename)">
-                              {{ file.originalFilename }}
+                            <a :href="getDownloadURL(file.url, file.name)">
+                              {{ file.name }}
                             </a>
                           </span>
                         </span>
@@ -1663,10 +1689,10 @@
                       <a-upload
                         :headers="headers"
                         :multiple="true"
-                        :file-list="dataFile"
-                        :remove="removeFile(dataFile)"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :file-list="d2FileList"
+                        :remove="file => removeFile(record.fileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d2FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021007')"
                         name="file"
                       >
@@ -1718,12 +1744,12 @@
                             <span>
                               <a-icon type="paper-clip" />
                               <span
-                                :title="file.originalFilename"
+                                :title="file.name"
                                 style="height: 28px;"
                                 class="ant-upload-list-item-name"
                               >
-                                <a :href="downloadHref(file.path, file.originalFilename)">
-                                  {{ file.originalFilename }}
+                                <a :href="getDownloadURL(file.url, file.name)">
+                                  {{ file.name }}
                                 </a>
                               </span>
                             </span>
@@ -1746,7 +1772,7 @@
                             style="height: 28px;"
                             class="ant-upload-list-item-name"
                           >
-                            <a :href="downloadHref(file.path, file.originalFilename)">
+                            <a :href="getDownloadURL(file.path, file.originalFilename)">
                               {{ file.originalFilename }}
                             </a>
                           </span>
@@ -1755,32 +1781,38 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-
                 <div v-if="(stepCurrent===backCurrent)&&(pagePermission.A2_2_3)">
-                  <a-row>
-                    <a-col :span="21">
-                      <a-form-item :label="'审核：'">
-                        <a-radio-group
-                          v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
-                          :options="verifyRadio"
-                        />
-                      </a-form-item>
-                    </a-col>
-                  </a-row>
-                  <a-row v-if="record.verifySeven==='0'">
-                    <a-col :span="21">
-                      <a-form-item :label="'不通过原因：'">
-                        <a-textarea
-                          v-decorator="['comment',{rules: [{ required: true, min: 1, message: '请输不通过原因' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
-                          placeholder="请输入"
-                        >
-                        </a-textarea>
-                      </a-form-item>
-                    </a-col>
-                  </a-row>
+                  <div class="examine">
+                    <div class="Dtitle examineTitle">
+                      <span>审核</span>
+                    </div>
+                    <a-row>
+                      <a-col :span="21">
+                        <a-form-item :label="'是否通过审核：'">
+                          <a-radio-group
+                            v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                            :options="verifyRadio"
+                          />
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row v-if="record.verifySeven==='0'">
+                      <a-col :span="21">
+                        <a-form-item :label="'不通过原因：'">
+                          <a-textarea
+                            v-decorator="['comment',{rules: [{ required: true, min: 1, message: '请输不通过原因' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
+                            placeholder="请输入"
+                          >
+                          </a-textarea>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                  </div>
                 </div>
               </div>
             </div>
+
+
             <div
               v-if="(stepCurrent===3&&backFlag===false)&&(pagePermission.A3_3_2||pagePermission.A3_1_3)"
               class="Dcontent D3content"
@@ -1801,9 +1833,9 @@
                 </a-form-item>
               </div>
               <div v-if="pagePermission.A3_1_3">
-                <div class="Dtitle">
-                  <span>措施制定</span>
-                </div>
+                <!-- <div class="Dtitle">
+              <span>措施制定</span>
+            </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`短期措施`">
@@ -1854,10 +1886,10 @@
                       <a-upload
                         :multiple="true"
                         :headers="headers"
-                        :file-list="dataFile"
-                        :remove="removeFile(dataFile)"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :file-list="d3FileList"
+                        :remove="file => removeFile(record.fileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d3FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021008')"
                         name="file"
                       >
@@ -1892,7 +1924,7 @@
                     <a-form-item :label="`长期措施验证计划日期:`">
                       <a-date-picker
                         v-decorator="[
-                          'pcaExecTime',
+                          'pcaValidPlanTime',
                           {rules: [
                             { required: true, message: '请选择长期措施验证计划日期' },
                           ]}
@@ -1929,9 +1961,9 @@
                 <div class="triangle_border_up">
                   <span></span>
                 </div>
-                <div class="Dtitle">
-                  <span>措施制定</span>
-                </div>
+                <!-- <div class="Dtitle">
+              <span>措施制定</span>
+            </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`短期措施`">
@@ -1956,7 +1988,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`长期措施验证计划日期:`">
-                      <p>{{ stepMeasures.pcaExecTime | GLOBAL_SELECT_DATE_FORMAT }}</p>
+                      <p>{{ stepMeasures.pcaValidPlanTime | GLOBAL_SELECT_DATE_FORMAT }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1979,12 +2011,12 @@
                         >
                           <a-icon type="paper-clip" />
                           <span
-                            :title="file.originalFilename"
+                            :title="file.name"
                             style="height: 28px;"
                             class="ant-upload-list-item-name"
                           >
-                            <a :href="downloadHref(file.path, file.originalFilename)">
-                              {{ file.originalFilename }}
+                            <a :href="getDownloadURL(file.url, file.name)">
+                              {{ file.name }}
                             </a>
                           </span>
                         </span>
@@ -2062,9 +2094,6 @@
                 </a-form-item>
               </div>
               <div v-if="pagePermission.A4_1_3">
-                <div class="Dtitle">
-                  <span>措施实施</span>
-                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`短期效果`">
@@ -2114,10 +2143,10 @@
                       <a-upload
                         :headers="headers"
                         :multiple="true"
-                        :file-list="dataFile"
-                        :remove="removeFile(dataFile)"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :file-list="d4FileList"
+                        :remove="file => removeFile(record.fileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d4FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021009')"
                         name="file"
                       >
@@ -2156,9 +2185,7 @@
                 >
                   <span></span>
                 </div>
-                <div class="Dtitle">
-                  <span>措施实施</span>
-                </div>
+
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`短期效果`">
@@ -2199,12 +2226,12 @@
                         >
                           <a-icon type="paper-clip" />
                           <span
-                            :title="file.originalFilename"
+                            :title="file.name"
                             style="height: 28px;"
                             class="ant-upload-list-item-name"
                           >
-                            <a :href="downloadHref(file.path, file.originalFilename)">
-                              {{ file.originalFilename }}
+                            <a :href="getDownloadURL(file.url, file.name)">
+                              {{ file.name }}
                             </a>
                           </span>
                         </span>
@@ -2277,9 +2304,6 @@
                 </a-form-item>
               </div>
               <div v-if="pagePermission.A5_1_3">
-                <div class="Dtitle">
-                  <span>效果验证</span>
-                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`效果验证`">
@@ -2301,10 +2325,10 @@
                       <a-upload
                         :headers="headers"
                         :multiple="true"
-                        :file-list="dataFile"
-                        :remove="removeFile(dataFile)"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :file-list="d5FileList"
+                        :remove="file => removeFile(record.fileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d5FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021010')"
                         name="file"
                       >
@@ -2322,7 +2346,7 @@
                       <v-input
                         v-decorator="[
                           'breakpointVin',
-                          {rules: [{ required: true, message: '请输入断点VIN' }]}
+                          {rules: [{ validator: vinVer }]}
                         ]"
                         :allow-clear="true"
                         placeholder="请输入"
@@ -2334,7 +2358,7 @@
                       <a-date-picker
                         v-decorator="[
                           'breakpointDate',
-                          {rules: [{ required: true, message: '请选择断点时间' }]}
+
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
                         style="width:231px;"
@@ -2344,7 +2368,9 @@
                 </a-row>
                 <div class="fileUpdate clearfix">
                   <a-col :span="21">
-                    <a-form-item :label="`涉及文件更新:`">
+                    <a-form-item
+                      :label="`涉及文件更新:`"
+                    >
                       <div class="updateTable">
                         <a-table
                           :data-source="updateData"
@@ -2384,25 +2410,10 @@
                               show-zero
                             />
                           </template>
-                          <template
-                            slot="isUpdae"
-                            slot-scope="isUpdae"
-                          >
-                            <a-icon
-                              v-if="isUpdae"
-                              type="check"
-                              style="color: #B7D342"
-                            />
-                            <a-icon
-                              v-else
-                              type="close"
-                              style="color: #D1291A"
-                            />
-                          </template>
                         </a-table>
                         <div
                           @click="showUpdate()"
-                          style="text-align:center;"
+                          style="text-align:center;cursor:pointer;color: rgba(0, 0, 0, 0.85);"
                         >
                           <a-icon type="plus-circle" />
                           添加新的更新文件
@@ -2444,26 +2455,67 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-form-item :label="`涉及文件更新:`">
-                  <div class="updateTable">
-                    <a-table
-                      :data-source="updateData"
-                      :columns="columnsUpdate"
-                      :pagination="false"
-                      row-key="id"
-                    >
-                      <span
-                        slot="id"
-                        slot-scope="text, row"
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`附件`">
+                      <div
+                        v-if="d5FileList && d5FileList.length"
+                        class="ant-upload-list-item-info"
+                        style="margin-top: 10px"
                       >
-                        <a
-                          @click="UpdateFind(row)"
-                          href="javascript:;"
-                        >查看</a>
-                      </span>
-                    </a-table>
-                  </div>
-                </a-form-item>
+                        <span
+                          v-for="(file, index) in d5FileList"
+                          :key="index"
+                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                        >
+                          <a-icon type="paper-clip" />
+                          <span
+                            :title="file.name"
+                            style="height: 28px;"
+                            class="ant-upload-list-item-name"
+                          >
+                            <a :href="getDownloadURL(file.url, file.name)">
+                              {{ file.name }}
+                            </a>
+                          </span>
+                        </span>
+                      </div>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row style="margin-left: -66px">
+                  <a-form-item :label="`涉及文件更新:`">
+                    <div class="updateTable">
+                      <a-table
+                        :data-source="updateData"
+                        :columns="columnsUpdate"
+                        :pagination="false"
+                        row-key="id"
+                      >
+                        <span
+                          slot="id"
+                          slot-scope="text, row"
+                        >
+                          <a
+                            @click="UpdateFind(row)"
+                            href="javascript:;"
+                          >查看</a>
+                        </span>
+                        <template
+                          slot="files"
+                          slot-scope="files"
+                        >
+                          <a-icon type="paper-clip" />
+                          <a-badge
+                            :count="files.length"
+                            :number-style="{backgroundColor: '#d9d9d9', color: '#000', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
+                            show-zero
+                          />
+                        </template>
+                      </a-table>
+                    </div>
+                  </a-form-item>
+                </a-row>
               </div>
               <div
                 v-if="(stepCurrent===backCurrent)&&(pagePermission.A5_2_3||pagePermission.A4_2_3)"
@@ -2499,19 +2551,24 @@
                 <div class="Dtitle examineTitle">
                   <span>提出人验证</span>
                 </div>
-                <a-row>
-                  <a-form-item :label="`验证结果`">
-                    <v-textarea
-                      v-decorator="[
-                        'proposerVerification',
-                        {rules: [
-                          {required: true, message: '请输入验证结果' }
-                        ]}
-                      ]"
-                      placeholder="请输入"
-                      style="width:572px;height:88px;"
-                    />
-                  </a-form-item>
+                <a-row :gutter="24">
+                  <a-col :span="21">
+                    <a-form-item
+                      :label="`验证结果`"
+                      :span="22"
+                    >
+                      <v-textarea
+                        v-decorator="[
+                          'proposerVerification',
+                          {rules: [
+                            {required: true, message: '请输入验证结果' }
+                          ]}
+                        ]"
+                        placeholder="请输入"
+                        style="width:572px;height:88px;"
+                      />
+                    </a-form-item>
+                  </a-col>
                 </a-row>
                 <div
                   v-if="pagePermission.A5_2_3"
@@ -2564,7 +2621,7 @@
                           'recurrencePrevention',
                           {rules: [{ required: true, message: '请选择是否需要进入再发防止库' }]}
                         ]"
-                        :options="recurrencePreventionRadio"
+                        :options="optionRadio"
                       />
                     </a-form-item>
                   </a-col>
@@ -2576,7 +2633,7 @@
                         v-decorator="[
                           'isSign'
                         ]"
-                        :options="recurrencePreventionRadio"
+                        :options="optionRadio"
                         @change="apostilleChange"
                       />
                     </a-form-item>
@@ -2610,9 +2667,9 @@
                 >
                   <span></span>
                 </div>
-                <div class="Dtitle">
-                  <span>问题关闭</span>
-                </div>
+                <!-- <div class="Dtitle">
+              <span>问题关闭</span>
+            </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`关闭人`">
@@ -2639,9 +2696,9 @@
                 v-if="pagePermission.A6_2_3"
                 class="examine"
               >
-                <div class="Dtitle">
-                  <span>加签审阅</span>
-                </div>
+                <!-- <div class="Dtitle">
+              <span>加签审阅</span>
+            </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`是否审阅`">
@@ -2672,9 +2729,9 @@
                 v-if="pagePermission.A6_2_2&&record.isSign=='1'"
                 class="examine"
               >
-                <div class="Dtitle">
-                  <span>加签审阅</span>
-                </div>
+                <!-- <div class="Dtitle">
+              <span>加签审阅</span>
+            </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`审阅领导`">
@@ -2691,9 +2748,7 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item
-                      :label="`备注`"
-                    >
+                    <a-form-item :label="`备注`">
                       <p>{{ stepClose.signRemark }}</p>
                     </a-form-item>
                   </a-col>
@@ -2731,82 +2786,85 @@
 <script>
 import attachmentMix from '~~/issue-attachment.js';
 import timeFormatMix from '~~/time-format.js';
-import { autoUpdateFileds, createFormFields } from '@util/formhelper.js';
-import { createNamespacedHelpers } from 'vuex';
+import {
+  autoUpdateFileds,
+  createFormFields
+} from '@util/formhelper.js';
+import {
+  createNamespacedHelpers
+} from 'vuex';
 import moment from 'moment';
 
 const {
   mapActions
 } = createNamespacedHelpers('question');
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'no',
-    scopedSlots: {
-      customRender: 'no'
-    }
-  }, {
-    title: '附件名称',
-    dataIndex: 'name',
-    scopedSlots: {
-      customRender: 'name'
-    }
-  }, {
-    title: '上传时间',
-    dataIndex: 'uploadTime',
-    scopedSlots: {
-      customRender: 'uploadTime'
-    }
-  }, {
-    title: '上传人',
-    dataIndex: 'uploadUser',
-    scopedSlots: {
-      customRender: 'uploadUser'
-    }
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    scopedSlots: {
-      customRender: 'operation'
-    },
-    width: 80
-  }];
-const columnsRecord = [
-  {
-    title: '操作记录',
-    dataIndex: 'operation',
-    scopedSlots: {
-      customRender: 'operation'
-    }
-  }, {
-    title: '解决进度',
-    dataIndex: 'node',
-    scopedSlots: {
-      customRender: 'node'
-    }
-  },
-  {
-    title: '变更人',
-    dataIndex: 'creatorName',
-    scopedSlots: {
-      customRender: 'creatorName'
-    }
-  },
-  {
-    title: '操作时间',
-    dataIndex: 'createDate',
-    scopedSlots: {
-      customRender: 'createDate'
-    }
-  },
-  {
-    title: '备注',
-    dataIndex: 'content',
-    scopedSlots: {
-      customRender: 'content'
-    },
-    width: 80
+const columns = [{
+  title: '序号',
+  dataIndex: 'no',
+  scopedSlots: {
+    customRender: 'no'
   }
+}, {
+  title: '附件名称',
+  dataIndex: 'name',
+  scopedSlots: {
+    customRender: 'name'
+  }
+}, {
+  title: '上传时间',
+  dataIndex: 'uploadTime',
+  scopedSlots: {
+    customRender: 'uploadTime'
+  }
+}, {
+  title: '上传人',
+  dataIndex: 'uploadUser',
+  scopedSlots: {
+    customRender: 'uploadUser'
+  }
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  scopedSlots: {
+    customRender: 'operation'
+  },
+  width: 80
+}];
+const columnsRecord = [{
+  title: '操作记录',
+  dataIndex: 'operation',
+  scopedSlots: {
+    customRender: 'operation'
+  }
+}, {
+  title: '解决进度',
+  dataIndex: 'node',
+  scopedSlots: {
+    customRender: 'node'
+  }
+},
+{
+  title: '变更人',
+  dataIndex: 'creatorName',
+  scopedSlots: {
+    customRender: 'creatorName'
+  }
+},
+{
+  title: '操作时间',
+  dataIndex: 'createDate',
+  scopedSlots: {
+    customRender: 'createDate'
+  }
+},
+{
+  title: '备注',
+  dataIndex: 'content',
+  scopedSlots: {
+    customRender: 'content'
+  },
+  width: 80
+}
 ];
 const columnsAnalysis = [{
 
@@ -2866,10 +2924,10 @@ const columnsUpdate = [{
   }
 }, {
   title: '是否更新',
-  dataIndex: 'isUpdae',
+  dataIndex: 'isUpdaeName',
   align: 'center',
   scopedSlots: {
-    customRender: 'isUpdae'
+    customRender: 'isUpdaeName'
   }
 },
 {
@@ -2907,7 +2965,12 @@ export default {
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
   mixins: [attachmentMix, timeFormatMix],
-  props: ['id'],
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     const that = this;
     return {
@@ -2977,12 +3040,10 @@ export default {
       analysisData: [], // 7钻分析表格
       updateData: [], // 文件更新表格
       DetailForm: [], // 7钻查看表格
-      updateForm: {
-        files: []
-      }, // 文件更新弹框表单
+      updateForm: null, // 文件更新弹框表单
       rejectForm: null,
       dataFile: [], // 附件
-      files: [],
+      // files: [],
       d0FileList: [],
       d1FileList: [],
       d2FileList: [],
@@ -3027,12 +3088,10 @@ export default {
         label: '不需要',
         value: '0'
       }],
-      ReviewRadio: [
-        {
-          label: '已审阅',
-          value: 1
-        }
-      ],
+      ReviewRadio: [{
+        label: '已审阅',
+        value: 1
+      }],
       id1: '', // 措施判定id
       id2: '', // 措施实施id
       idDef: '', // 问题定义id
@@ -3086,6 +3145,13 @@ export default {
       }],
       // D6
       recurrencePreventionRadio: [{
+        label: '通过',
+        value: '1'
+      }, {
+        label: '不通过',
+        value: '0'
+      }],
+      optionRadio: [{
         label: '是',
         value: '1'
       }, {
@@ -3129,6 +3195,7 @@ export default {
         pcaDescription: '',
         pcaPlanTime: null,
         pcaExecTime: null,
+        pcaValidPlanTime: null,
         estimatedClosureTime: null,
         fileList: [],
         smallBatchValidation: '',
@@ -3174,7 +3241,7 @@ export default {
         id: '',
         fileName: '',
         isUpdae: '1',
-        isUpdaeName: '',
+        isUpdateName: '',
         updateContent: '',
         files: []
       },
@@ -3188,21 +3255,24 @@ export default {
   computed: {
     allowCommit () {
       const {
-        vehicleModelId, faultTreeIds1, faultTreeIds2, faultTreeIds3, source, grade, projectPhase, manufactureBaseId, description
+        vehicleModelId,
+        faultTreeIds1,
+        faultTreeIds2,
+        faultTreeIds3,
+        source,
+        grade,
+        projectPhase,
+        manufactureBaseId,
+        description
       } = this.detailList;
-      return !!(vehicleModelId && faultTreeIds1 && faultTreeIds2 && faultTreeIds3 && source && grade && projectPhase && manufactureBaseId && description);
+      return !!(vehicleModelId && faultTreeIds1 && faultTreeIds2 && faultTreeIds3 && source
+          && grade && projectPhase && manufactureBaseId && description);
     }
   },
   watch: {
     id: {
       handler: 'init',
       immediate: true
-    },
-    recordUpdate: {
-      handler: function (val, oldVal) {
-
-      },
-      deep: true
     }
   },
   activated () {
@@ -3252,14 +3322,46 @@ export default {
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
-        'isProject', 'comment', 'isNeedIca', 'icaDescriptionD1', 'icaDescription', 'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
-        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5', 'diamondOwner6', 'isPass', 'rootCauseDescription',
+        'isProject', 'comment', 'isNeedIca', 'icaDescriptionD1', 'icaDescription',
+        'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
+        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5',
+        'diamondOwner6', 'isPass', 'rootCauseDescription',
         'diamondOwner7', 'rootcause', 'D2file', 'pcaDescription',
-        'pcaDescriptionTime', 'pcaExecTime', 'estimatedClosureTime', 'fileList', 'smallBatchValidation', 'isSign', 'signLeaderId', 'Review', 'signRemark',
+        'pcaDescriptionTime', 'pcaExecTime', 'pcaValidPlanTime', 'estimatedClosureTime',
+        'fileList', 'smallBatchValidation', 'isSign', 'signLeaderId', 'Review', 'signRemark',
         'icaExecDescription', 'icaExecTime', 'pcaExecDescription',
-        'description', 'proposerVerification', 'breakpointVin', 'breakpointDate', 'recurrencePrevention', 'isClose',
+        'description', 'proposerVerification', 'breakpointVin', 'breakpointDate',
+        'recurrencePrevention', 'isClose',
         'reason'
       ], 'record');
+    },
+    resMapPropsToFields () {
+      return createFormFields(this, [
+        'owerDeptLv1', 'champion'
+      ], 'redistributionForm');
+    },
+    filterOption (input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input
+        .toLowerCase()) >= 0;
+    },
+    // vin限制
+    vinVer (rule, value, callback) {
+      var myreg = /^[A-Z0-9]{8,17}$/;
+      if (value && !myreg.test(value)) {
+        callback(new Error('请输入正确的VIN'));
+      } else {
+        callback();
+      }
+    },
+    // 再分配责任部门改变
+    owerDeptChange () {
+      this.redistributionForm.champion = '';
+      this.rediStribution.updateFields(this.resMapPropsToFields());
+    },
+    // D流程中责任部门改变
+    DeptChange () {
+      this.formDcontent.champion = '';
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     mapUpdate () {
       return createFormFields(this, [
@@ -3272,7 +3374,8 @@ export default {
         onValuesChange: autoUpdateFileds(this, 'record')
       });
       this.rediStribution = this.$form.createForm(this, {
-        mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'], 'redistributionForm'),
+        mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'],
+          'redistributionForm'),
         onValuesChange: autoUpdateFileds(this, 'redistributionForm')
       });
       this.AnalysisForm = this.$form.createForm(this, {
@@ -3283,7 +3386,7 @@ export default {
       });
       this.updateForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'id', 'fileName', 'isUpdaeName', 'isUpdae', 'updateContent', 'files'
+          'id', 'fileName', 'isUpdateName', 'isUpdae', 'updateContent', 'files'
         ], 'recordUpdate'),
         onValuesChange: autoUpdateFileds(this, 'recordUpdate')
       });
@@ -3317,6 +3420,8 @@ export default {
         this.updateContentFlag = true;
       } else {
         this.updateContentFlag = false;
+        // 清空更新内容
+        this.recordUpdate.updateContent = '';
       }
     },
     // 驳回
@@ -3343,12 +3448,14 @@ export default {
           coChair: this.sysUser.coChair,
           monitor: this.sysUser.monitor,
           champion: data.champion, // 责任人
-          isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1' : '0', // 是否直接极端严重事情
+          isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName
+              === 'B') ? '1' : '0', // 是否直接极端严重事情
           isEnd: this.record.isClose, // 是否关闭
           isPass: data.verifySeven || this.record.isPass || passFlag, // 审核是否通过
           isQZEnd: data.endSeven, // 是否结束七钻
           isHaveCO: this.sysUser.coChair == null ? '0' : '1',
-          isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1' : '0',
+          isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1'
+            : '0',
           isQZ: data.type, // 是否需要七钻
           isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
           isLeaderSign: this.record.isSign, // 领导加签
@@ -3362,16 +3469,17 @@ export default {
           diamondOwner7: data.diamondOwner7
         }
       };
-      this.workFlowSubmit(transData).then(res => {
+      this.workFlowSubmit(transData).then(() => {
         // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
         // if (res.taskId) {
         //   this.taskId = res.taskId;
         // }
 
         this.$message.success('再分析成功');
-        this.$router.push({
-          path: this.$route.query.form || '/'
-        });
+        this.$store.dispatch('refresh');
+        // this.$router.push({
+        //   path: this.$route.query.form || '/'
+        // });
       });
     },
     CancelReject () {
@@ -3395,25 +3503,23 @@ export default {
         value: input.id,
         label: input.username
       }];
-      // input.forEach((item) => {
-      //   optionArray.push({
-      //     value: item.id,
-      //     label: item.username
-      //   })
-      // })
+        // input.forEach((item) => {
+        //   optionArray.push({
+        //     value: item.id,
+        //     label: item.username
+        //   })
+        // })
 
       return optionArray;
     },
     selectOption (input) {
       const optionArray = [];
-
       input.forEach((item) => {
         optionArray.push({
           value: item.code,
           label: item.name
         });
       });
-
       return optionArray;
     },
     selectOptionChampion (input) {
@@ -3426,28 +3532,27 @@ export default {
       });
       return optionArray;
     },
-
     showAnalysis (param) {
       this.visibleAnalysis = true;
       this.DetailForm = param;
       /* if (index === 2) {
-           this.AnalysisTitle ='2钻-工具是否正确'
-         }
-         if (index === 3) {
-           this.AnalysisTitle ='3钻-物料是否正确'
-         }
-         if (index === 4) {
-           this.AnalysisTitle ='4钻-物料规则检测'
-         }
-         if (index === 5) {
-           this.AnalysisTitle ='5钻-过程变更'
-         }
-         if (index === 6) {
-           this.AnalysisTitle ='6钻-部件变更'
-         }
-         if (index === 7) {
-           this.AnalysisTitle ='7钻-是否是极端复杂问题'
-         } */
+            this.AnalysisTitle ='2钻-工具是否正确'
+          }
+          if (index === 3) {
+            this.AnalysisTitle ='3钻-物料是否正确'
+          }
+          if (index === 4) {
+            this.AnalysisTitle ='4钻-物料规则检测'
+          }
+          if (index === 5) {
+            this.AnalysisTitle ='5钻-过程变更'
+          }
+          if (index === 6) {
+            this.AnalysisTitle ='6钻-部件变更'
+          }
+          if (index === 7) {
+            this.AnalysisTitle ='7钻-是否是极端复杂问题'
+          } */
 
 
       this.AnalysisForm = this.$form.createForm(this, {
@@ -3475,6 +3580,7 @@ export default {
       });
     },
     showUpdate (param) {
+      this.$set(this, 'recordUpdate', param || { isUpdae: '1', files: [] });
       this.visibleUpdate = true;
       this.updateEditFlag = true;
       this.updateContentFlag = true;
@@ -3491,67 +3597,27 @@ export default {
           this.fileModalTitle = param.fileName;
           this.updateFiles = param.files.map(file => {
             return {
+              id: file.id,
               uid: file.id,
               name: file.originalFilename,
               url: file.path,
-              response: {
-                data: file
-              },
+              size: file.size,
               status: 'done'
             };
           });
-          this.updateForm = this.$form.createForm(this, {
-            mapPropsToFields: () => {
-              return {
-                id: this.$form.createFormField({
-                  value: param.id
-                }),
-                fileName: this.$form.createFormField({
-                  value: param.fileName
-                }),
-                isUpdae: this.$form.createFormField({
-                  value: param.isUpdae
-                }),
-                updateContent: this.$form.createFormField({
-                  value: param.updateContent
-                }),
-                files: this.$form.createFormField({
-                  value: param.files != null ? param.files : []
-                })
-              };
-            }
-          });
+          this.updateForm.updateFields(this.mapUpdate());
         } else if (param.delFlag === '2') {
           this.fileNameFlag = true;
           this.fileModalTitle = param.fileName;
-          this.updateForm = this.$form.createForm(this, {
-            mapPropsToFields: () => {
-              return {
-                id: this.$form.createFormField({
-                  value: param.id
-                }),
-                fileName: this.$form.createFormField({
-                  value: param.fileName
-                }),
-                isUpdae: this.$form.createFormField({
-                  value: param.isUpdae
-                }),
-                updateContent: this.$form.createFormField({
-                  value: param.updateContent
-                }),
-                files: this.$form.createFormField({
-                  value: param.files != null ? param.files : []
-                })
-              };
-            }
-          });
+          this.updateForm.updateFields(this.mapUpdate());
         }
       } else {
-        this.fileNameFlag = true;
-        this.isUpdate = '1';
         this.updateForm.resetFields();
+        this.fileNameFlag = true;
+        this.isUpdae = '1';
         this.fileModalTitle = '添加更新文件';
         this.updateContentFlag = true;
+        this.updateFiles = [];
       }
     },
     UpdateFind (param) {
@@ -3559,6 +3625,7 @@ export default {
       this.updateFindFlag = true;
       this.updateEditFlag = false;
       this.updateData = param;
+      this.updateFiles = param.files;
     },
     DelUpdate (param) {
       param.delFlag = 1;
@@ -3588,7 +3655,7 @@ export default {
           if (this.AnalysisForm === '') {
             data.id = this.AnalysisForm.id;
           }
-          this.sevenDiamonds(data).then(res => {
+          this.sevenDiamonds(data).then(() => {
 
           });
           this.analysisData.forEach((item) => {
@@ -3614,8 +3681,15 @@ export default {
       this.updateForm.validateFields((err) => {
         if (!err) {
           this.visibleUpdate = false;
+          // 当选择不更新的时候将更新内容清空
+          if (this.recordUpdate.isUpdae === '0') {
+            this.recordUpdate.updateContent = '';
+          }
           if (this.fileNameFlag === true) {
-            const data = { ...this.recordUpdate, ...this.updateForm.getFieldsValue() };
+            const data = {
+              ...this.recordUpdate,
+              ...this.updateForm.getFieldsValue()
+            };
             data.issueId = this.id;
             data.delFlag = 2;
             if (!data.id) {
@@ -3632,7 +3706,10 @@ export default {
               });
             }
           } else {
-            const data = { ...this.recordUpdate, ...this.updateForm.getFieldsValue() };
+            const data = {
+              ...this.recordUpdate,
+              ...this.updateForm.getFieldsValue()
+            };
             data.issueId = this.id;
             data.fileName = this.fileModalTitle;
             data.delFlag = 0;
@@ -3643,7 +3720,7 @@ export default {
                 });
               });
             } else {
-              this.editFile(data).then((_) => {
+              this.editFile(data).then(() => {
                 this.updateFile(this.id).then(res => {
                   this.updateData = res;
                 });
@@ -3697,7 +3774,7 @@ export default {
           this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1;
           this.stepMax = Math.floor((res.statusMaxCode) / 100000) - 1;
           this.backCurrent = this.stepCurrent;
-          this.statusCode.issueClosed = res.statusNewCode == 700300;
+          this.statusCode.issueClosed = res.statusNewCode === 700300;
           this.getQuestionStepAll(this.id);
         }
         return res.taskIdOld !== undefined ? res.taskIdOld : '';
@@ -3719,7 +3796,7 @@ export default {
         };
         if (taskDefListArray) {
           this.examineDetail(paramExamine).then(res => {
-            if (res.MESSAGE) {
+            if (res && res.MESSAGE) {
               this.examineReason = res.MESSAGE;
             }
           });
@@ -3733,15 +3810,17 @@ export default {
       });
     },
     /**
-     * 查询每个步骤的详情
-     * @param Number id - issue id
-     */
+       * 查询每个步骤的详情
+       * @param Number id - issue id
+       */
     getQuestionStepAll (id) {
       // 问题定义
       this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         if (res) {
-          this.d0FileList = res.files;
+          this.satisfyFlag = res.isProject === '1';
+          this.conActionFlag = res.isNeedIca === '1';
+          this.d0FileList = (res.files || []).map(this.file2client);
           this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
           this.updateData = this.problemDefinitionData.updateList;
           this.idDef = res.id;
@@ -3760,7 +3839,7 @@ export default {
       this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
         if (res) {
-          this.d1FileList = res.files;
+          this.d1FileList = (res.files || []).map(this.file2client);
           this.optCounterD0 = res.optCounter;
           this.idRes = res.id;
         }
@@ -3844,7 +3923,7 @@ export default {
       });
       // 原因分析
       this.rootCause(id).then(res => {
-        this.d2FileList = res.files;
+        this.d2FileList = (res.files || []).map(this.file2client);
         this.rootCauseData = res || {};
         this.optCounterD2 = res.optCounter;
         this.idReason = res.id;
@@ -3859,7 +3938,7 @@ export default {
       });
       // 措施制定
       this.MeasureDetail(this.id).then(res => {
-        this.d3FileList = res.files;
+        this.d3FileList = (res.files || []).map(this.file2client);
         this.stepMeasures = res;
         this.optCounterD3 = res.optCounter;
         this.icaOptCounter = res.icaOptCounter;
@@ -3877,6 +3956,10 @@ export default {
           const date2 = new Date(res.pcaExecTime);
           this.record.pcaExecTime = moment(date2);
         }
+        if (res.pcaValidPlanTime) {
+          const date22 = new Date(res.pcaValidPlanTime);
+          this.record.pcaValidPlanTime = moment(date22);
+        }
         if (res.estimatedClosureTime) {
           const date3 = new Date(res.estimatedClosureTime);
           this.record.estimatedClosureTime = moment(date3);
@@ -3885,7 +3968,7 @@ export default {
       });
       // 措施实施
       this.ImplementationDetail(this.id).then(res => {
-        this.d4FileList = res.files;
+        this.d4FileList = (res.files || []).map(this.file2client);
         this.stepImplementation = res;
         this.optCounterD4 = res.optCounter;
         this.icaOptCounter = res.icaOptCounter;
@@ -3908,7 +3991,7 @@ export default {
       });
       // 效果验证
       this.effectDetail(this.id).then(res => {
-        this.d5FileList = res.files;
+        this.d5FileList = (res.files || []).map(this.file2client);
         this.stepEffect = res;
         this.idEffct = res.id;
         this.optCounterD5 = res.optCounter;
@@ -3924,7 +4007,7 @@ export default {
       });
       // 问题关闭
       this.closeDetail(this.id).then(res => {
-        this.d6FileList = res.files;
+        this.d6FileList = (res.files || []).map(this.file2client);
         this.stepClose = res;
         this.optCounterD6 = res.optCounter;
         this.idClose = res.id;
@@ -3945,15 +4028,6 @@ export default {
     },
     getUploadUrl (path) {
       return this.$store.getters.getUrl(path);
-    },
-    // 删除文件（TODO:不同业务删除不同的文件）
-    removeFile (fileList) {
-      const vm = this;
-      return (file) => {
-        // 查询文件索引
-        const index = fileList.indexOf(file);
-        delete fileList[index];
-      };
     },
     // 再分配弹框
     showModal () {
@@ -3996,19 +4070,16 @@ export default {
             this.problemDefinitionData = res || {};
             if (res) {
               this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
-              this.updateData = this.problemDefinitionData.updateList;
-              this.stepDetail.fileList = res.files;
+              //  this.updateData = this.problemDefinitionData.updateList;
+              this.stepDetail.fileList = (res.files || []).map(this.file2client);
               this.idDef = res.id;
               this.optCounterD0 = res.optCounter;
               if (res.isProject) {
                 this.record.isProject = res.isProject;
               }
-              this.record.comment = res.comment;
-              this.record.isNeedIca = res.isNeedIca;
-              this.record.icaDescriptionD1 = res.icaDescription;
-            }
 
-            this.formDcontent.updateFields(this.mapPropsToFieldsForm());
+              this.formDcontent.updateFields(this.mapPropsToFieldsForm());
+            }
           });
         } else if (param === 1) {
           this.issueDefinition(this.id).then((res = {}) => {
@@ -4106,6 +4177,7 @@ export default {
               }
               this.formDcontent.updateFields(this.mapPropsToFieldsForm());
             }
+            this.formDcontent.updateFields(this.mapPropsToFieldsForm());
           });
         } else if (param === 3) {
           this.MeasureDetail(this.id).then(res => {
@@ -4118,6 +4190,9 @@ export default {
         } else if (param === 5) {
           this.effectDetail(this.id).then(res => {
             this.stepEffect = res;
+          });
+          this.updateFile(this.id).then(res => {
+            this.updateData = res;
           });
         } else if (param === 6) {
           this.closeDetail(this.id).then(res => {
@@ -4153,6 +4228,37 @@ export default {
         this.titleFlag = true;
       }
     },
+    // 再分配提交
+    handleUser () {
+      this.rediStribution.validateFields((err) => {
+        if (!err) {
+          const data = this.rediStribution.getFieldsValue();
+          const param = {
+            taskId: this.detailList.taskId,
+            variable: {
+              champion: data.champion
+            }
+          };
+          this.redistributionFun(param).then(() => {
+            const championUpate = {
+              issueId: this.id,
+              userId: data.champion,
+              responsibleDepartmentId: data.owerDeptLv1
+            };
+            // 修改后台当前责任人
+
+            this.updateChampionFun(championUpate).then(() => {
+              // const updateDate = res.data;
+            });
+
+            this.visibleRes = false;
+            this.$router.push({
+              path: this.$route.query.form || '/'
+            });
+          });
+        }
+      });
+    },
     handleSubmit () {
       const commitButton = this.$refs.commitButton;
       if (!this.allowCommit) {
@@ -4182,13 +4288,15 @@ export default {
               coChair: vm.sysUser.coChair,
               monitor: vm.sysUser.monitor,
               champion: data.champion, // 责任人
-              isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1' : '0', // 是否直接极端严重事情
+              isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList
+                .gradeName === 'B') ? '1' : '0', // 是否直接极端严重事情
               isEnd: this.record.isClose, // 是否关闭
               isPass: data.verifySeven || this.record.isPass, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
               isHaveCO: this.sysUser.coChair == null ? '0' : '1', // 是否SC
               additionalApproval: this.record.signLeaderId, // 加签人
-              isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1' : '0',
+              isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName
+                === 'B') ? '1' : '0',
               isQZ: data.type, // 是否需要七钻
               isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
               isLeaderSign: this.record.isSign, // 领导加签
@@ -4201,60 +4309,38 @@ export default {
               diamondOwner7: data.diamondOwner7
             }
           };
-          vm.workFlowSubmit(transData).then(res => {
+          vm.workFlowSubmit(transData).then(() => {
             // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
             // if (res.taskId) {
             //   this.taskId = res.taskId;
             // }
-
             vm.$message.success('提交成功');
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
-          });
-        }
-      });
-    },
-    // 再分配提交
-    handleUser () {
-      this.rediStribution.validateFields((err) => {
-        if (!err) {
-          const data = this.rediStribution.getFieldsValue();
-          const param = {
-            taskId: this.detailList.taskId,
-            variable: {
-              champion: data.champion
+            // 如果当前步骤为D0并且选择立项那么页面不跳转
+            if (this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
+              .statusCode.statusNewCode, 10) > 100100) {
+              commitButton.reset();
+              this.init();
+            } else {
+              this.$router.push({
+                path: this.$route.query.form || '/'
+              });
             }
-          };
-          this.redistributionFun(param).then(res => {
-            const championUpate = {
-              issueId: this.id,
-              userId: data.champion,
-              responsibleDepartmentId: data.owerDeptLv1
-            };
-            // 修改后台当前责任人
-
-            this.updateChampionFun(championUpate).then(res => {
-              const updateDate = res.data;
-            });
-
-            this.visibleRes = false;
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
-          });
+          }).finally(commitButton.reset);
+        } else {
+          commitButton.reset();
         }
       });
     },
     handleSave () {
       const saveButton = this.$refs.saveButton;
       const data = this.formDcontent.getFieldsValue();
-      data.files = this.files.map(file => file.response.data);
+      // data.files = this.files.map(file => file.response.data);
 
       // const thisCopy=this;
       // eslint-disable-next-line no-underscore-dangle
       const _this = this;
       data.issueId = this.stepId;
+
       if (this.statusCode.statusNewCode === '100100') {
         saveButton.reset();
         this.$router.push({
@@ -4262,7 +4348,7 @@ export default {
         });
       }
       // 判断当前步骤
-      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode) > 100100) {
+      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode, 10) > 100100) {
         if (this.d0FileList && this.d0FileList.length) {
           data.files = this.d0FileList;
         }
@@ -4272,6 +4358,7 @@ export default {
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res;
           this.optCounterD0 = res.optCounter;
+
           if (this.routerFlag) {
             saveButton.reset();
             this.$router.push({
@@ -4375,6 +4462,9 @@ export default {
       if (data.pcaExecTime) {
         data.pcaExecTime = data.pcaExecTime.format('YYYY-MM-DD HH:mm:ss');
       }
+      if (data.pcaValidPlanTime) {
+        data.pcaValidPlanTime = data.pcaValidPlanTime.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (data.pcaPlanTime) {
         data.pcaPlanTime = data.pcaPlanTime.format('YYYY-MM-DD HH:mm:ss');
       }
@@ -4477,42 +4567,6 @@ export default {
     handleSearch (e) {
       e.preventDefault();
     },
-    // 8D流程文件上传
-    handleChange (info) {
-      const fileList = info.fileList.map((file) => {
-        const result = file;
-        if (file.response) {
-          result.url = file.response.url;
-        }
-        return result;
-      });
-      this.dataFile = fileList;
-      const status = info.file.status;
-      if (status === 'done') {
-        this.$set(this, 'files', info.fileList);
-      }
-    },
-    // 涉及文件更新的上传
-    handleUpdateChange (info) {
-      const fileList = info.fileList.map((file) => {
-        const result = file;
-        if (file.response) {
-          result.url = file.response.url;
-        }
-        return result;
-      });
-      // 显示列表更新（用于下载）
-      this.updateFiles = fileList;
-      const status = info.file.status;
-      const isOver = info.fileList.every(file => (file.status && file.status === 'done'));
-      // 上传文件更新
-      if (isOver) {
-        this.$set(this.recordUpdate, 'files', info.fileList.map(file => file.response.data));
-      }
-    },
-    levelChange (value) {
-
-    },
     handleReset () {
       this.$router.push({
         path: this.$route.query.form || '/'
@@ -4546,20 +4600,23 @@ export default {
       } else if (e.target.value === '0') {
         this.satisfyFlag = false;
       }
-    },
-    // 滚动时触发按钮固定
-    offsetChange () {
     }
+    // faultCodeClassM(){
+    //   var p=document.getElementById('pid');
+    //   console.log(p);
+    // }
   }
 };
+
 </script>
 <style lang="less">
-  .textareaLabel{
+  .textareaLabel {
     font-family: SourceHanSansCN-Normal;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.45);
     letter-spacing: 0;
   }
+
   .visibleDetail {
     .ant-form-item-label {
       label {
@@ -4570,16 +4627,26 @@ export default {
 
     }
   }
+
 </style>
 <style lang="less" scoped>
+
+  .faultCodeClass{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
   /deep/.ant-btn {
     .anticon {
-      margin-left:-4px;
+      margin-left: -4px;
     }
   }
-  /deep/ .ant-modal{
-      top:120px!important;
-    }
+
+  /deep/ .ant-modal {
+    top: 120px !important;
+  }
+
   .new-steps-icon {
     line-height: 1;
     top: -6px;
@@ -4589,16 +4656,19 @@ export default {
 
   #components-form-demo-advanced-search {
 
-     .formConetnt{
-        margin-top: 0px;
-     }
-      .messageForm{
-        margin-bottom: 16px;
-        /deep/ .ant-row{
-          height: 40px;
-          line-height: 40px;
-        }
+    .formConetnt {
+      margin-top: 0px;
+    }
+
+    .messageForm {
+      margin-bottom: 16px;
+
+      /deep/ .ant-row {
+        height: 40px;
+        line-height: 40px;
       }
+    }
+
     // .UserModal{
     //  /deep/.ant-modal-footer{
     //       padding:10px 5px;
@@ -4607,40 +4677,45 @@ export default {
     //      }
     //  }
     // }
-    .examineResult{
-       border-bottom: 1px solid rgba(0,0,0,0.09);
-       width:1012px;
-       margin-left:32px;
-       margin-bottom:20px;
+    .examineResult {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+      width: 1012px;
+      margin-left: 32px;
+      margin-bottom: 20px;
     }
-    .Dtitle{
-      margin-left:32px;
+
+    .Dtitle {
+      margin-left: 32px;
     }
-    .examineTitle{
-      border-top: 1px solid rgba(0,0,0,0.09);
-      margin-right:32px;
+
+    .examineTitle {
+      border-top: 1px solid rgba(0, 0, 0, 0.09);
+      margin-right: 32px;
       display: block;
-      width:1012px;
+      width: 1012px;
       padding-top: 20px;
-      margin-top:41px;
+      margin-top: 41px;
     }
-    .detailText{
-      .ant-row{
-         height:70px;
+
+    .detailText {
+      .ant-row {
+        height: 70px;
       }
     }
-   .fileListNumber{
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    border: 1px solid #8c8c8c;
-    line-height: 19px;
-    text-align: center;
-    border-radius: 50%;
-    font-size: 12px;
-    color: rgba(0,0,0,0.85);
-    margin-left:6px;
-   }
+
+    .fileListNumber {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      border: 1px solid #8c8c8c;
+      line-height: 19px;
+      text-align: center;
+      border-radius: 50%;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.85);
+      margin-left: 6px;
+    }
+
     /deep/ .editable-cell-icon-check {
       position: absolute;
       margin-left: 2px;
@@ -4657,6 +4732,7 @@ export default {
       width: 82px;
       cursor: pointer;
       position: relative;
+
       img {
         width: 16px;
         height: 16px;
@@ -4720,7 +4796,6 @@ export default {
       font-family: SourceHanSansCN-Medium;
       font-size: 14px;
       color: #000;
-      margin-left: 18px;
       margin-top: 16px;
       margin-bottom: 16px;
     }
@@ -4749,7 +4824,7 @@ export default {
       background: #0097e0;
       border-radius: 4px;
       border-radius: 4px;
-      margin-left:10px;
+      margin-left: 10px;
     }
 
     .saveBtn,
@@ -4910,17 +4985,19 @@ export default {
 
   .D3content {
     padding-top: 28px;
-    .triangle_border_up{
-       position: absolute;
-       left: 494px;
-       top: -15px;
+
+    .triangle_border_up {
+      position: absolute;
+      left: 494px;
+      top: -15px;
     }
   }
-  .D3back{
-     .triangle_border_up{
-        position: absolute;
-        left: 494px;
-        top: -15px;
+
+  .D3back {
+    .triangle_border_up {
+      position: absolute;
+      left: 494px;
+      top: -15px;
     }
   }
 
@@ -5020,7 +5097,7 @@ export default {
     border-radius: 4px;
     margin-left: 65px;
 
-    /deep/ .ant-table-thead > tr > th {
+    /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
     }
 
@@ -5033,13 +5110,12 @@ export default {
     border-radius: 4px;
     margin-top: 5px;
 
-    /deep/ .ant-table-thead > tr > th {
+    /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
     }
   }
 
-  .D3back,
-  .D4back {
+  .D3back,.D4back,.D5back,.D6back {
     padding-top: 28px;
 
     /deep/ .ant-form-item {
@@ -5113,16 +5189,20 @@ export default {
       margin-left: 4px;
     }
   }
+
   /deep/ .ant-affix {
-    left: 0px!important;
-    width: 100%!important;
-    background:rgba(0, 0, 0, 0.6);
+    z-index:5000;
+    left: 0px !important;
+    width: 100% !important;
+    background: rgba(0, 0, 0, 0.6);
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
+
     .top-buttons {
-      width: 1200px!important;
-      margin: 0 auto!important;
+      width: 1200px !important;
+      margin: 0 auto !important;
     }
   }
+
   .top-buttons {
     overflow: hidden;
     padding: 16px 0;
@@ -5324,8 +5404,9 @@ export default {
       }
     }
   }
-  .examine{
-     /deep/ .ant-form-item-label {
+
+  .examine {
+    /deep/ .ant-form-item-label {
       label {
         font-family: SourceHanSansCN-Normal;
         font-size: 14px;
@@ -5334,4 +5415,5 @@ export default {
     }
 
   }
+
 </style>

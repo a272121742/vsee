@@ -3,10 +3,10 @@
   <a-table
     :loading="loading"
     :data-source="data"
-    row-key="id"
-    :scroll="{ x: true }"
+    :scroll="{ x: 1250 }"
     :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
     @change="handleTableChange"
+    row-key="id"
   >
     <template v-for="col in columns">
       <a-table-column
@@ -18,9 +18,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+              {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+            {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -63,16 +63,9 @@ const { mapActions } = createNamespacedHelpers('question');
 export default {
   name: 'IssueDraftTable',
   components: {
-    ColProvider: () => import('@comp/table/ColProvider.vue')
+    // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
   props: {
-    /**
-     * 总数（sync）
-     */
-    total: {
-      type: Number,
-      default: 0
-    },
     /**
      * 列更新地址
      */
@@ -83,6 +76,10 @@ export default {
   },
   data () {
     return {
+      /**
+       * 总数
+       */
+      total: 0,
       /**
        * 列信息
        */
@@ -172,6 +169,7 @@ export default {
           page, limit, order, orderField, ...config
         }).then(res => {
           this.$set(this, 'data', res.list);
+          this.total = res.total;
           init && this.$emit('update:total', res.total);
           this.$nextTick(() => {
             this.loading = false;

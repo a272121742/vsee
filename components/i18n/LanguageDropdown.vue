@@ -19,5 +19,5 @@
 import mixin from './mixin.js';
 export default {
   mixins: [mixin]
-}
+};
 </script>

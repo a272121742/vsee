@@ -1,8 +1,8 @@
 <template>
   <a-card :title="$t('title.announcement')">
     <router-link
-      v-if="false"
       slot="extra"
+      v-if="false"
       to="/announcement/list"
     >
       <a-button
@@ -17,9 +17,9 @@
     </router-link>
 
     <a-list
-      size="small"
       :split="false"
       :data-source="data"
+      size="small"
     >
       <a-list-item
         slot="renderItem"
@@ -49,7 +49,7 @@ export default {
     return {
       data: [],
       total: 0
-    }
+    };
   },
   created () {
     this.request();
@@ -60,13 +60,13 @@ export default {
       this.getAnnouncementPage({ limit: 7 }).then(res => {
         this.data = res.list;
         this.total = res.total;
-      })
+      });
     },
     format (str) {
       return moment(str).format('YYYY-MM-DD');
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

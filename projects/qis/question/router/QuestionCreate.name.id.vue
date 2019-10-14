@@ -248,6 +248,7 @@
                         ]"
                         :placeholder="$t('search.please_select') + $t('issue.failureDate')"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabledDate="disabledDate"
                         style="width:261px;"
                       />
                     </a-form-item>
@@ -345,9 +346,9 @@
                         :headers="headers"
                         :multiple="true"
                         :file-list="fileList"
-                        :remove="removeFile"
-                        @preview="downFile"
-                        @change="handleChange"
+                        :remove="file => removeFile(dataFileList)(file)"
+                        @preview="download"
+                        @change="info => changeFileList(dataFileList, fileList)(info)"
                         :action="uploadUrl"
                         name="file"
                       >
@@ -409,11 +410,11 @@
                   <a-form-item :label="$t('issue.partId')">
                     <net-select
                       v-decorator="[
-                        'partId',
+                        'firstCausePart',
                       ]"
                       :filter-option="filterOption"
                       :placeholder="$t('search.please_select') + $t('issue.partId')"
-                      :transform="selectOption"
+                      :transform="selectOptionId"
                       :allow-clear="true"
                       show-search-
                       url="/masterdata/v1/part"
@@ -447,6 +448,7 @@
                       ]"
                       :placeholder="$t('search.please_select') + $t('issue.productDate')"
                       :format="GLOBAL_SELECT_DATE_FORMAT"
+                      :disabledDate="disabledDate"
                       style="width:261px;"
                     />
                   </a-form-item>
@@ -616,7 +618,16 @@ export default {
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
   mixins: [attachmentMix, timeFormatMix],
-  props: ['name', 'id'],
+  props: {
+    name: {
+      type: String,
+      default: ''
+    },
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     const {
       $store
@@ -783,12 +794,17 @@ export default {
     },
     // 验证VIN
     vinVer (rule, value, callback) {
-      var myreg = /^[A-Z0-9]{17}$/;
+      var myreg = /^[A-Z0-9]{8,17}$/;
       if (value && !myreg.test(value)) {
         callback(new Error('请输入正确的VIN'));
       } else {
         callback();
       }
+    },
+    // 禁用未开始的日期
+    disabledDate (current) {
+      // Can not select days before today and today
+      return current && current > moment().endOf('day');
     },
     // 验证手机号
     phoneVer (rule, value, callback) {
@@ -804,13 +820,14 @@ export default {
 
       input.forEach((item) => {
         optionArray.push({
-          value: item.id,
+          value: item.code,
           label: item.name
         });
       });
 
       return optionArray;
     },
+
     handleSource (value) {
       this.sourceName = value;
     },
@@ -849,13 +866,30 @@ export default {
 
       return optionArray;
     },
-    selectOptionBase (input) {
+    // 零件号下拉框
+    selectOptionId (input) {
       const optionArray = [];
 
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.nameZh + ' ' + item.nameEn
+          label: item.code
+        });
+      });
+
+      return optionArray;
+    },
+    selectOptionBase (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        // optionArray.push({
+        //   value: item.id,
+        //   label: item.nameZh + ' ' + item.nameEn
+        // });
+        optionArray.push({
+          value: item.id,
+          label: item.nameZh
         });
       });
 
@@ -875,8 +909,9 @@ export default {
     },
     // 所属系统选择
     handleSystem (value) {
-      //  this.functionUrl='/issue/v1/faultcategory?p_id'+value;
       this.record.faultTreeIds1 = value;
+      this.record.faultTreeIds2 = '';
+      this.form.updateFields(this.mapPropsToFields());
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -905,6 +940,8 @@ export default {
           }
         }
       }
+      this.record.faultTreeIds3 = '';
+      this.form.updateFields(this.mapPropsToFields());
     },
     faultTreeIds3Change (value, option) {
       if (option !== undefined) {
@@ -1149,16 +1186,6 @@ export default {
         }
       }
     },
-    // 删除文件
-    removeFile (file) {
-      const index = this.fileList.indexOf(file);
-      const newFileList = this.fileList.slice();
-      newFileList.splice(index, 1);
-      this.fileList = newFileList;
-      const newDataList = this.dataFileList.slice();
-      newDataList.splice(index, 1);
-      this.dataFileList = newDataList;
-    },
     gradeChange () {
 
     },
@@ -1319,6 +1346,7 @@ export default {
   }
 
   /deep/ .ant-affix {
+    z-index:5000;
     left: 0px!important;
     width: 100%!important;
     background: rgba(0, 0, 0, 0.6);
@@ -1331,7 +1359,6 @@ export default {
   .top-buttons {
     overflow: hidden;
     padding: 16px 0;
-    z-index:5000;
 
     .rightButton {
       float: right;

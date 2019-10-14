@@ -8,16 +8,31 @@
       <a-col
         :span="8"
       >
+        <!-- 问题编号 -->
+        <a-form-item :label="$t('issue.code')">
+          <v-input
+            v-decorator="[
+              'code'
+            ]"
+            :placeholder="$t('search.please_input') + $t('issue.code')"
+            autocomplete="off"
+            allow-clear
+          />
+        </a-form-item>
+      </a-col>
+      <a-col
+        :span="8"
+      >
         <!-- 车型 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
+            :filter-option="filterOption"
+            :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+            :transform="transformField"
             v-decorator="['vehicleModelId']"
             allow-clear
             show-search
-            :filter-option="filterOption"
             url="/masterdata/v1/vehiclemodel"
-            :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
-            :transform="transformField"
           />
         </a-form-item>
       </a-col>
@@ -27,13 +42,13 @@
         <!-- 问题等级 -->
         <a-form-item :label="$t('issue.grade')">
           <net-select
+            :transform="transformGrade"
+            :filter-option="filterOption"
+            :placeholder="$t('search.please_select') + $t('issue.grade')"
             v-decorator="['grade']"
             allow-clear
             show-search
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.grade')"
             url="/sys/dict?dictType=issue_grade"
-            :transform="transformGrade"
           />
         </a-form-item>
       </a-col>
@@ -43,15 +58,15 @@
         <!-- 问题分类 -->
         <a-form-item :label="$t('issue.source')">
           <net-select
-            v-decorator="['source']"
-            allow-clear
-            show-search
             :filter-option="filterOption"
-            url="/sys/dict?dictType=issue_source"
             :cache="false"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
             :transform="transformSource"
+            v-decorator="['source']"
+            allow-clear
+            show-search
+            url="/sys/dict?dictType=issue_source"
           />
         </a-form-item>
       </a-col>
@@ -79,22 +94,22 @@
             style="float: right; overflow: hidden;"
           >
             <a-button
+              @click="submitSearch"
               type="primary"
               class="advance-action"
-              @click="submitSearch"
             >
               {{ $t('search.search_button') }}
             </a-button>
             <a-button
-              class="advance-action"
               @click="resetSearch"
+              class="advance-action"
             >
               {{ $t('search.reset_button') }}
             </a-button>
             <a-button
+              @click="cancelSearch"
               class="advance-action"
               type="link"
-              @click="cancelSearch"
             >
               {{ $t('search.collapse_button') }} <a-icon type="up" />
             </a-button>
@@ -112,6 +127,7 @@ import { transform1, transform2 } from '~~/model.js';
 
 export default {
   components: {
+    VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
   props: {

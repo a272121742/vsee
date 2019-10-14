@@ -10,7 +10,7 @@
     <a-table
       :loading="loading"
       :data-source="data"
-      :scroll="{ x: true }"
+      :scroll="{ x: 1400 }"
       :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
       @change="handleTableChange"
       row-key="id"
@@ -25,9 +25,9 @@
           <template slot-scope="text">
             <a-tooltip>
               <template #title>
-                {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+                {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
               </template>
-              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+              {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
             </a-tooltip>
           </template>
         </a-table-column>
@@ -76,13 +76,6 @@ export default {
   },
   props: {
     /**
-     * 总数（sync）
-     */
-    total: {
-      type: Number,
-      default: 0
-    },
-    /**
      * 是否显示搜索表单（sync），默认不显示
      */
     showForm: {
@@ -99,6 +92,10 @@ export default {
   },
   data () {
     return {
+      /**
+       * 总数
+       */
+      total: 0,
       /**
        * 列信息
        */
@@ -127,7 +124,8 @@ export default {
       /**
        * 排序字段
        */
-      orderField: ''
+      orderField: '',
+      filters: {}
     };
   },
 
@@ -182,12 +180,13 @@ export default {
       if (!this.loading) {
         this.loading = true;
         const {
-          page, limit, order, orderField
+          page, limit, order, orderField, filters
         } = this;
         this.getData({
-          page, limit, order, orderField, ...config
+          page, limit, order, orderField, ...config, ...filters
         }).then(res => {
           this.$set(this, 'data', res.list);
+          this.total = res.total;
           init && this.$emit('update:total', res.total);
           this.$nextTick(() => {
             this.loading = false;
@@ -210,7 +209,8 @@ export default {
      */
     search (filters) {
       this.page = 1;
-      this.request(filters);
+      this.$set(this, 'filters', filters);
+      this.request();
     },
     /**
      * 隐藏表单，并通知上层组件值更新

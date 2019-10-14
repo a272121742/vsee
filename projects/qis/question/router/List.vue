@@ -75,15 +75,15 @@
           col-update-url="/sys/customlist?listCode=issue-published-columns"
         ></issue-published-table>
       </a-tab-pane>
-      <template
+      <!-- <template
         slot="renderTabBar"
         slot-scope="props, DefaultTabBar"
       >
         <component
-          :is="DefaultTabBar"
-          {...props}
+          v-bind="props"
+          v-bind:is="DefaultTabBar"
         />
-      </template>
+      </template> -->
       <template #tabBarExtraContent>
         <a-button
           v-permission="'issue:list:todo:search'"

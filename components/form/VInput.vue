@@ -1,11 +1,11 @@
 <template>
   <a-input
     ref="input"
-    class="clear-input"
     v-bind="$attrs"
     :value="text"
     v-on="$listeners"
     @change="e => text = e.target.value"
+    class="clear-input"
   >
     <!-- slot继承 -->
     <template
@@ -19,12 +19,12 @@
     </template>
     <template v-if="allowClear">
       <a-icon
-        v-show="text"
         slot="suffix"
+        v-show="text"
+        @click="clear"
         class="allow-clear"
         type="close-circle"
         theme="filled"
-        @click="clear"
       />
     </template>
   </a-input>

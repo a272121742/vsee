@@ -68,9 +68,9 @@ export default {
   /deep/ .affix-header .ant-affix {
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }
-  // 设置所有的affix悬浮层次为5000
+  // 设置所有的affix悬浮层次为5000以上
   /deep/ .affix-header {
-    z-index: 5000;
+    z-index: 6000;
   }
   // 设置内容区域中，多余部分隐藏
   .ant-layout-content {
@@ -81,7 +81,7 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 5000;
+    z-index: 6000;
     text-align: center;
     padding: 8px 0;
     background-color: transparent!important;

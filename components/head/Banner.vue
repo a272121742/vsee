@@ -14,7 +14,16 @@
 
 <script>
 export default {
-  props: ['title', 'desc']
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    desc: {
+      type: String,
+      default: ''
+    }
+  }
 };
 </script>
 

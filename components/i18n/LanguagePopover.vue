@@ -1,8 +1,8 @@
 <template>
   <a-popover class="language-popover">
     <a-menu
-      class="language-menu"
       slot="content"
+      class="language-menu"
     >
       <a-menu-item
         v-for="item in langs"
@@ -22,7 +22,7 @@
 import mixin from './mixin.js';
 export default {
   mixins: [mixin]
-}
+};
 </script>
 
 <style lang="less" scoped>

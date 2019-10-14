@@ -14,4 +14,4 @@ mock.get('/sys/menu/permissions', () => {
       'issue:advance:detail'
     ]
   });
-}, { timeout: 2000 })
+}, { timeout: 2000 });

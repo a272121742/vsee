@@ -16,7 +16,7 @@ export default {
       draftTableConfig: {
         total: 0
       }
-    }
+    };
   },
   methods: {
     changeTab (key) {
@@ -33,7 +33,7 @@ export default {
         query: {
           form: this.$route.path
         }
-      })
+      });
     }
   }
-}
+};

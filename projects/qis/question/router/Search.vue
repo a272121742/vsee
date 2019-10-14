@@ -8,13 +8,14 @@
     <a-divider style="margin: 12px 0 12px 0;"></a-divider>
     <!-- 数据列表 -->
     <issue-table
-      col-update-url="/sys/customlist?listCode=issue-advance-column"
+      @change="handleTableChange"
+
       :data="data"
       :loading="loading"
       :total="total"
       :page="page"
       :page-size.sync="limit"
-      @change="handleTableChange"
+      col-update-url="/sys/customlist?listCode=issue-advance-column"
     >
       <span
         slot="action"
@@ -22,8 +23,8 @@
       >
         <a
           v-permission="'issue:record:detail'"
-          href="javascript:;"
           @click="goToDetail(record.id)"
+          href="javascript:;"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -39,7 +40,7 @@ import issueTableMix from '~~/issue-table.js';
 export default {
   name: 'IssueList',
   mixins: [issueTableMix]
-}
+};
 </script>
 
 <style lang="less" scoped>

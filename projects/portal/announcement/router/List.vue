@@ -5,9 +5,9 @@
       style="margin-top: -24px; margin-left: -2px"
     >
       <a-button
+        @click="() => $router.push({name: 'Home'})"
         icon="rollback"
         type="link"
-        @click="() => $router.push({name: 'Home'})"
       ></a-button>
     </a-affix>
     <a-row :gutter="64">
@@ -17,9 +17,9 @@
         </h2>
         <a-divider></a-divider>
         <a-list
-          size="small"
           :split="false"
           :data-source="data"
+          size="small"
         >
           <a-list-item
             slot="renderItem"
@@ -61,7 +61,7 @@ export default {
       total: 0,
       selected: 0,
       announcement: {}
-    }
+    };
   },
   created () {
     this.request();
@@ -72,7 +72,7 @@ export default {
       this.getAnnouncementPage({ limit: 15 }).then(res => {
         this.data = res.list;
         this.total = res.total;
-      })
+      });
     },
     loadAnnouncement (id) {
       this.getAnnouncement(id).then(res => {
@@ -83,7 +83,7 @@ export default {
       return moment(str).format('YYYY-MM-DD');
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

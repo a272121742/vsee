@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import $ from '@lib/ajax';
 import fetch from '@mix/fetch.js';
 
 export default {

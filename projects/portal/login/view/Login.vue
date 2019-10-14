@@ -38,7 +38,7 @@ export default {
     LanguageRadio: () => import('@comp/i18n/LanguageRadio'),
     LoginForm: () => import('./Form.vue')
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

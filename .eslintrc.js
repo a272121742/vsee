@@ -14,8 +14,11 @@ module.exports = {
   ],
   parserOptions: {
     parser: "babel-eslint",
-    ecmaVersion: 2018,
+    ecmaVersion: 6,
     sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    }
   },
   plugins: [
     'babel',
@@ -36,6 +39,7 @@ module.exports = {
     "no-use-before-define": ["error", { "functions": false }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "no-void": 0,
+    "func-names": ["error", "as-needed"],
     // 函数定义后必须空格
     "space-before-function-paren": ["error", "always"],
     "indent": ["error", 2], // JavaScript代码强制使用一致的缩进：2格缩进
@@ -43,14 +47,17 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-unused-vars': 1,
+    'no-shadow': ['error', { "hoist": "functions" }],
     // vue文件的template约束
     "vue/html-indent": ["error", 2],
+    "vue/require-component-is": 0,
     "import/no-extraneous-dependencies": 0,
     "import/extensions": 0,
     "no-param-reassign": ["error", { "props": false }],
     "vue/no-parsing-error": [2, {
       "x-invalid-end-tag": false
     }],
-    "vue/html-self-closing": 0,
+    "vue/html-self-closing": 0
+    
   }
 };

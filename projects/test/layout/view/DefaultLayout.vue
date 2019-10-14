@@ -59,7 +59,7 @@ export default {
   }
   // 设置所有的affix悬浮层次为5000
   /deep/ .ant-affix {
-    z-index: 5000;
+    z-index: 6000;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
   }
   .ant-layout-content {

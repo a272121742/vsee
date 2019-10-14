@@ -1,33 +1,39 @@
 <template>
   <a-input
-    class="clear-password"
+    ref="input"
     v-bind="$attrs"
     v-on="$listeners"
     :value="text"
     :type="type"
     @change="e => text = e.target.value"
-    ref="input"
+    class="clear-password"
   >
     <!-- slot继承 -->
-    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope"/>
+    <template
+      v-for="(_, slot) of $scopedSlots"
+      v-slot:[slot]="scope"
+    >
+      <slot
+        :name="slot"
+        v-bind="scope"
+      />
     </template>
     <template v-if="allowClear">
       <a-icon
-        v-show="text"
-        class="allow-clear"
         slot="suffix"
+        v-show="text"
+        @click="clear"
+        class="allow-clear"
         type="close-circle"
         theme="filled"
-        @click="clear"
       />
     </template>
     <template>
       <a-icon
         slot="suffix"
         :type="type ? 'eye-invisible' : 'eye'"
-        theme="filled"
         @click="changeInvisible"
+        theme="filled"
       />
     </template>
   </a-input>
@@ -44,7 +50,7 @@ export default {
      */
     value: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     /**
      * 是否允许自动清除
@@ -59,7 +65,7 @@ export default {
     return {
       text: value,
       type: 'password'
-    }
+    };
   },
   beforeCreate () {
     // 必须删除
@@ -70,7 +76,7 @@ export default {
      * 清除
      */
     clear () {
-      this.$emit('change', {target: {value: null}});
+      this.$emit('change', { target: { value: null } });
       this.text = null;
     },
     /**
@@ -80,7 +86,7 @@ export default {
       this.type = this.type ? '' : 'password';
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

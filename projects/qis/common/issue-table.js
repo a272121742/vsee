@@ -34,7 +34,7 @@ export default {
        */
       orderField: '',
       filters: {}
-    }
+    };
   },
   created () {
     this.request();
@@ -57,7 +57,7 @@ export default {
           this.total = res.total;
           this.$nextTick(() => {
             this.loading = false;
-          })
+          });
         });
       }
     },
@@ -71,7 +71,7 @@ export default {
     search (filters) {
       this.page = 1;
       this.$set(this, 'filters', filters);
-      this.request(filters);
+      this.request();
     },
     // 查看详情
     goToDetail (idValue) {
@@ -86,4 +86,4 @@ export default {
       });
     }
   }
-}
+};

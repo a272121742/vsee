@@ -24,11 +24,11 @@
       class="ant-input-suffix"
     >
       <a-icon
-        v-show="text"
         slot="suffix"
+        v-show="text"
+        @click="clear"
         type="close-circle"
         theme="filled"
-        @click="clear"
       />
     </span>
   </div>

@@ -6,8 +6,14 @@
       v-on="$listeners"
     >
       <!-- slot继承 -->
-      <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-        <slot :name="slot" v-bind="scope"/>
+      <template
+        v-for="(_, slot) of $scopedSlots"
+        v-slot:[slot]="scope"
+      >
+        <slot
+          :name="slot"
+          v-bind="scope"
+        />
       </template>
     </component>
   </keep-alive>
@@ -18,8 +24,14 @@
     v-on="$listeners"
   >
     <!-- slot继承 -->
-    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope"/>
+    <template
+      v-for="(_, slot) of $scopedSlots"
+      v-slot:[slot]="scope"
+    >
+      <slot
+        :name="slot"
+        v-bind="scope"
+      />
     </template>
   </component>
 </template>
@@ -60,7 +72,7 @@ export default {
     return {
       // 构建异步组件 - 懒加载实现
       AsyncComponent: factory(this.path, this.delay, this.timeout)
-    }
+    };
   },
   watch: {
     path () {
@@ -72,5 +84,5 @@ export default {
       this.AsyncComponent = factory(path, this.delay, this.timeout);
     }
   }
-}
+};
 </script>

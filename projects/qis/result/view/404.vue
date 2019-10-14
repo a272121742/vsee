@@ -15,17 +15,17 @@
         </p>
         <div class="error404-btn-con">
           <a-button
+            @click="goHome"
             size="large"
             style="width: 200px;"
-            @click="goHome"
           >
             返回首页
           </a-button>
           <a-button
+            @click="goBack"
             size="large"
             style="width: 200px;margin-left: 40px;"
             type="primary"
-            @click="goBack"
           >
             返回上一页
           </a-button>

@@ -1,9 +1,9 @@
 <template>
   <a-card :title="$t('title.todo')">
     <a-list
-      size="small"
       :split="false"
       :data-source="data"
+      size="small"
     >
       <a-list-item
         slot="renderItem"
@@ -33,7 +33,7 @@ export default {
     return {
       data: [],
       total: 0
-    }
+    };
   },
   created () {
     this.request();
@@ -50,7 +50,7 @@ export default {
       return moment(str).format('YYYY-MM-DD');
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

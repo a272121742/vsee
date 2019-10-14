@@ -2,10 +2,10 @@
   <a-input
     ref="input"
     v-bind="$attrs"
-    class="clear-input"
     :value="text"
     v-on="$listeners"
     @change="e => text = e.target.value"
+    class="clear-input"
   >
     <!-- slot继承 -->
     <template
@@ -21,9 +21,9 @@
       <a-icon
         slot="suffix"
         v-show="text"
+        @click="clear"
         class="allow-clear"
         type="close-circle"
-        @click="clear"
         theme="filled"
       />
     </template>
@@ -90,7 +90,7 @@ export default {
       this.$emit('change', { target: { value: null } });
       this.text = null;
     },
-    loadCaptche (first) {
+    loadCaptche () {
       if (!this.spinning) {
         this.spinning = true;
         if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(this.url)) {

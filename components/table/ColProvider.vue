@@ -27,16 +27,16 @@
   >
     <a-popover
       v-model="visible"
-      placement="bottom"
-      trigger="click"
       :auto-adjust-overflow="false"
       :arrow-point-at-center="true"
+      placement="bottom"
+      trigger="click"
     >
       <a-card
         slot="content"
-        class="col-provider-card"
         :title="title || $t('title')"
         :bordered="false"
+        class="col-provider-card"
         style="width: 320px;"
       >
         <span slot="extra">
@@ -62,10 +62,10 @@
         <a-divider style="" />
         <a-row>
           <a-button
+            @click="commit"
+            :disabled="!disableCommit && !modified"
             type="primary"
             style="margin-left: 24px"
-            :disabled="!disableCommit && !modified"
-            @click="commit"
           >
             {{ $t('button_save') }}
           </a-button>
@@ -73,17 +73,17 @@
             {{ $t('button_cancel') }}
           </a-button>
           <a-button
+            @click="recover"
             :disabled="!modified"
             style="float: right; margin-right: 24px;"
-            @click="recover"
           >
             {{ $t('button_reset') }}
           </a-button>
         </a-row>
       </a-card>
       <a-icon
-        type="setting"
         @click="show"
+        type="setting"
       ></a-icon>
     </a-popover>
   </div>
@@ -194,13 +194,13 @@ export default {
      * 向后抬发起请求，如果已经配置了URL，则返回服务端数据，否则返回`undefined`
      */
     fetch () {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (this.url && process.env.NODE_ENV === 'production') {
           $.get(this.url, { listCode: this.id }).then(res => {
             resolve(JSON.parse(res.expression));
-          }).catch(err => {
+          }).catch(() => {
             resolve();
-          })
+          });
         } else {
           resolve();
         }
@@ -240,11 +240,11 @@ export default {
       if (!this.disableCommit) {
         this.disableCommit = true;
         if (this.url) {
-          $.post(this.url, { listCode: this.id, expression: JSON.stringify(this.columnList) }).then(res => {
+          $.post(this.url, { listCode: this.id, expression: JSON.stringify(this.columnList) }).then(() => {
             this.cache = clone(this.columnList);
             this.mapping(clone(this.columnList));
             this.$message.success(this.$t('save_success'));
-          }).catch(err => {
+          }).catch(() => {
             this.$message.error(this.$t('save_failed'));
             this.mapping(clone(this.cache));
             this.recover();
@@ -253,19 +253,19 @@ export default {
             this.hide();
           });
         } else {
-          const columnList = clone(this.columnList)
+          const columnList = clone(this.columnList);
           this.mapping(columnList);
           this.cache = columnList;
           this.hide();
           this.$nextTick(() => {
             this.$message.success(this.$t('columns_updated'));
             this.disableCommit = false;
-          })
+          });
         }
       }
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

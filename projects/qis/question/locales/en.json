@@ -58,7 +58,9 @@
     "vehicleModelName": "Vehicle Model",
     "vinNo": "VIN Number",
     "workConditionInfo": "Working condition",
-    "champion": "champion"
+    "champion": "champion",
+    "closeDate": "Close Date",
+    "planCloseDate": "Plan Close Date"
   },
   "search": {
     "find_button": "Search",
@@ -102,6 +104,9 @@
     "download": "Download"
   },
   "issue_workflow": {
+    "D": {
+      "processName": "Draft"
+    },
     "D0": {
       "processName": "Issue Definiton",
       "publish": "Publish or not",

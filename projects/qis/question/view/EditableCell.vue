@@ -9,9 +9,9 @@
         @change="handleChange"
         @pressEnter="check"
       /><a-icon
+        @click="check"
         type="check"
         class="editable-cell-icon-check"
-        @click="check"
       />
     </div>
     <div
@@ -20,9 +20,9 @@
     >
       {{ value || ' ' }}
       <a-icon
+        @click="edit"
         type="edit"
         class="editable-cell-icon"
-        @click="edit"
       />
     </div>
   </div>

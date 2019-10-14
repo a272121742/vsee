@@ -48,7 +48,7 @@ export default {
         scopedSlots: { customRender: 'en' },
         width: 260
       }]
-    }
+    };
   },
   created () {
     const msg = this.$i18n.messages;
@@ -61,5 +61,5 @@ export default {
       this.$set(this, 'data', dataSource.filter(item => ~item.key.indexOf(e.target.value)));
     }
   }
-}
+};
 </script>

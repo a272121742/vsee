@@ -35,5 +35,5 @@ import untwice from '@mix/untwice.js';
 
 export default {
   mixins: [untwice]
-}
+};
 </script>

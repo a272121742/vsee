@@ -1,11 +1,11 @@
 <template>
   <a-table
-    row-key="id"
     :data-source="data"
     :loading="loading"
-    :scroll="{ x: true }"
+    :scroll="{ x: 1400 }"
     :pagination="{total: total, current: page, pageSize, showTotal, showQuickJumper: true}"
     v-on="$listeners"
+    row-key="id"
   >
     <template v-for="col in columns">
       <a-table-column
@@ -17,9 +17,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+              {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+            {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -42,8 +42,8 @@
       </template>
       <template slot-scope="text, record">
         <slot
-          name="action"
           v-bind="record"
+          name="action"
         ></slot>
       </template>
     </a-table-column>
@@ -56,7 +56,7 @@ import { issueColumns } from '~~/model.js';
 
 export default {
   components: {
-    ColProvider: () => import('@comp/table/ColProvider.vue')
+    // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
   props: {
     /**

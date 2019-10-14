@@ -60,7 +60,7 @@
             col-update-url="/sys/customlist?listCode=issue-draft-columns"
           ></issue-draft-table>
         </a-tab-pane>
-        <template
+        <!-- <template
           slot="renderTabBar"
           slot-scope="props, DefaultTabBar"
         >
@@ -68,7 +68,7 @@
             :is="DefaultTabBar"
             {...props}
           />
-        </template>
+        </template> -->
         <template #tabBarExtraContent>
           <a-button
             v-permission="'issue:home:todo:search'"

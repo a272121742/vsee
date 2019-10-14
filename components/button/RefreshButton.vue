@@ -1,10 +1,10 @@
 <template>
   <a-button
+    @click="refresh"
     ghost
     shape="circle"
     type="primary"
     icon="reload"
-    @click="refresh"
   >
     <!-- slot继承 -->
     <template

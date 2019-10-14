@@ -70,7 +70,7 @@
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
-                <a href="/">
+                <a @click.stop.prevent="toPortal">
                   {{ $t('user_action.to_portal') }}
                 </a>
               </a-menu-item>

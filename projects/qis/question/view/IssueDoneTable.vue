@@ -2,11 +2,11 @@
   <!-- 表格 -->
   <a-table
     :loading="loading"
-    row-key="id"
     :data-source="data"
-    :scroll="{ x: true }"
+    :scroll="{ x: 1250 }"
     :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
     @change="handleTableChange"
+    row-key="id"
   >
     <template v-for="col in columns">
       <a-table-column
@@ -18,9 +18,9 @@
         <template slot-scope="text">
           <a-tooltip>
             <template #title>
-              {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+              {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
             </template>
-            {{ col.dataIndex === 'status' ? (text + '-' + $t(`issue_workflow.${text}.processName`)) : text }}
+            {{ col.dataIndex === 'status' ? ((text === 'D' ? '' : `${text}-`) + $t(`issue_workflow.${text}.processName`)) : text }}
           </a-tooltip>
         </template>
       </a-table-column>
@@ -63,7 +63,7 @@ const { mapActions } = createNamespacedHelpers('question');
 export default {
   name: 'IssueDraftTable',
   components: {
-    ColProvider: () => import('@comp/table/ColProvider.vue')
+    // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
   props: {
     /**

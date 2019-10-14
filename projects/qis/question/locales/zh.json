@@ -58,7 +58,9 @@
     "vehicleModelName": "车型名称",
     "vinNo": "VIN",
     "workConditionInfo": "工况信息",
-    "champion": "责任人"
+    "champion": "责任人",
+    "closeDate": "关闭日期",
+    "planCloseDate": "计划关闭日期"
   },
   "search": {
     "find_button": "查询",
@@ -102,6 +104,9 @@
     "download": "下载文件"
   },
   "issue_workflow": {
+    "D": {
+      "processName": "草稿"
+    },
     "D0": {
       "processName": "问题立项",
       "publish": "是否立项",

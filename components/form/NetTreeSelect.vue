@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import fetch from '@mix/fetch.js';
+// import fetch from '@mix/fetch.js';
 
 export default {
   props: {
@@ -35,7 +35,7 @@ export default {
        * 数据项
        */
       data: []
-    }
+    };
   },
   created () {
     const { url, delay } = this;
@@ -45,7 +45,7 @@ export default {
   methods: {
 
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

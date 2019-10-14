@@ -1,10 +1,15 @@
 <template>
-  <a-radio-group 
-    size="small" 
-    :default-value="value" 
-    buttonStyle="solid"
-    @change="updateLanguage">
-    <a-radio-button v-for="item in langs" :key="item.lang" :value="item.lang">
+  <a-radio-group
+    :default-value="value"
+    @change="updateLanguage"
+    size="small"
+    button-style="solid"
+  >
+    <a-radio-button
+      v-for="item in langs"
+      :key="item.lang"
+      :value="item.lang"
+    >
       {{ item.text }}
     </a-radio-button>
   </a-radio-group>
@@ -23,10 +28,10 @@ export default {
   methods: {
     updateLanguage (e) {
       const locale = this.locale[e.target.value];
-      this.changeLanguage({key: locale.lang}, {name: locale.name});
+      this.changeLanguage({ key: locale.lang }, { name: locale.name });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import $ from '@lib/ajax.js';
 import fetch from '@mix/fetch.js';
 
 export default {
@@ -37,7 +36,7 @@ export default {
     this.loadCaptche();
   },
   methods: {
-    loadCaptche (first) {
+    loadCaptche () {
       if (!this.spinning) {
         this.spinning = true;
         if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(this.url)) {

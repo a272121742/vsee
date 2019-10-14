@@ -12,14 +12,14 @@ const code = {
 const title = {
   title: 'title',
   dataIndex: 'title',
-  width: 200,
+  width: 240,
   scopedSlots: { customRender: 'title' }
 };
 // 所属系统
 const faultTreeIds1Name = {
   title: 'faultTreeIds1',
   dataIndex: 'faultTreeIds1Name',
-  width: 130,
+  width: 160,
   scopedSlots: { customRender: 'faultTreeIds1' }
 };
 // 问题等级
@@ -35,21 +35,21 @@ const gradeName = {
 const sourceName = {
   title: 'sourceName',
   dataIndex: 'sourceName',
-  width: 140,
+  width: 120,
   scopedSlots: { customRender: 'sourceName' }
 };
 // 问题阶段
 const projectPhase = {
   title: 'projectPhase',
   dataIndex: 'projectPhaseName',
-  width: 140,
+  width: 120,
   scopedSlots: { customRender: 'projectPhase' }
 };
 // 解决进度
 const status = {
   title: 'status',
   dataIndex: 'status',
-  width: 110,
+  width: 120,
   align: 'center',
   scopedSlots: { customRender: 'status' },
   sorter: true

@@ -11,9 +11,9 @@
     </p>
     <div class="backBtnDiv">
       <a-button
+        @click="goBack"
         type="primary"
         class="backBtn"
-        @click="goBack"
       >
         返回
       </a-button>
@@ -23,7 +23,12 @@
 <script>
 export default {
   name: 'QuestionSuccess',
-  props: ['name'],
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       successText: '保存成功',
