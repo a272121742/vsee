@@ -1,6 +1,6 @@
 <template>
   <a-form
-    v-show="!hide"
+    v-show="showForm"
     :form="form"
     layout="inline"
   >
@@ -10,7 +10,7 @@
       >
         <!-- 问题编号 -->
         <a-form-item :label="$t('issue.code')">
-          <v-input
+          <a-input
             v-decorator="[
               'code'
             ]"
@@ -31,7 +31,6 @@
             :transform="transformField"
             v-decorator="['vehicleModelId']"
             allow-clear
-            show-search
             url="/masterdata/v1/vehiclemodel"
           />
         </a-form-item>
@@ -42,13 +41,12 @@
         <!-- 问题等级 -->
         <a-form-item :label="$t('issue.grade')">
           <net-select
+            v-decorator="['grade']"
             :transform="transformGrade"
             :filter-option="filterOption"
             :placeholder="$t('search.please_select') + $t('issue.grade')"
-            v-decorator="['grade']"
-            allow-clear
-            show-search
             url="/sys/dict?dictType=issue_grade"
+            allow-clear
           />
         </a-form-item>
       </a-col>
@@ -59,13 +57,11 @@
         <a-form-item :label="$t('issue.source')">
           <net-select
             :filter-option="filterOption"
-            :cache="false"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
             :transform="transformSource"
             v-decorator="['source']"
             allow-clear
-            show-search
             url="/sys/dict?dictType=issue_source"
           />
         </a-form-item>
@@ -124,25 +120,27 @@
 import { clone } from 'ramda';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 import { transform1, transform2 } from '~~/model.js';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
+
 
 export default {
   components: {
-    VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
-  props: {
-    hide: {
-      type: Boolean,
-      default: true
-    }
-  },
+  mixins: [moduleDynamicCache('question')],
   data () {
     return {
       form: null,
       record: {}
     };
   },
+  computed: {
+    showForm () {
+      return this.advancePageConfig.showForm;
+    }
+  },
   created () {
+    this.record = this.advancePageConfig.searchData;
     this.form = this.$form.createForm(this, {
       mapPropsToFields: this.mapPropsToFields,
       onValuesChange: autoUpdateFileds(this, 'record')
@@ -168,6 +166,7 @@ export default {
      * 重置搜索内容
      */
     resetSearch () {
+      this.changeAdvancePageConfig({ searchData: {} });
       this.$set(this, 'record', {});
       this.form.updateFields(this.mapPropsToFields());
       this.submitSearch();
@@ -176,8 +175,8 @@ export default {
      * 取消搜索
      */
     cancelSearch () {
+      this.changeAdvancePageConfig({ showForm: false });
       this.resetSearch();
-      this.$emit('hidden');
     },
     // 本地搜索通用函数
     filterOption (input, option) {

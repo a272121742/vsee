@@ -3,6 +3,16 @@ export const LANGUAGE_KEY = 'language';
 export const LANGUAGE_DEFAULT = 'zh_CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
 
+export const AUTH_API = {
+  login: '',
+  logout: ''
+};
+export const GLOBAL_API = {
+  user: ['/sys/user/info', { appCode: 'ISSUE' }],
+  menus: ['/sys/menu/nav', { appCode: 'ISSUE' }],
+  permissions: ['/sys/menu/permissions', { appCode: 'ISSUE' }]
+};
+
 /**
  * 排除不运行的模块
  */

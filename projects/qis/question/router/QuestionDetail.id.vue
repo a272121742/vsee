@@ -1,14 +1,17 @@
 <template>
   <div id="components-form-demo-advanced-search">
     <a-modal
+      slot="title"
       :visible="visibleRes"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
       @ok="handleUser"
       @cancel="handleCancel"
-      title="再分配"
-      style="height:232px;"
+      style="height:232px;top:140px;"
     >
+      <template #title>
+        <span class="reviewTitle"><b>再分配</b></span>
+      </template>
       <a-form
         :form="rediStribution"
         class="ant-advanced-search-form"
@@ -23,6 +26,7 @@
                 :filter-option="filterOption"
                 :allow-clear="true"
                 @change="owerDeptChange"
+                :disabled="depDisable"
                 url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                 placeholder="请选择"
                 style="width:272px;height:32px;"
@@ -58,12 +62,16 @@
       </a-form>
     </a-modal>
     <a-modal
+      slot="title"
       :visible="visibleReject"
       :mask-closable="false"
-      @ok="RejectSubmit"
+      @ok="rejectSubmit"
       @cancel="CancelReject"
-      title="驳回（7钻分析之前)"
+      style="top:140px;"
     >
+      <template #title>
+        <span class="reviewTitle"><b>再分析</b></span><span class="reviewSubtitle">(7钻分析之前)</span>
+      </template>
       <a-form
         :form="rejectForm"
         class="ant-advanced-search-form"
@@ -73,7 +81,7 @@
           :span="24"
         >
           <a-form-item
-            :label="`理由`"
+            :label="`再分析理由`"
           >
             <v-textarea
               v-decorator="[ 'commentReject',{rules: [{ required: true, min: 1, message: '请选择理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
@@ -290,7 +298,7 @@
           <a-row v-show="false">
             <a-col :span="17">
               <a-form-item :label="`id`">
-                <v-input
+                <a-input
                   v-decorator="[
                     'id',
                   ]"
@@ -303,7 +311,7 @@
           <a-row v-show="fileNameFlag">
             <a-col :span="22">
               <a-form-item :label="`文件名称`">
-                <v-input
+                <a-input
                   v-decorator="[
                     'fileName',
                     {rules:[{required: fileNameFlag,message: '请输入文件名称'}]}
@@ -438,7 +446,6 @@
                           <a
                             :title="file.originalFilename"
                             :href="getDownloadURL(file.path, file.originalFilename)"
-                            target="_blank"
                             rel="noopener noreferrer"
                             class="ant-upload-list-item-name"
                           >
@@ -466,7 +473,8 @@
             @click="goBack"
             class="backBtn"
           >
-            <a-icon type="rollback" />
+            <img src="/static/question/back.png">
+            <!-- <a-icon type="rollback" /> -->
             返回
           </a-button>
         </div>
@@ -533,7 +541,7 @@
             <img
               v-if="pagePermission.A1_3||pagePermission.A2_3"
               @click="editDetail"
-              src="/static/question/editIcon.png"
+              src="/static/question/editIcon1018.svg"
               class="editIcon"
             >
             <div class="detailText clearfix">
@@ -697,7 +705,6 @@
                                 <a
                                   :title="file.originalFilename"
                                   :href="getDownloadURL(file.path, file.originalFilename)"
-                                  target="_blank"
                                   rel="noopener noreferrer"
                                   class="ant-upload-list-item-name"
                                 >
@@ -926,36 +933,43 @@
                   @click="goto(0)"
                   title="D0-问题定义"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(1)"
                   title="D1-责任判定"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(2)"
                   title="D2-原因分析"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(3)"
                   title="D3-措施制定"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(4)"
                   title="D4-措施实施"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(5)"
                   title="D5-效果验证"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
                 <a-step
                   @click="goto(6)"
                   title="D6-问题关闭"
                   style="cursor:pointer;"
+                  class="stepTitle"
                 />
               </a-steps>
             </div>
@@ -964,7 +978,10 @@
               class="Dcontent D0content"
             >
               <div v-if="pagePermission.A0_1_3">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:110px;"
+                >
                   <span></span>
                 </div>
                 <a-row>
@@ -1024,7 +1041,7 @@
                     </a-col>
                   </a-row>
                 </div>
-                <a-row>
+                <a-row v-if="satisfyFlag">
                   <a-col :span="21">
                     <!-- 问题定义 -->
                     <a-form-item :label="`附件`">
@@ -1055,7 +1072,7 @@
               <div v-if="pagePermission.A0_2_2||pagePermission.A0_1_2">
                 <div
                   class="triangle_border_up"
-                  style="left:80px;"
+                  style="left:110px;"
                 >
                   <span></span>
                 </div>
@@ -1091,7 +1108,7 @@
                     </a-col>
                   </a-row>
                 </div>
-                <a-row>
+                <a-row v-if="problemDefinitionData.isProject==='1'">
                   <a-col :span="21">
                     <a-form-item
                       :label="`附件`"
@@ -1138,13 +1155,13 @@
                     该问题正在立项中
                   </p>
                   <p v-if="pagePermission.A1_2_2">
-                    该问题责任判定中
+                    该问题正在责任判定中
                   </p>
                   <p v-if="pagePermission.A2_4_2">
-                    问题原因分析填写中
+                    问题原因正在分析填写中
                   </p>
                   <p v-if="pagePermission.A3_4_2">
-                    问题措施制定中
+                    问题措施正在制定中
                   </p>
                   <p v-if="pagePermission.A4_4_2">
                     该问题措施实施填写中
@@ -1165,7 +1182,7 @@
               <div>
                 <div
                   class="triangle_border_up"
-                  style="left:216px;"
+                  style="left:250px;"
                 >
                   <span></span>
                 </div>
@@ -1543,7 +1560,7 @@
             >
               <div
                 class="triangle_border_up"
-                style="left:216px;"
+                style="left:250px;"
               >
                 <span></span>
               </div>
@@ -1649,7 +1666,7 @@
               <div v-if="pagePermission.A2_1_3">
                 <div
                   class="triangle_border_up"
-                  style="left:352px;"
+                  style="left:388px;"
                 >
                   <span></span>
                 </div>
@@ -1713,7 +1730,7 @@
               <div v-if="pagePermission.A2_1_2">
                 <div
                   class="triangle_border_up"
-                  style="left:352px;"
+                  style="left:388px;"
                 >
                   <span></span>
                 </div>
@@ -1820,6 +1837,7 @@
               <div
                 v-if="pagePermission.A3_3_2"
                 class="examineResult"
+                style="left:530px;"
               >
                 <div class="triangle_border_up">
                   <span></span>
@@ -1868,7 +1886,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`小批量验证`">
-                      <v-input
+                      <a-input
                         v-decorator="[
                           'smallBatchValidation',
                         ]"
@@ -1958,7 +1976,10 @@
               class="Dcontent D3back"
             >
               <div v-if="pagePermission.A3_1_2&&statusCode.statusNewCode!=400100">
-                <div class="triangle_border_up">
+                <div
+                  class="triangle_border_up"
+                  style="left:530px;"
+                >
                   <span></span>
                 </div>
                 <!-- <div class="Dtitle">
@@ -2079,7 +2100,7 @@
               >
                 <div
                   class="triangle_border_up"
-                  style="left:624px;"
+                  style="left:670px;"
                 >
                   <span></span>
                 </div>
@@ -2181,7 +2202,7 @@
               <div v-if="pagePermission.A4_1_2">
                 <div
                   class="triangle_border_up"
-                  style="left:624px;"
+                  style="left:670px;"
                 >
                   <span></span>
                 </div>
@@ -2289,7 +2310,7 @@
               >
                 <div
                   class="triangle_border_up"
-                  style="left:760px;"
+                  style="left:810px;"
                 >
                   <span></span>
                 </div>
@@ -2343,7 +2364,7 @@
                 <a-row style="margin-left:220px;">
                   <a-col :span="8">
                     <a-form-item :label="`断点VIN`">
-                      <v-input
+                      <a-input
                         v-decorator="[
                           'breakpointVin',
                           {rules: [{ validator: vinVer }]}
@@ -2366,7 +2387,10 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <div class="fileUpdate clearfix">
+                <div
+                  class="fileUpdate clearfix"
+                  style="margin-bottom:24px;"
+                >
                   <a-col :span="21">
                     <a-form-item
                       :label="`涉及文件更新:`"
@@ -2426,13 +2450,33 @@
             </div>
 
             <div
-              v-if="backCurrent==5&&pagePermission.A5_1_2&&statusCode.statusNewCode!=600100"
+              v-if="(backCurrent==5&&(pagePermission.A5_1_2||pagePermission.A5_7_2)&&statusCode.statusNewCode!=600100)"
               class="Dcontent D5back"
             >
+              <div
+                v-if="statusCode.statusMaxCode === '700200' && pagePermission.A5_7_2"
+                class="examineResult"
+              >
+                <div
+                  style="left:760px;"
+                >
+                  <span></span>
+                </div>
+                <div>
+                  <span>加签领导审阅结果:</span>
+                </div>
+                <a-form-item :label="`是否审阅通过`">
+                  <p>不通过</p>
+                </a-form-item>
+                <a-form-item :label="`不通过理由`">
+                  <p>{{ examineReason }}</p>
+                </a-form-item>
+              </div>
+
               <div v-if="pagePermission.A5_1_2">
                 <div
                   class="triangle_border_up"
-                  style="left:760px;"
+                  style="left:810px;"
                 >
                   <span></span>
                 </div>
@@ -2609,7 +2653,7 @@
               <div v-if="pagePermission.A6_1_3">
                 <div
                   class="triangle_border_up"
-                  style="left:896px;"
+                  style="left:950px;"
                 >
                   <span></span>
                 </div>
@@ -2631,7 +2675,8 @@
                     <a-form-item :label="`是否加签`">
                       <a-radio-group
                         v-decorator="[
-                          'isSign'
+                          'isSign',
+                          {rules: [{ required: true, message: '请选择是否加签' }]}
                         ]"
                         :options="optionRadio"
                         @change="apostilleChange"
@@ -2657,13 +2702,13 @@
               </div>
             </div>
             <div
-              v-if="(stepCurrent===6&&backCurrent==6)&&(pagePermission.A6_1_2||pagePermission.A6_2_3||pagePermission.A6_2_2)"
+              v-if="(backCurrent==6)&&(pagePermission.A6_1_2||pagePermission.A6_2_3||pagePermission.A6_2_2)&&statusCode.statusNewCode!=700100"
               class="Dcontent D6back"
             >
               <div v-if="pagePermission.A6_1_2">
                 <div
                   class="triangle_border_up"
-                  style="left:896px;"
+                  style="left:950px;"
                 >
                   <span></span>
                 </div>
@@ -2697,24 +2742,47 @@
                 class="examine"
               >
                 <!-- <div class="Dtitle">
-              <span>加签审阅</span>
+              <span>加签审阅可驳回至效果验证SM审核</span>
             </div> -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`是否审阅`">
+                    <div class="Dtitle examineTitle">
+                      <span>审核</span>
+                    </div>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="21">
+                    <a-form-item :label="`是否审阅通过`">
                       <a-radio-group
                         v-decorator="[
-                          'Review',
-                          {rules: [{
-                            required: true, message:'选择是否审阅'
-                          }]}
+                          'isPass',
+                          {rules: [{ required: true, message: '请选择是否通过审核' }]}
                         ]"
-                        :options="ReviewRadio"
+                        :options="recurrencePreventionRadio"
                       />
                     </a-form-item>
                   </a-col>
                 </a-row>
+
                 <a-row>
+                  <a-col :span="21">
+                    <a-form-item
+                      v-if="record.isPass==='0'"
+                      :label="`不通过理由`"
+                    >
+                      <v-textarea
+                        v-decorator="[
+                          'comment',
+                          {rules: [{ required: true, message: '请输入不通过理由' }]}
+                        ]"
+                        placeholder="请输入"
+                        style="width:572px;height:88px;"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row v-if="record.isPass==='1'">
                   <a-col :span="21">
                     <a-form-item :label="`备注`">
                       <v-textarea
@@ -2762,10 +2830,14 @@
         v-if="pagePermission.A4_2"
         class="shadown-block-normal ant-advanced-search-form"
       >
-        <a-collapse :bordered="false">
+        <a-collapse
+          :bordered="false"
+          default-active-key="0"
+        >
           <a-collapse-panel
             key="0"
             header="操作记录"
+            class="recordTitle"
           >
             <!-- 操作记录表格 -->
             <div id="fileAnchor">
@@ -2918,7 +2990,7 @@ const columnsAnalysis = [{
 const columnsUpdate = [{
   title: '文件名称',
   dataIndex: 'fileName',
-  align: 'center',
+  align: 'left',
   scopedSlots: {
     customRender: 'fileName'
   }
@@ -2960,7 +3032,6 @@ export default {
   components: {
     // EditableCell: () => import('~/question/view/EditableCell'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
-    VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
@@ -3031,6 +3102,7 @@ export default {
       optCounterD5: '',
       optCounterD6: '',
       icaOptCounter: '',
+      depDisable: false, // 再分配责任部门下拉是否禁用
       columns,
       columnsRecord,
       columnsAnalysis,
@@ -3099,7 +3171,7 @@ export default {
       idReason: '', // 原因分析id
       idEffct: '', // 效果验证id
       idClose: '', // 关闭id
-      conActionFlag: true, // 围堵措施是否显示表示
+      conActionFlag: false, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
       showMoreFlag: false, // 查看更多
       detailList: [],
@@ -3171,7 +3243,7 @@ export default {
         isProject: '1', //  是否满足立项条件
         dissatisfaction: '', // 不满足理由
         Remarks: '', // 备注
-        isNeedIca: '1', // 是否需要围堵措施
+        isNeedIca: '0', // 是否需要围堵措施
         icaDescriptionD1: '', // 围堵措施
         // D1
         owerDeptLv1: '', // 责任部门
@@ -3213,7 +3285,7 @@ export default {
         breakpointDate: null,
         proposerVerification: '',
         // D6
-        recurrencePrevention: 0,
+        recurrencePrevention: '1',
         isSign: '0',
         signLeaderId: '',
         Review: '1',
@@ -3428,12 +3500,11 @@ export default {
     handleReject () {
       this.visibleReject = true;
     },
-    RejectSubmit () {
+    rejectSubmit () {
       this.visibleReject = false;
       this.isCheckError = '1';
       const data = this.formDcontent.getFieldsValue();
       const resComment = this.rejectForm.getFieldsValue().commentReject;
-      const passFlag = '1';
       const transData = {
         businessKey: this.id, // 问题id
         businessTitle: data.title, // 问题title
@@ -3451,7 +3522,7 @@ export default {
           isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName
               === 'B') ? '1' : '0', // 是否直接极端严重事情
           isEnd: this.record.isClose, // 是否关闭
-          isPass: data.verifySeven || this.record.isPass || passFlag, // 审核是否通过
+          isPass: 1, // 再分析审核默认通过
           isQZEnd: data.endSeven, // 是否结束七钻
           isHaveCO: this.sysUser.coChair == null ? '0' : '1',
           isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName === 'B') ? '1'
@@ -3501,7 +3572,7 @@ export default {
     selectOptionSingn (input) {
       const optionArray = [{
         value: input.id,
-        label: input.username
+        label: input.realName
       }];
         // input.forEach((item) => {
         //   optionArray.push({
@@ -3592,19 +3663,19 @@ export default {
         } else if (param.isUpdae === '1') {
           this.updateContentFlag = true;
         }
+        this.updateFiles = param.files.map(file => {
+          return {
+            id: file.id,
+            uid: file.id,
+            name: file.originalFilename,
+            url: file.path,
+            size: file.size,
+            status: 'done'
+          };
+        });
         if (param.delFlag === '0') {
           this.fileNameFlag = false;
           this.fileModalTitle = param.fileName;
-          this.updateFiles = param.files.map(file => {
-            return {
-              id: file.id,
-              uid: file.id,
-              name: file.originalFilename,
-              url: file.path,
-              size: file.size,
-              status: 'done'
-            };
-          });
           this.updateForm.updateFields(this.mapUpdate());
         } else if (param.delFlag === '2') {
           this.fileNameFlag = true;
@@ -3766,6 +3837,7 @@ export default {
         if (res.taskId) {
           this.taskId = res.taskId;
         }
+        return this.detailList;
       });
       const statusCode2 = this.getStatusCode(this.id).then(res => {
         if (res) {
@@ -3774,19 +3846,30 @@ export default {
           this.stepCurrent = Math.floor((res.statusNewCode) / 100000) - 1;
           this.stepMax = Math.floor((res.statusMaxCode) / 100000) - 1;
           this.backCurrent = this.stepCurrent;
-          this.statusCode.issueClosed = res.statusNewCode === 700300;
+          this.statusCode.issueClosed = res.statusNewCode === '700300';
           this.getQuestionStepAll(this.id);
         }
         return res.taskIdOld !== undefined ? res.taskIdOld : '';
       });
-      this.getIssueAutomousRegion(this.id).then(res => {
+      const pagePermissionArea = this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {};
         const that = this;
         res.forEach(item => {
           that.pagePermission[item.DETAIL_REGION] = true;
         });
+        return that.pagePermission;
       });
-
+      Promise.all([editDetail, pagePermissionArea]).then((res) => {
+        // 如果当前用户为问题责任人，那么他只能分配同一部门的人，把责任部门下拉框禁用
+        if (res[1].A2_1_3) {
+          // this.depDisable = true;
+          this.redistributionForm.owerDeptLv1 = res[0].responsibleDepartmentId;
+          this.depDisable = true;
+          this.rediStribution.updateFields(this.resMapPropsToFields());
+        } else {
+          this.depDisable = false;
+        }
+      });
       Promise.all([editDetail, statusCode2]).then((res1) => {
         const taskDefListArray = res1[1];
         const paramExamine = {
@@ -3815,12 +3898,13 @@ export default {
        */
     getQuestionStepAll (id) {
       // 问题定义
-      this.problemDefinition(id).then(res => {
+      this.stepCurrent === 0 && this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         if (res) {
           this.satisfyFlag = res.isProject === '1';
           this.conActionFlag = res.isNeedIca === '1';
           this.d0FileList = (res.files || []).map(this.file2client);
+          this.record.fileList = res.files || [];
           this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
           this.updateData = this.problemDefinitionData.updateList;
           this.idDef = res.id;
@@ -3831,16 +3915,21 @@ export default {
           this.record.comment = res.comment;
           this.record.isNeedIca = res.isNeedIca;
           this.record.icaDescriptionD1 = res.icaDescription;
+          // 初始化的时候判断如果不立项的话，去掉保存按钮
+          if (res.isProject === '0') {
+            this.pagePermission.button_commit_3 = false;
+          }
         }
 
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       // 责任判定
-      this.issueDefinition(id).then(res => {
+      this.stepCurrent === 1 && this.issueDefinition(id).then(res => {
         this.issueDefinitionData = res || {};
         if (res) {
           this.d1FileList = (res.files || []).map(this.file2client);
-          this.optCounterD0 = res.optCounter;
+          this.record.fileList = res.files || [];
+          this.optCounterD1 = res.optCounter;
           this.idRes = res.id;
         }
 
@@ -3922,8 +4011,9 @@ export default {
         }
       });
       // 原因分析
-      this.rootCause(id).then(res => {
+      this.stepCurrent === 2 && this.rootCause(id).then(res => {
         this.d2FileList = (res.files || []).map(this.file2client);
+        this.record.fileList = res.files || [];
         this.rootCauseData = res || {};
         this.optCounterD2 = res.optCounter;
         this.idReason = res.id;
@@ -3937,8 +4027,9 @@ export default {
         this.updateData = res;
       });
       // 措施制定
-      this.MeasureDetail(this.id).then(res => {
+      this.stepCurrent === 3 && this.MeasureDetail(this.id).then(res => {
         this.d3FileList = (res.files || []).map(this.file2client);
+        this.record.fileList = res.files || [];
         this.stepMeasures = res;
         this.optCounterD3 = res.optCounter;
         this.icaOptCounter = res.icaOptCounter;
@@ -3967,12 +4058,16 @@ export default {
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       // 措施实施
-      this.ImplementationDetail(this.id).then(res => {
+      this.stepCurrent === 4 && this.ImplementationDetail(this.id).then(res => {
+        console.log(res);
+        this.icaId = res.icaId;
         this.d4FileList = (res.files || []).map(this.file2client);
+        this.record.fileList = res.files || [];
         this.stepImplementation = res;
         this.optCounterD4 = res.optCounter;
         this.icaOptCounter = res.icaOptCounter;
         this.id2 = res.id;
+        this.smallBatchValidationId = res.smallBatchValidationId;
         this.record.icaExecDescription = res.icaExecDescription;
         if (res.icaExecTime) {
           const date4 = new Date(res.icaExecTime);
@@ -3990,8 +4085,9 @@ export default {
         this.updateData = res;
       });
       // 效果验证
-      this.effectDetail(this.id).then(res => {
+      this.stepCurrent === 5 && this.effectDetail(this.id).then(res => {
         this.d5FileList = (res.files || []).map(this.file2client);
+        this.record.fileList = res.files || [];
         this.stepEffect = res;
         this.idEffct = res.id;
         this.optCounterD5 = res.optCounter;
@@ -4006,17 +4102,24 @@ export default {
         this.updateForm.updateFields(this.mapUpdate());
       });
       // 问题关闭
-      this.closeDetail(this.id).then(res => {
-        this.d6FileList = (res.files || []).map(this.file2client);
-        this.stepClose = res;
-        this.optCounterD6 = res.optCounter;
-        this.idClose = res.id;
-        this.record.recurrencePrevention = res.recurrencePrevention;
-        this.record.isSign = res.isSign;
-        this.record.signLeaderId = res.signLeaderId;
-        this.record.Review = res.Review;
-        this.record.signRemark = res.signRemark;
-        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
+      this.stepCurrent === 6 && this.closeDetail(this.id).then(res => {
+        if (res) {
+          this.d6FileList = (res.files || []).map(this.file2client);
+          this.record.fileList = res.files || [];
+          this.stepClose = res;
+          this.optCounterD6 = res.optCounter;
+          this.idClose = res.id;
+          if (res.recurrencePrevention) {
+            this.record.recurrencePrevention = res.recurrencePrevention;
+          }
+          if (res.isSign) {
+            this.record.isSign = res.isSign;
+          }
+          this.record.signLeaderId = res.signLeaderId;
+          this.record.Review = res.Review;
+          this.record.signRemark = res.signRemark;
+          this.formDcontent.updateFields(this.mapPropsToFieldsForm());
+        }
       });
       this.analysisDetail(this.id).then(res => {
         if (res) {
@@ -4062,8 +4165,10 @@ export default {
      */
     goto (param) {
       this.backCurrent = param > this.stepMax ? this.stepCurrent : param;
-
-      if (this.backCurrent < this.stepCurrent) {
+      if (this.stepCurrent !== 6 && this.stepMax === 6 && param === 6) {
+        this.backCurrent = this.stepCurrent;
+      }
+      if (param <= this.stepMax && param !== this.stepCurrent) {
         this.backFlag = true;
         if (param === 0) {
           this.problemDefinition(this.id).then((res = {}) => {
@@ -4071,7 +4176,8 @@ export default {
             if (res) {
               this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
               //  this.updateData = this.problemDefinitionData.updateList;
-              this.stepDetail.fileList = (res.files || []).map(this.file2client);
+              // this.stepDetail.fileList = (res.files || []).map(this.file2client);
+              this.d0FileList = (res.files || []).map(this.file2client);
               this.idDef = res.id;
               this.optCounterD0 = res.optCounter;
               if (res.isProject) {
@@ -4085,7 +4191,8 @@ export default {
           this.issueDefinition(this.id).then((res = {}) => {
             this.issueDefinitionData = res || {};
             if (res) {
-              this.optCounterD0 = res.optCounter;
+              this.optCounterD1 = res.optCounter;
+              this.d1FileList = (res.files || []).map(this.file2client);
               this.idRes = res.id;
             }
 
@@ -4170,6 +4277,7 @@ export default {
           this.rootCause(this.id).then((res = {}) => {
             if (res) {
               this.rootCauseData = res || {};
+              this.d2FileList = (res.files || []).map(this.file2client);
               this.optCounterD2 = res.optCounter;
               this.idReason = res.id;
               if (res.rootCauseDescription) {
@@ -4182,20 +4290,24 @@ export default {
         } else if (param === 3) {
           this.MeasureDetail(this.id).then(res => {
             this.stepMeasures = res;
+            this.d3FileList = (res.files || []).map(this.file2client);
           });
         } else if (param === 4) {
           this.ImplementationDetail(this.id).then(res => {
             this.stepImplementation = res;
+            this.d4FileList = (res.files || []).map(this.file2client);
           });
         } else if (param === 5) {
           this.effectDetail(this.id).then(res => {
             this.stepEffect = res;
+            this.d5FileList = (res.files || []).map(this.file2client);
           });
           this.updateFile(this.id).then(res => {
             this.updateData = res;
           });
         } else if (param === 6) {
           this.closeDetail(this.id).then(res => {
+            this.d6FileList = (res.files || []).map(this.file2client);
             this.stepClose = res;
           });
         }
@@ -4265,11 +4377,11 @@ export default {
         this.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
         return;
       }
-      this.routerFlag = false;
-      this.handleSave();
       const vm = this;
       this.formDcontent.validateFields((err) => {
         if (!err) {
+          this.routerFlag = false;
+          this.handleSave();
           const data = this.formDcontent.getFieldsValue();
           if (Number(vm.detailList.status) === 201500) {
             data.endSeven = '1';
@@ -4316,10 +4428,11 @@ export default {
             // }
             vm.$message.success('提交成功');
             // 如果当前步骤为D0并且选择立项那么页面不跳转
-            if (this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
-              .statusCode.statusNewCode, 10) > 100100) {
+            if ((this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
+              .statusCode.statusNewCode, 10) > 100100) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
               commitButton.reset();
-              this.init();
+              // this.init();
+              this.$store.dispatch('refresh');
             } else {
               this.$router.push({
                 path: this.$route.query.form || '/'
@@ -4328,21 +4441,20 @@ export default {
           }).finally(commitButton.reset);
         } else {
           commitButton.reset();
+          this.routerFlag = true;
         }
       });
     },
     handleSave () {
       const saveButton = this.$refs.saveButton;
       const data = this.formDcontent.getFieldsValue();
-      // data.files = this.files.map(file => file.response.data);
-
-      // const thisCopy=this;
       // eslint-disable-next-line no-underscore-dangle
       const _this = this;
       data.issueId = this.stepId;
-
+      const vm = this;
       if (this.statusCode.statusNewCode === '100100') {
         saveButton.reset();
+        vm.$message.success('保存成功');
         this.$router.push({
           path: this.$route.query.form || '/'
         });
@@ -4358,81 +4470,86 @@ export default {
         this.problemDefinitionAdd(data).then(res => {
           this.problemDefinitionData = res;
           this.optCounterD0 = res.optCounter;
-
+          saveButton.reset();
+          vm.$message.success('保存成功');
           if (this.routerFlag) {
-            saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
           }
         });
       }
-      if (this.stepCurrent === 1) {
-        if (this.d1FileList && this.d1FileList.length) {
-          data.files = this.d1FileList;
-        }
-        data.optCounter = this.optCounterD1;
-        data.id = this.idRes;
-        _this.analysisData = _this.analysisData || [];
-        if (!_this.analysisData.length) {
-          if (this.record.diamondOwner1) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner1,
-              type: 'DIAMONDS01'
-            });
+      // eslint-disable-next-line func-names
+      this.$nextTick(() => {
+        if (this.stepCurrent === 1) {
+          if (this.d1FileList && this.d1FileList.length) {
+            data.files = this.d1FileList;
           }
-          if (this.record.diamondOwner1) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner1,
-              type: 'DIAMONDS02'
-            });
+          data.optCounter = this.optCounterD1;
+          data.id = this.idRes;
+          _this.analysisData = _this.analysisData || [];
+          if (!_this.analysisData.length) {
+            if (this.record.diamondOwner1) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner1,
+                type: 'DIAMONDS01'
+              });
+            }
+            if (this.record.diamondOwner1) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner1,
+                type: 'DIAMONDS02'
+              });
+            }
+            if (this.record.diamondOwner1) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner1,
+                type: 'DIAMONDS03'
+              });
+            }
+            if (this.record.diamondOwner4) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner4,
+                type: 'DIAMONDS04'
+              });
+            }
+            if (this.record.diamondOwner5) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner5,
+                type: 'DIAMONDS05'
+              });
+            }
+            if (this.record.diamondOwner6) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner6,
+                type: 'DIAMONDS06'
+              });
+            }
+            if (this.record.diamondOwner7) {
+              _this.analysisData.push({
+                champion: this.record.diamondOwner7,
+                type: 'DIAMONDS07'
+              });
+            }
           }
-          if (this.record.diamondOwner1) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner1,
-              type: 'DIAMONDS03'
-            });
-          }
-          if (this.record.diamondOwner4) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner4,
-              type: 'DIAMONDS04'
-            });
-          }
-          if (this.record.diamondOwner5) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner5,
-              type: 'DIAMONDS05'
-            });
-          }
-          if (this.record.diamondOwner6) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner6,
-              type: 'DIAMONDS06'
-            });
-          }
-          if (this.record.diamondOwner7) {
-            _this.analysisData.push({
-              champion: this.record.diamondOwner7,
-              type: 'DIAMONDS07'
-            });
-          }
-        }
 
-        data.sevenDiamondsVos = _this.analysisData;
-        this.saveSevenDiamonds({
-          sevenDiamondsVOS: _this.analysisData
-        });
-        this.issueDefinitionAdd(data).then(res => {
-          this.optCounterD1 = res.optCounter;
-          if (this.routerFlag) {
+          data.sevenDiamondsVos = _this.analysisData;
+          this.saveSevenDiamonds({
+            sevenDiamondsVOS: _this.analysisData
+          });
+          data.optCounter = this.optCounterD1;
+          this.issueDefinitionAdd(data).then(res => {
+            this.optCounterD1 = res.optCounter;
             saveButton.reset();
-            this.$router.push({
-              path: this.$route.query.form || '/'
-            });
-          }
-        });
-      }
+            vm.$message.success('保存成功');
+            if (this.routerFlag) {
+              this.$router.push({
+                path: this.$route.query.form || '/'
+              });
+            }
+          });
+        }
+      });
       if (this.stepCurrent === 2) {
         data.id = this.idReason;
         data.optCounter = this.optCounterD2;
@@ -4441,8 +4558,9 @@ export default {
         }
         this.analysisSave(data).then(res => {
           this.optCounterD2 = res.optCounter;
+          saveButton.reset();
+          vm.$message.success('保存成功');
           if (this.routerFlag) {
-            saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -4490,8 +4608,9 @@ export default {
             this.optCounterD3 = res.optCounter;
             this.icaOptCounter = res.icaOptCounter;
             this.id1 = res.id;
+            saveButton.reset();
+            vm.$message.success('保存成功');
             if (this.routerFlag) {
-              saveButton.reset();
               this.$router.push({
                 path: this.$route.query.form || '/'
               });
@@ -4517,8 +4636,9 @@ export default {
             this.icaOptCounter = res.icaOptCounter;
             this.id2 = res.id;
           });
+          saveButton.reset();
+          vm.$message.success('保存成功');
           if (this.routerFlag) {
-            saveButton.reset();
             this.$router.push({
               path: this.$route.query.form || '/'
             });
@@ -4535,8 +4655,9 @@ export default {
             this.stepEffect = res;
             this.optCounterD5 = res.optCounter;
             this.idEffct = res.id;
+            saveButton.reset();
+            vm.$message.success('保存成功');
             if (this.routerFlag) {
-              saveButton.reset();
               this.$router.push({
                 path: this.$route.query.form || '/'
               });
@@ -4549,13 +4670,18 @@ export default {
         }
         data.id = this.idClose;
         data.optCounter = this.optCounterD6;
+        // 如果领导审阅的时候备注为空，根据后台要求传入一个空格给到后台数据库
+        if (data.signRemark === null) {
+          data.signRemark = ' ';
+        }
         this.closeSave(data).then(() => {
           this.closeDetail(this.id).then(res => {
             this.stepClose = res;
             this.optCounterD6 = res.optCounter;
             this.idClose = res.id;
+            saveButton.reset();
+            vm.$message.success('保存成功');
             if (this.routerFlag) {
-              saveButton.reset();
               this.$router.push({
                 path: this.$route.query.form || '/'
               });
@@ -4597,8 +4723,12 @@ export default {
       // this.record.isNeedIca = '0';
       if (e.target.value === '1') {
         this.satisfyFlag = true;
+        // 可以保存
+        this.pagePermission.button_commit_3 = true;
       } else if (e.target.value === '0') {
         this.satisfyFlag = false;
+        // 不可以保存
+        this.pagePermission.button_commit_3 = false;
       }
     }
     // faultCodeClassM(){
@@ -4695,6 +4825,7 @@ export default {
       width: 1012px;
       padding-top: 20px;
       margin-top: 41px;
+      font-size: medium;
     }
 
     .detailText {
@@ -4767,7 +4898,12 @@ export default {
       width: 690px;
       height: 4px;
       margin-top: 40px;
-      margin-left: 20px;
+      margin-left: 85px;
+      /deep/ .ant-steps-item-title {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        text-align: center;
+      }
     }
 
     .fileNumber {
@@ -4789,6 +4925,8 @@ export default {
       position: absolute;
       right: 32px;
       top: 22px;
+      height: 20px;
+      width: 20px;
       cursor: pointer;
     }
 
@@ -4809,9 +4947,11 @@ export default {
       color: rgba(0, 0, 0, 0.65);
 
       img {
-        width: 13.8px;
-        height: 12.5px;
-        margin: 9.5px 2.2px;
+        width: 16px;
+        height: 16px;
+        margin-top:-5px;
+        margin-left:-4px;
+        margin-right:6px;
       }
     }
 
@@ -4845,12 +4985,12 @@ export default {
     background: rgba(0, 0, 0, 0.02);
     border-radius: 4px;
     border-radius: 4px;
+    margin:auto;
     margin-top: 70px;
     padding-top: 28px;
     position: relative;
     width: 1076px;
     height: auto;
-
     .backTitle {
       position: relative;
       top: -20px;
@@ -5143,7 +5283,21 @@ export default {
       color: rgba(0, 0, 0, 0.85);
     }
   }
+  .D6back {
+      .examine{
+          /deep/ .ant-form-item {
+          margin-bottom: 0;
+        }
 
+        /deep/ .ant-form-item-label {
+          label {
+            font-family: SourceHanSansCN-Normal;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.45);
+          }
+        }
+      }
+  }
   .detailText {
     /deep/ .ant-form-item {
       margin-bottom: 0;
@@ -5167,9 +5321,16 @@ export default {
   }
 
   /deep/ .ant-card-head-title {
-    font-family: SourceHanSansCN-Medium;
+    font-family: 思源黑体;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.85);
+  }
+  /deep/ .ant-collapse-header {
+    font-family: 思源黑体;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: bold;
+    font-size: medium;
   }
 
   .questionTitle {
@@ -5416,4 +5577,14 @@ export default {
 
   }
 
+  .reviewTitle {
+    font-family: SourceHanSansCN-Normal;
+    font-size: 16px;
+    color: rgba(0,0,0,0.85);
+  }
+  .reviewSubtitle{
+    font-family: SourceHanSansCN-Normal;
+    font-size: 12px;
+    color: rgba(0,0,0,0.45);
+  }
 </style>

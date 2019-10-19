@@ -1,12 +1,9 @@
-/* eslint-disable eol-last */
 <template>
   <div class="clear-input">
     <a-textarea
-      ref="input"
       v-bind="$attrs"
-      :value="text"
       v-on="$listeners"
-      @change="e => text = e.target.value"
+      :value="value"
     >
       <!-- slot继承 -->
       <template
@@ -25,8 +22,8 @@
     >
       <a-icon
         slot="suffix"
-        v-show="text"
-        @click="clear"
+        v-show="value"
+        @click="$emit('change')"
         type="close-circle"
         theme="filled"
       />
@@ -35,13 +32,6 @@
 </template>
 
 <script>
-/**
- * input focus时
- * 1. 如果文本为空，不显示close
- * 2. 如果文本不为空，显示普通close
- * close foucs时
- * 1. 显示黑色close
- */
 export default {
   props: {
     value: {
@@ -51,23 +41,6 @@ export default {
     allowClear: {
       type: Boolean,
       default: false
-    }
-  },
-  data () {
-    const value = this.value || '';
-    return {
-      text: value
-    };
-  },
-  watch: {
-    value (value) {
-      this.text = value;
-    }
-  },
-  methods: {
-    clear () {
-      this.$emit('change', { target: { value: null } });
-      this.text = null;
     }
   }
 };

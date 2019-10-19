@@ -10,7 +10,7 @@
       >
         <!-- 标题 -->
         <a-form-item :label="$t('issue.title')">
-          <v-input
+          <a-input
             v-decorator="[
               'title'
             ]"
@@ -26,7 +26,7 @@
       >
         <!-- 问题编号 -->
         <a-form-item :label="$t('issue.code')">
-          <v-input
+          <a-input
             v-decorator="[
               'code'
             ]"
@@ -193,9 +193,11 @@
             :filter-option="filterOption"
             :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
             :transform="transformFirstCausePart"
+            :delay="true"
+            url="/masterdata/v1/part"
+            word-key="name"
             allow-clear
             show-search
-            url="/masterdata/v1/part"
           />
         </a-form-item>
       </a-col>
@@ -287,7 +289,7 @@
             </a-button>
             <a
               v-permission="'issue:advance:advance'"
-              @click="() => advanced = !advanced"
+              @click="changeAdvance"
               class="advance-action"
             >
               {{ advanced ? $t('search.title_search') : $t('search.advance_search') }}
@@ -301,65 +303,75 @@
 </template>
 
 <script>
-import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
+import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
+import { clearObserver } from '@util/datahelper.js';
 import { transform1, transform2, transform3 } from '~~/model.js';
 import timeFormatMix from '~~/time-format.js';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
 import { omit } from 'ramda';
 
 export default {
   components: {
-    VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
-  mixins: [timeFormatMix],
+  mixins: [timeFormatMix, moduleDynamicCache('question')],
   data () {
+    const vm = this;
+    // 映射数据源
+    vm.mapPropsToFields = mapPropsToFields(vm, [
+      'title', 'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
+      'source', 'grade', 'projectPhase', 'manufactureBaseId', 'firstCausePart',
+      'supplierId', 'failureDate'
+    ], 'record');
     return {
-      advanced: false,
-      form: null,
-      record: {
-      }
+      // 通过映射数据源生成表单
+      form: vm.$form.createForm(this, {
+        mapPropsToFields: vm.mapPropsToFields,
+        onValuesChange: autoUpdateFileds(this, 'record')
+      }),
+      // advanced: false,
+      record: {}
     };
   },
+  computed: {
+    advanced () {
+      return this.advancePageConfig.showAdvance;
+    }
+  },
   watch: {
-    advanced (value) {
-      if (value) {
-        this.form.updateFields(this.mapPropsToFields());
+    advanced (advanced) {
+      if (advanced) {
+        this.form.updateFields();
       }
     }
   },
   created () {
-    this.form = this.$form.createForm(this, {
-      mapPropsToFields: this.mapPropsToFields,
-      onValuesChange: autoUpdateFileds(this, 'record')
-    });
+    // 从store中取值，用于缓存搜索表单
+    this.record = clearObserver(this.advancePageConfig.searchData);
+    this.form.updateFields();
   },
   methods: {
-    /**
-     * 字段映射函数
-     */
-    mapPropsToFields () {
-      return createFormFields(this, [
-        'title',
-        'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
-        'source', 'grade', 'projectPhase', 'manufactureBaseId', 'firstCausePart',
-        'supplierId', 'failureDate'
-      ], 'record');
-    },
     /**
      * 提交搜索内容
      */
     submitSearch () {
       const record = omit(['failureDate', 'closeDate', 'planCloseDate'], this.record);
       // 问题发生日期转换时间段
-      this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format('YYYY-MM-DD 00:00:00'));
-      this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format('YYYY-MM-DD 00:00:00'));
+      this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
       // 问题关闭日期转换时间段
-      this.record.closeDate && this.record.closeDate[0] && (record.closeDateStart = this.record.closeDate[0].format('YYYY-MM-DD 00:00:00'));
-      this.record.closeDate && this.record.closeDate[1] && (record.closeDateEnd = this.record.closeDate[1].format('YYYY-MM-DD 00:00:00'));
+      this.record.closeDate && this.record.closeDate[0] && (record.closeDateStart = this.record.closeDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.closeDate && this.record.closeDate[1] && (record.closeDateEnd = this.record.closeDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
       // 问题发生日期转换时间段
-      this.record.planCloseDate && this.record.planCloseDate[0] && (record.planCloseDateStart = this.record.planCloseDate[0].format('YYYY-MM-DD 00:00:00'));
-      this.record.planCloseDate && this.record.planCloseDate[1] && (record.planCloseDateEnd = this.record.planCloseDate[1].format('YYYY-MM-DD 00:00:00'));
+      this.record.planCloseDate && this.record.planCloseDate[0] && (record.planCloseDateStart = this.record.planCloseDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.planCloseDate && this.record.planCloseDate[1] && (record.planCloseDateEnd = this.record.planCloseDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
       this.$emit('change', record);
+    },
+    /**
+     * 收缩或展开高级搜索
+     */
+    changeAdvance () {
+      this.changeAdvancePageConfig({ showAdvance: !this.advanced });
     },
     /**
      * 重置搜索内容

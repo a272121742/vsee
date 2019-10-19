@@ -1,15 +1,15 @@
 <template>
   <div class="container shadown-block-normal">
     <a-tabs
-      :default-active-key="defaultActiveKey"
       :animated="false"
+      :activeKey="defaultActiveKey"
       @change="changeTab"
     >
       <a-tab-pane
         key="1"
         v-if="$store.getters.hasPermission('issue:list:todo')"
       >
-        <template slot="tab">
+        <template #tab>
           <!-- 待办事项 1 = todo -->
           {{ $t('issue_status.todo') }}
           <a-badge
@@ -31,7 +31,7 @@
         key="0"
         v-if="$store.getters.hasPermission('issue:list:draft')"
       >
-        <span slot="tab">
+        <template #tab>
           <!-- 待发事项（草稿）0 = draft -->
           {{ $t('issue_status.draft') }}
           <a-badge
@@ -42,7 +42,7 @@
             }"
             show-zero
           />
-        </span>
+        </template>
         <issue-draft-table
           v-if="defaultActiveKey === '0'"
           v-bind.sync="draftTableConfig"
@@ -53,10 +53,10 @@
         key="2"
         v-if="$store.getters.hasPermission('issue:list:done')"
       >
-        <span slot="tab">
+        <template #tab>
           <!-- 已办事项（完成）2 - done -->
           {{ $t('issue_status.done') }}
-        </span>
+        </template>
         <issue-done-table
           v-if="defaultActiveKey === '2'"
           col-update-url="/sys/customlist?listCode=issue-done-columns"
@@ -66,30 +66,21 @@
         key="3"
         v-if="$store.getters.hasPermission('issue:list:published')"
       >
-        <span slot="tab">
+        <template #tab>
           <!-- 已发事项（待审批）3 = published -->
           {{ $t('issue_status.published') }}
-        </span>
+        </template>
         <issue-published-table
           v-if="defaultActiveKey === '3'"
           col-update-url="/sys/customlist?listCode=issue-published-columns"
         ></issue-published-table>
       </a-tab-pane>
-      <!-- <template
-        slot="renderTabBar"
-        slot-scope="props, DefaultTabBar"
-      >
-        <component
-          v-bind="props"
-          v-bind:is="DefaultTabBar"
-        />
-      </template> -->
       <template #tabBarExtraContent>
         <a-button
           v-permission="'issue:list:todo:search'"
           v-if="showSearch"
           :ghost="true"
-          @click="() => dotoTableConfig.showForm = !dotoTableConfig.showForm"
+          @click="changeFormShown"
           icon="search"
           type="primary"
         >

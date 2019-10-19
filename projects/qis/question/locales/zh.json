@@ -72,7 +72,7 @@
     "please_input": "请输入",
     "please_select": "请选择",
     "expand_button": "展开",
-    "collapse_button": "收缩",
+    "collapse_button": "收起",
     "begin_date": "开始时间",
     "end_date": "结束时间"
   },
@@ -160,7 +160,7 @@
       "sortSolutionImplementDate": "短期效果实施日期",
       "longTermEffect": "长期措施实施描述",
       "longSolutionImplementDate": "长期措施实施日期"
-      
+
     },
     "D5": {
       "processName": "效果验证",

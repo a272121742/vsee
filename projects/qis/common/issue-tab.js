@@ -1,3 +1,7 @@
+import { createNamespacedHelpers } from 'vuex';
+import { MODULE_DYNAMIC_CACHE } from '~/config.js';
+const { mapState, mapMutations, mapActions } = createNamespacedHelpers('question');
+
 export default {
   components: {
     IssueTodoTable: () => import('~/question/view/IssueTodoTable.vue'),
@@ -7,21 +11,47 @@ export default {
   },
   data () {
     return {
-      defaultActiveKey: '1',
-      showSearch: true,
       dotoTableConfig: {
-        total: 0,
-        showForm: false
+        total: 0
       },
       draftTableConfig: {
         total: 0
       }
     };
   },
+  computed: {
+    ...mapState({
+      advancePageConfig: MODULE_DYNAMIC_CACHE
+    }),
+    defaultActiveKey () {
+      return this.advancePageConfig.selectTabKey;
+    },
+    showSearch () {
+      return this.defaultActiveKey === '1';
+    }
+  },
+  created () {
+    this.getIssueTodoPage({}).then(res => {
+      this.dotoTableConfig.total = res.total;
+    });
+    this.getIssueDraftPage({}).then(res => {
+      this.draftTableConfig.total = res.total;
+    });
+  },
   methods: {
+    ...mapMutations({
+      changeAdvancePageConfig: MODULE_DYNAMIC_CACHE
+    }),
+    ...mapActions([
+      // 分页查询待办列表
+      'getIssueTodoPage',
+      'getIssueDraftPage'
+    ]),
     changeTab (key) {
-      this.defaultActiveKey = key;
-      this.showSearch = key === '1';
+      this.changeAdvancePageConfig({ selectTabKey: key });
+    },
+    changeFormShown () {
+      this.changeAdvancePageConfig({ showForm: !this.advancePageConfig.showForm });
     },
     createQuestion () {
       const name = 'create';

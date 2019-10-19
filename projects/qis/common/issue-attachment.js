@@ -98,10 +98,11 @@ export default {
      * @param {*} file
      */
     download (file) {
-      // 创建`<a>`标签，后面步骤会删除
       const a = document.createElement('a');
-      a.href = this.getDownloadURL(file.url || file.response.data.path, file.name);
-      a.click();
+      a.setAttribute('href', this.getDownloadURL(file.url || file.response.data.path, file.name));
+      a.setAttribute('download', file.name);
+      // a.click在火狐下无法被触发，必须通过这种方式下载
+      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
       a.remove();
       return false;
     },
@@ -137,6 +138,8 @@ export default {
      */
     removeFile: records => file => {
       const index = records.findIndex(item => item.id === file.id);
+      console.log(records, file, index);
+
       if (index !== -1) {
         records.splice(index, 1);
       }

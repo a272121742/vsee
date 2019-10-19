@@ -1,5 +1,8 @@
 <template>
-  <div class="login_wrapper">
+  <div
+    v-lazy:background-image="'/static/portal/login_bg.png'"
+    class="login_wrapper"
+  >
     <div class="ant-drawer ant-drawer-right ant-drawer-open no-mask">
       <div class="logo">
       </div>
@@ -52,7 +55,7 @@ export default {
   }
   .login_wrapper {
     height: 100%;
-    background-image: url(/static/portal/login_bg.png);
+    // background-image: url(/static/portal/login_bg.png);
     background-repeat:no-repeat;
     background-size: cover;
     -webkit-font-smoothing: antialiased;

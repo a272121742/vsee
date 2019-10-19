@@ -62,11 +62,10 @@
           class="ant-advanced-search-form"
         >
           <div>
-            <div class="collapse-title">
-              <a-icon
-                :type="BaseIcon"
-                style="margin-right:10px"
-              />
+            <div
+              class="collapse-title"
+              style="margin-left:16px;"
+            >
               <!-- 「基本信息」文本 -->
               {{ $t('issue.basicInfo') }}
             </div>
@@ -89,7 +88,7 @@
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「车型名称」下拉 -->
-                    <a-form-item :label="$t('issue.vehicleModelName')">
+                    <a-form-item :label="$t('issue.vehicleModelName')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'vehicleModelId',
@@ -109,7 +108,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「所属系统」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds1')">
+                    <a-form-item :label="$t('issue.faultTreeIds1')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'faultTreeIds1',
@@ -130,7 +129,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「所属功能」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds2')">
+                    <a-form-item :label="$t('issue.faultTreeIds2')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'faultTreeIds2',
@@ -154,7 +153,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「故障代码」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds3')">
+                    <a-form-item :label="$t('issue.faultTreeIds3')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'faultTreeIds3',
@@ -180,7 +179,7 @@
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「问题分类」下拉 -->
-                    <a-form-item :label="$t('issue.source')">
+                    <a-form-item :label="$t('issue.source')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'source',
@@ -201,7 +200,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「问题严重等级」下拉 -->
-                    <a-form-item :label="$t('issue.grade')">
+                    <a-form-item :label="$t('issue.grade')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'grade',
@@ -221,7 +220,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「问题阶段」下拉 -->
-                    <a-form-item :label="$t('issue.projectPhase')">
+                    <a-form-item :label="$t('issue.projectPhase')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'projectPhase',
@@ -233,7 +232,7 @@
                         :filter-option="filterOption"
                         :transform="selectOptiondict"
                         :allow-clear="true"
-                        show-search-
+                        show-search
                         url="/sys/dict?dictType=issue_phase"
                       >
                       </net-select>
@@ -241,7 +240,7 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「问题发生日期」时间日期 -->
-                    <a-form-item :label="$t('issue.failureDate')">
+                    <a-form-item :label="$t('issue.failureDate')" selfUpdate>
                       <a-date-picker
                         v-decorator="[
                           'failureDate'
@@ -257,7 +256,7 @@
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「生产基地」下拉 -->
-                    <a-form-item :label="$t('issue.manufactureBase')">
+                    <a-form-item :label="$t('issue.manufactureBase')" selfUpdate>
                       <net-select
                         v-decorator="[
                           'manufactureBaseId',
@@ -269,20 +268,22 @@
                         :filter-option="filterOption"
                         :transform="selectOptionBase"
                         :allow-clear="true"
-                        show-search-
+                        show-search
                         url="/masterdata/v1/manufactureBase"
                       />
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
                     <!-- 「责任部门」下拉 -->
-                    <a-form-item :label="$t('issue.responsibleDepartmentId')">
+                    <a-form-item :label="$t('issue.responsibleDepartmentId')" selfUpdate>
                       <net-select
                         v-decorator="['responsibleDepartmentId']"
+                        :filter-option="filterOption"
                         :transform="selectOptionSingn"
                         :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
                         :delay="!isEdit"
                         :allow-clear="true"
+                        show-search
                         url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                       >
                       </net-select>
@@ -290,10 +291,11 @@
                   </a-col>
                   <a-col :span="6">
                     <!-- 「问题频次」输入 -->
-                    <a-form-item :label="$t('issue.frequency')">
-                      <v-input
+                    <a-form-item :label="$t('issue.frequency')" selfUpdate>
+                      <a-input
                         v-decorator="[
                           'frequency',
+                          {rules: [{validator: intVer}]}
                         ]"
                         :placeholder="$t('search.please_input') + $t('issue.frequency')"
                         allow-clear
@@ -304,9 +306,9 @@
                     <!-- 「相关人手机」输入 -->
                     <a-form-item
                       :label="$t('issue.contact')"
-                      class="quesetionContact"
+                      class="quesetionContact" selfUpdate
                     >
-                      <v-input
+                      <a-input
                         v-decorator="[
                           'contact',
                           {rules: [{validator: phoneVer}]}
@@ -324,7 +326,7 @@
                   <a-col :span="16">
                     <a-form-item
                       :label="$t('issue.description')"
-                      class="form-item-flex-2"
+                      class="form-item-flex-2" selfUpdate
                     >
                       <v-textarea
                         v-decorator="[
@@ -341,14 +343,14 @@
                   </a-col>
                   <a-col :span="8">
                     <!-- 「附件」上传 -->
-                    <a-form-item :label="$t('issue_workflow.attachment')">
+                    <a-form-item :label="$t('issue_workflow.attachment')" selfUpdate>
                       <a-upload
                         :headers="headers"
                         :multiple="true"
                         :file-list="fileList"
-                        :remove="file => removeFile(dataFileList)(file)"
+                        :remove="file => removeFile(record.fileList)(file)"
                         @preview="download"
-                        @change="info => changeFileList(dataFileList, fileList)(info)"
+                        @change="info => changeFileList(record.fileList, fileList)(info)"
                         :action="uploadUrl"
                         name="file"
                       >
@@ -378,8 +380,8 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「VIN」输入 -->
-                  <a-form-item :label="$t('issue.vinNo')">
-                    <v-input
+                  <a-form-item :label="$t('issue.vinNo')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'vinNo',
                         {rules: [{validator: vinVer}]}
@@ -400,7 +402,7 @@
                       :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
                       :transform="selectOption"
                       :allow-clear="true"
-                      show-search-
+                      show-search
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
@@ -416,14 +418,14 @@
                       :placeholder="$t('search.please_select') + $t('issue.partId')"
                       :transform="selectOptionId"
                       :allow-clear="true"
-                      show-search-
+                      show-search
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <!-- 「供应商名称」下拉 -->
-                  <a-form-item :label="$t('issue.supplierId')">
+                  <a-form-item :label="$t('issue.supplierId')" selfUpdate>
                     <net-select
                       v-decorator="[
                         'supplierId',
@@ -432,7 +434,7 @@
                       :placeholder="$t('search.please_select') + $t('issue.supplierId')"
                       :transform="selectOption"
                       :allow-clear="true"
-                      show-search-
+                      show-search
                       url="/masterdata/v1/supplier"
                     ></net-select>
                   </a-form-item>
@@ -441,7 +443,7 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「生产时间」时间日期 -->
-                  <a-form-item :label="$t('issue.productDate')">
+                  <a-form-item :label="$t('issue.productDate')" selfUpdate>
                     <a-date-picker
                       v-decorator="[
                         'productDate'
@@ -455,7 +457,7 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「试验类型」下拉-->
-                  <a-form-item :label="$t('issue.testType')">
+                  <a-form-item :label="$t('issue.testType')" selfUpdate>
                     <net-select
                       v-decorator="[
                         'testType',
@@ -471,8 +473,8 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「故障里程」输入 -->
-                  <a-form-item :label="$t('issue.milage') + '(Km)'">
-                    <v-input
+                  <a-form-item :label="$t('issue.milage') + '(Km)'" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'milage'
                       ]"
@@ -483,8 +485,8 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「维修网点」输入 -->
-                  <a-form-item :label="$t('issue.maintenanceStation')">
-                    <v-input
+                  <a-form-item :label="$t('issue.maintenanceStation')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'maintenanceStation',
                       ]"
@@ -497,8 +499,8 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「软件版本号」输入 -->
-                  <a-form-item :label="$t('issue.softwareVersion')">
-                    <v-input
+                  <a-form-item :label="$t('issue.softwareVersion')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'softwareVersion',
                       ]"
@@ -509,8 +511,8 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「标定版本号」输入 -->
-                  <a-form-item :label="$t('issue.calibrationVersion')">
-                    <v-input
+                  <a-form-item :label="$t('issue.calibrationVersion')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'calibrationVersion',
                       ]"
@@ -521,8 +523,8 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「硬件版本号」输入 -->
-                  <a-form-item :label="$t('issue.hardwareVersion')">
-                    <v-input
+                  <a-form-item :label="$t('issue.hardwareVersion')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'hardwareVersion',
                       ]"
@@ -533,8 +535,8 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「配置字版本号」输入 -->
-                  <a-form-item :label="$t('issue.confirmationVersion')">
-                    <v-input
+                  <a-form-item :label="$t('issue.confirmationVersion')" selfUpdate>
+                    <a-input
                       v-decorator="[
                         'confirmationVersion',
                       ]"
@@ -547,7 +549,7 @@
               <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「工况信息」输入 -->
-                  <a-form-item :label="$t('issue.workConditionInfo')">
+                  <a-form-item :label="$t('issue.workConditionInfo')" selfUpdate>
                     <v-textarea
                       v-decorator="[
                         'workConditionInfo'
@@ -560,7 +562,7 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「初步排查情况」输入 -->
-                  <a-form-item :label="$t('issue.preliminaryInvestigation')">
+                  <a-form-item :label="$t('issue.preliminaryInvestigation')" selfUpdate>
                     <v-textarea
                       v-decorator="[
                         'preliminaryInvestigation',
@@ -573,7 +575,7 @@
                 </a-col>
                 <a-col :span="12">
                   <!-- 「备注」输入 -->
-                  <a-form-item :label="$t('issue.remark')">
+                  <a-form-item :label="$t('issue.remark')" selfUpdate>
                     <v-textarea
                       v-decorator="[
                         'remark',
@@ -613,7 +615,6 @@ export default {
   name: 'QuestionCreate',
   components: {
     NetSelect: () => import('@comp/form/NetSelect.vue'),
-    VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
@@ -659,6 +660,7 @@ export default {
       titleFlag: false, // 问题标题是否显示
       carTitle: '', // 车型标题
       faultTreeIds2Title: '', // 功能标题，
+      statusCode: '', // 当前状态码
       codeTitle: '', // 故障代码标题
       coChair: null,
       monitor: null,
@@ -676,37 +678,38 @@ export default {
       },
       // 数据模板
       record: {
-        // faultTreeIds1: '', // 所属系统
-        // faultTreeIds2: '', // 所属功能
-        // faultTreeIds3: '', // 故障代码
-        // grade: '', // 严重等级
-        // source: '', // 问题分类
-        // vehicleModelId: null, // 车型
-        // projectPhase: '', // 问题阶段
-        // manufactureBaseId: '', // 生产基地
-        // failureDate: null, // 故障发生日期
-        // frequency: '', // 问题频次
-        // responsibleDepartmentId: '', // 责任部门
-        // description: '', // 问题描述
-        // file: '', // 文件上传
-        // contact: '', // 问题相关人员联系方式
-        // /**
-        //    * 补充信息
-        //    */
-        // testType: '', // 试验类型
-        // firstCausePart: '', // 祸首件
-        // partId: '', // 零件号
-        // supplierId: '', // 供应商名称
-        // softwareVersion: '', // 软件版本号
-        // calibrationVersion: '', // 标定版本号
-        // hardwareVersion: '', // 硬件版本号
-        // confirmationVersion: '', // 配置字版本号
-        // vinNo: '', // Vin
-        // productDate: null, // 生产时间
-        // maintenanceStation: '', // 维修网点
-        // milage: '',
-        // remark: '',
-        // workConditionInfo: '' // 工况信息
+        fileList: [],
+        faultTreeIds1: '', // 所属系统
+        faultTreeIds2: '', // 所属功能
+        faultTreeIds3: '', // 故障代码
+        grade: '', // 严重等级
+        source: '', // 问题分类
+        vehicleModelId: '', // 车型
+        projectPhase: '', // 问题阶段
+        manufactureBaseId: '', // 生产基地
+        failureDate: '', // 故障发生日期
+        frequency: '', // 问题频次
+        responsibleDepartmentId: '', // 责任部门
+        description: '', // 问题描述
+        file: '', // 文件上传
+        contact: '', // 问题相关人员联系方式
+        /**
+           * 补充信息
+           */
+        testType: '', // 试验类型
+        firstCausePart: '', // 祸首件
+        partId: '', // 零件号
+        supplierId: '', // 供应商名称
+        softwareVersion: '', // 软件版本号
+        calibrationVersion: '', // 标定版本号
+        hardwareVersion: '', // 硬件版本号
+        confirmationVersion: '', // 配置字版本号
+        vinNo: '', // Vin
+        productDate: '', // 生产时间
+        maintenanceStation: '', // 维修网点
+        milage: '',
+        remark: '',
+        workConditionInfo: '' // 工况信息
 
       }
     };
@@ -740,7 +743,7 @@ export default {
     ]),
     // 初始化
     init () {
-      this.$set(this, 'record', {});
+      this.$set(this, 'record', { fileList: [] });
       this.form = this.$form.createForm(this, {
         mapPropsToFields: this.mapPropsToFields,
         onValuesChange: autoUpdateFileds(this, 'record')
@@ -757,20 +760,27 @@ export default {
 
         this.eidtQuestion(this.id).then(res => {
           this.record = res;
+          this.statusCode = res.status;
+          if (this.statusCode === '100100') {
+            this.submitBtn = true;
+          } else {
+            this.submitBtn = false;
+          }
           // 附件
-          const fileListArray = [];
+          // const fileListArray = [];
 
-          this.dataFileList = res.fileList;
-          res.fileList.forEach((item) => {
-            const fileObject = {
-              uid: item.id,
-              name: item.originalFilename,
-              url: item.path,
-              status: 'done'
-            };
-            fileListArray.push(fileObject);
-          });
-          this.fileList = fileListArray;
+          // this.dataFileList = res.fileList;
+          // res.fileList.forEach((item) => {
+          //   const fileObject = {
+          //     id: item.id,
+          //     uid: item.id,
+          //     name: item.originalFilename,
+          //     url: item.path,
+          //     status: 'done'
+          //   };
+          //   fileListArray.push(fileObject);
+          // });
+          this.fileList = (res.fileList || []).map(this.file2client);
           // this.dataFileList = fileListArray;
           this.optCounter = res.optCounter;
           // 日期格式回显
@@ -797,6 +807,15 @@ export default {
       var myreg = /^[A-Z0-9]{8,17}$/;
       if (value && !myreg.test(value)) {
         callback(new Error('请输入正确的VIN'));
+      } else {
+        callback();
+      }
+    },
+    // 问题频次整数校验
+    intVer (rule, value, callback) {
+      var myreg = /^[1-9]\d*$/;
+      if (value && !myreg.test(value)) {
+        callback(new Error('请输入整数'));
       } else {
         callback();
       }
@@ -962,11 +981,11 @@ export default {
           if (data.milage === undefined) {
             data.milage = '';
           }
-          data.fileList = this.dataFileList;
+          data.fileList = this.record.fileList;
           const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
           data.faultTreeIds = tree;
-          const title2 = this.faultTreeIds2Title;
-          const title3 = this.codeTitle;
+          const title2 = this.faultTreeIds2Title || '';
+          const title3 = this.codeTitle || '';
 
           const fault2 = title2.substr(title2.indexOf('-'), title2.length);
           const fault3 = title3.substr(title3.indexOf('-'), title3.length);
@@ -1093,13 +1112,14 @@ export default {
 
       const hide = this.$message.loading('正在保存中...', 0);
       const data = this.form.getFieldsValue();
+      data.fileList = this.record.fileList;
       if (data.milage === undefined) {
         data.milage = '';
       }
       const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
       data.faultTreeIds = tree;
-      const title2 = this.faultTreeIds2Title;
-      const title3 = this.codeTitle;
+      const title2 = this.faultTreeIds2Title || '';
+      const title3 = this.codeTitle || '';
 
       const fault2 = title2.substr(title2.indexOf('-'), title2.length);
       const fault3 = title3.substr(title3.indexOf('-'), title3.length);
@@ -1115,7 +1135,6 @@ export default {
         const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
         data.productDate = productDate;
       }
-      data.fileList = this.dataFileList;
 
       if (this.name === 'create') {
         if (this.businessKey) {
@@ -1151,40 +1170,51 @@ export default {
       } else if (this.name === 'edit') {
         data.id = this.id;
         data.optCounter = this.optCounter;
-
-        this.editSaveQuestion(data).then(res => {
-          this.businessKey = res.id;
-          this.optCounter = res.optCounter;
-          setTimeout(() => {
-            hide();
-            this.$message.success('保存成功', 1).then(() => {
-              saveButton.reset();
-              this.$router.push({
-                path: this.$route.query.form || '/'
+        const status = Number(this.statusCode);
+        // 如果进入工作流保存做必填项校验
+        if (status > 100100) {
+          this.valiRequire = true;
+          this.form.validateFields((err) => {
+            if (!err) {
+              this.editSaveQuestion(data).then(res => {
+                this.businessKey = res.id;
+                this.optCounter = res.optCounter;
+                setTimeout(() => {
+                  hide();
+                  this.$message.success('保存成功', 1).then(() => {
+                    saveButton.reset();
+                    this.$router.push({
+                      path: this.$route.query.form || '/'
+                    });
+                  });
+                }, 200);
               });
-            });
-          }, 200);
-        });
+            } else {
+              setTimeout(() => {
+                hide();
+                saveButton.reset();
+              }, 200);
+            }
+          });
+        } else {
+          this.editSaveQuestion(data).then(res => {
+            this.businessKey = res.id;
+            this.optCounter = res.optCounter;
+            setTimeout(() => {
+              hide();
+              this.$message.success('保存成功', 1).then(() => {
+                saveButton.reset();
+                this.$router.push({
+                  path: this.$route.query.form || '/'
+                });
+              });
+            }, 200);
+          });
+        }
       }
     },
     handleSearch (e) {
       e.preventDefault();
-    },
-    handleChange (info) {
-      const fileList = info.fileList.map((file) => {
-        const result = file;
-        if (file.response) {
-          result.url = file.response.url;
-        }
-        return result;
-      });
-      this.fileList = fileList;
-      const status = info.file.status;
-      if (status === 'done') {
-        if (info.file.response !== undefined) {
-          this.dataFileList.push(info.file.response.data);
-        }
-      }
     },
     gradeChange () {
 
@@ -1257,7 +1287,7 @@ export default {
       background: rgba(0, 0, 0, 0.02);
       border-radius: 4px;
       border-radius: 4px;
-      width: 1020px;
+      width: 1125px;
       height: 40px;
       line-height: 40px;
       margin-top: 16px;
@@ -1374,14 +1404,16 @@ export default {
     border-radius: 6px;
     margin-top: -40px;
     margin-left: -40px;
-
+    margin-bottom:-40px;
   }
 
   #components-form-demo-advanced-search {
     /deep/ .ant-form {
       max-width: none;
     }
-
+   /deep/ .ant-form-item-label {
+     line-height:22px;
+   }
     /deep/ .search-result-list {
       margin-top: 16px;
       border: 1px dashed #e9e9e9;

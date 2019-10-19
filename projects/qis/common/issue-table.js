@@ -1,3 +1,5 @@
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
+import { defaultTo } from 'ramda';
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('question');
 
@@ -6,35 +8,30 @@ export default {
     AdvanceSearchForm: () => import('~/question/view/AdvanceSearchForm.vue'),
     IssueTable: () => import('~/question/view/IssueTable.vue')
   },
+  mixins: [moduleDynamicCache('question')],
   data () {
     return {
-      /**
-       * 表格数据，从服务端获取
-       */
       data: [],
       loading: false,
-      /**
-       * 表格总数
-       */
-      total: 0,
-      /**
-       * 当前页
-       */
-      page: 1,
-      /**
-       * 分页数
-       */
-      limit: 10,
-      /**
-       * 排序方式： `asc`或者`desc`
-       */
-      order: '',
-      /**
-       * 排序字段
-       */
-      orderField: '',
-      filters: {}
+      total: 0
     };
+  },
+  computed: {
+    order () {
+      return defaultTo('', this.advancePageConfig.searchOrderData.order).slice(0, -3);
+    },
+    orderField () {
+      return this.advancePageConfig.searchOrderData.field;
+    },
+    page () {
+      return this.advancePageConfig.searchPageData.current;
+    },
+    limit () {
+      return this.advancePageConfig.searchPageData.pageSize;
+    },
+    filters () {
+      return this.advancePageConfig.searchData;
+    }
   },
   created () {
     this.request();
@@ -62,15 +59,19 @@ export default {
       }
     },
     handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
-      current && (this.page = current);
-      pageSize && (this.limit = pageSize);
-      order && (this.order = order.slice(0, -3));
-      field && (this.orderField = field);
+      // 缓存数据到store
+      this.changeAdvancePageConfig({ searchOrderData: { order, field } });
+      this.changeAdvancePageConfig({ searchPageData: { current, pageSize } });
       this.request();
     },
     search (filters) {
-      this.page = 1;
-      this.$set(this, 'filters', filters);
+      this.changeAdvancePageConfig({
+        searchData: filters,
+        searchPageData: {
+          current: 1,
+          pageSize: this.limit
+        }
+      });
       this.request();
     },
     // 查看详情

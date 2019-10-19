@@ -1,69 +1,146 @@
+<!-- Comment -->
 <template>
-  <a-table
-    :columns="columns"
-    :row-key="record => record.no"
-    :data-source="data"
-  >
-    <span
-      slot="id"
-      slot-scope="text, record"
+  <div>
+    <order-edit
+      :data="selectedRow"
+      :id="selectedRowId"
+      @close="getUpdatedData"
+    ></order-edit>
+    是否弹窗 <a-switch
+      :checked="checked"
+      @change="chageEditWay"
+    ></a-switch>
+    <a-button @click="showAdd">
+      新增
+    </a-button>
+    <a-table
+      :columns="columns"
+      :dataSource="data"
+      :loading="loading"
+      row-key="id"
     >
-      <template>
-        <a @click="e => viewOrder(record.id)">编辑</a>
+      <template
+        slot="action"
+        slot-scope="row"
+      >
+        <!-- 弹出编辑框，要传递给编辑框数据 -->
+        <a @click="showEdit(row)">编辑</a>
+        &nbsp;
+        <!-- 弹出删除框，要传递给删除框数据 -->
+        <a @click="showDelete(row)">删除</a>
       </template>
-    </span>
-  </a-table>
+
+    </a-table>
+  </div>
 </template>
 
 <script>
+import { clearObserver } from '@util/datahelper.js';
+import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 import { createNamespacedHelpers } from 'vuex';
 const { mapActions } = createNamespacedHelpers('order');
 
+
+/**
+ * table -> dataRow -> record
+ */
 const columns = [{
-  title: 'id',
-  dataIndex: 'id',
-  scopedSlots: { customRender: 'id' }
+  title: '编号',
+  dataIndex: 'id'
 }, {
-  title: 'no',
-  dataIndex: 'no',
-  scopedSlots: { customRender: 'no' }
+  title: '订单名称',
+  dataIndex: 'name'
 }, {
-  title: 'title',
-  dataIndex: 'title',
-  scopedSlots: { customRender: 'title' }
+  title: '操作',
+  scopedSlots: { customRender: 'action' }
 }];
+
+
 export default {
+  components: {
+    OrderEdit: () => import('../view/Modal.vue')
+  },
   data () {
     return {
-      columns,
-      data: []
-
+      columns: columns,
+      data: [],
+      loading: true,
+      selectedRow: {},
+      checked: true,
+      selectedRowId: undefined
     };
   },
   created () {
-    this.fetch();
+    this.init();
+  },
+  watch: {
+    // 【策略】监听
+    data (data) {
+      this.load(clearObserver(data));
+    }
   },
   methods: {
     ...mapActions([
-      'getOrderList'
+      'getOrderList',
+      'orderAdd',
+      'orderDel'
     ]),
+    /**
+     * 获取数据
+     */
     fetch () {
-      this.getOrderList().then(res => {
-        this.data = res.data;
+      return this.getOrderList();
+    },
+    /**
+     * 初始化组件
+     */
+    init () {
+      this.getOrderList().then(({ list = [], total = 0 }) => {
+        this.data = list;
+        if (list.length) {
+          this.loading = false;
+        }
+      }).catch(err => {
+        this.loading = false;
+        this.$message.error(err);
+        // console.log(err);
       });
     },
-    viewOrder (id) {
-      this.$router.push({
-        name: 'View',
-        params: {
-          id
-        }
-      });
+    /**
+     * 加载数据
+     */
+    load (data) {
+      return this.getOrderList();
+    },
+    chageEditWay (checked) {
+      this.checked = checked;
+    },
+    showAdd () {
+      this.$set(this, 'selectedRow', clearObserver());
+      // this.fetch();
+    },
+    showEdit (row) {
+      if (this.checked) {
+        this.$set(this, 'selectedRow', clearObserver(row));
+      } else {
+        // this.$router.push({ name: 'Form', params: { id: row.id } });
+        this.$router.push({ path: `/order/form/${row.id}` });
+      }
+    },
+    showDelete (row) {
+      this.orderDel(row.id)
+        .then(res => {
+          this.init();
+        });
+    },
+    getUpdatedData (data) {
+      // console.log(this.data)
+      console.log('获取修改后的数据', data);
+      this.selectedRowId = undefined;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-
 </style>

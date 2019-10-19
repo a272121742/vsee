@@ -2,6 +2,8 @@ export const TOKEN_KEY = 'login_token';
 export const LANGUAGE_KEY = 'language';
 export const LANGUAGE_DEFAULT = 'zh_CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
+// 模块动态缓存
+export const MODULE_DYNAMIC_CACHE = 'MODULE_DYNAMIC_CACHE';
 
 // 授权API
 export const AUTH_API = {

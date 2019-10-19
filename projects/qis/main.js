@@ -34,7 +34,6 @@ const token = store.getters.getToken();
 
 
 router.beforeEach((to, from, next) => {
-  console.log('to', to);
   /**
    * 查找去向
    * @param {*} menus 服务端传回的地址

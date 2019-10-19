@@ -149,7 +149,16 @@ export default {
         'duheng@bjev.com.cn',
         'luolinlan@bjev.com.cn',
         'shijunbo@bjev.com.cn',
-        'yanliguo@bjev.com.cn'
+        'yanliguo@bjev.com.cn',
+        'sunwentao@bjev.com.cn',
+        'tangdianju@bjev.com.cn',
+        'chenwenwu@bjev.com.cn',
+        'zhangyule@bjev.com.cn',
+        'zhangyouhuan@bjev.com.cn',
+        'wangjianfeng@bjev.com.cn',
+        'yutao1@bjev.com.cn',
+        'lihuihui@bjev.com.cn'
+
       ]
     };
   },

@@ -22,6 +22,10 @@ import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
 import { debounce } from '@util/fnhelper.js';
+
+import VueLazyload from 'vue-lazyload';
+
+Vue.use(VueLazyload);
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制

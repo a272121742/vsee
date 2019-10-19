@@ -14,6 +14,11 @@
   },
   "SERVER": {
     "ERROR": {
+      "ECONNABORTED": "Software Caused Connection Abort",
+      "ECONNRESET": "Connection Reset By Peer",
+      "EPIPE": "Broken Pipe",
+      "ETIMEDOUT": "Connect Time Out",
+      "ENOPROTOOPT": "Net Error",
       "undefined": "Error Code Undefined",
       "0": "Success",
       "100": "Continue",

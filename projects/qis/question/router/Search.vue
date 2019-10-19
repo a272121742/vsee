@@ -9,7 +9,6 @@
     <!-- 数据列表 -->
     <issue-table
       @change="handleTableChange"
-
       :data="data"
       :loading="loading"
       :total="total"
@@ -36,10 +35,11 @@
 
 <script>
 import issueTableMix from '~~/issue-table.js';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 export default {
   name: 'IssueList',
-  mixins: [issueTableMix]
+  mixins: [issueTableMix, moduleDynamicCache('question')]
 };
 </script>
 

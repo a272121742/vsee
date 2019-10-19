@@ -1,14 +1,9 @@
-<style lang="less">
-@import "404.less";
-</style>
-
 <template>
   <div class="error404">
     <div class="error404-body-con">
       <a-card>
         <div class="error404-body-con-title">
-          4<span>
-            <a-icon type="ios-navigate-outline" /></span>4
+          404
         </div>
         <p class="error404-body-con-message">
           您所查找的页面已丢失！
@@ -48,3 +43,7 @@ export default {
   }
 };
 </script>
+
+<style lang="less">
+@import "404.less";
+</style>

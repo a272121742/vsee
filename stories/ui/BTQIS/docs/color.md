@@ -1,0 +1,42 @@
+# 配色
+
+## 色构 
+
+### 品牌色
+
+> 品牌色是体现产品特性和传播理念最直观的视觉元素之一。在色彩选取时，需要先明确品牌色在界面中的使用场景及范围。Hex 值为 #1890FF，应用场景包括：关键行动点，操作状态、重要信息高亮，图形化等场景。
+
+<div style="background-color: #1890FF; color: #FFFFFF; width: 240px; padding: 4px 12px;"> 主色/品牌色 \#1890FF</div>
+
+### 功能色
+
+> 功能色代表了明确的信息以及状态，比如成功、出错、失败、提醒、链接等。功能色的选取遵守了用户对色彩的基本认知，并针对该产品体系保持完整性和一致性；
+
+<div style="background-color: #F5222D; color: #FFFFFF; width: 240px; padding: 4px 12px;"> 错误提示 \#F5222D</div>
+<div style="background-color: #FAAD14; color: #FFFFFF; width: 240px; padding: 4px 12px;"> 警告提示 \#FAAD14</div>
+<div style="background-color: #52C41A; color: #FFFFFF; width: 240px; padding: 4px 12px;"> 成功提示 \#52C41A</div>
+<div style="background-color: #1890FF; color: #FFFFFF; width: 240px; padding: 4px 12px;"> 连接提示 \#1890FF</div>
+
+### 中性色
+
+> 中性色主要被大量的应用在界面的文字部分，此外背景、边框、分割线、等场景中也非常常见。产品中性色的定义需要考虑深色背景以及浅色背景的差异，同时结合 WCAG 2.0 标准。
+
+<div style="background-color: RGBA(0, 0, 0, 0.85); color: #FFFFFF; width: 240px; padding: 4px 12px;"> 标题 \#RGBA(0, 0, 0, 0.85)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.65); color: #FFFFFF; width: 240px; padding: 4px 12px;"> 征文 \#RGBA(0, 0, 0, 0.65)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.45); color: #FFFFFF; width: 240px; padding: 4px 12px;"> 说明 \#RGBA(0, 0, 0, 0.45)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.25); color: #FFFFFF; width: 240px; padding: 4px 12px;"> 禁用 \#RGBA(0, 0, 0, 0.25)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.15); color: #030303; width: 240px; padding: 4px 12px;"> 边框 \#RGBA(0, 0, 0, 0.15)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.09); color: #030303; width: 240px; padding: 4px 12px;"> 辅助线 \#RGBA(0, 0, 0, 0.09)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.04); color: #030303; width: 240px; padding: 4px 12px;"> 背景 \#RGBA(0, 0, 0, 0.04)</div>
+<div style="background-color: RGBA(0, 0, 0, 0.02); color: #030303; width: 240px; padding: 4px 12px;"> 表头 \#RGBA(0, 0, 0, 0.04)</div>
+
+### 辅助色
+
+| 主色系   | 正常 | 悬停 | 点击 | 背景 |
+| -------- | ---- | ---- | ---- | ---- |
+| 品牌色/连接   |   <div style="background-color: #1890FF; color: #FFFFFF; padding: 4px 12px;">\#1890FF</div>   |  <div style="background-color: #40a9ff; color: #FFFFFF; padding: 4px 12px;">\#40a9ff</div>     |   <div style="background-color: #096dd9; color: #FFFFFF; padding: 4px 12px;">\#096dd9</div>   |   <div style="background-color: #e6f7ff; color: #030303; border:1px solid #1890FF; padding: 4px 12px;">\#e6f7ff</div>   | 
+| 错误提示 |   <div style="background-color: #F5222D; color: #FFFFFF; padding: 4px 12px;">\#F5222D</div>   |   <div style="background-color: #ff4d4f; color: #FFFFFF; padding: 4px 12px;">\#ff4d4f</div>   |  <div style="background-color: #cf1322; color: #FFFFFF; padding: 4px 12px;">\#cf1322</div>    |   <div style="background-color: #fff1f0; color: #030303; border:1px solid #1890FF; padding: 4px 12px;">\#fff1f0</div>   |
+| 警告提示 |  <div style="background-color: #FAAD14; color: #FFFFFF; padding: 4px 12px;">\#FAAD14</div>   |   <div style="background-color: #ffc53d; color: #FFFFFF; padding: 4px 12px;">\#ffc53d</div>   |  <div style="background-color: #d48806; color: #FFFFFF; padding: 4px 12px;">\#d48806</div>    |   <div style="background-color: #fffbe6; color: #030303; border:1px solid #1890FF; padding: 4px 12px;">\#fffbe6</div>   |
+| 成功提示 |   <div style="background-color: #52C41A; color: #FFFFFF; padding: 4px 12px;">\#52C41A</div>   |   <div style="background-color: #73d13d; color: #FFFFFF; padding: 4px 12px;">\#73d13d</div>   |   <div style="background-color: #389e0d; color: #FFFFFF; padding: 4px 12px;">\#389e0d</div>   |   <div style="background-color: #f6ffed; color: #030303; border:1px solid #1890FF; padding: 4px 12px;">\#f6ffed</div>   |
+
+

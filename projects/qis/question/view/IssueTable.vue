@@ -53,11 +53,14 @@
 <script>
 import { clone } from 'ramda';
 import { issueColumns } from '~~/model.js';
+import { clearObserver } from '@util/datahelper.js';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 export default {
   components: {
     // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
+  mixins: [moduleDynamicCache('question')],
   props: {
     /**
      * 数据，从上层组件获取，上层组件通过服务端获取
@@ -101,17 +104,29 @@ export default {
   },
   data () {
     return {
-      columns: issueColumns
+      // columns: issueColumns
     };
   },
   computed: {
-    // 计算「更新列配置」的api
-    url () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
-    },
-    // 计算「更新列配置」传过来的id值
-    id () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
+    // // 计算「更新列配置」的api
+    // url () {
+    //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
+    // },
+    // // 计算「更新列配置」传过来的id值
+    // id () {
+    //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
+    // },
+    columns () {
+      const orderData = this.advancePageConfig.searchOrderData;
+      return issueColumns.map(col => {
+        const newCol = clearObserver(col);
+        if (newCol.dataIndex === orderData.field) {
+          newCol.sortOrder = orderData.order;
+        } else {
+          newCol.sortOrder = void 0;
+        }
+        return newCol;
+      });
     }
   },
   methods: {

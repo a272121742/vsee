@@ -4,7 +4,7 @@
     :loading="loading"
     :data-source="data"
     :scroll="{ x: 1250 }"
-    :pagination="{ total, current: page, pageSize, showTotal, showQuickJumper: true }"
+    :pagination="{ total, current: page, limit, showTotal, showQuickJumper: true }"
     @change="handleTableChange"
     row-key="id"
   >
@@ -43,7 +43,7 @@
       <template slot-scope="text, record">
         <a
           v-permission="'issue:record:detail'"
-          @click="goToDetail(record.id)"
+          @click="goToEdit(record.id)"
           href="javascript:;"
         >
           <!-- 详情链接 -->
@@ -55,9 +55,12 @@
 </template>
 
 <script>
-import { clone } from 'ramda';
+import { defaultTo } from 'ramda';
+import { clearObserver } from '@util/datahelper.js';
 import { issueDraftColumns } from '~~/model.js';
 import { createNamespacedHelpers } from 'vuex';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
+
 const { mapActions } = createNamespacedHelpers('question');
 
 export default {
@@ -65,6 +68,7 @@ export default {
   components: {
     // ColProvider: () => import('@comp/table/ColProvider.vue')
   },
+  mixins: [moduleDynamicCache('question')],
   props: {
     /**
      * 列更新地址
@@ -76,51 +80,45 @@ export default {
   },
   data () {
     return {
-      /**
-       * 总数
-       */
       total: 0,
-      /**
-       * 列信息
-       */
-      columns: issueDraftColumns,
-      /**
-       * 表格数据，从服务端获取
-       */
       data: [],
-      loading: false,
-      /**
-       * 当前页
-       */
-      page: 1,
-      /**
-       * 每页数
-       */
-      pageSize: 10,
-      /**
-       * 分页数
-       */
-      limit: 10,
-      /**
-       * 排序方式： `asc`或者`desc`
-       */
-      order: '',
-      /**
-       * 排序字段
-       */
-      orderField: ''
+      loading: false
     };
   },
 
   computed: {
-    // 计算「更新列配置」的api
-    url () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
+    order () {
+      return defaultTo('', this.advancePageConfig.draftOrderData.order).slice(0, -3);
     },
-    // 计算「更新列配置」传过来的id值
-    id () {
-      return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
+    orderField () {
+      return this.advancePageConfig.draftOrderData.field;
+    },
+    page () {
+      return this.advancePageConfig.draftPageData.current;
+    },
+    limit () {
+      return this.advancePageConfig.draftPageData.pageSize;
+    },
+    columns () {
+      const orderData = this.advancePageConfig.draftOrderData;
+      return issueDraftColumns.map(col => {
+        const newCol = clearObserver(col);
+        if (newCol.dataIndex === orderData.field) {
+          newCol.sortOrder = orderData.order;
+        } else {
+          newCol.sortOrder = void 0;
+        }
+        return newCol;
+      });
     }
+    // // 计算「更新列配置」的api
+    // url () {
+    //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
+    // },
+    // // 计算「更新列配置」传过来的id值
+    // id () {
+    //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
+    // }
   },
   created () {
     this.request({}, true);
@@ -140,7 +138,7 @@ export default {
      * 过滤掉标题
      */
     filterTitle (col) {
-      const newCol = clone(col);
+      const newCol = clearObserver(col);
       delete newCol.title;
       return newCol;
     },
@@ -150,7 +148,7 @@ export default {
     showTotal (total) {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
-        const pageCount = Math.ceil(total / this.pageSize);
+        const pageCount = Math.ceil(total / this.limit);
         const pageText = this.$t('pagination.page');
         return [totalText, pageCount, pageText].join(' ');
       }
@@ -181,24 +179,24 @@ export default {
      * 表格分页、筛选、排序切换时
      */
     handleTableChange ({ current = 1, pageSize = 10 }, filters, { order = '', field = '' }) {
-      current && (this.page = current);
-      pageSize && (this.limit = pageSize);
-      order && (this.order = order.slice(0, -3));
-      field && (this.orderField = field);
+      // 缓存数据到store
+      this.changeAdvancePageConfig({ draftOrderData: { order, field } });
+      this.changeAdvancePageConfig({ draftPageData: { current, pageSize } });
       this.request();
     },
-    /**
-     * 搜索（根据表单传过来的条件）
-     */
-    search (filters) {
-      this.page = 1;
-      this.request(filters);
-    },
-    // 查看详情
-    goToDetail (record) {
+    // /**
+    //  * 搜索（根据表单传过来的条件）
+    //  */
+    // search (filters) {
+    //   this.page = 1;
+    //   this.request(filters);
+    // },
+    // 查看详情（TODO:待发事项待详情作成编辑功能，显示不变）
+    goToEdit (record) {
       this.$router.push({
-        name: 'QuestionDetail',
+        name: 'QuestionCreate',
         params: {
+          name: 'edit',
           id: record
         },
         query: {

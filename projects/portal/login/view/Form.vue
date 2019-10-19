@@ -13,7 +13,7 @@
     </a-form-item>
     <!-- 用户名 -->
     <a-form-item>
-      <v-input
+      <a-input
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
@@ -29,7 +29,7 @@
           type="user"
           style="color: rgba(0,0,0,.25)"
         />
-      </v-input>
+      </a-input>
     </a-form-item>
     <!-- 密码 -->
     <a-form-item>
@@ -103,7 +103,6 @@ const { mapActions } = createNamespacedHelpers('login');
 
 export default {
   components: {
-    VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
     Password: () => import('@comp/form/Password.vue')
   },
