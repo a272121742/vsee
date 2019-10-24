@@ -1,33 +1,17 @@
 module.exports = {
   root: true,
-  parser: 'vue-eslint-parser',
   env: {
-    browser: true,
-    es6: true,
-    commonjs: true
+    node: true
   },
   extends: [
-    'standard',
-    'airbnb-base/legacy',
+    '@vue/standard',
+    '@vue/airbnb',
     'eslint:recommended',
     'plugin:vue/recommended'
   ],
-  parserOptions: {
-    parser: 'babel-eslint',
-    ecmaVersion: 6,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true
-    }
-  },
-  plugins: [
-    'babel',
-    'import',
-    'promise',
-    'standard',
-    'vue'
-  ],
   rules: {
+    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
     strict: 2,
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single', { allowTemplateLiterals: true }],
@@ -43,9 +27,6 @@ module.exports = {
     // 函数定义后必须空格
     'space-before-function-paren': ['error', 'always'],
     indent: ['error', 2], // JavaScript代码强制使用一致的缩进：2格缩进
-    // 打印语句和调试语句在生产环境报错，其他环境关闭检查
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-unused-vars': 1,
     'no-shadow': ['error', { hoist: 'functions' }],
     // vue文件的template约束
@@ -57,7 +38,18 @@ module.exports = {
     'vue/no-parsing-error': [2, {
       'x-invalid-end-tag': false
     }],
-    'vue/html-self-closing': 0
-
-  }
+    'vue/html-self-closing': 0,
+    'import/no-unresolved': [2, { ignore: ['^~', '^@'] }]
+  },
+  parserOptions: {
+    parser: "babel-eslint"
+  },
+  overrides: [
+    {
+      files: ["**/__tests__/*.{j,t}s?(x)"],
+      env: {
+        mocha: true
+      }
+    }
+  ]
 };

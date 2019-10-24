@@ -70,6 +70,7 @@ export default {
   }
   // 设置所有的affix悬浮层次为5000以上
   /deep/ .affix-header {
+    height: 64px;
     z-index: 6000;
   }
   // 设置内容区域中，多余部分隐藏

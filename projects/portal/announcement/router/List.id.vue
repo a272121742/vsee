@@ -1,15 +1,5 @@
 <template>
   <div class="shadown-block-normal panel-card">
-    <a-affix
-      :offset-top="0"
-      style="margin-top: -24px; margin-left: -2px"
-    >
-      <a-button
-        @click="() => $router.push({name: 'Home'})"
-        icon="rollback"
-        type="link"
-      ></a-button>
-    </a-affix>
     <a-row :gutter="64">
       <a-col :span="8">
         <h2 style="color: #0097E0;">
@@ -39,9 +29,9 @@
         </a-list>
       </a-col>
       <a-col :span="16">
-        <h2>系统更新办法v2.0功能介绍</h2>
+        <h2>{{ announcement.title || '\0' }}</h2>
         <a-divider></a-divider>
-        <div>
+        <div class="announcement-content">
           {{ announcement.content }}
         </div>
       </a-col>
@@ -52,9 +42,16 @@
 <script>
 import moment from 'moment';
 import { createNamespacedHelpers } from 'vuex';
+
 const { mapActions } = createNamespacedHelpers('announcement');
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       data: [],
@@ -63,19 +60,33 @@ export default {
       announcement: {}
     };
   },
+  watch: {
+    id: {
+      handler (id) {
+        id && this.loadAnnouncement(id);
+      },
+      immediate: true
+    }
+  },
   created () {
     this.request();
   },
   methods: {
     ...mapActions(['getAnnouncementPage', 'getAnnouncement']),
     request () {
-      this.getAnnouncementPage({ limit: 15 }).then(res => {
+      this.getAnnouncementPage({
+        limit: 7, page: 1, isPublic: 1, isPublish: 1, publish: moment().format('YYYY-MM-DD HH:mm:ss')
+      }).then(res => {
         this.data = res.list;
         this.total = res.total;
+        if (!this.id && this.total) {
+          this.loadAnnouncement(this.data[0].id);
+        }
       });
     },
     loadAnnouncement (id) {
       this.getAnnouncement(id).then(res => {
+        this.$el.querySelector('.announcement-content').innerHTML = res.content;
         this.announcement = res;
       });
     },
@@ -85,7 +96,6 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
   .panel-card {
     height: calc(100% - 200px);
@@ -112,11 +122,14 @@ export default {
         overflow:hidden;
         text-overflow:ellipsis;
         a:before {
-          content: '●';
+          content: '•';
           font-size: 6px;
           margin-right: 4px;
           color: #40a9ff;
         }
+      }
+      .ant-list-item-content {
+        color: rgba(0, 0, 0, 0.25);
       }
     }
   }

@@ -105,6 +105,10 @@ new Vue({
     });
   },
   mounted () {
+    // 消息全局配置
+    this.$message.config({
+      top: '80px'
+    });
     window.addEventListener('scroll', debounce(() => {
       document.querySelectorAll('input:focus').forEach(item => item.blur());
       document.querySelectorAll('.ant-select-open').forEach(item => item.click());

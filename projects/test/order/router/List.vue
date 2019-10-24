@@ -2,8 +2,8 @@
 <template>
   <div>
     <order-edit
-      :data="selectedRow"
       :id="selectedRowId"
+      :data="selectedRow"
       @close="getUpdatedData"
     ></order-edit>
     是否弹窗 <a-switch
@@ -15,7 +15,7 @@
     </a-button>
     <a-table
       :columns="columns"
-      :dataSource="data"
+      :data-source="data"
       :loading="loading"
       row-key="id"
     >
@@ -29,15 +29,14 @@
         <!-- 弹出删除框，要传递给删除框数据 -->
         <a @click="showDelete(row)">删除</a>
       </template>
-
     </a-table>
   </div>
 </template>
 
 <script>
 import { clearObserver } from '@util/datahelper.js';
-import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 import { createNamespacedHelpers } from 'vuex';
+
 const { mapActions } = createNamespacedHelpers('order');
 
 
@@ -70,14 +69,14 @@ export default {
       selectedRowId: undefined
     };
   },
-  created () {
-    this.init();
-  },
   watch: {
     // 【策略】监听
     data (data) {
       this.load(clearObserver(data));
     }
+  },
+  created () {
+    this.init();
   },
   methods: {
     ...mapActions([
@@ -96,6 +95,7 @@ export default {
      */
     init () {
       this.getOrderList().then(({ list = [], total = 0 }) => {
+        console.log(total);
         this.data = list;
         if (list.length) {
           this.loading = false;
@@ -109,7 +109,7 @@ export default {
     /**
      * 加载数据
      */
-    load (data) {
+    load () {
       return this.getOrderList();
     },
     chageEditWay (checked) {
@@ -129,7 +129,7 @@ export default {
     },
     showDelete (row) {
       this.orderDel(row.id)
-        .then(res => {
+        .then(() => {
           this.init();
         });
     },

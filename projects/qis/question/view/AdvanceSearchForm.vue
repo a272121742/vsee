@@ -9,8 +9,11 @@
         :span="6"
       >
         <!-- 标题 -->
-        <a-form-item :label="$t('issue.title')">
-          <a-input
+        <a-form-item
+          :label="$t('issue.title')"
+          self-update
+        >
+          <v-input
             v-decorator="[
               'title'
             ]"
@@ -25,8 +28,11 @@
         :span="6"
       >
         <!-- 问题编号 -->
-        <a-form-item :label="$t('issue.code')">
-          <a-input
+        <a-form-item
+          :label="$t('issue.code')"
+          self-update
+        >
+          <v-input
             v-decorator="[
               'code'
             ]"
@@ -64,10 +70,10 @@
             :filter-option="filterOption"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
             :transform="transformFaultTreeIds1"
-            @change="faultTreeIds1Change"
             allow-clear
             show-search
             url="/issue/v1/faultcategory?p_id=0"
+            @change="faultTreeIds1Change"
           />
         </a-form-item>
       </a-col>
@@ -86,9 +92,9 @@
             :delay="!record.faultTreeIds1"
             :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
             :transform="transformFaultTreeIds2"
-            @change="faultTreeIds2Change"
             allow-clear
             show-search
+            @change="faultTreeIds2Change"
           />
         </a-form-item>
       </a-col>
@@ -218,6 +224,66 @@
           />
         </a-form-item>
       </a-col>
+      
+      <a-col 
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 「问题提出人」下拉 -->
+        <a-form-item :label="$t('issue.proposerName')">
+          <net-select
+            v-decorator="['creator']"
+            :filter-option="filterOption"
+            :placeholder="$t('search.please_select') + $t('issue.proposerName')"
+            :transform="filterOptionCreator"
+            allow-clear
+            show-search
+            url="/issue/v1/issue/getIssueCreatorList"
+          >
+          </net-select>
+        </a-form-item>
+      </a-col>
+
+      <a-col 
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 「当前办理人」下拉 -->
+        <a-form-item :label="$t('issue.assignerName')">
+          <net-select
+            v-decorator="['assigner']"
+            :filter-option="filterOption"
+            :placeholder="$t('search.please_select') + $t('issue.assignerName')"
+            :transform="filterOptionAssigner"
+            allow-clear
+            show-search
+            url="/issue/v1/issue/getIssueAssignerList"
+          >
+          </net-select>
+        </a-form-item>
+      </a-col>
+
+
+      <a-col 
+        v-if="advanced"
+        :span="6"
+      >
+        <!-- 「责任部门」下拉 -->
+        <a-form-item :label="$t('issue.responsibleDepartmentId')">
+          <net-select
+            v-decorator="['responsibleDepartmentId']"
+            :filter-option="filterOption"
+            :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
+            :transform="filterOptionResponsibleDepId"
+            allow-clear
+            show-search
+            url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+          >
+          </net-select>
+        </a-form-item>
+      </a-col>
+
+                    
       <a-col
         v-if="advanced"
         :span="6"
@@ -268,29 +334,35 @@
         style="float: right;"
       >
         <a-form-item
-          :style="{'padding-top': advanced ? '12px': '28px'}"
+          :style="{'padding-top': advanced ? '28px': '28px'}"
         >
           <span
             style="float: right; overflow: hidden;"
           >
             <a-button
               v-permission="'issue:advance:search'"
-              @click="submitSearch"
               class="advance-action"
               type="primary"
+              @click="submitSearch"
             >
               {{ $t('search.find_button') }}
             </a-button>
             <a-button
-              @click="resetSearch"
               class="advance-action"
+              @click="resetSearch"
             >
               {{ $t('search.reset_button') }}
             </a-button>
+            <a-button
+              class="advance-action"
+              @click="exportSearch"
+            >
+              {{ $t('search.export_button') }}
+            </a-button>
             <a
               v-permission="'issue:advance:advance'"
-              @click="changeAdvance"
               class="advance-action"
+              @click="changeAdvance"
             >
               {{ advanced ? $t('search.title_search') : $t('search.advance_search') }}
               <a-icon :type="advanced ? 'up' : 'down'" />
@@ -305,13 +377,20 @@
 <script>
 import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 import { clearObserver } from '@util/datahelper.js';
-import { transform1, transform2, transform3 } from '~~/model.js';
+import { omit } from 'ramda';
+import {
+  createNamespacedHelpers
+} from 'vuex';
+import { transform1, transform2, transform3, transform4, transform5, transform6 } from '~~/model.js';
 import timeFormatMix from '~~/time-format.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
-import { omit } from 'ramda';
 
+const {
+  mapActions
+} = createNamespacedHelpers('question');
 export default {
   components: {
+    VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
   mixins: [timeFormatMix, moduleDynamicCache('question')],
@@ -319,9 +398,9 @@ export default {
     const vm = this;
     // 映射数据源
     vm.mapPropsToFields = mapPropsToFields(vm, [
-      'title', 'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
+      'title', 'code', 'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
       'source', 'grade', 'projectPhase', 'manufactureBaseId', 'firstCausePart',
-      'supplierId', 'failureDate'
+      'supplierId', 'failureDate', 'closeDate', 'planCloseDate', ''
     ], 'record');
     return {
       // 通过映射数据源生成表单
@@ -351,11 +430,17 @@ export default {
     this.form.updateFields();
   },
   methods: {
+    ...mapActions([
+      'exportData'
+    ]),
     /**
      * 提交搜索内容
      */
     submitSearch () {
-      const record = omit(['failureDate', 'closeDate', 'planCloseDate'], this.record);
+      this.changeAdvancePageConfig({
+        searchData: this.record
+      });
+      const record = omit(['failureDate', 'closeDate', 'planCloseDate'], clearObserver(this.record));
       // 问题发生日期转换时间段
       this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
       this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
@@ -380,6 +465,45 @@ export default {
       this.$set(this, 'record', {});
       this.form.updateFields(this.mapPropsToFields());
       this.$emit('change', this.record);
+    },
+    /**
+     * 导出搜索内容
+     */
+    exportSearch () {
+      const record = omit(['failureDate', 'closeDate', 'planCloseDate'], this.record);
+      // 问题发生日期转换时间段
+      this.record.failureDate && this.record.failureDate[0] && (record.failureDateStart = this.record.failureDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.failureDate && this.record.failureDate[1] && (record.failureDateEnd = this.record.failureDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
+      // 问题关闭日期转换时间段
+      this.record.closeDate && this.record.closeDate[0] && (record.closeDateStart = this.record.closeDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.closeDate && this.record.closeDate[1] && (record.closeDateEnd = this.record.closeDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
+      // 问题发生日期转换时间段
+      this.record.planCloseDate && this.record.planCloseDate[0] && (record.planCloseDateStart = this.record.planCloseDate[0].format(this.DATA_RANGE.BEGIN_DAY_FORMAT));
+      this.record.planCloseDate && this.record.planCloseDate[1] && (record.planCloseDateEnd = this.record.planCloseDate[1].format(this.DATA_RANGE.END_DAY_FORMAT));
+      if (this.advancePageConfig.searchOrderData.field !== undefined) {
+        record.orderField = this.advancePageConfig.searchOrderData.field;
+      }
+      if (this.advancePageConfig.searchOrderData.order !== undefined) {
+        record.order = this.advancePageConfig.searchOrderData.order;
+      }
+      let str = '';
+      // eslint-disable-next-line no-restricted-syntax
+      for (const prop in record) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (record.hasOwnProperty(prop)) {
+          str += `&${prop}=${record[prop]}`;
+        }
+      }
+      const a = document.createElement('a');
+      const preUrl = this.$store.getters.getUrl();
+      const token = this.$store.state.token;
+      a.setAttribute('href', preUrl + `/issue/v1/issue/export?token=${token}` + str);
+      // a.click在火狐下无法被触发，必须通过这种方式下载
+      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      a.remove();
+      // this.exportData(record).then((res) => {
+
+      // });
     },
     faultTreeIds1Change (value) {
       if (!value) {
@@ -408,7 +532,10 @@ export default {
     transformGrade: transform2,
     transformPhase: transform2,
     transformSource: transform2,
-    transformManufactureBase: transform3
+    transformManufactureBase: transform3,
+    filterOptionCreator: transform4,
+    filterOptionAssigner: transform5,
+    filterOptionResponsibleDepId: transform6
 
   }
 };
@@ -422,9 +549,9 @@ export default {
     }
   }
   .advance-action {
-    margin-left: 4px;
+    margin-left: 0px;
   }
   .ant-btn {
-    margin-right: 12px;
+    margin-right: 2px;
   }
 </style>

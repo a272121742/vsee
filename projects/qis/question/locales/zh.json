@@ -3,10 +3,14 @@
     "basicInfo": "基本信息",
     "additionalInfo": "补充信息",
     "calibrationVersion": "标定版本号",
+    "details": "问题详情",
+    "workflow": "问题流程",
     "code": "问题编号",
     "confirmationVersion": "配置字版本号",
-    "contact": "联系人手机",
+    "contact": "提出人手机",
     "createDate": "问题创建日期",
+    "assignerName": "当前处理人",
+    "proposerName": "问题提出人",
     "creator": "创建人id",
     "creatorDept": "问题创建部门",
     "creatorName": "问题创建人",
@@ -50,6 +54,7 @@
     "sourceName": "问题分类",
     "status": "解决进度",
     "supplierId": "供应商名称",
+    "supplierName": "供应商名称",
     "testType": "试验类型",
     "title": "问题标题",
     "updateDate": "修改时间",
@@ -57,15 +62,19 @@
     "vehicleModelId": "车型id",
     "vehicleModelName": "车型名称",
     "vinNo": "VIN",
+    "license": "车号",
     "workConditionInfo": "工况信息",
     "champion": "责任人",
     "closeDate": "关闭日期",
-    "planCloseDate": "计划关闭日期"
+    "planCloseDate": "计划关闭日期",
+    "seeMore": "查看更多",
+    "vinOrLicense": "vin或者车号"
   },
   "search": {
     "find_button": "查询",
     "search_button": "搜索",
     "reset_button": "重置",
+    "export_button":"导出",
     "cancel_button": "取消",
     "title_search": "标题搜索",
     "advance_search": "高级搜索",
@@ -87,12 +96,13 @@
   },
   "issue_status": {
     "todo": "待办事项",
-    "draft": "待发事项",
+    "draft": "草稿箱",
     "done": "已办事项",
     "published": "已发事项"
   },
   "issue_action": {
     "create": "创建问题",
+    "edit_issue": "编辑问题",
     "detail": "详情",
     "edit": "编辑",
     "delete": "删除",
@@ -101,20 +111,23 @@
     "save": "保存",
     "cancel": "取消",
     "upload": "上传文件",
-    "download": "下载文件"
+    "download": "下载文件",
+    "reassign": "再分配",
+    "reanalysis": "再分析"
   },
   "issue_workflow": {
     "D": {
       "processName": "草稿"
     },
     "D0": {
-      "processName": "问题立项",
+      "processName": "问题定义",
       "publish": "是否立项",
       "reason": "理由",
       "needICA": "是否需要围堵措施",
       "ICA": "围堵措施",
       "need": "需要",
-      "unneed": "不需要"
+      "unneed": "不需要",
+      "publist_condition": "立项条件"
     },
     "D1": {
       "processName": "责任判定",
@@ -122,7 +135,10 @@
       "needAnalysis": "需要7钻分析",
       "resposibleDepartment": "责任部门",
       "champion": "问题责任人",
+      "champion_short": "责任人",
+      "analysis_champion": "分析责任人",
       "analysis": "7钻分析",
+      "before_analysis": "7钻分析之前",
       "1stDiamond": "第1钻",
       "rightProcess": "过程是否正确",
       "2ndDiamond": "第2钻",
@@ -139,14 +155,16 @@
       "complex": "是否极端复杂问题",
       "standard": "标准要求",
       "actual": "实际情况",
-      "conclusion": "结论"
+      "conclusion": "结论",
+      "champion_span": "请指定7钻分析责任人:",
+      "7thDiamond_flow": "7钻流程"
     },
     "D2": {
       "processName": "原因分析",
       "cause": "根本原因"
     },
     "D3": {
-      "processName": "制定措施",
+      "processName": "措施制定",
       "shortSolution": "短期措施",
       "longSolution": "长期措施",
       "pilotVlidate": "小批量验证",
@@ -155,7 +173,7 @@
       "closureDate": "计划关闭日期"
     },
     "D4": {
-      "processName": "制定实施",
+      "processName": "措施实施",
       "shortEffect": "短期效果",
       "sortSolutionImplementDate": "短期效果实施日期",
       "longTermEffect": "长期措施实施描述",
@@ -188,9 +206,21 @@
       "needReview": "是否加签",
       "leader": "加签领导"
     },
+    "steps": {
+      "D0": "D0-问题定义",
+      "D1": "D1-责任判定",
+      "D2": "D2-原因分析",
+      "D3": "D3-措施制定",
+      "D4": "D4-措施实施",
+      "D5": "D5-效果验证",
+      "D6": "D6-问题关闭"
+    },
     "attachment": "附件",
     "approvalResult": "是否通过审核",
+    "approval_result": "审核结果",
+    "approval": "审核",
     "rejectReason": "不通过理由",
+    "rejectReason2": "不通过原因",
     "pass": "通过",
     "reject": "不通过",
     "yes": "是",
@@ -201,7 +231,42 @@
     "reviewed": "已审阅",
     "remark": "备注"
   },
+  "issue_reason": {
+    "publishing": "该问题正在立项中",
+    "defining": "该问题正在责任判定中",
+    "analysising": "问题原因正在分析填写中",
+    "sovling": "问题措施正在制定中",
+    "implementing": "该问题措施实施填写中",
+    "feedbacking": "该问题效果验证内容填写中",
+    "closing": "该问题关闭中"
+  },
+  "colon": "：",
+  "question_mark": "?",
+  "analysis": "分析",
+  "label": {
+    "reanalysis_reason": "再分析原因",
+    "rediStribution_reason": "再分配原因"
+  },
   "validate": {
-    "not_number": "{0}不是数字"
+    "not_number": "{0}不是数字",
+    "enter_update": "请输入更新内容",
+    "less_then_160": "请输入最多160个字符"
+  },
+  "operation": {
+    "operation": "操作记录",
+    "node": "解决进度",
+    "creatorName": "变更人",
+    "createDate": "操作时间",
+    "content": "备注"
+  },
+  "confirm": {
+    "content": "提交后将无法撤回，是否确认提交？",
+    "title": "是否确认提交？"
+  },
+  "delete": {
+    "title": "是否确认删除？",
+    "content": "删除后将无法撤回，是否确认删除？",
+    "success": "删除成功",
+    "failure": "删除失败"
   }
 }

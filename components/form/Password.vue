@@ -2,11 +2,11 @@
   <a-input
     ref="input"
     v-bind="$attrs"
-    v-on="$listeners"
     :value="text"
     :type="type"
-    @change="e => text = e.target.value"
     class="clear-password"
+    v-on="$listeners"
+    @change="e => text = e.target.value"
   >
     <!-- slot继承 -->
     <template
@@ -20,20 +20,20 @@
     </template>
     <template v-if="allowClear">
       <a-icon
-        slot="suffix"
         v-show="text"
-        @click="clear"
+        slot="suffix"
         class="allow-clear"
         type="close-circle"
         theme="filled"
+        @click="clear"
       />
     </template>
     <template>
       <a-icon
         slot="suffix"
         :type="type ? 'eye-invisible' : 'eye'"
-        @click="changeInvisible"
         theme="filled"
+        @click="changeInvisible"
       />
     </template>
   </a-input>

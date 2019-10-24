@@ -3,10 +3,14 @@
     "basicInfo": "Basic Info",
     "additionalInfo": "Additional Info",
     "calibrationVersion": "Calibration Version",
+    "details": "Issue Details",
+    "workflow": "Issue Workflow",
     "code": "Issue Number",
     "confirmationVersion": "Confirmation Version Nr.",
-    "contact": "Contact Person cellphone",
+    "contact": "Proposer Cellphone",
     "createDate": "Create Date",
+    "assignerName": "Task Owner",
+    "proposerName": "Proposer",
     "creator": "Creator",
     "creatorDept": "Issue Creator Department",
     "creatorName": "Issue Creator",
@@ -36,6 +40,7 @@
     "optCounter": "Opt Counter",
     "partId": "Part Number",
     "preliminaryInvestigation": "Preliminary Investigation",
+    "preliminaryInvestigation_colon": "Preliminary Investigation:",
     "productDate": "Production Date",
     "projectDate": "Issue Publish Date",
     "projectPhase": "Project Phase",
@@ -43,6 +48,7 @@
     "receiveDate": "Receive Date",
     "relevanceIssuesId": "Relevance Issues ID",
     "remark": "Remark",
+    "remark_colon": "Remark:",
     "responsibleDepartmentId": "Responsible Department ID",
     "responsibleDepartmentName": "Resp. Department",
     "softwareVersion": "Software Version",
@@ -50,22 +56,30 @@
     "sourceName": "Source Name",
     "status": "Status",
     "supplierId": "Supplier",
+    "supplierName": "Supplier",
     "testType": "Test Category",
     "title": "Issue Title",
+    "title_colon": "Issue Title:",
+    "code_colon": "Issue Code:",
     "updateDate": "Modify Date",
     "updater": "Modify Person",
     "vehicleModelId": "Vehicle Model ID",
     "vehicleModelName": "Vehicle Model",
     "vinNo": "VIN Number",
+    "license": "License",
     "workConditionInfo": "Working condition",
-    "champion": "champion",
+    "workConditionInfo_colon": "Working condition:",
+    "champion": "Champion",
     "closeDate": "Close Date",
-    "planCloseDate": "Plan Close Date"
+    "planCloseDate": "Plan Close Date",
+    "seeMore": "See More",
+    "vinOrLicense": "VIN or License"
   },
   "search": {
     "find_button": "Search",
     "search_button": "Search",
     "reset_button": "Reset",
+    "export_button":"Export",
     "cancel_button": "Cancel",
     "title_search": "Title",
     "advance_search": "Multiple",
@@ -83,7 +97,8 @@
   },
   "issue_entity": {
     "name1": "Issue",
-    "name2": "Issue"
+    "name2": "Issue",
+    "create_issue": "Create Issue"
   },
   "issue_status": {
     "todo": "To Do",
@@ -93,6 +108,7 @@
   },
   "issue_action": {
     "create": "Create",
+    "edit_issue": "Edit",
     "detail": "Detail",
     "edit": "Edit",
     "delete": "Delete",
@@ -101,7 +117,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "upload": "Upload",
-    "download": "Download"
+    "download": "Download",
+    "reassign": "Reassign",
+    "reanalysis": "Reanalysis"
   },
   "issue_workflow": {
     "D": {
@@ -114,7 +132,8 @@
       "needICA": "Need ICA or not",
       "ICA": "ICA",
       "need": "yes",
-      "unneed": "no"
+      "unneed": "no",
+      "publist_condition": "Publish Condition"
     },
     "D1": {
       "processName": "Find Causer",
@@ -122,7 +141,10 @@
       "needAnalysis": "Need 7 diamonds analysis",
       "resposibleDepartment": "Resposible Department",
       "champion": "Champion",
+      "champion_short": "Champion",
       "analysis": "7 Diamonds Analysis",
+      "analysis_champion": "Analysis Champion",
+      "before_analysis": "before 7 Diamonds Analysis",
       "1stDiamond": "1st Diamond",
       "rightProcess": "Right Process",
       "2ndDiamond": "2nd Diamond",
@@ -139,7 +161,9 @@
       "complex": "Extremely Complex Issue?",
       "standard": "Standard requirements",
       "actual": "Actual situation",
-      "conclusion": "Conclusion"
+      "conclusion": "Conclusion",
+      "champion_span": "Please Assign 7th Diamond Champion:",
+      "7thDiamond_flow": "7th Diamond Flow"
     },
     "D2": {
       "processName": "Root Cause",
@@ -187,9 +211,21 @@
       "needReview": "Need leader review",
       "leader": "Leader"
     },
+    "steps": {
+      "D0": "D0-Issue Definiton",
+      "D1": "D1-Find Causer",
+      "D2": "D2-Root Cause",
+      "D3": "D3-Solution",
+      "D4": "D4-Implementation",
+      "D5": "D5-Feedback",
+      "D6": "D6-Issue Closure"
+    },
     "attachment": "Attachment",
     "approvalResult": "Approval result",
+    "approval_result": "Approval Result",
+    "approval": "Approval",
     "rejectReason": "Reason for rejection",
+    "rejectReason2": "Reason for rejection",
     "pass": "Pass",
     "reject": "Reject",
     "yes": "Yes",
@@ -200,7 +236,42 @@
     "reviewed": "Reviewed",
     "remark": "Remark"
   },
+  "issue_reason": {
+    "publishing": "The issue is publishing",
+    "defining": "The issue is defining",
+    "analysising": "Root cause fill in",
+    "sovling": "Solution making",
+    "implementing": "Implementation fill in",
+    "feedbacking": "Feedback fill in",
+    "closing": "The issue is closing"
+  },
+  "colon": ":",
+  "question_mark": "?",
+  "analysis": " Analysis",
+  "label": {
+    "reanalysis_reason": "Reanalysis Reason",
+    "rediStribution_reason": "Reassign Reason"
+  },
   "validate": {
-    "not_number": "{0} not a number"
+    "not_number": "{0} not a number",
+    "enter_update": "Please enter the update",
+    "less_then_160": "Please enter up to 160 characters"
+  },
+  "operation": {
+    "operation": "Operation Record",
+    "node": "Resolve Progress",
+    "creatorName": "Creator",
+    "createDate": "Creator Date",
+    "content": "Remark"
+  },
+  "confirm": {
+    "content": "Cannot be withdrawn after submission, is it confirmed to submit?",
+    "title": "Do you confirm the submission?"
+  },
+  "delete": {
+    "title": "Do you confirm the deletion?",
+    "content": "Cannot be revoked after deletion, is it confirmed to delete?",
+    "success": "Delete Success",
+    "failure": "Delete Failed"
   }
 }

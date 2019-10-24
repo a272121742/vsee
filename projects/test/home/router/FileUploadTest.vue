@@ -21,7 +21,7 @@ export default {
         authorization: 'authorization-text',
         token: $store.getters.getToken()
       }
-    }
+    };
   },
   methods: {
     handleChange (info) {
@@ -45,5 +45,5 @@ export default {
       // console.log(fileList);
     }
   }
-}
+};
 </script>

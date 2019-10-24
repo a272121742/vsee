@@ -2,8 +2,8 @@
   <div class="clear-input">
     <a-textarea
       v-bind="$attrs"
-      v-on="$listeners"
       :value="value"
+      v-on="$listeners"
     >
       <!-- slot继承 -->
       <template
@@ -21,11 +21,11 @@
       class="ant-input-suffix"
     >
       <a-icon
-        slot="suffix"
         v-show="value"
-        @click="$emit('change')"
+        slot="suffix"
         type="close-circle"
         theme="filled"
+        @click="$emit('change')"
       />
     </span>
   </div>

@@ -1,10 +1,5 @@
-/.storybook
-/components
-/config
-/lib
-/projects/test
-.storybook
-components
-config
-lib
-projects/test
+.storybook/*
+components/*
+config/*
+lib/*
+projects/test/*

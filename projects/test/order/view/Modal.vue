@@ -1,9 +1,9 @@
 <template>
   <a-modal
     :visible="visible"
+    title="编辑"
     @ok="handleOk"
     @cancel="handleCancel"
-    title="编辑"
   >
     <a-form
       :form="form"
@@ -32,6 +32,7 @@
 import { createNamespacedHelpers } from 'vuex';
 import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 import { clearObserver } from '@util/datahelper.js';
+
 const { mapActions } = createNamespacedHelpers('order');
 
 export default {
@@ -59,7 +60,7 @@ export default {
     }
   },
   created () {
-    const vm = this
+    const vm = this;
     // 【策略】映射
     vm.mapPropsToFields = mapPropsToFields(vm, ['name'], 'record');
     // 【策略】投影
@@ -84,7 +85,7 @@ export default {
         this.orderAdd(this.record);
       } else {
         const t = this.record;
-        const s = { id: t.id, name: t.name }
+        const s = { id: t.id, name: t.name };
         this.orderEdit(s);
       }
       this.close();

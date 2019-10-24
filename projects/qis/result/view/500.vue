@@ -14,18 +14,18 @@
         </p>
         <div class="error500-btn-con">
           <i-button
-            @click="goHome"
             size="large"
             style="width: 200px;"
             type="text"
+            @click="goHome"
           >
             返回首页
           </i-button>
           <i-button
-            @click="goBack"
             size="large"
             style="width: 200px;margin-left: 40px;"
             type="primary"
+            @click="goBack"
           >
             返回上一页
           </i-button>

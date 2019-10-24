@@ -12,8 +12,10 @@
       </a-input>
     </a-form-item>
     <!-- 用户名 -->
-    <a-form-item>
-      <a-input
+    <a-form-item
+      self-update
+    >
+      <v-input
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
@@ -29,10 +31,12 @@
           type="user"
           style="color: rgba(0,0,0,.25)"
         />
-      </a-input>
+      </v-input>
     </a-form-item>
     <!-- 密码 -->
-    <a-form-item>
+    <a-form-item
+      self-update
+    >
       <password
         v-decorator="['password', {
           initialValue: record.password,
@@ -72,15 +76,14 @@
         />
       </captcha-input>
     </a-form-item> -->
-    <a-form-item>
-      <a-checkbox
-        :checked="remember"
-        @change="e => remember = e.target.checked"
-      >
-        {{ $t('remember.text') }}
-      </a-checkbox>
-    </a-form-item>
-
+    <!-- <a-form-item class=""> -->
+    <a-checkbox
+      :checked="remember"
+      @change="e => remember = e.target.checked"
+    >
+      {{ $t('remember.text') }}
+    </a-checkbox>
+    <!-- </a-form-item> -->
     <a-form-item>
       <a-button
         type="primary"
@@ -103,6 +106,7 @@ const { mapActions } = createNamespacedHelpers('login');
 
 export default {
   components: {
+    VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
     Password: () => import('@comp/form/Password.vue')
   },
@@ -156,12 +160,11 @@ export default {
         if (!err) {
           this.$store.dispatch('login', loginInfo).then(res => {
             if (res.token) {
-              this.$store.commit('setLoginStatus', res.token);
               const goPage = this.$route.query.redirect || '/';
               if (this.$router.matcher.match(goPage).name === '404') {
                 this.$router.push({ path: '/' });
               } else {
-                this.$router.push({ path: this.$route.query.redirect });
+                this.$router.push({ path: goPage });
               }
               if (this.remember) {
                 this.$store.commit('cacheLoginInfo', loginInfo);
@@ -170,7 +173,7 @@ export default {
               }
             }
           }).catch(errCode => {
-            this.$message.error(this.$t(errCode));
+            errCode && this.$message.error(this.$t(errCode));
             this.record.captcha = null;
             this.form.updateFields(this.mapPropsToFields());
             this.captchaChange();

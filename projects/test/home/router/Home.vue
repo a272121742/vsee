@@ -18,16 +18,16 @@
     >
     </net-tree-select>
     <net-button
-      @fetch="fetch"
       url="/getdata"
+      @fetch="fetch"
       @click="fetch"
     >
       ajax按钮
     </net-button>
     <prevent-button
       ref="preventButton"
-      @click="preventClick"
       bind="both"
+      @click="preventClick"
     >
       阻止二次提交
     </prevent-button>

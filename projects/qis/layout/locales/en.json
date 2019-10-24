@@ -9,8 +9,30 @@
   "user_action": {
     "manual": "user manual",
     "editinfo": "edit info",
+    "change_pd": "change password",
     "to_portal": "TQIS portal",
     "logout": "logout"
+  },
+  "old_password": {
+    "label": "Old Password",
+    "placeholder": "Please Input Old Password",
+    "required_message": "Password Must Required"
+  },
+  "new_password": {
+    "label": "New Password",
+    "placeholder": "Please Input New Password",
+    "required_message": "Password Must Required"
+  },
+  "repeat_password": {
+    "label": "Repeat Password",
+    "placeholder": "Please Input New Password Repeat",
+    "required_message": "Password Must Required",
+    "unconfirm_message": "Twice Input Not Same"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "success": "success",
+    "failure": "failure"
   },
   "SERVER": {
     "ERROR": {
@@ -80,7 +102,9 @@
       "10016": "The parameter format is incorrect. Use JSON format",
       "10017": "Account already exists",
       "10100": "The current data has been modified. Please refresh and try again.",
-      "100001003": "Account already exists under the current classification file path does not exist!"
+      "100001002": "File is empty",
+      "100001003": "Account already exists under the current classification file path does not exist!",
+      "100004007": "Redistribution Task"
     }
   }
 }

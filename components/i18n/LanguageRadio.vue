@@ -1,9 +1,9 @@
 <template>
   <a-radio-group
     :default-value="value"
-    @change="updateLanguage"
     size="small"
     button-style="solid"
+    @change="updateLanguage"
   >
     <a-radio-button
       v-for="item in langs"
@@ -17,6 +17,7 @@
 
 <script>
 import mixin from './mixin.js';
+
 export default {
   mixins: [mixin],
   computed: {

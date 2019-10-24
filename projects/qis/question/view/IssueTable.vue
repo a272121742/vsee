@@ -2,10 +2,10 @@
   <a-table
     :data-source="data"
     :loading="loading"
-    :scroll="{ x: 1400 }"
+    :scroll="{ x: 1700 }"
     :pagination="{total: total, current: page, pageSize, showTotal, showQuickJumper: true}"
-    v-on="$listeners"
     row-key="id"
+    v-on="$listeners"
   >
     <template v-for="col in columns">
       <a-table-column
@@ -52,8 +52,8 @@
 
 <script>
 import { clone } from 'ramda';
-import { issueColumns } from '~~/model.js';
 import { clearObserver } from '@util/datahelper.js';
+import { issueColumns } from '~~/model.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 export default {
@@ -196,10 +196,11 @@ export default {
     }
     li.ant-pagination-total-text {
       order: 2;
-      margin: 1px -6px 0 12px;
+      margin: 1px 0 0 12px;
     }
     li.ant-pagination-options {
       order: 3;
+      margin-left: 12px;
     }
   }
 </style>

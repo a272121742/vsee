@@ -2,6 +2,7 @@
   "user_action": {
     "manual": "user manual",
     "editinfo": "edit info",
+    "change_pd": "change password",
     "to_portal": "TQIS portal",
     "logout": "logout"
   },
@@ -13,8 +14,34 @@
     "manufacturing": "Manufacturing Quality System",
     "system": "System Setup"
   },
+  "old_password": {
+    "label": "Old Password",
+    "placeholder": "Please Input Old Password",
+    "required_message": "Password Must Required"
+  },
+  "new_password": {
+    "label": "New Password",
+    "placeholder": "Please Input New Password",
+    "required_message": "Password Must Required"
+  },
+  "repeat_password": {
+    "label": "Repeat Password",
+    "placeholder": "Please Input New Password Repeat",
+    "required_message": "Password Must Required",
+    "unconfirm_message": "Twice Input Not Same"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "success": "success",
+    "failure": "failure"
+  },
   "SERVER": {
     "ERROR": {
+      "ECONNABORTED": "Software Caused Connection Abort",
+      "ECONNRESET": "Connection Reset By Peer",
+      "EPIPE": "Broken Pipe",
+      "ETIMEDOUT": "Connect Time Out",
+      "ENOPROTOOPT": "Net Error",
       "undefined": "Error Code Undefined",
       "0": "Success",
       "100": "Continue",

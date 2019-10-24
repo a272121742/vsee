@@ -96,7 +96,7 @@ export default {
       window.location.href = '/';
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -129,7 +129,7 @@ export default {
         height: 40px;
         margin: 12px 16px 12px 0;
         float: left;
-        background-image: url("/static/logo.png");
+        background-image: url("/static/logo.svg");
         img,
         svg {
           display: inline-block;

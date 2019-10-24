@@ -9,8 +9,30 @@
   "user_action": {
     "manual": "用户手册",
     "editinfo": "编辑信息",
+    "change_pd": "修改密码",
     "to_portal": "返回TQIS首页",
     "logout": "退出系统"
+  },
+  "old_password": {
+    "label": "原密码",
+    "placeholder": "请输入原密码",
+    "required_message": "密码不能为空"
+  },
+  "new_password": {
+    "label": "新密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空"
+  },
+  "repeat_password": {
+    "label": "重复密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空",
+    "unconfirm_message": "两次输入不一致"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "success": "密码修改成功，正在跳转登录页",
+    "failure": "密码修改失败"
   },
   "SERVER": {
     "ERROR": {
@@ -80,6 +102,7 @@
       "10016": "参数格式不正确，请使用JSON格式",
       "10017": "账号已存在",
       "10100": "当前数据已经被修改，请刷新后重试",
+      "100001002": "文件不能为空",
       "100001003": "当前分类下文件路径不存在！",
       "100004007": "再分配任务"
     }

@@ -1,12 +1,12 @@
 <template>
   <a-tabs
     :animated="false"
-    :activeKey="defaultActiveKey"
+    :active-key="defaultActiveKey"
     @change="changeTab"
   >
     <a-tab-pane
-      key="1"
       v-if="$store.getters.hasPermission('issue:home:todo')"
+      key="1"
     >
       <template #tab>
         <!-- 待办事项 1 = todo -->
@@ -26,8 +26,8 @@
       ></issue-todo-table>
     </a-tab-pane>
     <a-tab-pane
-      key="0"
       v-if="$store.getters.hasPermission('issue:home:draft')"
+      key="0"
     >
       <template #tab>
         <!-- 待发事项（草稿）0 = draft -->
@@ -49,21 +49,21 @@
     </a-tab-pane>
     <template #tabBarExtraContent>
       <a-button
-        v-permission="'issue:home:todo:search'"
         v-if="showSearch"
+        v-permission="'issue:home:todo:search'"
         :ghost="true"
-        @click="changeFormShown"
         icon="search"
         type="primary"
+        @click="changeFormShown"
       >
         <!-- 搜索按钮 -->
         {{ $t('search.search_button') }}
       </a-button>
       <a-button
         v-permission="'issue:home:todo:create'"
-        @click="createQuestion"
         icon="plus-circle"
         type="primary"
+        @click="createQuestion"
       >
         <!-- 创建问题按钮 -->
         {{ $t('issue_action.create') }}
@@ -74,6 +74,7 @@
 
 <script>
 import issueTab from '~~/issue-tab.js';
+
 export default {
   name: 'HomeBlock',
   mixins: [issueTab]

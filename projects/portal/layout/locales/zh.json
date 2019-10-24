@@ -2,6 +2,7 @@
   "user_action": {
     "manual": "用户手册",
     "editinfo": "编辑信息",
+    "change_pd": "修改密码",
     "to_portal": "返回TQIS首页",
     "logout": "退出系统"
   },
@@ -13,8 +14,34 @@
     "manufacturing": "过程质量模块",
     "system": "系统设置"
   },
+  "old_password": {
+    "label": "原密码",
+    "placeholder": "请输入原密码",
+    "required_message": "密码不能为空"
+  },
+  "new_password": {
+    "label": "新密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空"
+  },
+  "repeat_password": {
+    "label": "重复密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空",
+    "unconfirm_message": "两次输入不一致"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "success": "密码修改成功，正在跳转登录页",
+    "failure": "密码修改失败"
+  },
   "SERVER": {
     "ERROR": {
+      "ECONNABORTED": "软件引起的连接中止",
+      "ECONNRESET": "对方复位连接",
+      "EPIPE": "通讯管道破裂",
+      "ETIMEDOUT": "连接超时",
+      "ENOPROTOOPT": "网络协议错误",
       "undefined": "错误代码未定义",
       "0": "正常请求",
       "100": "继续（客户的浏览器应当继续刚才的请求，本代码意义是未拒绝服务器对之前的请求，可以接受进一步请求，客户端浏览器应当跟进，如果请求已经完成可忽略本消息！）",
@@ -76,7 +103,8 @@
       "10016": "参数格式不正确，请使用JSON格式",
       "10017": "账号已存在",
       "10100": "当前数据已经被修改，请刷新后重试",
-      "100001003": "当前分类下文件路径不存在！"
+      "100001003": "当前分类下文件路径不存在！",
+      "100004007": "再分配任务"
     }
   }
 }

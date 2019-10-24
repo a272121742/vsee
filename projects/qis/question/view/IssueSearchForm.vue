@@ -9,8 +9,11 @@
         :span="8"
       >
         <!-- 问题编号 -->
-        <a-form-item :label="$t('issue.code')">
-          <a-input
+        <a-form-item
+          :label="$t('issue.code')"
+          self-update
+        >
+          <v-input
             v-decorator="[
               'code'
             ]"
@@ -26,10 +29,10 @@
         <!-- 车型 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
+            v-decorator="['vehicleModelId']"
             :filter-option="filterOption"
             :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
             :transform="transformField"
-            v-decorator="['vehicleModelId']"
             allow-clear
             url="/masterdata/v1/vehiclemodel"
           />
@@ -56,11 +59,11 @@
         <!-- 问题分类 -->
         <a-form-item :label="$t('issue.source')">
           <net-select
+            v-decorator="['source']"
             :filter-option="filterOption"
             :delay="!record.source"
             :placeholder="$t('search.please_select') + $t('issue.source')"
             :transform="transformSource"
-            v-decorator="['source']"
             allow-clear
             url="/sys/dict?dictType=issue_source"
           />
@@ -84,28 +87,28 @@
         style="float: right;"
       >
         <a-form-item
-          style="margin-top: 12px; margin-bottom: 16px;"
+          style="margin-bottom: 16px;"
         >
           <span
             style="float: right; overflow: hidden;"
           >
             <a-button
-              @click="submitSearch"
               type="primary"
               class="advance-action"
+              @click="submitSearch"
             >
               {{ $t('search.search_button') }}
             </a-button>
             <a-button
-              @click="resetSearch"
               class="advance-action"
+              @click="resetSearch"
             >
               {{ $t('search.reset_button') }}
             </a-button>
             <a-button
-              @click="cancelSearch"
               class="advance-action"
               type="link"
+              @click="cancelSearch"
             >
               {{ $t('search.collapse_button') }} <a-icon type="up" />
             </a-button>
@@ -125,6 +128,7 @@ import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 export default {
   components: {
+    VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue')
   },
   mixins: [moduleDynamicCache('question')],
@@ -152,7 +156,7 @@ export default {
      */
     mapPropsToFields () {
       return createFormFields(this, [
-        'vehicleModelId', 'grade', 'source'
+        'code', 'vehicleModelId', 'grade', 'source'
       ], 'record');
     },
     /**
@@ -160,6 +164,9 @@ export default {
      */
     submitSearch () {
       this.cache = clone(this.record);
+      this.changeAdvancePageConfig({
+        searchData: this.cache
+      });
       this.$emit('change', this.record);
     },
     /**

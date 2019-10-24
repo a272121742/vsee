@@ -3,9 +3,9 @@
     ref="input"
     v-bind="$attrs"
     :value="text"
+    class="clear-input"
     v-on="$listeners"
     @change="e => text = e.target.value"
-    class="clear-input"
   >
     <!-- slot继承 -->
     <template
@@ -19,12 +19,12 @@
     </template>
     <template v-if="allowClear">
       <a-icon
-        slot="suffix"
         v-show="text"
-        @click="clear"
+        slot="suffix"
         class="allow-clear"
         type="close-circle"
         theme="filled"
+        @click="clear"
       />
     </template>
     <a-spin
@@ -42,6 +42,7 @@
 
 <script>
 import fetch from '@mix/fetch.js';
+
 export default {
   mixins: [fetch],
   props: {

@@ -1,10 +1,11 @@
 <template>
   <a-layout-header>
+    <change-password :visible.sync="showChangePassword"></change-password>
     <div class="header-index-wide">
       <div class="header-index-left">
         <div
-          @click="toPortal"
           class="logo"
+          @click="toPortal"
         >
         </div>
         <a-divider
@@ -35,6 +36,12 @@
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
+                <a @click="toChangePd">
+
+                  {{ $t('user_action.change_pd') }}
+                </a>
+              </a-menu-item>
+              <a-menu-item key="2">
                 <a @click.stop.prevent="logoutHandle">
                   {{ $t('user_action.logout') }}
                 </a>
@@ -51,7 +58,13 @@
 export default {
   components: {
     Banner: () => import('@comp/head/Banner.vue'),
+    ChangePassword: () => import('./ChangePassword.vue'),
     LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
+  },
+  data () {
+    return {
+      showChangePassword: false
+    };
   },
   computed: {
     menus () {
@@ -61,6 +74,9 @@ export default {
   methods: {
     toPortal () {
       window.location.href = '/';
+    },
+    toChangePd () {
+      this.showChangePassword = true;
     },
     logoutHandle () {
       this.$store.dispatch('logout');
@@ -97,13 +113,13 @@ export default {
       display: flex;
       .logo {
         cursor: pointer;
+        display: inline-block;
         width: 168px;
         height: 40px;
         margin: 12px 16px 12px 0;
-        float: left;
-        background-image: url("/static/logo.png");
-        img,
-        svg {
+        background: url("/static/logo.svg") no-repeat;
+        background-size: 100%;
+        img {
           display: inline-block;
           vertical-align: middle;
           height: 32px;

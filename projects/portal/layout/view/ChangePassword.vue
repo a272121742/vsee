@@ -23,7 +23,7 @@
         />
       </a-form-item>
       <!-- 新密码 -->
-      <a-form-item 
+      <a-form-item
         :label="$t('new_password.label')"
         self-update
       >

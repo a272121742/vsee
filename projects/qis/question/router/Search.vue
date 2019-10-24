@@ -8,13 +8,13 @@
     <a-divider style="margin: 12px 0 12px 0;"></a-divider>
     <!-- 数据列表 -->
     <issue-table
-      @change="handleTableChange"
       :data="data"
       :loading="loading"
       :total="total"
       :page="page"
       :page-size.sync="limit"
       col-update-url="/sys/customlist?listCode=issue-advance-column"
+      @change="handleTableChange"
     >
       <span
         slot="action"
@@ -22,8 +22,8 @@
       >
         <a
           v-permission="'issue:record:detail'"
-          @click="goToDetail(record.id)"
           href="javascript:;"
+          @click="goToDetail(record.id)"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -42,7 +42,6 @@ export default {
   mixins: [issueTableMix, moduleDynamicCache('question')]
 };
 </script>
-
 <style lang="less" scoped>
   .container {
     margin: 16px auto;

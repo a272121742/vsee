@@ -19,22 +19,26 @@
               :span="8"
               class="module-center"
             >
-              <div
-                @click.stop.prevent="jumpToModule(m.path)"
-                class="module-wrapper"
+              <template
+                v-if="index < 5 || isAdmin"
               >
-                <div class="module-container">
-                  <svg
-                    class="icon"
-                    aria-hidden="true"
-                  >
-                    <use :xlink:href="m.icon"></use>
-                  </svg>
+                <div
+                  class="module-wrapper"
+                  @click.stop.prevent="jumpToModule(m.path)"
+                >
+                  <div class="module-container">
+                    <svg
+                      class="icon"
+                      aria-hidden="true"
+                    >
+                      <use :xlink:href="m.icon"></use>
+                    </svg>
+                  </div>
+                  <div class="module-link">
+                    {{ $t(`portal_link.${m.name}`) }}
+                  </div>
                 </div>
-                <div class="module-link">
-                  {{ $t(`portal_link.${m.name}`) }}
-                </div>
-              </div>
+              </template>
             </a-col>
           </a-row>
         </a-card>
@@ -58,7 +62,7 @@ export default {
     return {
       modules: [{
         name: 'issue',
-        path: '/qis',
+        path: '/qis/home/home',
         icon: '#iconzhiliang-'
       }, {
         name: 'bigdata',
@@ -82,6 +86,11 @@ export default {
         icon: '#iconzhiliang-1'
       }]
     };
+  },
+  computed: {
+    isAdmin () {
+      return this.$store.state.userInfo.superAdmin === 1;
+    }
   },
   methods: {
     jumpToModule (url) {

@@ -2,47 +2,77 @@
   <div id="components-form-demo-advanced-search">
     <!-- 顶部悬停按钮组 -->
     <a-affix
-      :offset-top="64"
+      :offset-top="63.9"
     >
       <div class="top-buttons">
         <div class="backButton">
           <a-button
             slot="tabBarExtraContent"
-            @click="goBack"
             class="backBtn"
+            @click="goBack"
           >
-            <a-icon type="rollback" />
+            <img src="/static/question/back.svg">
+            <!-- <a-icon type="rollback" /> -->
             <!-- 「返回」按钮 -->
             {{ $t('issue_action.back') }}
           </a-button>
         </div>
         <div class="rightButton">
           <prevent-button
-            ref="commitButton"
             v-if="submitBtn"
-            @click="handleSubmit"
+            ref="commitButton"
             bind="both"
             type="primary"
             class="submitBtn"
+            @click="handleSubmit"
           >
             <!-- 「提交」按钮 -->
             {{ $t('issue_action.commit') }}
           </prevent-button>
+          <a-modal
+            :visible="visibleSubmit"
+            :title="$t('confirm.title')"
+            style="top:200px!important;"
+            @ok="submitOk"
+            @cancel="submitCancel"
+          >
+            <p>{{ $t('confirm.content') }}</p>
+          </a-modal>
           <prevent-button
             ref="saveButton"
             :style="{ marginLeft: '8px' }"
             :class="[actiive]"
-            @click="handleSave"
             bind="both"
             type="primary"
+            @click="handleSave"
           >
             <!-- 「保存」按钮 -->
             {{ $t('issue_action.save') }}
           </prevent-button>
+          <!-- 删除按钮 -->
+          <a-button
+            v-if="delBtn"
+            style="marginLeft: 8px"
+            class="cancelBtn"
+            @click="handleDelete"
+          >
+            <!-- 删除 -->
+            {{ $t('issue_action.delete') }}
+          </a-button>
+          <!-- 删除确认弹框 -->
+          <a-modal
+            :visible="visibleDelete"
+            :title="$t('delete.title')"
+            style="top:200px!important;"
+            @ok="deleteOk"
+            @cancel="deleteCancel"
+          >
+            <p>{{ $t('delete.content') }}</p>
+          </a-modal>
           <a-button
             :style="{ marginLeft: '8px' }"
-            @click="handleReset"
             class="cancelBtn"
+            @click="handleReset"
           >
             <!-- 「取消」按钮 -->
             {{ $t('issue_action.cancel') }}
@@ -58,8 +88,8 @@
         <a-form
           ref="form"
           :form="form"
-          @submit="handleSearch"
           class="ant-advanced-search-form"
+          @submit="handleSearch"
         >
           <div>
             <div
@@ -81,313 +111,350 @@
                     style="display:inline-block;"
                   >
                     <span class="carTitle">{{ carTitle }}</span>
-                    <span class="faultTreeIds2Title"> {{ (faultTreeIds2Title || '').substr(faultTreeIds2Title.indexOf('-'),faultTreeIds2Title.length) }}</span>
+                    <span class="faultTreeIds2Title"> {{ (faultTreeIds2Title || '').substr((faultTreeIds2Title || '').indexOf('-'),(faultTreeIds2Title || '').length) }}</span>
                     <span class="codeTitle">{{ (codeTitle || '').substr((codeTitle || '').indexOf('-'), (codeTitle || '').length) }}</span>
                   </div>
                 </div>
-                <a-row :gutter="24">
-                  <a-col :span="6">
-                    <!-- 「车型名称」下拉 -->
-                    <a-form-item :label="$t('issue.vehicleModelName')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'vehicleModelId',
-                          {rules: [{
-                            required: valiRequire, message:$t('search.please_select') + $t('issue.vehicleModelName')
-                          }]}
-                        ]"
-                        :transform="selectOption"
-                        :filter-option="filterOption"
-                        :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
-                        :allow-clear="true"
-                        @change="vehicleModelIdChange"
-                        url="/masterdata/v1/vehiclemodel"
-                        show-search
-                      ></net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「所属系统」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds1')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'faultTreeIds1',
-                          {rules:[{
-                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds1')
-                          }]}
-                        ]"
-                        :transform="selectOption"
-                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
-                        :filter-option="filterOption"
-                        :allow-clear="true"
-                        @change="handleSystem"
-                        url="/issue/v1/faultcategory?p_id=0"
-                        show-search
+                <div style="margin-left:32px;">
+                  <a-row :gutter="24">
+                    <a-col :span="6">
+                      <!-- 「车型名称」下拉 -->
+                      <a-form-item :label="$t('issue.vehicleModelName')">
+                        <net-select
+                          v-decorator="[
+                            'vehicleModelId',
+                            {rules: [{
+                              required: valiRequire, message:$t('search.please_select') + $t('issue.vehicleModelName')
+                            }]}
+                          ]"
+                          :transform="selectOption"
+                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+                          allow-clear
+                          url="/masterdata/v1/vehiclemodel"
+                          show-search
+                          @select="vehicleModelIdChange"
+                        ></net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「所属系统」下拉 -->
+                      <a-form-item
+                        :label="$t('issue.faultTreeIds1')"
                       >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「所属功能」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds2')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'faultTreeIds2',
-                          {rules:[{
-                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds2')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
-                        :filter-option="filterOption"
-                        :disabled="!record.faultTreeIds1"
-                        :delay="!isEdit || !record.faultTreeIds1"
-                        :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
-                        :cache="false"
-                        :transform="selectOption"
-                        :allow-clear="true"
-                        @change="faultTreeIds2Change"
-                        show-search
+                        <net-select
+                          v-decorator="[
+                            'faultTreeIds1',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds1')
+                            }]}
+                          ]"
+                          :transform="selectOption"
+                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
+                          :filter-option="filterOption"
+                          :allow-clear="true"
+                          show-search
+                          url="/issue/v1/faultcategory?p_id=0"
+                          @change="handleSystem"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「所属功能」下拉 -->
+                      <a-form-item :label="$t('issue.faultTreeIds2')">
+                        <net-select
+                          v-decorator="[
+                            'faultTreeIds2',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds2')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
+                          :filter-option="filterOption"
+                          :disabled="!record.faultTreeIds1"
+                          :delay="!isEdit || !record.faultTreeIds1"
+                          :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
+                          :cache="false"
+                          :transform="selectOption"
+                          :allow-clear="true"
+                          show-search
+                          @change="faultTreeIds2Change"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「故障代码」下拉 -->
+                      <a-form-item :label="$t('issue.faultTreeIds3')">
+                        <net-select
+                          v-decorator="[
+                            'faultTreeIds3',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds3')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
+                          :delay="!isEdit || !record.faultTreeIds2"
+                          :filter-option="filterOption"
+                          :disabled="!record.faultTreeIds2"
+                          :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+                          :cache="false"
+                          :transform="selectOption"
+                          :allow-clear="true"
+                          show-search
+                          @change="faultTreeIds3Change"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row :gutter="24">
+                    <a-col :span="6">
+                      <!-- 「问题分类」下拉 -->
+                      <a-form-item :label="$t('issue.source')">
+                        <net-select
+                          v-decorator="[
+                            'source',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select') + $t('issue.source')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select') + $t('issue.source')"
+                          :filter-option="filterOption"
+                          :transform="selectOptiondict"
+                          :allow-clear="true"
+                          show-search
+                          url="/sys/dict?dictType=issue_source"
+                          @change="handleSource"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「问题严重等级」下拉 -->
+                      <a-form-item :label="$t('issue.grade')">
+                        <net-select
+                          v-decorator="[
+                            'grade',
+                            {rules:[{
+                              required: valiRequire, message: $t('search.please_select') + $t('issue.grade')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select') + $t('issue.grade')"
+                          :filter-option="filterOption"
+                          :transform="selectOptiondict"
+                          :allow-clear="true"
+                          show-search
+                          url="/sys/dict?dictType=issue_grade"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「问题阶段」下拉 -->
+                      <a-form-item :label="$t('issue.projectPhase')">
+                        <net-select
+                          v-decorator="[
+                            'projectPhase',
+                            {rules:[{
+                              required: valiRequire, message: $t('search.please_select')+$t('issue.projectPhase')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select')+$t('issue.projectPhase')"
+                          :filter-option="filterOption"
+                          :transform="selectOptiondict"
+                          :allow-clear="true"
+                          show-search
+                          url="/sys/dict?dictType=issue_phase"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「问题发生日期」时间日期 -->
+                      <a-form-item :label="$t('issue.failureDate')">
+                        <a-date-picker
+                          v-decorator="[
+                            'failureDate'
+                          ]"
+                          :placeholder="$t('search.please_select') + $t('issue.failureDate')"
+                          :format="GLOBAL_SELECT_DATE_FORMAT"
+                          :disabled-date="disabledDate"
+                          style="width:261px;"
+                        />
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row :gutter="24">
+                    <a-col :span="6">
+                      <!-- 「生产基地」下拉 -->
+                      <a-form-item :label="$t('issue.manufactureBase')">
+                        <net-select
+                          v-decorator="[
+                            'manufactureBaseId',
+                            {rules:[{
+                              required: valiRequire, message: $t('search.please_select')+$t('issue.manufactureBase')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select')+$t('issue.manufactureBase')"
+                          :filter-option="filterOption"
+                          :transform="selectOptionBase"
+                          :allow-clear="true"
+                          show-search
+                          url="/masterdata/v1/manufactureBase"
+                        />
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「责任部门」下拉 -->
+                      <a-form-item :label="$t('issue.responsibleDepartmentId')">
+                        <net-select
+                          v-decorator="['responsibleDepartmentId']"
+                          :filter-option="filterOption"
+                          :transform="selectOptionSingn"
+                          :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
+                          :delay="!isEdit"
+                          :allow-clear="true"
+                          show-search
+                          url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「问题频次」输入 -->
+                      <a-form-item
+                        :label="$t('issue.frequency')"
+                        self-update
                       >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「故障代码」下拉 -->
-                    <a-form-item :label="$t('issue.faultTreeIds3')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'faultTreeIds3',
-                          {rules:[{
-                            required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds3')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
-                        :delay="!isEdit || !record.faultTreeIds2"
-                        :filter-option="filterOption"
-                        :disabled="!record.faultTreeIds2"
-                        :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
-                        :cache="false"
-                        :transform="selectOption"
-                        :allow-clear="true"
-                        @change="faultTreeIds3Change"
-                        show-search
+                        <v-input
+                          v-decorator="[
+                            'frequency',
+                            {rules: [{validator: intVer}]}
+                          ]"
+                          :placeholder="$t('search.please_input') + $t('issue.frequency')"
+                          allow-clear
+                        />
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                      <!-- 「相关人手机」输入 -->
+                      <a-form-item
+                        :label="$t('issue.contact')"
+                        class="quesetionContact"
+                        self-update
                       >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-                <a-row :gutter="24">
-                  <a-col :span="6">
-                    <!-- 「问题分类」下拉 -->
-                    <a-form-item :label="$t('issue.source')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'source',
-                          {rules:[{
-                            required: valiRequire, message:$t('search.please_select') + $t('issue.source')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select') + $t('issue.source')"
-                        :filter-option="filterOption"
-                        :transform="selectOptiondict"
-                        :allow-clear="true"
-                        @change="handleSource"
-                        show-search
-                        url="/sys/dict?dictType=issue_source"
+                        <v-input
+                          v-decorator="[
+                            'contact',
+                            {rules: [{validator: phoneVer}]}
+                          ]"
+                          :placeholder="$t('search.please_input') + $t('issue.contact')"
+                          allow-clear
+                          max="11"
+                          len="11"
+                        />
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row :gutter="24">
+                    <!-- 「问题描述」输入 -->
+                    <a-col :span="16">
+                      <a-form-item
+                        :label="$t('issue.description')"
+                        class="form-item-flex-2"
+                        self-update
                       >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「问题严重等级」下拉 -->
-                    <a-form-item :label="$t('issue.grade')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'grade',
-                          {rules:[{
-                            required: valiRequire, message: $t('search.please_select') + $t('issue.grade')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select') + $t('issue.grade')"
-                        :filter-option="filterOption"
-                        :transform="selectOptiondict"
-                        :allow-clear="true"
-                        show-search
-                        url="/sys/dict?dictType=issue_grade"
-                      >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「问题阶段」下拉 -->
-                    <a-form-item :label="$t('issue.projectPhase')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'projectPhase',
-                          {rules:[{
-                            required: valiRequire, message: $t('search.please_select')+$t('issue.projectPhase')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select')+$t('issue.projectPhase')"
-                        :filter-option="filterOption"
-                        :transform="selectOptiondict"
-                        :allow-clear="true"
-                        show-search
-                        url="/sys/dict?dictType=issue_phase"
-                      >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「问题发生日期」时间日期 -->
-                    <a-form-item :label="$t('issue.failureDate')" selfUpdate>
-                      <a-date-picker
-                        v-decorator="[
-                          'failureDate'
-                        ]"
-                        :placeholder="$t('search.please_select') + $t('issue.failureDate')"
-                        :format="GLOBAL_SELECT_DATE_FORMAT"
-                        :disabledDate="disabledDate"
-                        style="width:261px;"
-                      />
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-                <a-row :gutter="24">
-                  <a-col :span="6">
-                    <!-- 「生产基地」下拉 -->
-                    <a-form-item :label="$t('issue.manufactureBase')" selfUpdate>
-                      <net-select
-                        v-decorator="[
-                          'manufactureBaseId',
-                          {rules:[{
-                            required: valiRequire, message: $t('search.please_select')+$t('issue.manufactureBase')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_select')+$t('issue.manufactureBase')"
-                        :filter-option="filterOption"
-                        :transform="selectOptionBase"
-                        :allow-clear="true"
-                        show-search
-                        url="/masterdata/v1/manufactureBase"
-                      />
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「责任部门」下拉 -->
-                    <a-form-item :label="$t('issue.responsibleDepartmentId')" selfUpdate>
-                      <net-select
-                        v-decorator="['responsibleDepartmentId']"
-                        :filter-option="filterOption"
-                        :transform="selectOptionSingn"
-                        :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
-                        :delay="!isEdit"
-                        :allow-clear="true"
-                        show-search
-                        url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                      >
-                      </net-select>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「问题频次」输入 -->
-                    <a-form-item :label="$t('issue.frequency')" selfUpdate>
-                      <a-input
-                        v-decorator="[
-                          'frequency',
-                          {rules: [{validator: intVer}]}
-                        ]"
-                        :placeholder="$t('search.please_input') + $t('issue.frequency')"
-                        allow-clear
-                      />
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「相关人手机」输入 -->
-                    <a-form-item
-                      :label="$t('issue.contact')"
-                      class="quesetionContact" selfUpdate
-                    >
-                      <a-input
-                        v-decorator="[
-                          'contact',
-                          {rules: [{validator: phoneVer}]}
-                        ]"
-                        :placeholder="$t('search.please_input') + $t('issue.contact')"
-                        allow-clear
-                        max="11"
-                        len="11"
-                      />
-                    </a-form-item>
-                  </a-col>
-                </a-row>
-                <a-row :gutter="24">
-                  <!-- 「问题描述」输入 -->
-                  <a-col :span="16">
-                    <a-form-item
-                      :label="$t('issue.description')"
-                      class="form-item-flex-2" selfUpdate
-                    >
-                      <v-textarea
-                        v-decorator="[
-                          'description',
-                          {rules: [{
-                            required: valiRequire, message: $t('search.please_input') + $t('issue.description')
-                          }]}
-                        ]"
-                        :placeholder="$t('search.please_input') + $t('issue.description')"
-                        allow-clear
-                        maxlength="254"
-                      />
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="8">
-                    <!-- 「附件」上传 -->
-                    <a-form-item :label="$t('issue_workflow.attachment')" selfUpdate>
-                      <a-upload
-                        :headers="headers"
-                        :multiple="true"
-                        :file-list="fileList"
-                        :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, fileList)(info)"
-                        :action="uploadUrl"
-                        name="file"
-                      >
-                        <a-button icon="upload">
-                          <!-- 「上传文件」文本 -->
-                          {{ $t('issue_action.upload') }}
-                        </a-button>
-                      </a-upload>
-                    </a-form-item>
-                  </a-col>
-                </a-row>
+                        <v-textarea
+                          v-decorator="[
+                            'description',
+                            {rules: [{
+                              required: valiRequire, message: $t('search.please_input') + $t('issue.description')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_input') + $t('issue.description')"
+                          allow-clear
+                          maxlength="254"
+                        />
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="8">
+                      <!-- 「附件」上传 -->
+                      <a-form-item :label="$t('issue_workflow.attachment')">
+                        <a-upload
+                          :headers="headers"
+                          :multiple="true"
+                          :file-list="fileList"
+                          :remove="file => removeFile(record.fileList)(file)"
+                          :action="uploadUrl"
+                          name="file"
+                          @preview="download"
+                          @change="info => changeFileList(record.fileList, fileList)(info)"
+                        >
+                          <a-button icon="upload">
+                            <!-- 「上传文件」文本 -->
+                            {{ $t('issue_action.upload') }}
+                          </a-button>
+                        </a-upload>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                <!-- </div> -->
+                </div>
               </div>
             </div>
           </div>
           <div>
             <div
-              @click="SuppelyOpen"
               class="collapse-title"
+              @click="SuppelyOpen"
             >
               <a-icon
                 :type="SuppelyIcon"
-                style="margin-right:10px"
+                style="margin-right:4px"
               />
+              <!-- 补充信息 -->
               {{ $t('issue.additionalInfo') }}
             </div>
             <div :class="supplyContent">
               <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「VIN」输入 -->
-                  <a-form-item :label="$t('issue.vinNo')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.vinNo')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'vinNo',
-                        {rules: [{validator: vinVer}]}
+                        {rules: [{
+                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinNo')
+                        },{validator: vinVer}]}
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.vinNo')"
                       allow-clear
+                      @change="vinOrLicenseChange"
+                    />
+                  </a-form-item>
+                </a-col>
+
+                <a-col :span="6">
+                  <!-- 「license」输入 -->
+                  <a-form-item
+                    :label="$t('issue.license')"
+                    self-update
+                  >
+                    <v-input
+                      v-decorator="[
+                        'license',
+                        {rules: [{
+                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.license')
+                        }]}
+                      ]"
+                      :placeholder="$t('search.please_input') + $t('issue.license')"
+                      allow-clear
+                      @change="vinOrLicenseChange"
                     />
                   </a-form-item>
                 </a-col>
@@ -398,10 +465,12 @@
                       v-decorator="[
                         'firstCausePart',
                       ]"
-                      :filter-option="filterOption"
+                      :filter-option="false"
                       :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
                       :transform="selectOption"
                       :allow-clear="true"
+                      :query="{orderField: 'name'}"
+                      word-key="name"
                       show-search
                       url="/masterdata/v1/part"
                     ></net-select>
@@ -414,18 +483,25 @@
                       v-decorator="[
                         'firstCausePart',
                       ]"
-                      :filter-option="filterOption"
+                      :filter-option="false"
                       :placeholder="$t('search.please_select') + $t('issue.partId')"
                       :transform="selectOptionId"
                       :allow-clear="true"
+                      :query="{orderField: 'code'}"
+                      word-key="code"
                       show-search
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「供应商名称」下拉 -->
-                  <a-form-item :label="$t('issue.supplierId')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.supplierId')"
+                    self-update
+                  >
                     <net-select
                       v-decorator="[
                         'supplierId',
@@ -439,25 +515,29 @@
                     ></net-select>
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「生产时间」时间日期 -->
-                  <a-form-item :label="$t('issue.productDate')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.productDate')"
+                    self-update
+                  >
                     <a-date-picker
                       v-decorator="[
                         'productDate'
                       ]"
                       :placeholder="$t('search.please_select') + $t('issue.productDate')"
                       :format="GLOBAL_SELECT_DATE_FORMAT"
-                      :disabledDate="disabledDate"
+                      :disabled-date="disabledDate"
                       style="width:261px;"
                     />
                   </a-form-item>
                 </a-col>
                 <a-col :span="6">
                   <!-- 「试验类型」下拉-->
-                  <a-form-item :label="$t('issue.testType')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.testType')"
+                    self-update
+                  >
                     <net-select
                       v-decorator="[
                         'testType',
@@ -473,8 +553,11 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「故障里程」输入 -->
-                  <a-form-item :label="$t('issue.milage') + '(Km)'" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.milage') + '(Km)'"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'milage'
                       ]"
@@ -483,10 +566,15 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「维修网点」输入 -->
-                  <a-form-item :label="$t('issue.maintenanceStation')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.maintenanceStation')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'maintenanceStation',
                       ]"
@@ -495,12 +583,13 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「软件版本号」输入 -->
-                  <a-form-item :label="$t('issue.softwareVersion')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.softwareVersion')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'softwareVersion',
                       ]"
@@ -511,8 +600,11 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「标定版本号」输入 -->
-                  <a-form-item :label="$t('issue.calibrationVersion')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.calibrationVersion')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'calibrationVersion',
                       ]"
@@ -523,8 +615,11 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「硬件版本号」输入 -->
-                  <a-form-item :label="$t('issue.hardwareVersion')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.hardwareVersion')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'hardwareVersion',
                       ]"
@@ -533,10 +628,15 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「配置字版本号」输入 -->
-                  <a-form-item :label="$t('issue.confirmationVersion')" selfUpdate>
-                    <a-input
+                  <a-form-item
+                    :label="$t('issue.confirmationVersion')"
+                    self-update
+                  >
+                    <v-input
                       v-decorator="[
                         'confirmationVersion',
                       ]"
@@ -545,11 +645,12 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「工况信息」输入 -->
-                  <a-form-item :label="$t('issue.workConditionInfo')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.workConditionInfo')"
+                    self-update
+                  >
                     <v-textarea
                       v-decorator="[
                         'workConditionInfo'
@@ -562,7 +663,10 @@
                 </a-col>
                 <a-col :span="6">
                   <!-- 「初步排查情况」输入 -->
-                  <a-form-item :label="$t('issue.preliminaryInvestigation')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.preliminaryInvestigation')"
+                    self-update
+                  >
                     <v-textarea
                       v-decorator="[
                         'preliminaryInvestigation',
@@ -573,9 +677,12 @@
                     ></v-textarea>
                   </a-form-item>
                 </a-col>
-                <a-col :span="12">
+                <a-col :span="6">
                   <!-- 「备注」输入 -->
-                  <a-form-item :label="$t('issue.remark')" selfUpdate>
+                  <a-form-item
+                    :label="$t('issue.remark')"
+                    self-update
+                  >
                     <v-textarea
                       v-decorator="[
                         'remark',
@@ -595,8 +702,6 @@
   </div>
 </template>
 <script>
-import attachmentMix from '~~/issue-attachment.js';
-import timeFormatMix from '~~/time-format.js';
 import {
   createFormFields,
   autoUpdateFileds
@@ -606,6 +711,8 @@ import {
   createNamespacedHelpers
 } from 'vuex';
 import moment from 'moment';
+import timeFormatMix from '~~/time-format.js';
+import attachmentMix from '~~/issue-attachment.js';
 
 const {
   mapActions
@@ -615,6 +722,7 @@ export default {
   name: 'QuestionCreate',
   components: {
     NetSelect: () => import('@comp/form/NetSelect.vue'),
+    VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
   },
@@ -636,6 +744,8 @@ export default {
     return {
       // 必填开关
       valiRequire: true,
+      //VIN和车牌号选填
+      validVinOrlicense: false,
       // 上传地址
       uploadUrl: $store.getters.getUrl('/issue/v1/file/upload?recType=10021003'),
       businessKey: null,
@@ -644,14 +754,17 @@ export default {
       fileList: [], // 上传附件列表回显
       dataFileList: [], // 存储到数据库的列表
       BaseContent: '',
+      visibleSubmit: false, // 提交弹框是否显示标识
       supplyContent: 'ContentDiv',
       DetailBase: true, // 基本信息是否展开标识
       DetailSuppely: false, // 补充信息是否展开标识
       BaseIcon: 'down',
       SuppelyIcon: 'down',
-      questionTitle: '创建问题',
+      questionTitle: '',
       optCounter: '',
       expand: false,
+      delBtn: false,
+      visibleDelete: false,
       form: null,
       functionUrl: '', // 所属功能请求地址
       actiive: '',
@@ -705,6 +818,7 @@ export default {
         hardwareVersion: '', // 硬件版本号
         confirmationVersion: '', // 配置字版本号
         vinNo: '', // Vin
+        license: '',
         productDate: '', // 生产时间
         maintenanceStation: '', // 维修网点
         milage: '',
@@ -739,37 +853,41 @@ export default {
       'saveQuestion',
       'editSaveQuestion',
       'workFlowSubmit',
-      'getSysUser'
+      'getSysUser',
+      'delIssue'
     ]),
     // 初始化
     init () {
-      this.$set(this, 'record', { fileList: [] });
-      this.form = this.$form.createForm(this, {
-        mapPropsToFields: this.mapPropsToFields,
-        onValuesChange: autoUpdateFileds(this, 'record')
+      const vm = this;
+      vm.$set(vm, 'record', { fileList: [] });
+      vm.form = vm.$form.createForm(vm, {
+        mapPropsToFields: vm.mapPropsToFields,
+        onValuesChange: autoUpdateFileds(vm, 'record')
       });
-      this.form.resetFields();
-      if (this.name === 'create') {
-        this.questionTitle = '创建问题';
-        this.submitBtn = true;
-        this.actiive = 'saveBtn';
-      } else if (this.name === 'edit') {
-        this.questionTitle = '编辑问题';
-        this.submitBtn = false;
-        this.actiive = 'activeClass';
+      vm.form.resetFields();
+      if (vm.name === 'create') {
+        vm.questionTitle = vm.$t('issue_action.create');
+        vm.submitBtn = true;
+        vm.actiive = 'saveBtn';
+      } else if (vm.name === 'edit') {
+        vm.questionTitle = vm.$t('issue_action.edit_issue');
+        vm.submitBtn = false;
+        vm.actiive = 'activeClass';
 
-        this.eidtQuestion(this.id).then(res => {
-          this.record = res;
-          this.statusCode = res.status;
-          if (this.statusCode === '100100') {
-            this.submitBtn = true;
+        vm.eidtQuestion(vm.id).then(res => {
+          vm.record = res;
+          vm.statusCode = res.status;
+          if (vm.statusCode === '100100') {
+            vm.delBtn = true;
+            // if ( vm.creator === )
+            vm.submitBtn = true;
           } else {
-            this.submitBtn = false;
+            vm.submitBtn = false;
           }
           // 附件
           // const fileListArray = [];
 
-          // this.dataFileList = res.fileList;
+          // vm.dataFileList = res.fileList;
           // res.fileList.forEach((item) => {
           //   const fileObject = {
           //     id: item.id,
@@ -780,25 +898,23 @@ export default {
           //   };
           //   fileListArray.push(fileObject);
           // });
-          this.fileList = (res.fileList || []).map(this.file2client);
-          // this.dataFileList = fileListArray;
-          this.optCounter = res.optCounter;
+          vm.fileList = (res.fileList || []).map(vm.file2client);
+          // vm.dataFileList = fileListArray;
+          vm.optCounter = res.optCounter;
           // 日期格式回显
           if (res.failureDate) {
             const failureDate = moment(res.failureDate);
-            this.record.failureDate = failureDate;
+            vm.record.failureDate = failureDate;
           }
           if (res.productDate) {
             const productDate = moment(res.productDate);
-            this.record.productDate = productDate;
+            vm.record.productDate = productDate;
           }
 
-
-          this.form.updateFields(this.mapPropsToFields());
-
-          this.carTitle = this.record.vehicleModelName; // 车型标题
-          this.faultTreeIds2Title = this.record.faultTreeIds2Name; // 功能标题，
-          this.codeTitle = this.record.faultTreeIds3Name; // 故障代码标题
+          vm.form.updateFields(vm.mapPropsToFields());
+          vm.carTitle = vm.record.vehicleModelName; // 车型标题
+          vm.faultTreeIds2Title = vm.record.faultTreeIds2Name; // 功能标题，
+          vm.codeTitle = vm.record.faultTreeIds3Name; // 故障代码标题
         });
       }
     },
@@ -846,9 +962,32 @@ export default {
 
       return optionArray;
     },
-
     handleSource (value) {
       this.sourceName = value;
+    },
+    handleDelete () {
+      this.visibleDelete = true;
+    },
+    // 删除弹框确认按钮
+    deleteOk () {
+      this.visibleDelete = false;
+      this.handleDeleteFunction();
+    },
+    // 删除弹框取消按钮
+    deleteCancel () {
+      this.visibleDelete = false;
+    },
+    handleDeleteFunction () {
+      const vm = this;
+      vm.delFlag = 1;
+      const param = { id:vm.id , optCounter:vm.optCounter , delFlag:vm.delFlag };
+      vm.delIssue(param).then( res => {
+        this.$message.success(this.$t('delete.success'));
+        this.goBack();
+      }).catch(err => {
+        this.$message.error(this.$t('delete.failure'));
+        this.goBack();
+      });
     },
     // 基本信息是否展开
     BaseOpen () {
@@ -875,14 +1014,12 @@ export default {
     },
     selectOption (input) {
       const optionArray = [];
-
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
           label: item.name
         });
       });
-
       return optionArray;
     },
     // 零件号下拉框
@@ -911,19 +1048,16 @@ export default {
           label: item.nameZh
         });
       });
-
       return optionArray;
     },
     selectOptiondict (input) {
       const optionArray = [];
-
       input.forEach((item) => {
         optionArray.push({
           value: item.dictValue,
           label: item.dictName
         });
       });
-
       return optionArray;
     },
     // 所属系统选择
@@ -943,12 +1077,11 @@ export default {
     },
     // 车型选择
     vehicleModelIdChange (value, option) {
-      if (option !== undefined) {
-        if (option.componentOptions.children[0].text !== undefined) {
-          this.carTitle = option.componentOptions.children[0].text;
-        }
+      if (option && option.context) {
+        const options = option.context.options || [];
+        const selected = options.find(item => item.value === value) || {};
+        this.carTitle = selected.label;
       }
-      // this.carTitle = value;
     },
     // 所属功能选择
     faultTreeIds2Change (value, option) {
@@ -971,8 +1104,37 @@ export default {
         }
       }
     },
+    // 点击提交按钮
     handleSubmit () {
+      this.visibleSubmit = true;
+    },
+    // 判断VIN或者车号必填
+    // vinOrLicenseChange () {
+    //   if(this.record.vinNo||this.record.license){
+    //     this.validVinOrlicense = false;
+    //   }else{
+    //     this.validVinOrlicense = true;
+    //   }
+    // },
+    // 提交弹框点击取消
+    submitCancel () {
+      this.visibleSubmit = false;
+      const commitButton = this.$refs.commitButton;
+      commitButton.reset();
+    },
+    //  提交弹框点击确定
+    submitOk () {
+      this.visibleSubmit = false;
+      this.handleSubmitFunction();
+    },
+    // 提交接口调用函数
+    handleSubmitFunction () {
       this.valiRequire = true;
+      if(this.record.vinNo||this.record.license){
+        this.validVinOrlicense = false;
+      }else{
+        this.validVinOrlicense = true;
+      }
       const commitButton = this.$refs.commitButton;
       this.form.validateFields((err) => {
         if (!err) {
@@ -1105,10 +1267,10 @@ export default {
     handleSave () {
       this.valiRequire = false;
       const saveButton = this.$refs.saveButton;
-      this.$nextTick(() => {
-        saveButton.reset();
-        this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
-      });
+      // this.$nextTick(() => {
+      //   saveButton.reset();
+      //   this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
+      // });
 
       const hide = this.$message.loading('正在保存中...', 0);
       const data = this.form.getFieldsValue();
@@ -1151,7 +1313,7 @@ export default {
                   path: this.$route.query.form || '/'
                 });
               });
-            }, 200);
+            }, 100);
           });
         } else {
           this.saveQuestion(data).then(res => {
@@ -1164,10 +1326,15 @@ export default {
                   path: this.$route.query.form || '/'
                 });
               });
-            }, 200);
+            }, 100);
           });
         }
       } else if (this.name === 'edit') {
+        for (var i in data) {
+          if (data[i] === void 0) {
+            data[i] = null;
+          }
+        }
         data.id = this.id;
         data.optCounter = this.optCounter;
         const status = Number(this.statusCode);
@@ -1187,13 +1354,13 @@ export default {
                       path: this.$route.query.form || '/'
                     });
                   });
-                }, 200);
+                }, 100);
               });
             } else {
               setTimeout(() => {
                 hide();
                 saveButton.reset();
-              }, 200);
+              }, 100);
             }
           });
         } else {
@@ -1208,7 +1375,7 @@ export default {
                   path: this.$route.query.form || '/'
                 });
               });
-            }, 200);
+            }, 100);
           });
         }
       }
@@ -1238,7 +1405,7 @@ export default {
         'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'description', 'file',
         'contact', 'testType',
         'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
-        'hardwareVersion', 'confirmationVersion', 'vinNo', 'productDate', 'maintenanceStation', 'milage',
+        'hardwareVersion', 'confirmationVersion', 'vinNo','license', 'productDate', 'maintenanceStation', 'milage',
         'remark', 'workConditionInfo', 'preliminaryInvestigation'
       ], 'record');
     }
@@ -1247,7 +1414,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .ant-layout-content {
+  overflow-y: hidden;
+}
+
+ /deep/.ant-card-wider-padding {
+    .ant-card-body {
+      padding-bottom: 25px;
+    }
+ }
   #components-form-demo-advanced-search {
+    overflow-y: hidden;
     .formConetnt{
       margin-bottom: 16px;
      }
@@ -1263,18 +1440,18 @@ export default {
 
     .ContentDiv {
       height: auto !important;
-
+      margin-left: 32px;
     }
 
     .collapse-title {
-      font-family: SourceHanSansCN-Medium;
+      margin-left: 6px;
+      margin-bottom: 16px;
       font-size: 16px;
       color: rgba(0, 0, 0, 0.85);
       cursor: pointer;
     }
 
     .activeClass {
-      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: #FFFFFF;
       text-align: left;
@@ -1292,31 +1469,31 @@ export default {
       line-height: 40px;
       margin-top: 16px;
       margin-bottom: 24px;
+      margin-left:16px;
       padding-left: 16px;
-      font-family: SourceHanSansCN-Medium;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.85);
       letter-spacing: 0;
 
     }
 
-    .backBtn {
+       .backBtn {
       width: 80px;
       height: 32px;
       line-height: 32px;
-      font-family: SourceHanSansCN-Normal;
       font-size: 16px;
       color: rgba(0, 0, 0, 0.65);
 
       img {
-        width: 13.8px;
-        height: 12.5px;
-        margin: 9.5px 2.2px;
+        width: 16px;
+        height: 16px;
+        margin-top:-5px;
+        margin-left:-4px;
+        margin-right:6px;
       }
     }
 
     .uploadText {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
       line-height: 22px;
@@ -1326,7 +1503,6 @@ export default {
     }
 
     .submitBtn {
-      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: #FFFFFF;
       text-align: left;
@@ -1338,7 +1514,6 @@ export default {
 
     .saveBtn,
     .cancelBtn {
-      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.65);
       text-align: left;
@@ -1352,13 +1527,11 @@ export default {
   }
 
   /deep/.ant-card-head-title {
-    font-family: SourceHanSansCN-Medium;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.85);
   }
 
   .questionTitle {
-    font-family: SourceHanSansCN-Medium;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.85);
     margin: 23px auto;
@@ -1379,8 +1552,9 @@ export default {
     z-index:5000;
     left: 0px!important;
     width: 100%!important;
-    background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
+    // background: rgba(0, 0, 0, 0.6); rgba(0,0,0, 0.04)
+    // box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
+    background: #F5F5F5;
     .top-buttons {
       width: 1200px!important;
       margin: 0 auto!important;

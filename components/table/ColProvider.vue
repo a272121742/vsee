@@ -62,10 +62,10 @@
         <a-divider style="" />
         <a-row>
           <a-button
-            @click="commit"
             :disabled="!disableCommit && !modified"
             type="primary"
             style="margin-left: 24px"
+            @click="commit"
           >
             {{ $t('button_save') }}
           </a-button>
@@ -73,17 +73,17 @@
             {{ $t('button_cancel') }}
           </a-button>
           <a-button
-            @click="recover"
             :disabled="!modified"
             style="float: right; margin-right: 24px;"
+            @click="recover"
           >
             {{ $t('button_reset') }}
           </a-button>
         </a-row>
       </a-card>
       <a-icon
-        @click="show"
         type="setting"
+        @click="show"
       ></a-icon>
     </a-popover>
   </div>

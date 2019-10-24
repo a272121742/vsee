@@ -30,7 +30,7 @@ export default {
       return this.advancePageConfig.searchPageData.pageSize;
     },
     filters () {
-      return this.advancePageConfig.searchData;
+      return this.advancePageConfig.queryData;
     }
   },
   created () {
@@ -66,7 +66,7 @@ export default {
     },
     search (filters) {
       this.changeAdvancePageConfig({
-        searchData: filters,
+        queryData: filters,
         searchPageData: {
           current: 1,
           pageSize: this.limit

@@ -7,9 +7,11 @@ module.exports = config => {
       .use('compression-webpack-plugin', [{
         filename: '[path].gz[query]', // 2.x.x 改为此属性
         algorithm: 'gzip',
-        test: /\.(js|css|html|svg|woff|otf|ttf|json)$/,
+        // algorithm: 'brotliCompress',
+        test: /\.(js|css|svg|woff|otf|ttf|json|png)$/,
+        compressionOptions: { level: 9 },
         threshold: 0,
-        minRatio: 0.8,
+        minRatio: 1,
         deleteOriginalAssets: true// 删除原文件
       }])
       .end();

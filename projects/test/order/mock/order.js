@@ -28,13 +28,13 @@ mock.get('/order/:id', id => {
 });
 
 mock.post('/order/add/', (data) => {
-  db.insert(data)
+  db.insert(data);
   const dts = db.find();
   console.log(dts);
 });
 
 mock.get('/order/del/:id', id => {
-  db.remove(id)
+  db.remove(id);
   const dts = db.find();
   return mock.result({
     data: {
@@ -48,7 +48,7 @@ mock.get('/order/del/:id', id => {
 mock.post('/order/edit', data => {
   db.update(data.id, data);
   const dts = db.find();
-  console.log(dts)
+  console.log(dts);
   return mock.result({
     data: {
       list: dts,
@@ -56,7 +56,7 @@ mock.post('/order/edit', data => {
     },
     code: 0
   });
-}, { timeout: 0 })
+}, { timeout: 0 });
 
 // db.remove(id)
 // const dts = db.find();

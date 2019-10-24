@@ -4,18 +4,18 @@
     :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 6000}"
   >
     <a-button
-      @click="show"
       type="primary"
       icon="setting"
+      @click="show"
     >
       配置
     </a-button>
     <a-drawer
       :width="800"
       :visible="visible"
-      @close="hide"
       :z-index="6000"
       title="开发人员配置（生产环境不可见）"
+      @close="hide"
     >
       <a-row>
         发布日期：{{ buildDate }}
@@ -37,8 +37,8 @@
         刷新页面：
         <a-button-group>
           <a-button
-            @click="reload"
             style="margin-right: 0px;"
+            @click="reload"
           >
             重载页面
           </a-button>

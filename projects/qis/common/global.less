@@ -42,25 +42,37 @@
 // 阴影 begin /////////////////////////////////////////////////////////
 * /deep/ {
 
-.shadown-block-normal {
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12)!important;
-}
-.shadown-block-deep {
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
-}
-.shadown-card-normal {
-  transition: box-shadow 1s ease;
-  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
-  &:hover {
-    box-shadow: 0 15px 24px rgba(0, 0, 0, 0.22), 0 19px 76px rgba(0, 0, 0, 0.3);
+  .shadown-block-normal {
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12)!important;
+  }
+  .shadown-block-deep {
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+  .shadown-card-normal {
+    transition: box-shadow 1s ease;
+    box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+    &:hover {
+      box-shadow: 0 15px 24px rgba(0, 0, 0, 0.22), 0 19px 76px rgba(0, 0, 0, 0.3);
+    }
+  }
+  .shadown-card-deep {
+    transition: box-shadow 1s ease;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
+    &:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22), 0 14px 56px rgba(0, 0, 0, 0.25);
+    }
   }
 }
-.shadown-card-deep {
-  transition: box-shadow 1s ease;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.23), 0 3px 12px rgba(0, 0, 0, 0.16);
-  &:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22), 0 14px 56px rgba(0, 0, 0, 0.25);
-  }
+.ant-message {
+  z-index: 9000;
 }
+// 全局修改下拉，如果下拉文字过长，显示横向滚动条
+.ant-select-dropdown-menu-item {
+  overflow: initial;
+}
+//  表格中可以排序列没有下边框全局修改
+.ant-table-thead > tr > th.ant-table-column-has-actions {
+  -webkit-background-clip:none;
+  background-clip:padding-box!important;
 }
 // 阴影 end /////////////////////////////////////////////////////////

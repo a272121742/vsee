@@ -2,12 +2,12 @@
   <div class="container shadown-block-normal">
     <a-tabs
       :animated="false"
-      :activeKey="defaultActiveKey"
+      :active-key="defaultActiveKey"
       @change="changeTab"
     >
       <a-tab-pane
-        key="1"
         v-if="$store.getters.hasPermission('issue:list:todo')"
+        key="1"
       >
         <template #tab>
           <!-- 待办事项 1 = todo -->
@@ -28,8 +28,8 @@
         ></issue-todo-table>
       </a-tab-pane>
       <a-tab-pane
-        key="0"
         v-if="$store.getters.hasPermission('issue:list:draft')"
+        key="0"
       >
         <template #tab>
           <!-- 待发事项（草稿）0 = draft -->
@@ -50,8 +50,8 @@
         ></issue-draft-table>
       </a-tab-pane>
       <a-tab-pane
-        key="2"
         v-if="$store.getters.hasPermission('issue:list:done')"
+        key="2"
       >
         <template #tab>
           <!-- 已办事项（完成）2 - done -->
@@ -63,8 +63,8 @@
         ></issue-done-table>
       </a-tab-pane>
       <a-tab-pane
-        key="3"
         v-if="$store.getters.hasPermission('issue:list:published')"
+        key="3"
       >
         <template #tab>
           <!-- 已发事项（待审批）3 = published -->
@@ -77,21 +77,21 @@
       </a-tab-pane>
       <template #tabBarExtraContent>
         <a-button
-          v-permission="'issue:list:todo:search'"
           v-if="showSearch"
+          v-permission="'issue:list:todo:search'"
           :ghost="true"
-          @click="changeFormShown"
           icon="search"
           type="primary"
+          @click="changeFormShown"
         >
           <!-- 搜索按钮 -->
           {{ $t('search.search_button') }}
         </a-button>
         <a-button
           v-permission="'issue:list:todo:create'"
-          @click="createQuestion"
           icon="plus-circle"
           type="primary"
+          @click="createQuestion"
         >
           <!-- 创建问题按钮 -->
           {{ $t('issue_action.create') }}
@@ -103,12 +103,19 @@
 
 <script>
 import issueTab from '~~/issue-tab.js';
+
 export default {
   name: 'QuestionList',
   mixins: [issueTab]
 };
 
 </script>
+<style lang="less">
+.ant-table-thead > tr > th.ant-table-column-has-actions {
+   -webkit-background-clip:none;
+   background-clip:padding-box!important;
+}
+</style>
 <style lang="less" scoped>
   .container {
     margin: 16px auto;

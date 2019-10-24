@@ -26,6 +26,7 @@
 <script>
 import moment from 'moment';
 import { createNamespacedHelpers } from 'vuex';
+
 const { mapActions } = createNamespacedHelpers('home');
 
 export default {

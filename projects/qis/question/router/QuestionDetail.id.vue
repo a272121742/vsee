@@ -1,3 +1,4 @@
+/* eslint-disable vue/max-attributes-per-line */
 <template>
   <div id="components-form-demo-advanced-search">
     <a-modal
@@ -5,12 +6,13 @@
       :visible="visibleRes"
       :confirm-loading="confirmLoading"
       :mask-closable="false"
+      style="height:232px;top:140px;"
       @ok="handleUser"
       @cancel="handleCancel"
-      style="height:232px;top:140px;"
     >
       <template #title>
-        <span class="reviewTitle"><b>再分配</b></span>
+        <!-- 再分配 -->
+        <span class="reviewTitle"><b>{{ $t('issue_action.reassign') }}</b></span>
       </template>
       <a-form
         :form="rediStribution"
@@ -19,18 +21,19 @@
       >
         <a-row>
           <a-col :span="21">
-            <a-form-item :label="`责任部门`">
+            <!-- 责任部门 -->
+            <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
               <net-select
-                v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
+                v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
                 :transform="selectOption"
                 :filter-option="filterOption"
                 :allow-clear="true"
-                @change="owerDeptChange"
                 :disabled="depDisable"
+                :placeholder="$t('search.please_select')"
                 url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                placeholder="请选择"
                 style="width:272px;height:32px;"
                 show-search
+                @change="owerDeptChange"
               >
               </net-select>
             </a-form-item>
@@ -38,11 +41,12 @@
         </a-row>
         <a-row>
           <a-col :span="21">
-            <a-form-item :label="`责任人`">
+            <!-- 责任人 -->
+            <a-form-item :label="$t('issue_workflow.D1.champion')">
               <net-select
                 v-decorator="[
                   'champion',
-                  {rules:[{required:true, message:'请选择责任人'}]}
+                  {rules:[{required:true, message:$t('search.please_select') + $t('issue_workflow.D1.champion')}]}
                 ]"
                 :placeholder="$t('search.please_select')"
                 :disabled="!redistributionForm.owerDeptLv1"
@@ -59,18 +63,36 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col
+            :span="21"
+          >
+            <a-form-item
+              :label="$t('label.rediStribution_reason')"
+              self-update
+            >
+              <v-textarea
+                v-decorator="[ 'rediStributionMessage',{rules: [{ required: false,max: 160, message: '请输入最多160个字符'}]} ]"
+                :placeholder="$t('search.please_input')"
+              >
+              </v-textarea>
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-modal>
     <a-modal
       slot="title"
       :visible="visibleReject"
       :mask-closable="false"
+      style="top:140px;"
       @ok="rejectSubmit"
       @cancel="CancelReject"
-      style="top:140px;"
     >
       <template #title>
-        <span class="reviewTitle"><b>再分析</b></span><span class="reviewSubtitle">(7钻分析之前)</span>
+        <!-- 再分析 -->
+        <span class="reviewTitle"><b>{{ $t('issue_action.reanalysis') }}</b></span>&nbsp;
+        <span class="reviewSubtitle">({{ $t('issue_workflow.D1.before_analysis') }})</span>
       </template>
       <a-form
         :form="rejectForm"
@@ -78,14 +100,15 @@
         style="height:60px;margin-top:10px;"
       >
         <a-col
-          :span="24"
+          :span="20"
         >
           <a-form-item
-            :label="`再分析理由`"
+            :label="$t('label.reanalysis_reason')"
+            self-update
           >
             <v-textarea
-              v-decorator="[ 'commentReject',{rules: [{ required: true, min: 1, message: '请选择理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
-              placeholder="请输入"
+              v-decorator="[ 'commentReject',{rules: [{ required: true, min: 1, message: $t('search.please_select') + $t('label.reanalysis_reason') },{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+              :placeholder="$t('search.please_input')"
             >
             </v-textarea>
           </a-form-item>
@@ -97,10 +120,10 @@
       :title="AnalysisTitle"
       :visible="visibleAnalysis"
       :mask-closable="false"
-      @ok="AnalysisOk"
-      @cancel="AnalysisCancel"
       style="top:200px;!important"
       width="600px"
+      @ok="AnalysisOk"
+      @cancel="AnalysisCancel"
     >
       <a-form
         :form="AnalysisForm"
@@ -108,72 +131,88 @@
       >
         <a-row v-show="false">
           <a-col :span="22">
-            <a-form-item :label="`id`">
+            <a-form-item 
+              :label="`id`"
+              self-update
+            >
               <v-textarea
                 v-decorator="[
                   'id',
                 ]"
+                :placeholder="$t('search.please_input')"
                 style="width:340px;height:56px;"
-                placeholder="请输入"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-            <a-form-item :label="`标准要求`">
+            <!-- 标准要求 -->
+            <a-form-item 
+              :label="$t('issue_workflow.D1.standard')"
+              self-update
+            >
               <v-textarea
                 v-decorator="[
                   'standard',
-                  {rules: [{ required: true, message: '请输入标准要求' }]}
+                  {rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D1.standard') }]}
                 ]"
+                :placeholder="$t('search.please_input')"
                 style="width:340px;height:56px;"
-                placeholder="请输入"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-            <a-form-item :label="`实际情况`">
+            <!-- 实际情况 -->
+            <a-form-item 
+              :label="$t('issue_workflow.D1.actual')"
+              self-update
+            >
               <v-textarea
                 v-decorator="[
                   'actualSituation',
-                  {rules: [{ required: true, message: '请输入实际情况' }]}
+                  {rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D1.actual')}]}
                 ]"
+                :placeholder="$t('search.please_input')"
                 style="width:340px;height:56px;"
-                placeholder="请输入"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="22">
-            <a-form-item :label="`结论`">
+            <!-- 结论 -->
+            <a-form-item 
+              :label="$t('issue_workflow.D1.conclusion')"
+              self-update
+            >
               <v-textarea
                 v-decorator="[
                   'conclusion',
-                  {rules: [{ required: true, message: '请输入结论' }]}
+                  {rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D1.conclusion')}]}
                 ]"
+                :placeholder="$t('search.please_input')"
                 style="width:340px;height:56px;"
-                placeholder="请输入"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="18">
-            <a-form-item label="附件">
+            <!-- 附件 -->
+            <a-form-item :label="$t('issue_workflow.attachment')">
               <!-- 七钻分析 TODO:这里dataFile会有问题-->
               <a-upload
                 :headers="headers"
                 :multiple="true"
                 :file-list="recordAnalysis.file"
                 :remove="file => removeFile(dataFile)(file)"
-                @preview="download"
-                @change="info => changeFileList(dataFile, recordAnalysis.file)(info)"
                 :action="getUploadUrl('/issue/v1/file/upload?recType=10021005')"
                 name="file"
+                @preview="download"
+                @change="info => changeFileList(dataFile, recordAnalysis.file)(info)"
               >
                 <a-button icon="upload">
                   <!-- 「上传文件」文本 -->
@@ -189,11 +228,11 @@
       :title="AnalysisTitle"
       :visible="visibleDetail"
       :mask-closable="false"
-      @ok="AnalysisDetailOk"
-      @cancel="AnalysisDetailCancel"
       style="top:200px;!important"
       wrap-class-name="visibleDetail"
       width="600px"
+      @ok="AnalysisDetailOk"
+      @cancel="AnalysisDetailCancel"
     >
       <a-form :form="DetailForm">
         <a-row v-show="false">
@@ -208,8 +247,9 @@
         </a-row>
         <a-row>
           <a-col :span="10">
+            <!-- 标准要求 -->
             <a-form-item
-              :label="`标准要求`"
+              :label="$t('issue_workflow.D1.standard')"
               style="margin-bottom:0;"
             >
               <p>
@@ -220,8 +260,9 @@
         </a-row>
         <a-row>
           <a-col :span="10">
+            <!-- 实际情况 -->
             <a-form-item
-              :label="`实际情况`"
+              :label="$t('issue_workflow.D1.actual')"
               style="margin-bottom:0;"
             >
               <p>
@@ -232,8 +273,9 @@
         </a-row>
         <a-row>
           <a-col :span="10">
+            <!-- 结论 -->
             <a-form-item
-              :label="`结论`"
+              :label="$t('issue_workflow.D1.conclusion')"
               style="margin-bottom:0;"
             >
               <p>
@@ -244,8 +286,9 @@
         </a-row>
         <a-row>
           <a-col>
+            <!-- 附件 -->
             <a-form-item
-              label="附件"
+              :label="$t('issue_workflow.attachment')"
               style="margin-bottom:0;color: rgba(0,0,0,0.45);font-size: 14px;height:auto;"
             >
               <!-- 效果验证附件  -->
@@ -257,7 +300,7 @@
                 <span
                   v-for="(file, index) in d5FileList"
                   :key="index"
-                  style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                  style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                 >
                   <a-icon type="paper-clip" />
                   <span
@@ -281,10 +324,11 @@
       :title="fileModalTitle"
       :visible="visibleUpdate"
       :mask-closable="false"
+      style="top:200px!important;"
+      class="fileModal"
+      width="600px"
       @ok="updateOk"
       @cancel="updateCancel"
-      style="top:200px!important;"
-      width="600px"
     >
       <div
         v-if="updateEditFlag"
@@ -297,12 +341,15 @@
         >
           <a-row v-show="false">
             <a-col :span="17">
-              <a-form-item :label="`id`">
-                <a-input
+              <a-form-item
+                :label="`id`"
+                self-update
+              >
+                <v-input
                   v-decorator="[
                     'id',
                   ]"
-                  placeholder="请输入"
+                  :placeholder="$t('search.please_input')"
                   allow-clear
                 />
               </a-form-item>
@@ -310,13 +357,17 @@
           </a-row>
           <a-row v-show="fileNameFlag">
             <a-col :span="22">
-              <a-form-item :label="`文件名称`">
-                <a-input
+              <!-- 文件名称 -->
+              <a-form-item
+                :label="$t('issue_workflow.D5.fileName')"
+                self-update
+              >
+                <v-input
                   v-decorator="[
                     'fileName',
-                    {rules:[{required: fileNameFlag,message: '请输入文件名称'}]}
+                    {rules:[{required: fileNameFlag,message: $t('search.please_input') + $t('issue_workflow.D5.fileName')}]}
                   ]"
-                  placeholder="请输入"
+                  :placeholder="$t('search.please_input')"
                   allow-clear
                 />
               </a-form-item>
@@ -324,14 +375,15 @@
           </a-row>
           <a-row>
             <a-col :span="22">
+              <!-- 是否更新 -->
               <a-form-item
-                :label="`是否更新`"
-                style="margin-bottom:0;height:50px;"
+                :label="$t('issue_workflow.D5.updated')"
+                style="margin-bottom:10px;height:50px;"
               >
                 <a-radio-group
                   v-decorator="[
                     'isUpdae',
-                    {rules:[{required: true,message: '请选择是否更新'}]}
+                    {rules:[{required: true,message: $t('search.please_select') + $t('issue_workflow.D5.updated') }]}
                   ]"
                   :options="updateRadio"
                   @change="updateRadioChange"
@@ -342,22 +394,27 @@
           </a-row>
           <a-row v-if="updateContentFlag">
             <a-col :span="22">
-              <a-form-item :label="`更新内容`">
+              <!-- 更新内容 -->
+              <a-form-item 
+                :label="$t('issue_workflow.D5.updateContent')"
+                self-update
+              >
                 <v-textarea
                   v-decorator="[
                     'updateContent',
-                    {rules:[{required: true,message: '请输入更新内容'}]}
+                    {rules:[{required: true,message: $t('search.please_input') + $t('issue_workflow.D5.updateContent')}]}
                   ]"
-                  placeholder="请输入"
-                  style="width:340px; height:56px;"
+                  :placeholder="$t('search.please_input')"
+                  style="width:340px;margin-bottom: 10px;"
                 />
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="22">
+              <!-- 附件 -->
               <a-form-item
-                :label="`附件`"
+                :label="$t('issue_workflow.attachment')"
               >
                 <!-- 涉及文件更新 -->
                 <a-upload
@@ -365,10 +422,10 @@
                   :multiple="true"
                   :file-list="updateFiles"
                   :remove="file => removeFile(recordUpdate.files)(file)"
-                  @preview="download"
-                  @change="info => changeFileList(recordUpdate.files, updateFiles)(info)"
                   :action="getUploadUrl('/issue/v1/file/upload?recType=10021011')"
                   name="file"
+                  @preview="download"
+                  @change="info => changeFileList(recordUpdate.files, updateFiles)(info)"
                 >
                   <a-button icon="upload">
                     <!-- 「上传文件」文本 -->
@@ -383,6 +440,7 @@
       <div
         v-if="updateFindFlag"
         class="fileEdit"
+        style="margin-bottom:-10px;"
       >
         <a-form
           :form="updateData"
@@ -398,17 +456,20 @@
             </a-col>
           </a-row>
           <a-row v-show="fileNameFlag">
+            <!-- 文件名称 -->
             <a-col :span="20">
-              <a-form-item :label="`文件名称`">
+              <!-- 文件名称 -->
+              <a-form-item :label="$t('issue_workflow.D5.fileName')">
                 <p>{{ updateData.fileName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="20">
+              <!-- 是否更新 -->
               <a-form-item
-                :label="`是否更新`"
-                style="margin-top:-24px;margin-bottom:0;"
+                :label="$t('issue_workflow.D5.updated')"
+                style="margin-top:0px;margin-bottom:0;"
               >
                 <p>{{ updateData.isUpdaeName }}</p>
               </a-form-item>
@@ -416,14 +477,16 @@
           </a-row>
           <a-row>
             <a-col :span="20">
-              <a-form-item :label="`更新内容`">
+              <!-- 更新内容 -->
+              <a-form-item :label="$t('issue_workflow.D5.updateContent')">
                 <p>{{ updateData.updateContent }}</p>
               </a-form-item>
             </a-col>
           </a-row>
           <a-row>
             <a-col :span="20">
-              <a-form-item :label="`附件`">
+              <!-- 附件 -->
+              <a-form-item :label="$t('issue_workflow.attachment')">
                 <!-- 效果验证-涉及文件更新附件查看 -->
                 <div
                   v-if="updateFiles && updateFiles.length"
@@ -462,129 +525,187 @@
         </a-form>
       </div>
     </a-modal>
-    <a-affix
-      :offset-top="64"
-    >
-      <div class="top-buttons">
-        <div class="backButton">
-          <a-button
-            slot="tabBarExtraContent"
-            v-if="pagePermission.button_back_3"
-            @click="goBack"
-            class="backBtn"
-          >
-            <img src="/static/question/back.png">
-            <!-- <a-icon type="rollback" /> -->
-            返回
-          </a-button>
+    <div>
+      <a-affix
+        :offset-top="63.9"
+      >
+        <div class="top-buttons">
+          <div class="backButton">
+            <a-button
+              v-if="pagePermission.button_back_3"
+              slot="tabBarExtraContent"
+              class="backBtn"
+              @click="goBack"
+            >
+              <img src="/static/question/back.svg">
+              <!-- <a-icon type="rollback" /> -->
+              <!-- 返回 -->
+              {{ $t('issue_action.back') }}
+            </a-button>
+          </div>
+          <div class="rightButton">
+            <a-button
+              v-if="pagePermission.button_allocation_3"
+              html-type="submit"
+              @click="showModal"
+            >
+              <!-- 再分配 -->
+              {{ $t('issue_action.reassign') }}
+            </a-button>
+            <a-button
+              v-if="pagePermission.button_redistribution_3"
+              type="primary"
+              html-type="submit"
+              class="submitBtn"
+              @click="handleReject"
+            >
+              <!-- 再分析 -->
+              {{ $t('issue_action.reanalysis') }}
+            </a-button>
+            <prevent-button
+              v-if="pagePermission.button_submit_3"
+              ref="commitButton"
+              bind="both"
+              type="primary"
+              class="submitBtn"
+              @click="handleSubmit"
+            >
+              <!-- 提交 -->
+              {{ $t('issue_action.commit') }}
+            </prevent-button>
+            <a-modal
+              :visible="visibleSubmit"
+              :title="$t('confirm.title')"
+              style="top:200px!important;"
+              @ok="submitOk"
+              @cancel="submitCancel"
+            >
+              <p>{{ $t('confirm.content') }}</p>
+            </a-modal>
+            <prevent-button
+              v-if="pagePermission.button_commit_3"
+              ref="saveButton"
+              bind="both"
+              style="marginLeft: 8px"
+              class="saveBtn"
+              @click="handleSave"
+            >
+              <!-- 保存 -->
+              {{ $t('issue_action.save') }}
+            </prevent-button>
+            <!-- 删除按钮 -->
+            <a-button
+              v-if="delBtn"
+              style="marginLeft: 8px"
+              class="cancelBtn"
+              @click="handleDelete"
+            >
+              <!-- 删除 -->
+              {{ $t('issue_action.delete') }}
+            </a-button>
+            <!-- 删除确认弹框 -->
+            <a-modal
+              :visible="visibleDelete"
+              :title="$t('delete.title')"
+              style="top:200px!important;"
+              @ok="deleteOk"
+              @cancel="deleteCancel"
+            >
+              <p>{{ $t('delete.content') }}</p>
+            </a-modal>
+            <a-button
+              v-if="pagePermission.button_cancel_3"
+              style="marginLeft: 8px"
+              class="cancelBtn"
+              @click="handleReset"
+            >
+              <!-- 取消 -->
+              {{ $t('issue_action.cancel') }}
+            </a-button>
+          </div>
         </div>
-        <div class="rightButton">
-          <a-button
-            v-if="pagePermission.button_allocation_3"
-            @click="showModal"
-            html-type="submit"
-          >
-            再分配
-          </a-button>
-          <a-button
-            v-if="pagePermission.button_redistribution_3"
-            @click="handleReject"
-            type="primary"
-            html-type="submit"
-            class="submitBtn"
-          >
-            再分析
-          </a-button>
-          <prevent-button
-            ref="commitButton"
-            v-if="pagePermission.button_submit_3"
-            @click="handleSubmit"
-            bind="both"
-            type="primary"
-            class="submitBtn"
-          >
-            提交
-          </prevent-button>
-          <prevent-button
-            ref="saveButton"
-            v-if="pagePermission.button_commit_3"
-            @click="handleSave"
-            bind="both"
-            style="marginLeft: 8px"
-            class="saveBtn"
-          >
-            保存
-          </prevent-button>
-          <a-button
-            v-if="pagePermission.button_cancel_3"
-            @click="handleReset"
-            style="marginLeft: 8px"
-            class="cancelBtn"
-          >
-            取消
-          </a-button>
-        </div>
-      </div>
-    </a-affix>
+      </a-affix>
+    </div>
     <div class="formConetnt">
       <div class="shadown-block-normal messageForm">
         <a-form
           :form="form"
-          @submit="handleSearch"
           layout="vertical"
+          @submit="handleSearch"
         >
           <a-card
             v-if="pagePermission.A2_2||pagePermission.A2_3||pagePermission.A1_2||pagePermission.A1_3||pagePermission.A1_1"
-            title="问题详情"
-            class="cardTitle"
+            class="cardTitle card-detail"
           >
-            <img
-              v-if="pagePermission.A1_3||pagePermission.A2_3"
-              @click="editDetail"
-              src="/static/question/editIcon1018.svg"
-              class="editIcon"
-            >
+            <template #title>
+              {{ $t('issue.details') }}
+            </template>
+            <template #extra>
+              <!-- 编辑按钮 -->
+              <a-button
+                v-if="pagePermission.A1_3||pagePermission.A2_3"
+                class="editBtn"
+                @click="editDetail"
+              >
+                <!-- 编辑 -->
+                {{ $t('issue_action.edit') }}
+              </a-button>
+            </template>
             <div class="detailText clearfix">
               <div style="position:relative;">
                 <div class="baseMessage">
-                  基本信息
+                  <!-- 基本信息 -->
+                  {{ $t('issue.basicInfo') }}
                 </div>
                 <div class="pageTitle clearfix">
-                  <span>问题标题：</span>
+                  <!-- 标准要求 -->
+                  <span>{{ $t('issue.title') + $t('colon') }}</span>
                   <span class="carTitle">
                     {{ detailList.title }}
                   </span>
-                  <span style="float:right;margin-right:100px;">编号：{{ detailList.code }}</span>
+                  <span style="float:right;margin-right:127px;">{{ $t('issue.code') + $t('colon') }} {{ detailList.code }}</span>
                 </div>
 
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`车型名称:`">
-                      <p v-if="detailList.vehicleModelName">
+                    <!-- 「车型名称」 -->
+                    <a-form-item :label="$t('issue.vehicleModelName')">
+                      <p 
+                        v-if="detailList.vehicleModelName"
+                        :title="detailList.vehicleModelName"
+                      >
                         {{ detailList.vehicleModelName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`所属系统:`">
-                      <p v-if="detailList.faultTreeIds1Name">
+                    <!-- 「所属系统」 -->
+                    <a-form-item :label="$t('issue.faultTreeIds1')">
+                      <p 
+                        v-if="detailList.faultTreeIds1Name"
+                        :title="detailList.vehicleModelName"
+                      >
                         {{ detailList.faultTreeIds1Name }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`所属功能:`">
-                      <p v-if="detailList.faultTreeIds2Name">
+                    <!-- 「所属功能」 -->
+                    <a-form-item :label="$t('issue.faultTreeIds2')">
+                      <p 
+                        v-if="detailList.faultTreeIds2Name"
+                        :title="detailList.faultTreeIds2Name"
+                      >
                         {{ detailList.faultTreeIds2Name }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`故障代码:`">
+                    <!-- 「故障代码」 -->
+                    <a-form-item :label="$t('issue.faultTreeIds3')">
                       <p
                         v-if="detailList.faultTreeIds3Name"
                         :title="detailList.faultTreeIds3Name"
-                        class="faultCodeClass"
                       >
                         {{ detailList.faultTreeIds3Name }}
                       </p>
@@ -593,29 +714,45 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`问题分类:`">
-                      <p v-if="detailList.sourceName">
+                    <!-- 「问题分类」 -->
+                    <a-form-item :label="$t('issue.source')">
+                      <p
+                        v-if="detailList.sourceName"
+                        :title="detailList.sourceName"
+                      >
                         {{ detailList.sourceName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题严重等级:`">
-                      <p v-if="detailList.gradeName">
+                    <!-- 「问题严重等级」 -->
+                    <a-form-item :label="$t('issue.grade')">
+                      <p
+                        v-if="detailList.gradeName"
+                        :title="detailList.gradeName"
+                      >
                         {{ detailList.gradeName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题阶段:`">
-                      <p v-if="detailList.projectPhaseName">
+                    <!-- 「问题阶段」 -->
+                    <a-form-item :label="$t('issue.projectPhase')">
+                      <p
+                        v-if="detailList.projectPhaseName"
+                        :title="detailList.projectPhaseName"
+                      >
                         {{ detailList.projectPhaseName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题发生日期:`">
-                      <p v-if="detailList.failureDate">
+                    <!-- 「问题发生日期」 -->
+                    <a-form-item :label="$t('issue.failureDate')">
+                      <p
+                        v-if="detailList.failureDate"
+                        :title="detailList.failureDate | GLOBAL_SELECT_DATE_FORMAT"
+                      >
                         {{ detailList.failureDate | GLOBAL_SELECT_DATE_FORMAT }}
                       </p>
                     </a-form-item>
@@ -623,32 +760,48 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`生产基地:`">
-                      <p v-if="detailList.manufactureBaseName">
+                    <!-- 「生产基地」 -->
+                    <a-form-item :label="$t('issue.manufactureBase')">
+                      <p
+                        v-if="detailList.manufactureBaseName"
+                        :title="detailList.manufactureBaseName"
+                      >
                         {{ detailList.manufactureBaseName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`责任部门:`">
-                      <p v-if="detailList.responsibleDepartmentName">
+                    <!-- 「责任部门」 -->
+                    <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
+                      <p
+                        v-if="detailList.responsibleDepartmentName"
+                        :title="detailList.responsibleDepartmentName"
+                      >
                         {{ detailList.responsibleDepartmentName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题频次:`">
-                      <p v-if="detailList.frequency">
+                    <!-- 「问题频次」 -->
+                    <a-form-item :label="$t('issue.frequency')">
+                      <p
+                        v-if="detailList.frequency"
+                        :title="detailList.frequency"
+                      >
                         {{ detailList.frequency }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
+                    <!-- 「联系人电话」 -->
                     <a-form-item
-                      :label="`联系人电话:`"
+                      :label="$t('issue.contact')"
                       class="quesetionContact"
                     >
-                      <p v-if="detailList.contact">
+                      <p
+                        v-if="detailList.contact"
+                        :title="detailList.contact"
+                      >
                         {{ detailList.contact }}
                       </p>
                     </a-form-item>
@@ -656,57 +809,79 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`创建人:`">
-                      <p v-if="detailList.creatorName">
+                    <!-- 「创建人」 -->
+                    <a-form-item :label="$t('issue.creatorName')">
+                      <p
+                        v-if="detailList.creatorName"
+                        :title="detailList.creatorName"
+                      >
                         {{ detailList.creatorName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`创建部门:`">
-                      <p v-if="detailList.creatorDept">
+                    <!-- 「创建部门」 -->
+                    <a-form-item :label="$t('issue.creatorDept')">
+                      <p
+                        v-if="detailList.creatorDept"
+                        :title="detailList.creatorDept"
+                      >
                         {{ detailList.creatorDept }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`问题提报日期:`">
-                      <p v-if="detailList.createDate">
+                    <!-- 「问题提报日期」 -->
+                    <a-form-item :label="$t('issue.createDate')">
+                      <p
+                        v-if="detailList.createDate"
+                        :title="detailList.createDate | GLOBAL_SELECT_DATE_FORMAT"
+                      >
                         {{ detailList.createDate | GLOBAL_SELECT_DATE_FORMAT }}
                       </p>
                     </a-form-item>
                   </a-col>
-                  <a-col :span="6">
-                    <a-form-item :label="`附件:`">
-                      <img src="/static/question/file.png">
+                  <a-col
+                    :span="6"
+                    style="height: 0px;"
+                  >
+                    <!-- 「附件」 -->
+                    <a-form-item :label="$t('issue_workflow.attachment')">
+                      <!-- <img src="/static/question/file.png">
                       <span
                         v-if="detailList.fileList"
                         class="fileListNumber"
-                      >{{ detailList.fileList.length }}</span>
+                      >{{ detailList.fileList.length }}</span> -->
                       <!-- 问题详情的附件 -->
                       <div
                         v-if="detailList.fileList && detailList.fileList.length"
                         class="ant-upload-list ant-upload-list-text"
-                        style="z-index: 2; position: absolute;"
+                        style="overflow-y: scroll; height: 82px; z-index: 10;"
                       >
                         <div
                           v-for="(file, index) in detailList.fileList"
                           :key="index"
                           class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
                           <div class="ant-upload-list-item-info">
                             <span>
-                              <a-icon type="paper-clip" />
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
                               <span
                                 :title="file.originalFilename"
-                                style="height: 28px;"
+                                style="padding-left: 0;"
                                 class="ant-upload-list-item-name"
                               >
                                 <a
                                   :title="file.originalFilename"
                                   :href="getDownloadURL(file.path, file.originalFilename)"
+                                  :download="file.originalFilename"
                                   rel="noopener noreferrer"
                                   class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
                                 >
                                   {{ file.originalFilename }}
                                 </a>
@@ -738,61 +913,86 @@
                   </a-col>
                 </a-row>
 
-                <a-row :gutter="24">
+                <a-row 
+                  :gutter="24"
+                  style="margin-right:272px; "
+                >
                   <a-col :span="24">
+                    <!-- 「问题描述」 -->
                     <a-form-item
-                      :label="`问题描述:`"
+                      :label="$t('issue.description')"
                       class="form-item-flex-2"
                     >
-                      <p v-if="detailList.description">
+                      <p
+                        v-if="detailList.description"
+                        :title="detailList.description"
+                        style="white-space: unset; word-break: unset;"
+                      >
                         {{ detailList.description }}
                       </p>
                     </a-form-item>
                   </a-col>
-                  <div
+                  <!-- <div
                     v-if="!showMoreFlag"
-                    @click="showMore"
                     class="showMore"
                     style="height:53px;line-height:53px;top:20px;"
+                    @click="showMore"
                   >
-                    <span>查看更多</span>
+                    <span>{{ $t('issue.seeMore') }}</span>
                     <img src="/static/question/Open.png">
-                  </div>
+                  </div> -->
                 </a-row>
               </div>
               <div
                 v-if="showMoreFlag"
-                style="position:relative;top:40px;"
+                style="position:relative;top: 16px;"
               >
                 <div class="baseMessage">
-                  补充信息
+                  <!-- 补充信息 -->
+                  {{ $t('issue.additionalInfo') }}
                 </div>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`试验类型:`">
-                      <p v-if="detailList.testTypeName">
+                    <!-- 「试验类型」 -->
+                    <a-form-item :label="$t('issue.testType')">
+                      <p
+                        v-if="detailList.testTypeName"
+                        :title="detailList.testTypeName"
+                      >
                         {{ detailList.testTypeName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`祸首件:`">
-                      <p v-if="detailList.firstCausePartName">
+                    <!-- 「祸首件」 -->
+                    <a-form-item :label="$t('issue.firstCausePart')">
+                      <p
+                        v-if="detailList.firstCausePartName"
+                        :title="detailList.firstCausePartName"
+                      >
                         {{ detailList.firstCausePartName }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`零件号:`">
-                      <p v-if="detailList.partName">
+                    <!-- 「零件号」 -->
+                    <a-form-item :label="$t('issue.partId')">
+                      <p
+                        v-if="detailList.partName"
+                        :title="detailList.partName"
+                      >
                         {{ detailList.partName }}
                       </p>
                     </a-form-item>
                   </a-col>
 
                   <a-col :span="6">
-                    <a-form-item :label="`供应商名称:`">
-                      <p v-if="detailList.supplierName">
+                    <!-- 「供应商名称」 -->
+                    <a-form-item :label="$t('issue.supplierName')">
+                      <p
+                        v-if="detailList.supplierName"
+                        :title="detailList.supplierName"
+                      >
                         {{ detailList.supplierName }}
                       </p>
                     </a-form-item>
@@ -800,29 +1000,45 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`软件版本号:`">
-                      <p v-if="detailList.softwareVersion">
+                    <!-- 「软件版本号」 -->
+                    <a-form-item :label="$t('issue.softwareVersion')">
+                      <p
+                        v-if="detailList.softwareVersion"
+                        :title="detailList.softwareVersion"
+                      >
                         {{ detailList.softwareVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`标定版本号:`">
-                      <p v-if="detailList.calibrationVersion">
+                    <!-- 「标定版本号」 -->
+                    <a-form-item :label="$t('issue.calibrationVersion')">
+                      <p
+                        v-if="detailList.calibrationVersion"
+                        :title="detailList.calibrationVersion"
+                      >
                         {{ detailList.calibrationVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`硬件版本号:`">
-                      <p v-if="detailList.hardwareVersion">
+                    <!-- 「硬件版本号」 -->
+                    <a-form-item :label="$t('issue.hardwareVersion')">
+                      <p
+                        v-if="detailList.hardwareVersion"
+                        :title="detailList.hardwareVersion"
+                      >
                         {{ detailList.hardwareVersion }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`配置字版本号:`">
-                      <p v-if="detailList.confirmationVersion">
+                    <!-- 「配置字版本号」 -->
+                    <a-form-item :label="$t('issue.confirmationVersion')">
+                      <p
+                        v-if="detailList.confirmationVersion"
+                        :title="detailList.confirmationVersion"
+                      >
                         {{ detailList.confirmationVersion }}
                       </p>
                     </a-form-item>
@@ -830,61 +1046,127 @@
                 </a-row>
                 <a-row :gutter="24">
                   <a-col :span="6">
-                    <a-form-item :label="`维修网点:`">
-                      <p v-if="detailList.maintenanceStation">
+                    <!-- 「维修网点」 -->
+                    <a-form-item :label="$t('issue.maintenanceStation')">
+                      <p
+                        v-if="detailList.maintenanceStation"
+                        :title="detailList.maintenanceStation"
+                      >
                         {{ detailList.maintenanceStation }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`故障里程:`">
-                      <p v-if="detailList.milage">
+                    <!-- 「故障里程」 -->
+                    <a-form-item :label="$t('issue.milage')">
+                      <p
+                        v-if="detailList.milage"
+                        :title="detailList.milage"
+                      >
                         {{ detailList.milage }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`VIN:`">
-                      <p v-if="detailList.vinNo">
+                    <!-- 「VIN」 -->
+                    <a-form-item :label="$t('issue.vinNo')">
+                      <p
+                        v-if="detailList.vinNo"
+                        :title="detailList.vinNo"
+                      >
                         {{ detailList.vinNo }}
                       </p>
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
-                    <a-form-item :label="`生产时间:`">
-                      <p v-if="detailList.productDate">
+                    <!-- 「license」 -->
+                    <a-form-item :label="$t('issue.license')">
+                      <p
+                        v-if="detailList.license"
+                        :title="detailList.license"
+                      >
+                        {{ detailList.license }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row>
+                  <a-col :span="6">
+                    <!-- 「生产时间」 -->
+                    <a-form-item :label="$t('issue.productDate')">
+                      <p
+                        v-if="detailList.productDate"
+                        :title="detailList.productDate | GLOBAL_SELECT_DATE_FORMAT"
+                      >
                         {{ detailList.productDate | GLOBAL_SELECT_DATE_FORMAT }}
                       </p>
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <p class="textareaLabel">
-                  工况信息:
-                </p>
-                <p v-if="detailList.workConditionInfo">
-                  {{ detailList.workConditionInfo }}
-                </p>
-                <p class="textareaLabel">
-                  初步排查情况:
-                </p>
-                <p v-if="detailList.preliminaryInvestigation">
-                  {{ detailList.preliminaryInvestigation }}
-                </p>
-                <p class="textareaLabel">
-                  备注:
-                </p>
-                <p v-if="detailList.remark">
-                  {{ detailList.remark }}
-                </p>
-                <div
+                <a-row 
+                  :gutter="24"
+                >
+                  <a-col :span="24">
+                    <!-- 工况信息 -->
+                    <a-form-item
+                      :label="$t('issue.workConditionInfo') + $t('colon')"
+                    >
+                      <p
+                        v-if="detailList.workConditionInfo"
+                        :title="detailList.workConditionInfo"
+                        style="white-space: unset; word-break: unset;"
+                      >
+                        {{ detailList.description }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row 
+                  :gutter="24"
+                >
+                  <a-col :span="24">
+                    <!-- 初步排查情况 -->
+                    <a-form-item
+                      :label="$t('issue.preliminaryInvestigation') + $t('colon')"
+                    >
+                      <p
+                        v-if="detailList.preliminaryInvestigation"
+                        :title="detailList.preliminaryInvestigation"
+                        style="white-space: unset; word-break: unset;"
+                      >
+                        {{ detailList.preliminaryInvestigation }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row 
+                  :gutter="24"
+                >
+                  <a-col :span="24">
+                    <!-- 备注 -->
+                    <a-form-item
+                      :label="$t('issue.remark') + $t('colon')"
+                    >
+                      <p
+                        v-if="detailList.remark"
+                        :title="detailList.remark"
+                        style="white-space: unset; word-break: unset;"
+                      >
+                        {{ detailList.remark }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <div style="margin-bottom: 32px;"></div>
+                <!-- <div
                   v-if="showMoreFlag"
-                  @click="showMore"
                   class="showMore"
                   style="position:relative;height:63px;"
+                  @click="showMore"
                 >
-                  <span>收起</span>
+                  <span>{{ $t('search.collapse_button') }}</span>
                   <img src="/static/question/retractIcon.png">
-                </div>
+                </div> -->
               </div>
             </div>
           </a-card>
@@ -896,16 +1178,19 @@
       >
         <a-card
           v-if="pagePermission.A3_2"
-          title="问题流程"
           class="cardTitle"
         >
+          <!-- 问题流程 -->
+          <template #title>
+            {{ $t('issue.workflow') }}
+          </template>
           <div class="ant-advanced-search-form">
             <div class="step">
               <a-steps :current="stepCurrent">
                 <a-popover
                   slot="progressDot"
-                  :visible="false"
                   slot-scope="{index}"
+                  :visible="false"
                 >
                   <!-- <template slot="content">
                     <span>step {{ index }} status: {{ status }}</span>
@@ -930,47 +1215,75 @@
                   </span>
                 </a-popover>
                 <a-step
+                  style="cursor:pointer;"
+                  class="stepTitle"
                   @click="goto(0)"
-                  title="D0-问题定义"
+                >
+                  <!-- D0-问题定义 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D0') }}
+                  </template>
+                </a-step>
+                <a-step
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
-                <a-step
                   @click="goto(1)"
-                  title="D1-责任判定"
+                >
+                  <!-- D1-责任判定 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D1') }}
+                  </template>
+                </a-step>
+                <a-step
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
-                <a-step
                   @click="goto(2)"
-                  title="D2-原因分析"
+                >
+                  <!-- D2-原因分析 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D2') }}
+                  </template>
+                </a-step>
+                <a-step
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
-                <a-step
                   @click="goto(3)"
-                  title="D3-措施制定"
+                >
+                  <!-- D3-措施指定 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D3') }}
+                  </template>
+                </a-step>
+                <a-step
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
-                <a-step
                   @click="goto(4)"
-                  title="D4-措施实施"
+                >
+                  <!-- D4-措施实施 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D4') }}
+                  </template>
+                </a-step>
+                <a-step
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
-                <a-step
                   @click="goto(5)"
-                  title="D5-效果验证"
-                  style="cursor:pointer;"
-                  class="stepTitle"
-                />
+                >
+                  <!-- D5-效果验证 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D5') }}
+                  </template>
+                </a-step>
                 <a-step
-                  @click="goto(6)"
-                  title="D6-问题关闭"
                   style="cursor:pointer;"
                   class="stepTitle"
-                />
+                  @click="goto(6)"
+                >
+                  <!-- D6-问题关闭 -->
+                  <template #title>
+                    {{ $t('issue_workflow.steps.D6') }}
+                  </template>
+                </a-step>
               </a-steps>
             </div>
             <div
@@ -986,11 +1299,12 @@
                 </div>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`是否立项`">
+                    <!-- 是否立项 -->
+                    <a-form-item :label="$t('issue_workflow.D0.publish')">
                       <a-radio-group
                         v-decorator="[
                           'isProject',
-                          {rules: [{ required: true, message: '请选择是否立项' }]}
+                          {rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D0.publish') }]}
                         ]"
                         :options="satisfy"
                         @change="satisfyChange"
@@ -1001,27 +1315,31 @@
                 <div v-if="!satisfyFlag">
                   <a-row>
                     <a-col :span="21">
-                      <a-form-item :label="`理由`">
+                      <!-- 理由 -->
+                      <a-form-item 
+                        :label="$t('issue_workflow.D0.reason')"
+                        self-update
+                      >
                         <a-textarea
                           v-decorator="[
                             'comment',
-                            {rules: [{ required: true,min :1, message: '请输入理由' },{ required: true,max: 160, message: '请输入最多160个字符' }]}
+                            {rules: [{ required: true,min :1, message: $t('search.please_input') + $t('issue_workflow.D0.reason') },{ required: true,max: 160, message: $t('validate.less_then_160') }]}
                           ]"
-                          placeholder="请输入"
+                          :placeholder="$t('search.please_input')"
                         ></a-textarea>
                       </a-form-item>
                     </a-col>
                   </a-row>
                 </div>
-
                 <div v-if="satisfyFlag">
                   <a-row>
                     <a-col :span="21">
-                      <a-form-item :label="`是否需要围堵措施`">
+                      <!-- 是否需要围堵措施 -->
+                      <a-form-item :label="$t('issue_workflow.D0.needICA')">
                         <a-radio-group
                           v-decorator="[
                             'isNeedIca',
-                            {rules: [{ required: true, message: '请选择是否立项' }]}
+                            {rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D0.needICA') }]}
                           ]"
                           :options="contActionOption"
                           @change="conActionChange"
@@ -1031,10 +1349,14 @@
                   </a-row>
                   <a-row v-if="conActionFlag">
                     <a-col :span="21">
-                      <a-form-item :label="`围堵措施`">
+                      <!-- 围堵措施 -->
+                      <a-form-item 
+                        :label="$t('issue_workflow.D0.ICA')"
+                        self-update
+                      >
                         <a-textarea
-                          v-decorator="[ 'icaDescriptionD1',{rules: [{ required: true, message: '请输入围堵措施' }]}]"
-                          placeholder="请输入"
+                          v-decorator="[ 'icaDescriptionD1',{rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D0.ICA') }]}]"
+                          :placeholder="$t('search.please_input')"
                           style="width:572px;height:88px;"
                         ></a-textarea>
                       </a-form-item>
@@ -1043,17 +1365,17 @@
                 </div>
                 <a-row v-if="satisfyFlag">
                   <a-col :span="21">
-                    <!-- 问题定义 -->
-                    <a-form-item :label="`附件`">
+                    <!-- 问题定义 附件 -->
+                    <a-form-item :label="$t('issue_workflow.attachment') ">
                       <a-upload
                         :headers="headers"
                         :multiple="true"
                         :file-list="d0FileList"
                         :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, d0FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021004')"
                         name="file"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d0FileList)(info)"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -1078,40 +1400,46 @@
                 </div>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`立项条件`">
-                      <p>{{ problemDefinitionData.isProject==='1'?'是':'否' }}</p>
+                    <!-- 立项条件 -->
+                    <a-form-item :label="$t('issue_workflow.D0.publist_condition')">
+                      <p>{{ problemDefinitionData.isProject==='1'? $t('issue_workflow.yes') : $t('issue_workflow.no') }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <div v-if="problemDefinitionData.isProject==='1'">
                   <a-row>
                     <a-col :span="21">
-                      <a-form-item :label="`需要围堵措施`">
-                        <p>{{ problemDefinitionData.isNeedIca==='1'?'是':'否' }}</p>
+                      <!-- 是否需要围堵措施  -->
+                      <a-form-item :label="$t('issue_workflow.D0.needICA')">
+                        <p>{{ problemDefinitionData.isNeedIca==='1'? $t('issue_workflow.yes') : $t('issue_workflow.no') }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
                   <a-row v-if="problemDefinitionData.isNeedIca==='1'">
                     <a-col :span="21">
-                      <a-form-item :label="`围堵措施`">
+                      <!-- 围堵措施   -->
+                      <a-form-item :label="$t('issue_workflow.D0.ICA')">
                         <p>{{ problemDefinitionData.icaDescriptionD1 }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
                 </div>
+
                 <div v-if="problemDefinitionData.isProject==='0'">
                   <a-row>
                     <a-col :span="21">
-                      <a-form-item :label="`理由`">
+                      <!-- 理由  -->
+                      <a-form-item :label="$t('issue_workflow.D0.reason')">
                         <p>{{ examineReason }}</p>
                       </a-form-item>
                     </a-col>
                   </a-row>
-                </div>
+                </div> 
                 <a-row v-if="problemDefinitionData.isProject==='1'">
                   <a-col :span="21">
+                    <!-- 附件  -->
                     <a-form-item
-                      :label="`附件`"
+                      :label="$t('issue_workflow.attachment') "
                       style="height:auto;"
                     >
                       <!-- 问题定义附件 -->
@@ -1123,7 +1451,7 @@
                         <span
                           v-for="(file, index) in d0FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                         >
                           <a-icon type="paper-clip" />
                           <span
@@ -1151,26 +1479,33 @@
                   :span="24"
                   style="text-align:center;"
                 >
+                  <!-- 该问题正在立项中 -->
                   <p v-if="pagePermission.A0_3_2&&pagePermission.A0_1_1">
-                    该问题正在立项中
+                    {{ $t('issue_reason.publishing') }}
                   </p>
+                  <!-- 该问题正在责任判定中 -->
                   <p v-if="pagePermission.A1_2_2">
-                    该问题正在责任判定中
+                    {{ $t('issue_reason.defining') }}
                   </p>
+                  <!-- 问题原因正在分析填写中 -->
                   <p v-if="pagePermission.A2_4_2">
-                    问题原因正在分析填写中
+                    {{ $t('issue_reason.analysising') }}
                   </p>
+                  <!-- 问题措施正在制定中 -->
                   <p v-if="pagePermission.A3_4_2">
-                    问题措施正在制定中
+                    {{ $t('issue_reason.sovling') }}
                   </p>
+                  <!-- 该问题措施实施填写中 -->
                   <p v-if="pagePermission.A4_4_2">
-                    该问题措施实施填写中
+                    {{ $t('issue_reason.implementing') }}
                   </p>
+                  <!-- 该问题效果验证内容填写中 -->
                   <p v-if="pagePermission.A5_6_2">
-                    该问题效果验证内容填写中
+                    {{ $t('issue_reason.feedbacking') }}
                   </p>
+                  <!-- 该问题关闭中 -->
                   <p v-if="pagePermission.A6_3_2">
-                    该问题关闭中
+                    {{ $t('issue_reason.closing') }}
                   </p>
                 </a-col>
               </a-row>
@@ -1201,18 +1536,19 @@
                   <div v-if="NeedFlage">
                     <a-row>
                       <a-col :span="21">
-                        <a-form-item :label="`责任部门`">
+                        <!-- 责任部门 -->
+                        <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
                           <net-select
-                            v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]} ]"
+                            v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
                             :transform="selectOption"
                             :filter-option="filterOption"
                             :allow-clear="true"
                             :delay="false"
-                            @change="DeptChange"
+                            :placeholder="$t('search.please_input')"
                             url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                            placeholder="请选择"
                             style="width:272px;height:32px;"
                             show-search
+                            @change="DeptChange"
                           >
                           </net-select>
                         </a-form-item>
@@ -1220,11 +1556,12 @@
                     </a-row>
                     <a-row>
                       <a-col :span="21">
-                        <a-form-item :label="`责任人`">
+                        <!-- 责任人 -->
+                        <a-form-item :label="$t('issue.champion')">
                           <net-select
                             v-decorator="[
                               'champion',
-                              {rules:[{required:true, message:'请选择责任人'}]}
+                              {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
                             ]"
                             :placeholder="$t('search.please_select')"
                             :disabled="!record.owerDeptLv1"
@@ -1243,17 +1580,18 @@
                     </a-row>
                     <a-row>
                       <a-col :span="21">
-                        <a-form-item :label="`附件`">
+                        <!-- 附件 -->
+                        <a-form-item :label="$t('issue_workflow.attachment')">
                           <!-- 责任判定 -->
                           <a-upload
                             :headers="headers"
                             :multiple="true"
                             :file-list="d1FileList"
                             :remove="file => removeFile(record.fileList)(file)"
-                            @preview="download"
-                            @change="info => changeFileList(record.fileList, d1FileList)(info)"
                             :action="getUploadUrl('/issue/v1/file/upload?recType=10021006')"
                             name="file"
+                            @preview="download"
+                            @change="info => changeFileList(record.fileList, d1FileList)(info)"
                           >
                             <a-button icon="upload">
                               <!-- 「上传文件」文本 -->
@@ -1267,111 +1605,120 @@
                   <div v-if="!NeedFlage">
                     <div class="processList clearfix">
                       <div class="processTitle">
-                        <span>*</span>请指定7钻分析责任人:
+                        <!-- 请指定7钻分析责任人: -->
+                        <span>*</span>{{ $t('issue_workflow.D1.champion_span') }}
                       </div>
                       <div class="processUl">
                         <ul>
                           <li class="clearfix">
-                            <span>7钻流程</span>
-                            <span>分析负责人</span>
+                            <!-- 7钻流程 -->
+                            <span>{{ $t('issue_workflow.D1.7thDiamond_flow') }} </span>
+                            <span>{{ $t('issue_workflow.D1.analysis_champion') }}</span>
                           </li>
                           <li class="clearfix">
-                            <span>第1钻： 过程是否正确？</span>
+                            <!-- 第1钻： 过程是否正确？ -->
+                            <span>{{ $t('issue_workflow.D1.1stDiamond') + $t('colon') + $t('issue_workflow.D1.rightProcess') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第2钻： 工具是否正确？</span>
+                            <!-- 第2钻 工具是否正确? -->
+                            <span>{{ $t('issue_workflow.D1.2ndDiamond') + $t('colon') + $t('issue_workflow.D1.rightTools') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第3钻： 物料是否正确？</span>
+                            <!-- 第3钻 物料是否正确? -->
+                            <span>{{ $t('issue_workflow.D1.3rdDiamond') + $t('colon') + $t('issue_workflow.D1.rightMaterials') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=MD`"
                                 :transform="selectOptionChampion"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第4钻： 物料规格检测？</span>
+                            <!-- 第4钻 物料规格检查? -->
+                            <span>{{ $t('issue_workflow.D1.4thDiamond') + $t('colon') + $t('issue_workflow.D1.specification') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner4',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner4',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=SQE`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第5钻： 过程变更？</span>
+                            <!-- 第5钻 过程变更 -->
+                            <span>{{ $t('issue_workflow.D1.5thDiamond') + $t('colon') + $t('issue_workflow.D1.processChange') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner5',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner5',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=ME`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第6钻： 部件变更？</span>
+                            <!-- 第6钻 部件变更 -->
+                            <span>{{ $t('issue_workflow.D1.6thDiamond') + $t('colon') + $t('issue_workflow.D1.partChange') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner6',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner6',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TC`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
                             </a-form-item>
                           </li>
                           <li class="clearfix">
-                            <span>第7钻： 是否是极端复杂问题？</span>
+                            <!-- 第7钻 是否极端复杂问题 -->
+                            <span>{{ $t('issue_workflow.D1.7thDiamond') + $t('colon') + $t('issue_workflow.D1.complex') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner7',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                v-decorator="['diamondOwner7',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
                                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=TFT`"
                                 :transform="selectOptionChampion"
                                 :delay="true"
                                 :allow-clear="true"
-                                placeholder="请选择"
+                                :placeholder="$t('search.please_select')"
                                 style="width:200px;height:32px"
                               >
                               </net-select>
@@ -1387,49 +1734,57 @@
                   class="analysisList clearfix"
                 >
                   <div class="analysisTitle">
-                    <span>7钻分析</span>
+                    <!-- 7钻分析 -->
+                    <span>{{ $t('issue_workflow.D1.7thDiamond') + $t('analysis') }}</span>
                   </div>
                   <div class="analysisStep">
                     <ul>
                       <li class="activefirst">
-                        <span>第1钻</span>
-                        <p>过程是否正确</p>
+                        <!-- 第1钻 -->
+                        <span>{{ $t('issue_workflow.D1.1stDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.rightTools') }}</p>
                         <div></div>
                       </li>
                       <li class="activefirst">
                         <div></div>
-                        <span>第2钻</span>
-                        <p>工具是否正确</p>
+                        <!-- 第2钻 -->
+                        <span>{{ $t('issue_workflow.D1.2ndDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.rightProcess') }}</p>
                         <div></div>
                       </li>
                       <li class="activefirst">
                         <div></div>
-                        <span>第3钻</span>
-                        <p>物料是否正确</p>
+                        <!-- 第3钻 -->
+                        <span>{{ $t('issue_workflow.D1.3rdDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.rightMaterials') }}</p>
                         <div></div>
                       </li>
                       <li class="stepRemove">
                         <div></div>
-                        <span>第4钻</span>
-                        <p>物料规则检测</p>
+                        <!-- 第4钻 -->
+                        <span>{{ $t('issue_workflow.D1.4thDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.specification') }}</p>
                         <div></div>
                       </li>
                       <li>
                         <div></div>
-                        <span>第5钻</span>
-                        <p>过程变更</p>
+                        <!-- 第5钻 -->
+                        <span>{{ $t('issue_workflow.D1.5thDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.processChange') }}</p>
                         <div></div>
                       </li>
                       <li class="active">
                         <div></div>
-                        <span>第6钻</span>
-                        <p>部件变更</p>
+                        <!-- 第6钻 -->
+                        <span>{{ $t('issue_workflow.D1.6thDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.partChange') }}</p>
                         <div></div>
                       </li>
                       <li clasdataRecords="active">
                         <div></div>
-                        <span>第7钻</span>
-                        <p>是否是极端复杂问题</p>
+                        <!-- 第7钻 -->
+                        <span>{{ $t('issue_workflow.D1.7thDiamond') }}</span>
+                        <p>{{ $t('issue_workflow.D1.complex') }}</p>
                         <div></div>
                       </li>
                     </ul>
@@ -1439,7 +1794,8 @@
                       v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2"
                     >
                       <a-row>
-                        <span>审核结果：</span>
+                        <!-- 审核结果： -->
+                        <span>{{ $t('issue_workflow.approval_result') + $t('colon') }}</span>
                       </a-row>
                       <a-row>
                         <a-form-item :label="'审批：'">
@@ -1471,8 +1827,8 @@
                           slot-scope="text, row"
                         >
                           <a
-                            @click="showAnalysis(row)"
                             href="javascript:;"
+                            @click="showAnalysis(row)"
                           >{{ row.operation }}</a>
                         </span>
                       </a-table>
@@ -1482,7 +1838,7 @@
                     >
                       <a-row>
                         <a-col :span="21">
-                          <a-form-item :label="'审核：'">
+                          <a-form-item :label="$t('issue_workflow.approval') + $t('colon')">
                             <a-radio-group
                               v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
                               :options="verifyRadio"
@@ -1504,14 +1860,15 @@
                         <div v-if=" record.endSeven==='1' ">
                           <a-row>
                             <a-col :span="21">
-                              <a-form-item :label="'责任部门：'">
+                              <!-- 责任部门 -->
+                              <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment') + $t('colon')">
                                 <net-select
-                                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: '请选择责任部门' }]}]"
+                                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]}]"
                                   :transform="selectOption"
                                   :delay="false"
                                   :allow-clear="true"
+                                  :placeholder="$t('search.please_select')"
                                   url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                                  placeholder="请选择"
                                   style="width:272px;height:32px;"
                                 >
                                 </net-select>
@@ -1520,14 +1877,15 @@
                           </a-row>
                           <a-row>
                             <a-col :span="21">
-                              <a-form-item :label="'责任人：'">
+                              <!-- 责任人 -->
+                              <a-form-item :label="$t('issue.champion') + $t('colon') ">
                                 <net-select
-                                  v-decorator="['champion',{rules: [{ required: true, message: '请选择责任人' }]} ]"
+                                  v-decorator="['champion',{rules: [{ required: true, message: $t('search.please_select') + $t('issue.champion')}]} ]"
                                   :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                                   :transform="selectOptionChampion"
                                   :delay="false"
                                   :allow-clear="true"
-                                  placeholder="请选择"
+                                  :placeholder="$t('search.please_select')"
                                   style="width:272px;height:32px;"
                                 >
                                 </net-select>
@@ -1539,10 +1897,29 @@
 
                       <a-row v-if="record.verifySeven==='0'">
                         <a-col :span="21">
-                          <a-form-item :label="'不通过原因：'">
+                          <!-- 不通过原因 -->
+                          <a-form-item 
+                            :label="$t('issue_workflow.rejectReason2') + $t('colon')"
+                            self-update
+                          >
                             <a-textarea
-                              v-decorator="['comment',{rules: [{ required: true, message: '请输不通过原因' }]} ]"
-                              placeholder="请输入"
+                              v-decorator="['comment',{rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+                              :placeholder="$t('search.please_input')"
+                            >
+                            </a-textarea>
+                          </a-form-item>
+                        </a-col>
+                      </a-row>
+                      <a-row v-if="record.verifySeven==='1'">
+                        <a-col :span="21">
+                          <!-- 备注 -->
+                          <a-form-item 
+                            :label="'备注'"
+                            self-update
+                          >
+                            <a-textarea
+                              v-decorator="['comment',{rules: [{ max: 160, message: $t('validate.less_then_160')}]} ]"
+                              :placeholder="$t('search.please_input')"
                             >
                             </a-textarea>
                           </a-form-item>
@@ -1565,27 +1942,31 @@
                 <span></span>
               </div>
               <div class="backTitle">
-                <p>{{ issueDefinitionData.type==='0'?'直接判定':'需要7钻分析' }}</p>
+                <!-- 直接判定 or 需要7钻分析 -->
+                <p>{{ issueDefinitionData.type==='0'? $t('issue_workflow.D1.confirm'):$t('issue_workflow.D1.needAnalysis') }}</p>
               </div>
               <div v-if="issueDefinitionData.type==='0'">
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`责任部门`">
+                    <!-- 责任部门 -->
+                    <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
                       <p>{{ issueDefinitionData.owerDeptLv1Name }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`责任人`">
+                    <!-- 责任人 -->
+                    <a-form-item :label="$t('issue.champion')">
                       <p>{{ issueDefinitionData.championName }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
                 <a-row>
                   <a-col :span="21">
+                    <!-- 附件 -->
                     <a-form-item
-                      :label="`附件`"
+                      :label="$t('issue_workflow.attachment')"
                       style="height:auto;"
                     >
                       <!-- 责任判定附件 -->
@@ -1597,7 +1978,7 @@
                         <span
                           v-for="(file, index) in d1FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                         >
                           <a-icon type="paper-clip" />
                           <span
@@ -1684,13 +2065,16 @@
                 </div>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`根本原因`">
+                    <a-form-item 
+                      :label="$t('issue_workflow.D2.cause')"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'rootCauseDescription',
                           {
                             rules:[
-                              {required: true, message: '请输入根本原因'}
+                              {required: true, message: $t('search.please_input') }
                             ]}
                         ]"
                         placeholder="请输入"
@@ -1701,17 +2085,18 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`附件`">
+                    <!-- 附件 -->
+                    <a-form-item :label="$t('issue_workflow.attachment')">
                       <!-- 原因分析 -->
                       <a-upload
                         :headers="headers"
                         :multiple="true"
                         :file-list="d2FileList"
                         :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, d2FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021007')"
                         name="file"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d2FileList)(info)"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -1743,8 +2128,9 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
+                    <!-- 附件 -->
                     <a-form-item
-                      :label="`附件`"
+                      :label="$t('issue_workflow.attachment')"
                       style="height:auto;"
                     >
                       <!-- 原因分析附件 -->
@@ -1773,28 +2159,6 @@
                           </div>
                         </div>
                       </div>
-                      <!-- <div
-                        v-if="d2FileList && d2FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
-                      >
-                        <span
-                          v-for="(file, index) in d2FileList"
-                          :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
-                        >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.originalFilename"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.path, file.originalFilename)">
-                              {{ file.originalFilename }}
-                            </a>
-                          </span>
-                        </span>
-                      </div> -->
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -1807,17 +2171,34 @@
                       <a-col :span="21">
                         <a-form-item :label="'是否通过审核：'">
                           <a-radio-group
-                            v-decorator="[ 'verifySeven',{rules: [{ required: true, message: '请选择审核结果' }]}]"
+                            v-decorator="[ 'isPass',{rules: [{ required: true, message: '请选择审核结果' }]}]"
                             :options="verifyRadio"
                           />
                         </a-form-item>
                       </a-col>
                     </a-row>
-                    <a-row v-if="record.verifySeven==='0'">
+                    <a-row v-if="record.isPass==='0'">
                       <a-col :span="21">
-                        <a-form-item :label="'不通过原因：'">
+                        <a-form-item 
+                          :label="'不通过原因：'"
+                          self-update
+                        >
                           <a-textarea
-                            v-decorator="['comment',{rules: [{ required: true, min: 1, message: '请输不通过原因' },{ required: true,max: 160, message: '请输入最多160个字符'}]} ]"
+                            v-decorator="['comment',{rules: [{ required: true, min: 1, message: '请输不通过原因' },{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+                            placeholder="请输入"
+                          >
+                          </a-textarea>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row v-if="record.isPass==='1'">
+                      <a-col :span="21">
+                        <a-form-item 
+                          :label="'备注：'"
+                          self-update
+                        >
+                          <a-textarea
+                            v-decorator="['comment',{rules: [{max: 160, message: $t('validate.less_then_160')}]} ]"
                             placeholder="请输入"
                           >
                           </a-textarea>
@@ -1828,8 +2209,6 @@
                 </div>
               </div>
             </div>
-
-
             <div
               v-if="(stepCurrent===3&&backFlag===false)&&(pagePermission.A3_3_2||pagePermission.A3_1_3)"
               class="Dcontent D3content"
@@ -1851,12 +2230,15 @@
                 </a-form-item>
               </div>
               <div v-if="pagePermission.A3_1_3">
-                <!-- <div class="Dtitle">
-              <span>措施制定</span>
-            </div> -->
+                <div class="Dtitle">
+                  <span>措施制定</span>
+                </div>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`短期措施`">
+                    <a-form-item 
+                      :label="`短期措施`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'icaDescription'
@@ -1869,7 +2251,10 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`长期措施`">
+                    <a-form-item 
+                      :label="`长期措施`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'pcaDescription',
@@ -1885,12 +2270,15 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`小批量验证`">
-                      <a-input
+                    <a-form-item
+                      :label="`小批量验证`"
+                      self-update
+                    >
+                      <v-input
                         v-decorator="[
                           'smallBatchValidation',
                         ]"
-                        :allow-clear="true"
+                        allow-clear
                         placeholder="请输入"
                         style="width:572px;"
                       />
@@ -1906,10 +2294,10 @@
                         :headers="headers"
                         :file-list="d3FileList"
                         :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, d3FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021008')"
                         name="file"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d3FileList)(info)"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -1932,6 +2320,7 @@
                           ]}
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabled-date="disabledDate"
                         style="width:231px;"
                       />
                     </a-form-item>
@@ -1948,6 +2337,7 @@
                           ]}
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabled-date="disabledDate"
                         style="width:231px;"
                       />
                     </a-form-item>
@@ -1964,6 +2354,7 @@
                           ]}
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabled-date="disabledDate"
                         style="width:231px;"
                       />
                     </a-form-item>
@@ -1983,8 +2374,8 @@
                   <span></span>
                 </div>
                 <!-- <div class="Dtitle">
-              <span>措施制定</span>
-            </div> -->
+                  <span>措施制定</span>
+                </div> -->
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`短期措施`">
@@ -2028,7 +2419,7 @@
                         <span
                           v-for="(file, index) in d3FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                         >
                           <a-icon type="paper-clip" />
                           <span
@@ -2062,7 +2453,7 @@
               </div>
             </div>
             <div v-if="(stepCurrent===backCurrent)&&pagePermission.A3_2_3">
-              <div class="examine">
+              <div class="Dcontent1 examine">
                 <div class="Dtitle examineTitle">
                   <span>审核</span>
                 </div>
@@ -2078,13 +2469,28 @@
                 <a-form-item
                   v-if="record.isPass==='0'"
                   :label="`不通过理由`"
+                  self-update
                 >
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1, message: '请输入不通过理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]}
+                      {rules: [{ required: true, min: 1, message: '请输入不通过理由' },{ required: true,max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入不通过理由"
+                    style="width:572px;height:88px;"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="record.isPass==='1'"
+                  :label="`备注`"
+                  self-update
+                >
+                  <v-textarea
+                    v-decorator="[
+                      'comment',
+                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                    ]"
+                    placeholder="请输入备注"
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -2117,13 +2523,16 @@
               <div v-if="pagePermission.A4_1_3">
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`短期效果`">
+                    <a-form-item 
+                      :label="`短期效果`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'icaExecDescription'
                         ]"
                         placeholder="请输入"
-                        style="width:572px;height:88px;"
+                        style="width:572px;"
                       />
                     </a-form-item>
                   </a-col>
@@ -2136,6 +2545,7 @@
                           'icaExecTime'
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabled-date="disabledDate"
                         style="width:231px;"
                       />
                     </a-form-item>
@@ -2143,7 +2553,10 @@
                 </a-row>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`长期措施实施描述`">
+                    <a-form-item 
+                      :label="`长期措施实施描述`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'pcaExecDescription',
@@ -2152,7 +2565,7 @@
                           ]}
                         ]"
                         placeholder="请输入"
-                        style="width:572px;height:88px;"
+                        style="width:572px;"
                       />
                     </a-form-item>
                   </a-col>
@@ -2166,10 +2579,10 @@
                         :multiple="true"
                         :file-list="d4FileList"
                         :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, d4FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021009')"
                         name="file"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d4FileList)(info)"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -2188,6 +2601,7 @@
                           {rules: [{ required: true, message: '请输入长期措施实施日期' }]}
                         ]"
                         :format="GLOBAL_SELECT_DATE_FORMAT"
+                        :disabled-date="disabledDate"
                         style="width:231px;"
                       />
                     </a-form-item>
@@ -2243,7 +2657,7 @@
                         <span
                           v-for="(file, index) in d4FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                         >
                           <a-icon type="paper-clip" />
                           <span
@@ -2287,13 +2701,28 @@
                 <a-form-item
                   v-if="record.isPass==='0'"
                   :label="`不通过理由`"
+                  self-update
                 >
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1,message: '请输入不通过理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]}
+                      {rules: [{ required: true, min: 1,message: '请输入不通过理由' },{ required: true,max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入"
+                    style="width:572px;height:88px;"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="record.isPass==='1'"
+                  :label="`备注`"
+                  self-update
+                >
+                  <v-textarea
+                    v-decorator="[
+                      'comment',
+                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                    ]"
+                    placeholder="请输入备注"
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -2327,14 +2756,17 @@
               <div v-if="pagePermission.A5_1_3">
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="`效果验证`">
+                    <a-form-item 
+                      :label="`效果验证`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[
                           'description',
                           {rules: [{ required: true, message: '请输入效果验证' }]}
                         ]"
                         placeholder="请输入"
-                        style="width:572px;height:88px;"
+                        style="width:572px;"
                       />
                     </a-form-item>
                   </a-col>
@@ -2348,10 +2780,10 @@
                         :multiple="true"
                         :file-list="d5FileList"
                         :remove="file => removeFile(record.fileList)(file)"
-                        @preview="download"
-                        @change="info => changeFileList(record.fileList, d5FileList)(info)"
                         :action="getUploadUrl('/issue/v1/file/upload?recType=10021010')"
                         name="file"
+                        @preview="download"
+                        @change="info => changeFileList(record.fileList, d5FileList)(info)"
                       >
                         <a-button icon="upload">
                           <!-- 「上传文件」文本 -->
@@ -2363,13 +2795,16 @@
                 </a-row>
                 <a-row style="margin-left:220px;">
                   <a-col :span="8">
-                    <a-form-item :label="`断点VIN`">
-                      <a-input
+                    <a-form-item
+                      :label="`断点VIN`"
+                      self-update
+                    >
+                      <v-input
                         v-decorator="[
                           'breakpointVin',
                           {rules: [{ validator: vinVer }]}
                         ]"
-                        :allow-clear="true"
+                        allow-clear
                         placeholder="请输入"
                       />
                     </a-form-item>
@@ -2389,7 +2824,7 @@
                 </a-row>
                 <div
                   class="fileUpdate clearfix"
-                  style="margin-bottom:24px;"
+                  style="margin-bottom:24px;margin-left:10px;"
                 >
                   <a-col :span="21">
                     <a-form-item
@@ -2408,22 +2843,23 @@
                           >
                             <a
                               v-if="pagePermission.A5_1_3"
-                              @click="showUpdate(row)"
                               href="javascript:;"
+                              @click="showUpdate(row)"
                             >编辑</a>
                             <a
                               v-if="pagePermission.A5_1_1"
-                              @click="UpdateFind(row)"
                               href="javascript:;"
+                              @click="UpdateFind(row)"
                             >查看</a>
                             <a
                               v-if="row.delFlag==='2'"
-                              @click="DelUpdate(row)"
                               href="javascript:;"
                               style="margin-left:10px;"
+                              @click="DelUpdate(row)"
                             >删除</a>
                           </span>
                           <template
+                            v-if="files.length"
                             slot="files"
                             slot-scope="files"
                           >
@@ -2436,8 +2872,8 @@
                           </template>
                         </a-table>
                         <div
-                          @click="showUpdate()"
                           style="text-align:center;cursor:pointer;color: rgba(0, 0, 0, 0.85);"
+                          @click="showUpdate()"
                         >
                           <a-icon type="plus-circle" />
                           添加新的更新文件
@@ -2510,7 +2946,7 @@
                         <span
                           v-for="(file, index) in d5FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 28px; margin-right: 24px;"
+                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
                         >
                           <a-icon type="paper-clip" />
                           <span
@@ -2527,9 +2963,12 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row style="margin-left: -66px">
+                <a-row style="margin-left: -66px;margin-bottom:24px;margin-top:12px;">
                   <a-form-item :label="`涉及文件更新:`">
-                    <div class="updateTable">
+                    <div
+                      class="updateTable"
+                      style="margin-bottom:24px;"
+                    >
                       <a-table
                         :data-source="updateData"
                         :columns="columnsUpdate"
@@ -2541,11 +2980,12 @@
                           slot-scope="text, row"
                         >
                           <a
-                            @click="UpdateFind(row)"
                             href="javascript:;"
+                            @click="UpdateFind(row)"
                           >查看</a>
                         </span>
                         <template
+                          v-if="files.length"
                           slot="files"
                           slot-scope="files"
                         >
@@ -2560,6 +3000,27 @@
                     </div>
                   </a-form-item>
                 </a-row>
+                
+                <div
+                  v-if="parseInt(statusCode.statusNewCode, 10) >600600||stepCurrent<5"
+                >
+                  <div 
+                    class="Dtitle examineTitle"
+                  >
+                    <span>提出人验证</span>
+                  </div>
+                  <a-row :gutter="24">
+                    <a-col :span="21">
+                      <a-form-item
+                        :label="`验证结果`"
+                        :span="22"
+                        self-update
+                      >
+                        <p>{{ stepEffect.proposerVerification }}</p>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                </div>
               </div>
               <div
                 v-if="(stepCurrent===backCurrent)&&(pagePermission.A5_2_3||pagePermission.A4_2_3)"
@@ -2580,13 +3041,28 @@
                 <a-form-item
                   v-if="record.isPass==='0'"
                   :label="`不通过理由`"
+                  self-update
                 >
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1, message: '请输入不通过理由' },{ required: true,max: 160, message: '请输入最多160个字符'}]}
+                      {rules: [{ required: true, min: 1, message: '请输入不通过理由' },{ required: true,max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入"
+                    style="width:572px;height:88px;"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="record.isPass==='1'"
+                  :label="`备注`"
+                  self-update
+                >
+                  <v-textarea
+                    v-decorator="[
+                      'comment',
+                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                    ]"
+                    placeholder="请输入备注"
                     style="width:572px;height:88px;"
                   />
                 </a-form-item>
@@ -2600,6 +3076,7 @@
                     <a-form-item
                       :label="`验证结果`"
                       :span="22"
+                      self-update
                     >
                       <v-textarea
                         v-decorator="[
@@ -2616,7 +3093,7 @@
                 </a-row>
                 <div
                   v-if="pagePermission.A5_2_3"
-                  class="examine"
+                  class="Dcontent1 examine"
                 >
                   <div class="Dtitle examineTitle">
                     <span>审核</span>
@@ -2633,6 +3110,7 @@
                   <a-form-item
                     v-if="record.isPass==='0'"
                     :label="`不通过理由`"
+                    self-update
                   >
                     <v-textarea
                       v-decorator="[
@@ -2640,6 +3118,20 @@
                         {rules: [{ required: true, message: '请输入不通过理由' }]}
                       ]"
                       placeholder="请输入"
+                      style="width:572px;height:88px;"
+                    />
+                  </a-form-item>
+                  <a-form-item
+                    v-if="record.isPass==='1'"
+                    :label="`备注`"
+                    self-update
+                  >
+                    <v-textarea
+                      v-decorator="[
+                        'comment',
+                        {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                      ]"
+                      placeholder="请输入备注"
                       style="width:572px;height:88px;"
                     />
                   </a-form-item>
@@ -2712,9 +3204,9 @@
                 >
                   <span></span>
                 </div>
-                <!-- <div class="Dtitle">
-              <span>问题关闭</span>
-            </div> -->
+                <div class="Dtitle">
+                  <span>问题关闭</span>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`关闭人`">
@@ -2732,7 +3224,7 @@
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`进入再发防止库`">
-                      <p>{{ stepClose.recurrencePrevention==='1'?'是':'否' }}</p>
+                      <p>{{ stepClose.recurrencePrevention==='1'? $t('issue_workflow.yes'):$t('issue_workflow.no') }}</p>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2770,6 +3262,7 @@
                     <a-form-item
                       v-if="record.isPass==='0'"
                       :label="`不通过理由`"
+                      self-update
                     >
                       <v-textarea
                         v-decorator="[
@@ -2784,7 +3277,10 @@
                 </a-row>
                 <a-row v-if="record.isPass==='1'">
                   <a-col :span="21">
-                    <a-form-item :label="`备注`">
+                    <a-form-item 
+                      :label="`备注`"
+                      self-update
+                    >
                       <v-textarea
                         v-decorator="[ 'signRemark' ]"
                         placeholder="请输入"
@@ -2797,9 +3293,9 @@
                 v-if="pagePermission.A6_2_2&&record.isSign=='1'"
                 class="examine"
               >
-                <!-- <div class="Dtitle">
-              <span>加签审阅</span>
-            </div> -->
+                <div class="Dtitle">
+                  <span>加签审阅</span>
+                </div>
                 <a-row>
                   <a-col :span="21">
                     <a-form-item :label="`审阅领导`">
@@ -2829,8 +3325,9 @@
       <a-form
         v-if="pagePermission.A4_2"
         class="shadown-block-normal ant-advanced-search-form"
+        style="padding-top: 4px;"
       >
-        <a-collapse
+        <!-- <a-collapse
           :bordered="false"
           default-active-key="0"
         >
@@ -2838,26 +3335,54 @@
             key="0"
             header="操作记录"
             class="recordTitle"
+          > -->
+        <div
+          class="collapse-title"
+          @click="SuppelyOpen"
+        >
+          <a-icon
+            :type="SuppelyIcon"
+          />
+          <!-- 补充信息 -->
+          <!-- 操作记录 -->
+          {{ $t('operation.operation') }}
+        </div>
+        <!-- 操作记录表格 -->
+        <div
+          v-if="DetailSuppely"
+          style="margin:0 32px 16px;"
+          class="recordTable"
+        >
+          <a-table
+            :data-source="dataRecord"
+            :pagination="true"
+            row-key="id"
           >
-            <!-- 操作记录表格 -->
-            <div id="fileAnchor">
-              <a-table
-                :data-source="dataRecord"
-                :columns="columnsRecord"
-                :pagination="true"
-                row-key="id"
+            <template v-for="col in columnsRecord">
+              <a-table-column
+                :key="col.dataIndex"
+                v-bind="col"
               >
-              </a-table>
-            </div>
-          </a-collapse-panel>
-        </a-collapse>
+                <span slot="title">{{ $t(`operation.${col.dataIndex}`) }}</span>
+                <template slot-scope="text">
+                  <a-tooltip>
+                    <template #title>
+                      {{ text }}
+                    </template>
+                    {{ text }}
+                  </a-tooltip>
+                </template>
+              </a-table-column>
+            </template>
+          </a-table>
+        </div>
+        <!-- </a-collapse-panel>
+        </a-collapse> -->
       </a-form>
     </div>
   </div>
 </template>
 <script>
-import attachmentMix from '~~/issue-attachment.js';
-import timeFormatMix from '~~/time-format.js';
 import {
   autoUpdateFileds,
   createFormFields
@@ -2866,6 +3391,8 @@ import {
   createNamespacedHelpers
 } from 'vuex';
 import moment from 'moment';
+import timeFormatMix from '~~/time-format.js';
+import attachmentMix from '~~/issue-attachment.js';
 
 const {
   mapActions
@@ -2907,39 +3434,41 @@ const columnsRecord = [{
   dataIndex: 'operation',
   scopedSlots: {
     customRender: 'operation'
-  }
+  },
+  width: 250
 }, {
   title: '解决进度',
   dataIndex: 'node',
   scopedSlots: {
     customRender: 'node'
-  }
+  },
+  width: 150
 },
 {
   title: '变更人',
   dataIndex: 'creatorName',
   scopedSlots: {
     customRender: 'creatorName'
-  }
+  },
+  width: 250
 },
 {
   title: '操作时间',
   dataIndex: 'createDate',
   scopedSlots: {
     customRender: 'createDate'
-  }
+  },
+  width: 200
 },
 {
   title: '备注',
   dataIndex: 'content',
   scopedSlots: {
     customRender: 'content'
-  },
-  width: 80
+  }
 }
 ];
 const columnsAnalysis = [{
-
   title: '责任人',
   dataIndex: 'championName',
   align: 'center',
@@ -2947,7 +3476,6 @@ const columnsAnalysis = [{
     customRender: 'championName'
   }
 }, {
-
   title: '标准要求',
   dataIndex: 'standard',
   align: 'center',
@@ -3030,6 +3558,7 @@ const columnsUpdate = [{
 export default {
   name: 'QuestionDetail',
   components: {
+    VInput: () => import('@comp/form/VInput.vue'),
     // EditableCell: () => import('~/question/view/EditableCell'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
@@ -3043,7 +3572,7 @@ export default {
     }
   },
   data () {
-    const that = this;
+    const vm = this;
     return {
       // 页面权限控制
       pagePermission: {
@@ -3059,8 +3588,9 @@ export default {
         button_submit_3: false,
         button_redistribution_1: false,
         button_redistribution_3: false
-
       },
+      visibleSubmit: false, // 提交弹框是否显示标识
+      SuppelyIcon: 'down',
       routerFlag: true,
       // 流程状态
       statusCode: {
@@ -3074,16 +3604,19 @@ export default {
         monitor: ''
       },
       stepId: '', // 每一步id
-      userId: that.$store.getters.getUser().id,
+      userId: vm.$store.getters.getUser().id,
       taskId: null, // 任务id
       processInstanceId: '',
+      DetailSuppely: true,
       // 再分配弹框
       ModalText: 'Content of the modal',
-      fileModalTitle: '添加更新文件',
+      fileModalTitle: vm.$t('issue_workflow.D5.addUpdateFile'),
       updateContentFlag: false, // 更新内容标识
       updateEditFlag: false, // 编辑弹框
       updateFindFlag: false, // 查看弹框
+      visibleDelete: false, // 删除确认弹框
       RejectTrue: true,
+      delBtn: false,
       analysisId: '',
       fileNameFlag: true,
       visibleRes: false,
@@ -3147,10 +3680,10 @@ export default {
       AnalysisForm: null, // 7钻分析表单
       examineReason: '', // 审核理由
       satisfy: [{
-        label: '是',
+        label: vm.$t('issue_workflow.yes'),
         value: '1'
       }, {
-        label: '否',
+        label: vm.$t('issue_workflow.no'),
         value: '0'
       }],
       contActionOption: [{
@@ -3173,7 +3706,7 @@ export default {
       idClose: '', // 关闭id
       conActionFlag: false, // 围堵措施是否显示表示
       satisfyFlag: true, // 是否满足标识
-      showMoreFlag: false, // 查看更多
+      showMoreFlag: true, // 查看更多
       detailList: [],
       titleFlag: false, // 问题标题是否显示
       carTitle: '', // 车型标题
@@ -3187,47 +3720,47 @@ export default {
       // D2
       radioDefault: 'Yes',
       determineRadio: [{
-        label: '直接判定',
+        label: vm.$t('issue_workflow.D1.confirm'),
         value: '0'
       }, {
-        label: '需要7钻分析',
+        label: vm.$t('issue_workflow.D1.needAnalysis'),
         value: '1'
       }],
       verifyRadio: [{
-        label: '通过',
+        label: vm.$t('issue_workflow.pass'),
         value: '1'
       }, {
-        label: '不通过',
+        label: vm.$t('issue_workflow.reject'),
         value: '0'
       }],
       endSevenRadio: [{
-        label: '是',
+        label: vm.$t('issue_workflow.yes'),
         value: '1'
       }, {
-        label: '否',
+        label: vm.$t('issue_workflow.no'),
         value: '0'
       }],
       // D5
       updateRadio: [{
-        label: '是',
+        label: vm.$t('issue_workflow.yes'),
         value: '1'
       }, {
-        label: '否',
+        label: vm.$t('issue_workflow.no'),
         value: '0'
       }],
       // D6
       recurrencePreventionRadio: [{
-        label: '通过',
+        label: vm.$t('issue_workflow.pass'),
         value: '1'
       }, {
-        label: '不通过',
+        label: vm.$t('issue_workflow.reject'),
         value: '0'
       }],
       optionRadio: [{
-        label: '是',
+        label: vm.$t('issue_workflow.yes'),
         value: '1'
       }, {
-        label: '否',
+        label: vm.$t('issue_workflow.no'),
         value: '0'
       }],
       isCloseRadio: [{
@@ -3278,7 +3811,6 @@ export default {
         icaExecTime: null,
         // pcaDescription: null,
         // pcaExecTime: null,
-
         // D5
         description: '',
         breakpointVin: '',
@@ -3294,10 +3826,10 @@ export default {
         reason: ''
       },
       // 再分配
-
       redistributionForm: {
         owerDeptLv1: '',
-        champion: ''
+        champion: '',
+        rediStributionMessage: ''
       },
       // 7钻分析弹框数据绑定
       recordAnalysis: {
@@ -3321,7 +3853,6 @@ export default {
       rejectRecord: {
         commentReject: ''
       }
-
     };
   },
   computed: {
@@ -3338,7 +3869,7 @@ export default {
         description
       } = this.detailList;
       return !!(vehicleModelId && faultTreeIds1 && faultTreeIds2 && faultTreeIds3 && source
-          && grade && projectPhase && manufactureBaseId && description);
+        && grade && projectPhase && manufactureBaseId && description);
     }
   },
   watch: {
@@ -3390,7 +3921,8 @@ export default {
       'examineDetail',
       'redistributionFun',
       'saveSevenDiamonds',
-      'updateChampionFun'
+      'updateChampionFun',
+      'delIssue'
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
@@ -3411,6 +3943,20 @@ export default {
       return createFormFields(this, [
         'owerDeptLv1', 'champion'
       ], 'redistributionForm');
+    },
+    SuppelyOpen () {
+      if (this.DetailSuppely) {
+        this.SuppelyIcon = 'right';
+        this.DetailSuppely = false;
+      } else {
+        this.SuppelyIcon = 'down';
+        this.DetailSuppely = true;
+      }
+    },
+    // 禁用提报的日期之前的日期
+    disabledDate (current) {
+      const dateTime = moment(this.detailList.createDate.split(' ')[0]);
+      return current < dateTime;
     },
     filterOption (input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input
@@ -3433,12 +3979,16 @@ export default {
     // D流程中责任部门改变
     DeptChange () {
       this.formDcontent.champion = '';
+      this.record.champion = '';
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     mapUpdate () {
       return createFormFields(this, [
         'id', 'fileName', 'isUpdaeName', 'isUpdae', 'updateContent', 'files'
       ], 'recordUpdate');
+    },
+    handleDelete () {
+      this.visibleDelete = true;
     },
     init () {
       this.formDcontent = this.$form.createForm(this, {
@@ -3504,7 +4054,13 @@ export default {
       this.visibleReject = false;
       this.isCheckError = '1';
       const data = this.formDcontent.getFieldsValue();
-      const resComment = this.rejectForm.getFieldsValue().commentReject;
+      let resComment = this.rejectForm.getFieldsValue().commentReject;
+      if(resComment){
+        resComment = 'SM再分析-' + resComment;
+      } 
+      else {
+        resComment = 'SM再分析';
+      }
       const transData = {
         businessKey: this.id, // 问题id
         businessTitle: data.title, // 问题title
@@ -3520,7 +4076,7 @@ export default {
           monitor: this.sysUser.monitor,
           champion: data.champion, // 责任人
           isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName
-              === 'B') ? '1' : '0', // 是否直接极端严重事情
+            === 'B') ? '1' : '0', // 是否直接极端严重事情
           isEnd: this.record.isClose, // 是否关闭
           isPass: 1, // 再分析审核默认通过
           isQZEnd: data.endSeven, // 是否结束七钻
@@ -3574,12 +4130,12 @@ export default {
         value: input.id,
         label: input.realName
       }];
-        // input.forEach((item) => {
-        //   optionArray.push({
-        //     value: item.id,
-        //     label: item.username
-        //   })
-        // })
+      // input.forEach((item) => {
+      //   optionArray.push({
+      //     value: item.id,
+      //     label: item.username
+      //   })
+      // })
 
       return optionArray;
     },
@@ -3697,6 +4253,7 @@ export default {
       this.updateEditFlag = false;
       this.updateData = param;
       this.updateFiles = param.files;
+      this.fileModalTitle = param.fileName;
     },
     DelUpdate (param) {
       param.delFlag = 1;
@@ -3803,6 +4360,10 @@ export default {
     },
     updateCancel () {
       this.visibleUpdate = false;
+      this.updateForm.resetFields();
+      this.updateFile(this.id).then(res => {
+        this.updateData = res;
+      });
     },
     // 关闭7钻分析弹框
     AnalysisCancel () {
@@ -3819,6 +4380,10 @@ export default {
     request () {
       // 查看问题详情
       const editDetail = this.eidtQuestion(this.id).then(res => {
+        if(this.record.owerDeptLv1===''){
+          this.record.owerDeptLv1 = res.responsibleDepartmentId;
+        }
+        this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         this.detailList = res;
         this.getSysUser({
           issueSource: this.detailList.source,
@@ -3837,6 +4402,10 @@ export default {
         if (res.taskId) {
           this.taskId = res.taskId;
         }
+        if (this.detailList.status === '100300' && res.creator === this.$store.getters.getUser().id) {
+          this.delBtn = true;
+          this.optCounter = res.optCounter;
+        }
         return this.detailList;
       });
       const statusCode2 = this.getStatusCode(this.id).then(res => {
@@ -3853,11 +4422,11 @@ export default {
       });
       const pagePermissionArea = this.getIssueAutomousRegion(this.id).then(res => {
         this.pagePermission = {};
-        const that = this;
+        const vm = this;
         res.forEach(item => {
-          that.pagePermission[item.DETAIL_REGION] = true;
+          vm.pagePermission[item.DETAIL_REGION] = true;
         });
-        return that.pagePermission;
+        return vm.pagePermission;
       });
       Promise.all([editDetail, pagePermissionArea]).then((res) => {
         // 如果当前用户为问题责任人，那么他只能分配同一部门的人，把责任部门下拉框禁用
@@ -3873,7 +4442,7 @@ export default {
       Promise.all([editDetail, statusCode2]).then((res1) => {
         const taskDefListArray = res1[1];
         const paramExamine = {
-          businessKey: this.issueId,
+          businessKey: this.id,
           processInstanceId: this.processInstanceId,
           taskDefList: taskDefListArray
         };
@@ -3893,9 +4462,9 @@ export default {
       });
     },
     /**
-       * 查询每个步骤的详情
-       * @param Number id - issue id
-       */
+     * 查询每个步骤的详情
+     * @param Number id - issue id
+     */
     getQuestionStepAll (id) {
       // 问题定义
       this.stepCurrent === 0 && this.problemDefinition(id).then(res => {
@@ -3920,7 +4489,6 @@ export default {
             this.pagePermission.button_commit_3 = false;
           }
         }
-
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       // 责任判定
@@ -3932,7 +4500,6 @@ export default {
           this.optCounterD1 = res.optCounter;
           this.idRes = res.id;
         }
-
         if (res.type) {
           this.record.type = res.type;
         }
@@ -4022,7 +4589,6 @@ export default {
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
-
       this.updateFile(this.id).then(res => {
         this.updateData = res;
       });
@@ -4168,7 +4734,7 @@ export default {
       if (this.stepCurrent !== 6 && this.stepMax === 6 && param === 6) {
         this.backCurrent = this.stepCurrent;
       }
-      if (param <= this.stepMax && param !== this.stepCurrent) {
+      if (param <= this.stepMax && this.backCurrent !== this.stepCurrent) {
         this.backFlag = true;
         if (param === 0) {
           this.problemDefinition(this.id).then((res = {}) => {
@@ -4183,7 +4749,6 @@ export default {
               if (res.isProject) {
                 this.record.isProject = res.isProject;
               }
-
               this.formDcontent.updateFields(this.mapPropsToFieldsForm());
             }
           });
@@ -4195,7 +4760,6 @@ export default {
               this.d1FileList = (res.files || []).map(this.file2client);
               this.idRes = res.id;
             }
-
             if (res.type) {
               this.record.type = res.type;
             }
@@ -4355,14 +4919,13 @@ export default {
             const championUpate = {
               issueId: this.id,
               userId: data.champion,
-              responsibleDepartmentId: data.owerDeptLv1
+              responsibleDepartmentId: data.owerDeptLv1,
+              message: data.rediStributionMessage
             };
             // 修改后台当前责任人
-
             this.updateChampionFun(championUpate).then(() => {
               // const updateDate = res.data;
             });
-
             this.visibleRes = false;
             this.$router.push({
               path: this.$route.query.form || '/'
@@ -4371,7 +4934,46 @@ export default {
         }
       });
     },
+    // 提交弹框确认按钮
+    submitOk () {
+      this.visibleSubmit = false;
+      this.handleSubmitFunction();
+    },
+    // 提交弹框取消按钮
+    submitCancel () {
+      this.visibleSubmit = false;
+    },
+    // 删除弹框确认按钮
+    deleteOk () {
+      this.visibleDelete = false;
+      this.handleDeleteFunction();
+    },
+    // 删除弹框取消按钮
+    deleteCancel () {
+      this.visibleDelete = false;
+    },
+    handleDeleteFunction () {
+      const vm = this;
+      vm.delFlag = 1;
+      const param = { id:vm.id , optCounter:vm.optCounter , delFlag:vm.delFlag };
+      // eslint-disable-next-line no-unused-vars
+      vm.delIssue(param).then( res => {
+        this.$message.success(this.$t('delete.success'));
+        this.goBack();
+      // eslint-disable-next-line no-unused-vars
+      }).catch(err => {
+        this.$message.error(this.$t('delete.failure'));
+        this.goBack();
+      });
+    },
+    // 点击提交
     handleSubmit () {
+      this.visibleSubmit = true;
+      const commitButton = this.$refs.commitButton;
+      commitButton.reset();
+    },
+    // 提交调用接口函数
+    handleSubmitFunction () {
       const commitButton = this.$refs.commitButton;
       if (!this.allowCommit) {
         this.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
@@ -4451,10 +5053,8 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       const _this = this;
       data.issueId = this.stepId;
-      const vm = this;
       if (this.statusCode.statusNewCode === '100100') {
         saveButton.reset();
-        vm.$message.success('保存成功');
         this.$router.push({
           path: this.$route.query.form || '/'
         });
@@ -4471,7 +5071,6 @@ export default {
           this.problemDefinitionData = res;
           this.optCounterD0 = res.optCounter;
           saveButton.reset();
-          vm.$message.success('保存成功');
           if (this.routerFlag) {
             this.$router.push({
               path: this.$route.query.form || '/'
@@ -4541,7 +5140,6 @@ export default {
           this.issueDefinitionAdd(data).then(res => {
             this.optCounterD1 = res.optCounter;
             saveButton.reset();
-            vm.$message.success('保存成功');
             if (this.routerFlag) {
               this.$router.push({
                 path: this.$route.query.form || '/'
@@ -4559,7 +5157,6 @@ export default {
         this.analysisSave(data).then(res => {
           this.optCounterD2 = res.optCounter;
           saveButton.reset();
-          vm.$message.success('保存成功');
           if (this.routerFlag) {
             this.$router.push({
               path: this.$route.query.form || '/'
@@ -4596,6 +5193,7 @@ export default {
         if (this.d3FileList && this.d3FileList.length) {
           data.files = this.d3FileList;
         }
+        data.type = '0';
         data.icaOptCounter = this.icaOptCounter;
         data.optCounter = this.optCounterD3;
         data.icaId = this.icaId;
@@ -4609,7 +5207,6 @@ export default {
             this.icaOptCounter = res.icaOptCounter;
             this.id1 = res.id;
             saveButton.reset();
-            vm.$message.success('保存成功');
             if (this.routerFlag) {
               this.$router.push({
                 path: this.$route.query.form || '/'
@@ -4637,7 +5234,6 @@ export default {
             this.id2 = res.id;
           });
           saveButton.reset();
-          vm.$message.success('保存成功');
           if (this.routerFlag) {
             this.$router.push({
               path: this.$route.query.form || '/'
@@ -4656,7 +5252,6 @@ export default {
             this.optCounterD5 = res.optCounter;
             this.idEffct = res.id;
             saveButton.reset();
-            vm.$message.success('保存成功');
             if (this.routerFlag) {
               this.$router.push({
                 path: this.$route.query.form || '/'
@@ -4671,7 +5266,7 @@ export default {
         data.id = this.idClose;
         data.optCounter = this.optCounterD6;
         // 如果领导审阅的时候备注为空，根据后台要求传入一个空格给到后台数据库
-        if (data.signRemark === null) {
+        if (data.signRemark === null || data.signRemark === '') {
           data.signRemark = ' ';
         }
         this.closeSave(data).then(() => {
@@ -4680,7 +5275,6 @@ export default {
             this.optCounterD6 = res.optCounter;
             this.idClose = res.id;
             saveButton.reset();
-            vm.$message.success('保存成功');
             if (this.routerFlag) {
               this.$router.push({
                 path: this.$route.query.form || '/'
@@ -4740,8 +5334,10 @@ export default {
 
 </script>
 <style lang="less">
+  /deep/ form textarea.ant-input{
+    margin-bottom:-10px;
+  }
   .textareaLabel {
-    font-family: SourceHanSansCN-Normal;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.45);
     letter-spacing: 0;
@@ -4750,9 +5346,7 @@ export default {
   .visibleDetail {
     .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
       }
 
     }
@@ -4760,12 +5354,46 @@ export default {
 
 </style>
 <style lang="less" scoped>
-
+  .shadown-block-normal {
+    // 统一设置问题流程的字体颜色
+    /deep/ .ant-form-item-label label {
+      color: rgba(0, 0, 0, 0.45);
+    }
+    /deep/ .ant-form-item-control-wrapper p {
+      color: rgba(0, 0, 0, 0.65);
+    }
+  }
+  /deep/ .ant-advanced-search-form{
+     .ant-form-item-control-wrapper{
+       min-height:54px;
+     }
+  }
+  .fileModal {
+    .ant-advanced-search-form {
+        /deep/ .ant-form-item {
+          margin-bottom:0;
+      }
+    }
+  }
+  .collapse-title {
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.85);
+      cursor: pointer;
+      position: relative;
+      padding: 16px 40px;
+      color: rgba(0,0,0,.85);
+      line-height: 22px;
+      cursor: pointer;
+      transition: all .3s;
+  }
   .faultCodeClass{
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    overflow: hidden;
+    overflow:hidden;/*超出长度的文字隐藏*/
+    text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
+    white-space:nowrap;/*强制不换行*/
+    word-break:keep-all;/*文字不换行*/
   }
   /deep/.ant-btn {
     .anticon {
@@ -4786,16 +5414,44 @@ export default {
 
   #components-form-demo-advanced-search {
 
-    .formConetnt {
-      margin-top: 0px;
+    /* 调整样式为紧凑模式 */
+    .formConetnt .card-detail{
+      /dee/ .ant-card-head-title {
+        padding: 8px 0!important;
+        margin-top: 0px;
+      }
+      /deep/ .ant-card-extra {
+        padding: 8px 0!important;
+      }
+      /deep/ .ant-card-body {
+        padding: 0 32px;
+      }
+      .pageTitle {
+        padding-left: 0;
+        margin: 0;
+      }
+      /deep/ .ant-form-item-children p {
+        margin-bottom: 0!important;
+        margin-top: -4px!important;
+        overflow:hidden;/*超出长度的文字隐藏*/
+        text-overflow:ellipsis;/*文字隐藏以后添加省略号*/
+        white-space:nowrap;/*强制不换行*/
+        word-break:keep-all;/*文字不换行*/
+      }
+      // /deep/ .textareaLabel, /deep/ p {
+      //   margin-bottom: 0!important;
+      // }
+      // /deep/ .ant-form-item-label {
+      //   padding-bottom: 0;
+      // }
     }
 
     .messageForm {
       margin-bottom: 16px;
-
       /deep/ .ant-row {
-        height: 40px;
+        margin: 2px 0;
         line-height: 40px;
+        padding-bottom: 0px;
       }
     }
 
@@ -4828,24 +5484,18 @@ export default {
       font-size: medium;
     }
 
-    .detailText {
-      .ant-row {
-        height: 70px;
-      }
-    }
-
-    .fileListNumber {
-      width: 20px;
-      height: 20px;
-      display: inline-block;
-      border: 1px solid #8c8c8c;
-      line-height: 19px;
-      text-align: center;
-      border-radius: 50%;
-      font-size: 12px;
-      color: rgba(0, 0, 0, 0.85);
-      margin-left: 6px;
-    }
+    // .fileListNumber {
+    //   width: 20px;
+    //   height: 20px;
+    //   display: inline-block;
+    //   border: 1px solid #8c8c8c;
+    //   line-height: 19px;
+    //   text-align: center;
+    //   border-radius: 50%;
+    //   font-size: 12px;
+    //   color: rgba(0, 0, 0, 0.85);
+    //   margin-left: 6px;
+    // }
 
     /deep/ .editable-cell-icon-check {
       position: absolute;
@@ -4854,7 +5504,6 @@ export default {
     }
 
     .showMore {
-      font-family: SourceHanSansCN-Normal;
       font-size: 12px;
       color: rgba(0, 0, 0, 0.45);
       letter-spacing: 0;
@@ -4871,7 +5520,6 @@ export default {
     }
 
     .gotoFile {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: #0098e0;
       letter-spacing: 0;
@@ -4888,7 +5536,6 @@ export default {
       margin-top: 16px;
       margin-bottom: 24px;
       padding-left: 16px;
-      font-family: SourceHanSansCN-Medium;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.85);
       letter-spacing: 0;
@@ -4900,10 +5547,23 @@ export default {
       margin-top: 40px;
       margin-left: 85px;
       /deep/ .ant-steps-item-title {
-        font-family: PingFangSC-Regular;
         font-size: 14px;
         text-align: center;
       }
+      // 已经完成步骤条样式
+      /deep/ .ant-steps-item-finish .ant-steps-item-title {
+        color: rgba(0, 0, 0, 0.65);
+        font-weight: 400;
+      }
+      /deep/ .ant-steps-item-process .ant-steps-item-title {
+        color: rgba(0, 0, 0, 0.65);
+        font-weight: bold;
+      }
+      /deep/ .ant-steps-item-wait .ant-steps-item-title {
+        color: rgba(0, 0, 0, 0.45);
+        font-weight: 400;
+      }
+      // 
     }
 
     .fileNumber {
@@ -4931,7 +5591,7 @@ export default {
     }
 
     .baseMessage {
-      font-family: SourceHanSansCN-Medium;
+      display: none;
       font-size: 14px;
       color: #000;
       margin-top: 16px;
@@ -4942,7 +5602,6 @@ export default {
       width: 80px;
       height: 32px;
       line-height: 32px;
-      font-family: SourceHanSansCN-Normal;
       font-size: 16px;
       color: rgba(0, 0, 0, 0.65);
 
@@ -4956,7 +5615,6 @@ export default {
     }
 
     .submitBtn {
-      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: #ffffff;
       text-align: left;
@@ -4969,13 +5627,22 @@ export default {
 
     .saveBtn,
     .cancelBtn {
-      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.65);
       text-align: left;
       line-height: 22px;
       background: #ffffff;
       border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      border-radius: 4px;
+    }
+    .editBtn {
+      font-size: 14px;
+      color: #0097e0;
+      text-align: left;
+      line-height: 22px;
+      background: #ffffff;
+      border: 1px solid #0097e0;
       border-radius: 4px;
       border-radius: 4px;
     }
@@ -5014,7 +5681,6 @@ export default {
     }
 
     .uploadText {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
       line-height: 22px;
@@ -5030,7 +5696,77 @@ export default {
 
         li {
           float: left;
-          font-family: PingFangSC-Regular;
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.65);
+          text-align: left;
+          line-height: 22px;
+          width: 80px;
+          list-style: none;
+          margin-left: 10px;
+          margin-right: 10px;
+          overflow: hidden;
+          /*超出的部分隐藏起来。*/
+          white-space: nowrap;
+          /*不显示的地方用省略号...代替*/
+          text-overflow: ellipsis;
+          /* 支持 IE */
+        }
+      }
+
+      .d2file {
+        float: left;
+        margin-top: -5px;
+      }
+    }
+  }
+  .Dcontent1 {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+    border-radius: 4px;
+    margin:auto;
+    // margin-top: 70px;
+    padding-top: 28px;
+    position: relative;
+    width: 1076px;
+    height: auto;
+    .backTitle {
+      position: relative;
+      top: -20px;
+      left: 32px;
+    }
+
+    .triangle_border_up {
+      width: 0;
+      height: 0;
+      border-width: 0 16px 15px;
+      border-style: solid;
+      border-color: transparent transparent #fafafa;
+      /*透明 透明  灰*/
+      position: absolute;
+      left: 80px;
+      top: -15px;
+    }
+
+    /deep/ .ant-form-item {
+      margin-bottom: 7px;
+    }
+
+    .uploadText {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.45);
+      line-height: 22px;
+      width: 290px;
+    }
+
+    .stepFileList {
+      .fileList {
+        width: 421px;
+        overflow: hidden;
+        margin-top: 8px;
+        margin-left: -20px;
+
+        li {
+          float: left;
           font-size: 14px;
           color: rgba(0, 0, 0, 0.65);
           text-align: left;
@@ -5055,42 +5791,40 @@ export default {
     }
   }
 
-  .D0back {
-    /deep/ .ant-form-item {
-      height: 46px;
-      line-height: 46px;
-      margin-bottom: 0;
-      margin-left: 22px;
-      margin-right: 22px;
-    }
+  // .D0back {
+  //   /deep/ .ant-form-item {
+  //     height: 46px;
+  //     line-height: 46px;
+  //     margin-bottom: 0;
+  //     margin-left: 22px;
+  //     margin-right: 22px;
+  //   }
 
-    /deep/ .ant-form-item-label {
-      height: 46px;
-      line-height: 46px;
-      font-family: SourceHanSansCN-Normal;
-      font-size: 14px;
+  //   /deep/ .ant-form-item-label {
+  //     height: 46px;
+  //     line-height: 46px;
+  //     font-family: SourceHanSansCN-Normal;
+  //     font-size: 14px;
 
-      label {
-        color: rgba(0, 0, 0, 0.45);
-      }
-    }
+  //     label {
+  //       color: rgba(0, 0, 0, 0.45);
+  //     }
+  //   }
 
-    p {
-      height: 46px;
-      line-height: 46px;
-      font-family: SourceHanSansCN-Normal;
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.85);
-      letter-spacing: 0;
-    }
-  }
+  //   p {
+  //     height: 46px;
+  //     line-height: 46px;
+  //     font-family: SourceHanSansCN-Normal;
+  //     font-size: 14px;
+  //     color: rgba(0, 0, 0, 0.85);
+  //     letter-spacing: 0;
+  //   }
+  // }
 
   .D1back {
     /deep/ .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
       }
     }
   }
@@ -5104,14 +5838,11 @@ export default {
 
     /deep/ .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
       }
     }
 
     em {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.85);
       font-style: normal;
@@ -5146,7 +5877,6 @@ export default {
       margin-left: 40px;
 
       span {
-        font-family: SourceHanSansCN-Medium;
         font-size: 16px;
         color: rgba(0, 0, 0, 0.85);
         letter-spacing: 0;
@@ -5189,12 +5919,10 @@ export default {
           }
 
           span {
-            font-family: SourceHanSansCN-Medium;
             font-size: 14px;
           }
 
           p {
-            font-family: SourceHanSansCN-Normal;
             font-size: 12px;
 
           }
@@ -5217,17 +5945,14 @@ export default {
             width: 134px;
             padding-right: 24px;
           }
-
         }
 
         .activefirst {
           border-right: 2px solid #0097E0;
           color: #0097E0;
         }
-
       }
     }
-
   }
 
   .analysisTable {
@@ -5240,7 +5965,6 @@ export default {
     /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
     }
-
   }
 
   .updateTable {
@@ -5248,7 +5972,7 @@ export default {
     width: 572px;
     border: 1px solid rgba(0, 0, 0, 0.09);
     border-radius: 4px;
-    margin-top: 5px;
+    margin-top: 12px;
 
     /deep/ .ant-table-thead>tr>th {
       background: rgba(0, 0, 0, 0.02);
@@ -5257,46 +5981,39 @@ export default {
 
   .D3back,.D4back,.D5back,.D6back {
     padding-top: 28px;
-
     /deep/ .ant-form-item {
       margin-bottom: 0;
     }
 
     /deep/ .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
       }
     }
 
     em {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.85);
       font-style: normal;
     }
 
     p {
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.85);
     }
   }
   .D6back {
-      .examine{
-          /deep/ .ant-form-item {
-          margin-bottom: 0;
-        }
+    .examine{
+      margin-bottom:24px;
+      /deep/ .ant-form-item {
+        margin-bottom: 0;
+      }
 
-        /deep/ .ant-form-item-label {
-          label {
-            font-family: SourceHanSansCN-Normal;
-            font-size: 14px;
-            color: rgba(0, 0, 0, 0.45);
-          }
+      /deep/ .ant-form-item-label {
+        label {
+          font-size: 14px;
         }
       }
+    }
   }
   .detailText {
     /deep/ .ant-form-item {
@@ -5305,14 +6022,11 @@ export default {
 
     /deep/ .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
         letter-spacing: 0;
       }
 
       p {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
         color: rgba(0, 0, 0, 0.45);
         letter-spacing: 0;
@@ -5321,12 +6035,10 @@ export default {
   }
 
   /deep/ .ant-card-head-title {
-    font-family: 思源黑体;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.85);
   }
   /deep/ .ant-collapse-header {
-    font-family: 思源黑体;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.85);
     font-weight: bold;
@@ -5334,7 +6046,6 @@ export default {
   }
 
   .questionTitle {
-    font-family: SourceHanSansCN-Medium;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.85);
     margin: 23px auto;
@@ -5355,9 +6066,9 @@ export default {
     z-index:5000;
     left: 0px !important;
     width: 100% !important;
-    background: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
-
+    // background: rgba(0, 0, 0, 0.6);
+    // box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12);
+    background: #F5F5F5;
     .top-buttons {
       width: 1200px !important;
       margin: 0 auto !important;
@@ -5385,6 +6096,7 @@ export default {
   .ant-advanced-search-form {
     border-radius: 6px;
     margin-bottom: 16px;
+    background-color:#fff;
 
     /deep/ .ant-form-item {
       display: flex;
@@ -5447,7 +6159,7 @@ export default {
   }
 
   .editable-cell-icon-check {
-    line-height: 28px;
+    line-height: 22px;
   }
 
   .editable-cell:hover .editable-cell-icon {
@@ -5468,7 +6180,6 @@ export default {
 
     .processTitle {
       float: left;
-      font-family: SourceHanSansCN-Normal;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.85);
       margin-left: 122.4px;
@@ -5478,7 +6189,6 @@ export default {
         display: inline-block;
         margin-right: 4px;
         content: '*';
-        font-family: SimSun;
         line-height: 1;
         font-size: 14px;
         color: #f5222d;
@@ -5518,7 +6228,6 @@ export default {
 
         li:nth-child(1) {
           background: rgba(0, 0, 0, 0.02);
-          font-family: SourceHanSansCN-Medium;
           font-size: 14px;
           color: rgba(0, 0, 0, 0.65);
         }
@@ -5541,7 +6250,6 @@ export default {
 
         li {
           float: left;
-          font-family: PingFangSC-Regular;
           font-size: 14px;
           color: rgba(0, 0, 0, 0.65);
           text-align: left;
@@ -5569,22 +6277,27 @@ export default {
   .examine {
     /deep/ .ant-form-item-label {
       label {
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
-        color: rgba(0, 0, 0, 0.85);
       }
     }
-
   }
 
   .reviewTitle {
-    font-family: SourceHanSansCN-Normal;
     font-size: 16px;
     color: rgba(0,0,0,0.85);
   }
   .reviewSubtitle{
-    font-family: SourceHanSansCN-Normal;
     font-size: 12px;
     color: rgba(0,0,0,0.45);
   }
+  .recordTable{
+        /deep/ .ant-table-thead > tr > th {
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+        text-align: left;
+        background: #fafafa;
+        border-bottom: 1px solid #e8e8e8;
+        transition: background 0.3s ease;
+      }
+    }
 </style>

@@ -18,8 +18,8 @@
     </component>
   </keep-alive>
   <component
-    v-else
     :is="AsyncComponent"
+    v-else
     v-bind="$attrs"
     v-on="$listeners"
   >

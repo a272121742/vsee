@@ -9,10 +9,10 @@
     <a-table
       :loading="loading"
       :data-source="data"
-      :scroll="{ x: 1400 }"
+      :scroll="{ x: 1700 }"
       :pagination="{ total, current: page, limit, showTotal, showQuickJumper: true }"
-      @change="handleTableChange"
       row-key="id"
+      @change="handleTableChange"
     >
       <template v-for="col in columns">
         <a-table-column
@@ -49,8 +49,8 @@
         <template slot-scope="text, record">
           <a
             v-permission="'issue:record:detail'"
-            @click="goToDetail(record.id)"
             href="javascript:;"
+            @click="goToDetail(record.id)"
           >
             <!-- 详情链接 -->
             {{ $t('issue_action.detail') }}
@@ -64,8 +64,8 @@
 <script>
 import { defaultTo } from 'ramda';
 import { clearObserver } from '@util/datahelper.js';
-import { issueTodoColumns } from '~~/model.js';
 import { createNamespacedHelpers } from 'vuex';
+import { issueTodoColumns } from '~~/model.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 const { mapActions } = createNamespacedHelpers('question');
@@ -120,7 +120,7 @@ export default {
       });
     },
     filters () {
-      return this.advancePageConfig.searchData;
+      return this.advancePageConfig.queryData;
     }
     // // 计算「更新列配置」的api（暂不启用）
     // url () {
@@ -203,7 +203,7 @@ export default {
      */
     search (filters) {
       this.changeAdvancePageConfig({
-        searchData: filters,
+        queryData: filters,
         todoPageData: {
           current: 1,
           pageSize: this.limit
@@ -234,6 +234,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .ant-table-thead > tr > th.ant-table-column-has-actions {
+    -webkit-background-clip:none;
+    background-clip:padding-box!important;
+  }
   /deep/ .ant-table{
     // 设置表格内容不换行
     table {
@@ -269,10 +273,11 @@ export default {
     }
     li.ant-pagination-total-text {
       order: 2;
-      margin: 1px -6px 0 12px;
+      margin: 1px 0 0 12px;
     }
     li.ant-pagination-options {
       order: 3;
+      margin-left: 12px;
     }
   }
 </style>

@@ -11,9 +11,9 @@
     </p>
     <div class="backBtnDiv">
       <a-button
-        @click="goBack"
         type="primary"
         class="backBtn"
+        @click="goBack"
       >
         返回
       </a-button>
@@ -71,13 +71,11 @@ export default {
       height:72px;
     }
     .successText{
-      font-family: SourceHanSansCN-Medium;
       font-size: 20px;
       color: rgba(0,0,0,0.85);
       margin-top:32px;
     }
     .successInfo{
-        font-family: SourceHanSansCN-Normal;
         font-size: 14px;
         color: rgba(0,0,0,0.45);
     }

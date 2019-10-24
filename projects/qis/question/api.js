@@ -85,5 +85,9 @@ export default {
   getIssueAutomousRegion: (id) => $.get('/issue/v1/workflow/getIssueAutomousRegion?issueId=' + id),
   getStatusCode: (id) => $.get('/issue/v1/workflow/getStatusCode?issueId=' + id),
   // 保存7钻
-  saveSevenDiamonds: (data) => $.post('/issue/v1/workflow/sevenDiamonds', data)
+  saveSevenDiamonds: (data) => $.post('/issue/v1/workflow/sevenDiamonds', data),
+  // 数据导出
+  exportData: (param) => $.get('/issue/v1/issue/export', param),
+  //删除问题
+  delIssue: (param) => $.post('/issue/v1/issue/', param)
 };

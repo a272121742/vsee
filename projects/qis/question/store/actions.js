@@ -219,5 +219,15 @@ export default {
   // 保存7钻
   saveSevenDiamonds (store, data) {
     return api.saveSevenDiamonds(data);
-  }
+  },
+  //  数据导出
+  exportData (store, param) {
+    return api.exportData(param);
+  },
+  /**
+   *查看某个问题
+   */
+  delIssue (store, param) {
+    return api.delIssue(param);
+  },
 };

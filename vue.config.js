@@ -1,8 +1,10 @@
 const path = require('path');
+
 const resolve = dir => path.join(__dirname, dir);
 const configs = Object.values(require('require-all')({
   dirname: resolve('config')
 }));
+
 const isProd = process.env.NODE_ENV === 'production';
 
 // 查询启动项目
@@ -33,19 +35,6 @@ module.exports = {
         args[0].minify.minifyURLs = true;
         return args;
       });
-
-
-      // 为生产环境修改配置...
-      // config.plugin('sftp').use(require,resolve('webpack-sftp-client'), [{
-      //   port: 22,
-      //   host: '106.75.63.69',
-      //   username: 'root',
-      //   password: '7kf4s?8At[k(',
-      //   path: 'dist',
-      //   remotePath: `/data/local/nginx/nginx/html/${project}_demo/`,
-      //   verbose: false
-      // }]);
-      // console.log('路径', config.output.get('path'));
     } else {
       console.log();
     }

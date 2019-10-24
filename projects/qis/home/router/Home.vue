@@ -7,7 +7,7 @@
         <img
           slot="cover"
           src="/static/question/issue_banner.png"
-        >
+        />
       </a-card>
     </a-row>
     <a-row
@@ -28,6 +28,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .zoomImage {
+    width:100%;
+    height:100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+  }
   .container {
     background-color: transparent!important;
     .row1 {
@@ -36,8 +44,13 @@ export default {
         border-radius: 4px;
         border-radius: 4px;
         img {
+          width: 1200px;
           height: 220px;
-          object-fit: cover;
+          // object-fit: cover;
+          // width:100%;
+          // height:100%;
+          background-size: cover;
+          background-repeat:no-repeat;
         }
       }
     }

@@ -1,10 +1,11 @@
 <template>
   <a-layout-header>
+    <change-password :visible.sync="showChangePassword"></change-password>
     <div class="header-index-wide">
       <div class="header-index-left">
         <div
-          @click="toPortal"
           class="logo"
+          @click="toPortal"
         >
         </div>
         <a-divider
@@ -54,8 +55,8 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <a-dropdown
-            :trigger="['click']"
-            :getPopupContainer="getPopupContainer"
+            :trigger="['click', 'hover']"
+            :get-popup-container="getPopupContainer"
             class="user-info"
           >
             <div>
@@ -70,11 +71,17 @@
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
+                <a @click="toChangePd">
+
+                  {{ $t('user_action.change_pd') }}
+                </a>
+              </a-menu-item>
+              <a-menu-item key="2">
                 <a @click.stop.prevent="toPortal">
                   {{ $t('user_action.to_portal') }}
                 </a>
               </a-menu-item>
-              <a-menu-item key="2">
+              <a-menu-item key="3">
                 <a @click.stop.prevent="logoutHandle">
                   {{ $t('user_action.logout') }}
                 </a>
@@ -88,10 +95,15 @@
 </template>
 
 <script>
+import { clearObserver } from '@util/datahelper.js';
+import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
+import { MODULE_DYNAMIC_CACHE } from '~/config.js';
+
 export default {
   name: 'Header',
   components: {
-    Banner: () => import('@comp/head/Banner.vue')
+    Banner: () => import('@comp/head/Banner.vue'),
+    ChangePassword: () => import('./ChangePassword.vue')
   },
   data () {
     return {
@@ -99,7 +111,11 @@ export default {
         '/home/home': 'Home',
         '/question/list': 'List',
         '/question/search': 'Search'
-      }
+      },
+      form: null,
+      visible: false,
+      record: {},
+      showChangePassword: false
       // menus: [{
       //   url: '/',
       //   key: 'Home'
@@ -137,15 +153,35 @@ export default {
       return this.$store.state.userInfo;
     }
   },
+  watch: {
+    // 【策略】监听
+    data (data) {
+      this.load(clearObserver(data));
+    }
+  },
+  created () {
+    const vm = this;
+    // 【策略】映射
+    vm.mapPropsToFields = mapPropsToFields(vm, ['origin_pd', 'new_pd', 'confirm_pd'], 'record');
+    // 【策略】投影
+    vm.form = vm.$form.createForm(vm, {
+      mapPropsToFields: vm.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(vm, 'record')
+    });
+  },
   methods: {
     toPortal () {
       window.location.href = '/';
+    },
+    toChangePd () {
+      this.showChangePassword = true;
     },
     jump (path) {
       const resolved = this.$router.resolve(path).resolved;
       if (resolved.name === '404') {
         this.$message.warning('前端未配置的路由');
       } else {
+        this.$store.commit(`question/${MODULE_DYNAMIC_CACHE}`);
         this.$router.push({ path: resolved.path });
         this.$store.dispatch('refresh');
       }
@@ -190,13 +226,13 @@ export default {
       display: flex;
       .logo {
         cursor: pointer;
+        display: inline-block;
         width: 168px;
         height: 40px;
         margin: 12px 16px 12px 0;
-        float: left;
-        background-image: url("/static/logo.png");
-        img,
-        svg {
+        background-image: url("/static/logo.svg");
+        background-size: 100%;
+        img {
           display: inline-block;
           vertical-align: middle;
           height: 32px;

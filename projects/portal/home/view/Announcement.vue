@@ -1,9 +1,9 @@
 <template>
   <a-card :title="$t('title.announcement')">
-    <router-link
+    <a
       slot="extra"
-      v-if="false"
-      to="/announcement/list"
+      :href="`${$store.state.isProd ? '/portal' : ''}/announcement/list`"
+      target="_blank"
     >
       <a-button
         type="link"
@@ -14,7 +14,7 @@
           style="font-size: 12px;"
         />
       </a-button>
-    </router-link>
+    </a>
 
     <a-list
       :split="false"
@@ -28,7 +28,8 @@
         <a-list-item-meta>
           <a
             slot="title"
-            :href="item.href"
+            :href="`${$store.state.isProd ? '/portal' : ''}/announcement/list/${item.id}`"
+            target="_blank"
           >
             {{ item.title }}
           </a>
@@ -42,6 +43,7 @@
 <script>
 import moment from 'moment';
 import { createNamespacedHelpers } from 'vuex';
+
 const { mapActions } = createNamespacedHelpers('announcement');
 
 export default {
@@ -57,7 +59,9 @@ export default {
   methods: {
     ...mapActions(['getAnnouncementPage']),
     request () {
-      this.getAnnouncementPage({ limit: 7 }).then(res => {
+      this.getAnnouncementPage({
+        limit: 7, page: 1, isPublic: 1, isPublish: 1, publish: moment().format('YYYY-MM-DD HH:mm:ss')
+      }).then(res => {
         this.data = res.list;
         this.total = res.total;
       });

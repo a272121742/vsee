@@ -20,11 +20,11 @@
         }]"
         :placeholder="$t('username.placeholder')"
         :dropdown-style="{'z-index': 6001}"
-        @change="handleSubmit"
         allow-clear
         show-search
         autocomplete="off"
         size="large"
+        @change="handleSubmit"
       >
         <a-icon
           slot="prefix"
@@ -119,6 +119,8 @@ export default {
       },
       accounts: [
         'suwei1@bjev.com.cn',
+        'lihongbin@bjev.com.cn',
+        'zhaojia@bjev.com.cn',
         'wangxueying@bjev.com.cn',
         'raomiaotao@bjev.com.cn',
         'wangchunjie@bjev.com.cn',
@@ -182,7 +184,7 @@ export default {
               this.$store.commit('setLoginStatus', res.token);
             }
           }).catch(errCode => {
-            this.$message.error(this.$t(errCode));
+            errCode && this.$message.error(this.$t(errCode));
           }).finally(() => {
             this.$store.dispatch('reload');
             this.$store.dispatch('refresh');

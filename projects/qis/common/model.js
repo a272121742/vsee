@@ -42,7 +42,7 @@ const sourceName = {
 const projectPhase = {
   title: 'projectPhase',
   dataIndex: 'projectPhaseName',
-  width: 120,
+  width: 130,
   scopedSlots: { customRender: 'projectPhase' }
 };
 // 解决进度
@@ -50,7 +50,6 @@ const status = {
   title: 'status',
   dataIndex: 'status',
   width: 120,
-  align: 'center',
   scopedSlots: { customRender: 'status' },
   sorter: true
 };
@@ -58,7 +57,7 @@ const status = {
 const projectDate = {
   title: 'projectDate',
   dataIndex: 'projectDate',
-  width: 150,
+  width: 165,
   align: 'center',
   sorter: true,
   scopedSlots: { customRender: 'projectDate' },
@@ -78,6 +77,24 @@ const receiveDate = {
     return date ? moment(date).format('YYYY-MM-DD') : '-';
   }
 };
+// 当前处理人
+const assignerName = {
+  title: 'assignerName',
+  dataIndex: 'assignerName',
+  width: 150,
+  align: 'center',
+  scopedSlots: { customRender: 'assignerName' }
+};
+// 问题提出人
+const proposerName = {
+  title: 'proposerName',
+  dataIndex: 'creatorName',
+  width: 150,
+  align: 'center',
+  scopedSlots: {
+    customRender: 'creatorName'
+  }
+};
 // 创建日期
 const createDate = {
   title: 'createDate',
@@ -90,17 +107,26 @@ const createDate = {
   }
 };
 
-
 // 待办 1 - todo
-export const issueTodoColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase, status, projectDate, receiveDate];
+export const issueTodoColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
+  projectPhase, status, assignerName, proposerName, projectDate, receiveDate
+];
 // 待发 0 - draft (草稿)
-export const issueDraftColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase, status, createDate];
+export const issueDraftColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
+  projectPhase, status, assignerName, proposerName, createDate
+];
 // 已办 2 - done
-export const issueDoneColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase, status, projectDate];
+export const issueDoneColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
+  projectPhase, status, assignerName, proposerName, projectDate
+];
 // 已发 3 - published (已发布)
-export const issuePublishedColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase, status, projectDate];
+export const issuePublishedColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
+  projectPhase, status, assignerName, proposerName, projectDate
+];
 // 问题检索
-export const issueColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase, status, createDate, projectDate];
+export const issueColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase,
+  status, assignerName, proposerName, createDate, projectDate
+];
 
 // 动态模块缓存的默认数据 MODULE_DYNAMIC_CACHE
 export const getModuleDynamicCache = () => ({
@@ -108,6 +134,8 @@ export const getModuleDynamicCache = () => ({
   selectTabKey: '1',
   // 查询表单（待办事项/问题检索通用）
   searchData: {},
+  // 查询数据（查询表单的数据经过格式化之后成为查询数据）
+  queryData: {},
   // 是否显示高级查询（问题检索）
   showAdvance: false,
   // 是否显示查询表单（待办列表）
@@ -144,3 +172,6 @@ const transformField = mapping => list => {
 export const transform1 = transformField({ value: 'id', label: 'name' });
 export const transform2 = transformField({ value: 'dictValue', label: 'dictName' });
 export const transform3 = transformField({ value: 'id', label: 'nameZh' });
+export const transform4 = transformField({ value: 'creator', label: 'creatorName' });
+export const transform5 = transformField({ value: 'assigner', label: 'assignerName' });
+export const transform6 = transformField({ value: 'code', label: 'name' });

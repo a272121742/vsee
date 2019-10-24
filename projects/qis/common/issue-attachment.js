@@ -111,26 +111,31 @@ export default {
      * @param {*} records 保存的数据文件（服务端文件）
      * @param {*} previews 预览文件（客户端文件）
      */
-    changeFileList: (records = [], previews = []) => info => {
-      // 处理预览显示
-      previews.splice(0, previews.length, ...info.fileList.map(tap(file => {
-        if (file.response) {
-          if (!file.response.code && file.response.data) {
-            file.url = file.response.data.path;
-            file.id = file.response.data.id;
-          } else {
-            file.status = 'error';
+    changeFileList (records = [], previews = []) { 
+      const vm = this;
+      return function changeHandler (info) {
+        // 处理预览显示
+        previews.splice(0, previews.length, ...info.fileList.map(tap(file => {
+          if (file.response) {
+            if (!file.response.code && file.response.data) {
+              file.url = file.response.data.path;
+              file.id = file.response.data.id;
+            } else {
+              file.status = 'error';
+              const code = file.response.code;
+              file.response = code ? vm.$t(`SERVER.ERROR.${code}`) : file.response;
+            }
           }
-        }
-      })));
-      /**
+        })));
+        /**
        * 添加文件 (需要将客户端文件转换为服务端文件)，其添加条件为：
        * 1. 客户端为完成状态
        * 2. 服务端状态码为0
        */
-      if (info.file.status === 'done' && !info.file.response.code) {
-        records.push(file2server(info.file));
-      }
+        if (info.file.status === 'done' && !info.file.response.code) {
+          records.push(file2server(info.file));
+        }
+      };
     },
     /**
      * 删除文件
@@ -138,12 +143,10 @@ export default {
      */
     removeFile: records => file => {
       const index = records.findIndex(item => item.id === file.id);
-      console.log(records, file, index);
-
       if (index !== -1) {
         records.splice(index, 1);
       }
-      return index !== -1;
+      return index !== -1 || !file.size || file.status === 'error';
     }
   }
 };

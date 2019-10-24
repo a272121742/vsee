@@ -1,15 +1,15 @@
 <template>
   <a-select
     v-bind="$attrs"
-    v-on="$listeners"
     :value="value"
     :options="data"
+    v-on="$listeners"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
   >
     <a-spin
-      slot="notFoundContent"
       v-if="fetching"
+      slot="notFoundContent"
       size="small"
     >
       <a-icon
@@ -77,12 +77,19 @@ export default {
   watch: {
     delay (value) {
       !value && this.init();
+    },
+    value (value) {
+      if (value !== void 0) {
+        this.url && this.fetch({ id: value }).then(list => {
+          this.data = list;
+        });
+      }
     }
   },
   created () {
     // 生成截流函数
-    this.dropdownVisibleChange = debounce(this.dropdownVisibleChange, 200);
-    this.onTextChange = debounce(this.onTextChange, 800);
+    this.dropdownVisibleChange = debounce(this.dropdownVisibleChange, 0);
+    this.onTextChange = debounce(this.onTextChange, 200);
     this.init();
   },
   mounted () {
@@ -115,7 +122,7 @@ export default {
     },
     dropdownVisibleChange (visible) {
       // 如果是展开状态，并且未获得数据时，加载数据
-      if (visible && (!this.data.length || !this.cache)) {
+      if (visible && (!this.data.length || this.data.length === 1 || !this.cache)) {
         this.data = [];
         this.fetch().then(data => {
           this.data = data || [];
@@ -124,12 +131,14 @@ export default {
     },
     onTextChange (word) {
       // 如果有单词，并且配置了`word-key`
-      if (word && word.length && this.wordKey && !this.composing) {
+      if (!this.composing && !this.$attrs['filter-option']) {
         const config = {};
-        config[this.wordKey] = word;
+        if (this.wordKey) {
+          config[this.wordKey] = word;
+        }
         // 这里要做节流处理
         this.fetch(config).then(data => {
-          console.log(config, data);
+          this.data = data;
         });
       }
     }

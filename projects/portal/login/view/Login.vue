@@ -4,29 +4,29 @@
     class="login_wrapper"
   >
     <div class="ant-drawer ant-drawer-right ant-drawer-open no-mask">
-      <div class="logo">
-      </div>
       <div
-        class="ant-drawer-content-wrapper"
-        style="width: 500px;"
+        class="ant-drawer-content-wrapper div-wrapper"
       >
         <div class="ant-drawer-content">
-          <div
-            class="ant-drawer-wrapper-body"
-            style="overflow: auto; height: 100%;"
-          >
+          <div class="ant-drawer-wrapper-body">
             <div class="ant-drawer-body">
-              <a-row>
-                <language-radio class="language-radio"></language-radio>
-              </a-row>
+              <div>
+                <div class="logo"></div>
+                <div class="radio-group">
+                  <language-radio class="language-radio"></language-radio>
+                </div>
+              </div>
               <a-row>
                 <h1 class="title">
-                  BJEV-TQIS
+                  TQIS
                 </h1>
+                <p class="subtitle">
+                  Total Quality Information System
+                </p>
               </a-row>
-              <a-row>
+              <div>
                 <login-form class="login-form"></login-form>
-              </a-row>
+              </div>
             </div>
           </div>
         </div>
@@ -45,15 +45,34 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
+      box-shadow: none;
+  }
+  .div-wrapper {
+    width: 35%;
+    height:100%;
+    padding: 5% 5% 5% 0;
+    box-shadow:none;
+  }
   .title {
-    margin-bottom: 36px;
-    font-size: 36px;
+    margin-bottom: 4px;
+    padding-top: 9.3%;
+    font-size: 38px;
+    color: #0097E0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .subtitle {
+    margin-bottom: 4px;
+    font-size: 11px;
     color: #0097E0;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .login_wrapper {
+    width: 100%;
     height: 100%;
     // background-image: url(/static/portal/login_bg.png);
     background-repeat:no-repeat;
@@ -65,18 +84,49 @@ export default {
     }
   }
   .logo {
-    width: 168px;
-    height: 40px;
-    float: left;
-    margin: 32px 16px 12px 80px;
-    background-image: url("/static/logo.png");
+    display: inline-block;
+    width: 160px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+    background-image: url("/static/logo.svg");
+    background-size: 100%;
+  }
+  .logo:before,:after {
+    display: inline;
   }
   .language-radio {
-    float: right;
-    margin-bottom: 108px;
+    line-height: 1;
+    position: relative;
+    display: inline;
+    margin:0;
+    padding-left: 15%;
+    padding-bottom: 4px;
+    /deep/ .ant-radio-group{
+      display: inline;
+    }
+  }
+  .language-radio:before,:after {
+    display: inline;
   }
   .login-form {
-    margin: auto 48px;
+    height:28%;
+    margin: auto 7%;
+    /deep/ .ant-row {
+      height: 5.2%;
+    }
+    /deep/ .ant-form-item,
+    /deep/ .ant-checkbox-wrapper {
+      margin-bottom:7%;
+    }
+    .checked {
+      height: 14px;
+    }
   }
-
+  .radio-group {
+    display: inline !important;
+    /deep/ .a-radio-button {
+      display: inline;
+    }
+  }
 </style>
