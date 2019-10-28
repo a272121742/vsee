@@ -16,6 +16,13 @@
           title="全面质量信息管理系统"
           desc="Total Quality Information System"
         ></banner>
+        <h2
+          v-if="$store.state.isBuildTest"
+          style="color: red; margin-right: 80px;"
+        >
+          <!-- 测试环境 -->
+          {{ $t('env.name') }}
+        </h2>
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">

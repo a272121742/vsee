@@ -8,7 +8,6 @@ import 'ant-design-vue/dist/antd.less';
 // 加载本地路由
 import { router } from '@lib/auto-router.js';
 // 加载本地store
-import store from '@lib/auto-store.js';
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
 import moment from 'moment';
@@ -24,6 +23,7 @@ import AsyncComponent from '@comp/AsyncComponent';
 import { debounce } from '@util/fnhelper.js';
 
 import VueLazyload from 'vue-lazyload';
+import store from '@store';
 
 Vue.use(VueLazyload);
 Vue.component('async-component', AsyncComponent);

@@ -8,7 +8,6 @@ import 'ant-design-vue/dist/antd.less';
 // 加载本地路由
 import { router } from '@lib/auto-router.js';
 // 加载本地store
-import store from '@lib/auto-store.js';
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
 import moment from 'moment';
@@ -22,6 +21,9 @@ import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
 import { debounce } from '@util/fnhelper.js';
+import store from '@store';
+
+
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制

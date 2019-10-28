@@ -224,6 +224,7 @@
                           :filter-option="filterOption"
                           :transform="selectOptiondict"
                           :allow-clear="true"
+                          :disabled="sourceDisabled"
                           show-search
                           url="/sys/dict?dictType=issue_source"
                           @change="handleSource"
@@ -245,6 +246,7 @@
                           :filter-option="filterOption"
                           :transform="selectOptiondict"
                           :allow-clear="true"
+                          :disabled="sourceDisabled"
                           show-search
                           url="/sys/dict?dictType=issue_grade"
                         >
@@ -310,12 +312,18 @@
                       <!-- 「责任部门」下拉 -->
                       <a-form-item :label="$t('issue.responsibleDepartmentId')">
                         <net-select
-                          v-decorator="['responsibleDepartmentId']"
+                          v-decorator="[
+                            'responsibleDepartmentId',
+                            {rules:[{
+                              required: valiRequire, message: $t('search.please_select')+$t('issue.responsibleDepartmentId')
+                            }]}
+                          ]"
                           :filter-option="filterOption"
                           :transform="selectOptionSingn"
                           :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
                           :delay="!isEdit"
                           :allow-clear="true"
+                          :disabled="sourceDisabled"
                           show-search
                           url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                         >
@@ -331,7 +339,10 @@
                         <v-input
                           v-decorator="[
                             'frequency',
-                            {rules: [{validator: intVer}]}
+                            {rules: [
+                              {required: valiRequire, message: $t('search.please_input')+$t('issue.frequency')},
+                              {validator: intVer
+                              }]}
                           ]"
                           :placeholder="$t('search.please_input') + $t('issue.frequency')"
                           allow-clear
@@ -348,7 +359,10 @@
                         <v-input
                           v-decorator="[
                             'contact',
-                            {rules: [{validator: phoneVer}]}
+                            {rules: [
+                              {required: valiRequire, message: $t('search.please_input')+$t('issue.contact')},
+                              {validator: phoneVer}
+                            ]}
                           ]"
                           :placeholder="$t('search.please_input') + $t('issue.contact')"
                           allow-clear
@@ -429,12 +443,12 @@
                       v-decorator="[
                         'vinNo',
                         {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinNo')
+                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinOrLicense')
                         },{validator: vinVer}]}
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.vinNo')"
                       allow-clear
-                      @change="vinOrLicenseChange"
+                      @change="changeVinNoRequired"
                     />
                   </a-form-item>
                 </a-col>
@@ -449,12 +463,13 @@
                       v-decorator="[
                         'license',
                         {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.license')
+                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinOrLicense')
                         }]}
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.license')"
                       allow-clear
-                      @change="vinOrLicenseChange"
+                      maxlength="20"
+                      @change="changeLicenseRequired"
                     />
                   </a-form-item>
                 </a-col>
@@ -656,7 +671,7 @@
                         'workConditionInfo'
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.workConditionInfo')"
-                      maxlength="2000"
+                      maxlength="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -672,7 +687,7 @@
                         'preliminaryInvestigation',
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.preliminaryInvestigation')"
-                      maxlength="2000"
+                      maxlength="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -688,7 +703,7 @@
                         'remark',
                       ]"
                       :placeholder="$t('search.please_input') + $t('issue.remark')"
-                      maxlength="2000"
+                      maxlength="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -744,8 +759,9 @@ export default {
     return {
       // 必填开关
       valiRequire: true,
+      validVinOrlicense: true,
       //VIN和车牌号选填
-      validVinOrlicense: false,
+      
       // 上传地址
       uploadUrl: $store.getters.getUrl('/issue/v1/file/upload?recType=10021003'),
       businessKey: null,
@@ -777,6 +793,7 @@ export default {
       codeTitle: '', // 故障代码标题
       coChair: null,
       monitor: null,
+      sourceDisabled: false,
       labelCol: {
         // xs: { span: 24 },
         sm: {
@@ -824,7 +841,6 @@ export default {
         milage: '',
         remark: '',
         workConditionInfo: '' // 工况信息
-
       }
     };
   },
@@ -870,18 +886,24 @@ export default {
         vm.submitBtn = true;
         vm.actiive = 'saveBtn';
       } else if (vm.name === 'edit') {
+        
         vm.questionTitle = vm.$t('issue_action.edit_issue');
         vm.submitBtn = false;
         vm.actiive = 'activeClass';
 
         vm.eidtQuestion(vm.id).then(res => {
           vm.record = res;
+          this.validVinOrlicense = !res.vinNo && !res.license;
           vm.statusCode = res.status;
+          const status = Number(this.statusCode);
           if (vm.statusCode === '100100') {
             vm.delBtn = true;
-            // if ( vm.creator === )
             vm.submitBtn = true;
-          } else {
+          } 
+          else if (status > 100300) {
+            vm.sourceDisabled = true;
+          } 
+          else {
             vm.submitBtn = false;
           }
           // 附件
@@ -981,10 +1003,10 @@ export default {
       const vm = this;
       vm.delFlag = 1;
       const param = { id:vm.id , optCounter:vm.optCounter , delFlag:vm.delFlag };
-      vm.delIssue(param).then( res => {
+      vm.delIssue(param).then(() => {
         this.$message.success(this.$t('delete.success'));
         this.goBack();
-      }).catch(err => {
+      }).catch(() => {
         this.$message.error(this.$t('delete.failure'));
         this.goBack();
       });
@@ -1108,14 +1130,6 @@ export default {
     handleSubmit () {
       this.visibleSubmit = true;
     },
-    // 判断VIN或者车号必填
-    // vinOrLicenseChange () {
-    //   if(this.record.vinNo||this.record.license){
-    //     this.validVinOrlicense = false;
-    //   }else{
-    //     this.validVinOrlicense = true;
-    //   }
-    // },
     // 提交弹框点击取消
     submitCancel () {
       this.visibleSubmit = false;
@@ -1130,15 +1144,11 @@ export default {
     // 提交接口调用函数
     handleSubmitFunction () {
       this.valiRequire = true;
-      if(this.record.vinNo||this.record.license){
-        this.validVinOrlicense = false;
-      }else{
-        this.validVinOrlicense = true;
-      }
+      this.validVinOrlicense = !this.record.vinNo && !this.record.license;
       const commitButton = this.$refs.commitButton;
+      const hide = this.$message.loading('正在提交中...', 0);
       this.form.validateFields((err) => {
         if (!err) {
-          const hide = this.$message.loading('正在提交中...', 0);
           const data = this.form.getFieldsValue();
           if (data.milage === undefined) {
             data.milage = '';
@@ -1168,11 +1178,11 @@ export default {
           const id = this.$store.getters.getUser().id;
           const vm = this;
           const param1 = {
-            issueSource: this.sourceName,
+            issueSource: data.source,
             type: 'coChair'
           };
           const param2 = {
-            issueSource: this.sourceName,
+            issueSource: data.source,
             type: 'monitor'
           };
           const cocharFunction = vm.getSysUser(param1).then(res => {
@@ -1263,6 +1273,8 @@ export default {
           commitButton.reset();
         }
       });
+      setTimeout(() => { hide();
+      }, 200);
     },
     handleSave () {
       this.valiRequire = false;
@@ -1379,6 +1391,7 @@ export default {
           });
         }
       }
+      setTimeout(() => { hide();}, 100);
     },
     handleSearch (e) {
       e.preventDefault();
@@ -1391,7 +1404,23 @@ export default {
         path: this.$route.query.form || '/'
       });
     },
-
+    // VIN 车号 输入后改变验证规则，实现动态验证
+    changeVinNoRequired (e) {
+      console.log(e.target.value, this.record.license);
+      this.validVinOrlicense = !e.target.value && !this.record.license;
+      this.$nextTick(() => {
+        this.form.validateFields(['license'], { force: true });
+      });
+      
+    },
+    changeLicenseRequired (e) {
+      console.log(e.target.value, this.record.vinNo);
+      this.validVinOrlicense = !e.target.value && !this.record.vinNo;
+      this.$nextTick(() => {
+        this.form.validateFields(['vinNo'], { force: true });
+      });
+      
+    },
     toggle () {
       this.expand = !this.expand;
     },

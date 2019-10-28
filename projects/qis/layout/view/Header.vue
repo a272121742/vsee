@@ -15,29 +15,13 @@
         <banner
           :title="$t('SystemName')"
         ></banner>
-        <!-- <a-menu
-          :selected-keys="defaultActiveMenu"
-          mode="horizontal"
+        <h2
+          v-if="$store.state.isBuildTest"
+          style="color: red; margin-right: 80px;"
         >
-          <template v-for="item in menus">
-            <a-menu-item
-              v-if="!item.children"
-              :key="item.id"
-              @click="jump(item.url)"
-            >
-              <a-icon
-                v-if="item.icon"
-                :type="item.icon"
-              ></a-icon>
-              <span>{{ item.name }}</span>
-            </a-menu-item>
-            <sub-menu
-              v-else
-              :key="item.id"
-              :menus-info="item"
-            />
-          </template>
-        </a-menu> -->
+          <!-- 测试环境 -->
+          {{ $t('env.name') }}
+        </h2>
         <a-menu
           :selected-keys="defaultActiveMenu"
           mode="horizontal"

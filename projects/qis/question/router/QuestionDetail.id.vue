@@ -53,7 +53,7 @@
                 :delay="true"
                 :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${redistributionForm.owerDeptLv1}`"
                 :cache="false"
-                :transform="selectOptionChampion"
+                :transform="selectUser"
                 :filter-option="filterOption"
                 :allow-clear="true"
                 style="width:272px;height:32px;"
@@ -294,25 +294,40 @@
               <!-- 效果验证附件  -->
               <div
                 v-if="d5FileList && d5FileList.length"
-                class="ant-upload-list-item-info"
-                style="margin-top: 10px"
+                class="ant-upload-list ant-upload-list-text"
+                style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
               >
-                <span
+                <div
                   v-for="(file, index) in d5FileList"
                   :key="index"
-                  style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                  class="ant-upload-list-item ant-upload-list-item-done"
+                  style="margin-top: 0; margin-right: 14px;"
                 >
-                  <a-icon type="paper-clip" />
-                  <span
-                    :title="file.name"
-                    style="height: 28px;"
-                    class="ant-upload-list-item-name"
-                  >
-                    <a :href="getDownloadURL(file.url, file.name)">
-                      {{ file.name }}
-                    </a>
-                  </span>
-                </span>
+                  <div class="ant-upload-list-item-info">
+                    <span>
+                      <a-icon
+                        type="paper-clip"
+                        style="top: 3px; left: 0;"
+                      />
+                      <span
+                        :title="file.name"
+                        style="padding-left: 0;"
+                        class="ant-upload-list-item-name"
+                      >
+                        <a
+                          :title="file.name"
+                          :href="getDownloadURL(file.url, file.name)"
+                          :download="file.name"
+                          rel="noopener noreferrer"
+                          class="ant-upload-list-item-name"
+                          style="padding-left: 14px;"
+                        >
+                          {{ file.name }}
+                        </a>
+                      </span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </a-form-item>
           </a-col>
@@ -562,17 +577,18 @@
               <!-- 再分析 -->
               {{ $t('issue_action.reanalysis') }}
             </a-button>
-            <prevent-button
+            <a-button
               v-if="pagePermission.button_submit_3"
               ref="commitButton"
+              :loading="submitLoading"
               bind="both"
               type="primary"
               class="submitBtn"
-              @click="handleSubmit"
+              @click.self.stop.prevent="handleSubmit"
             >
               <!-- 提交 -->
               {{ $t('issue_action.commit') }}
-            </prevent-button>
+            </a-button>
             <a-modal
               :visible="visibleSubmit"
               :title="$t('confirm.title')"
@@ -1116,7 +1132,7 @@
                         :title="detailList.workConditionInfo"
                         style="white-space: unset; word-break: unset;"
                       >
-                        {{ detailList.description }}
+                        {{ detailList.workConditionInfo }}
                       </p>
                     </a-form-item>
                   </a-col>
@@ -1445,25 +1461,40 @@
                       <!-- 问题定义附件 -->
                       <div
                         v-if="d0FileList && d0FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
+                        class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
-                        <span
+                        <div
                           v-for="(file, index) in d0FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                          class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.name"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.url, file.name)">
-                              {{ file.name }}
-                            </a>
-                          </span>
-                        </span>
+                          <div class="ant-upload-list-item-info">
+                            <span>
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
+                              <span
+                                :title="file.name"
+                                style="padding-left: 0;"
+                                class="ant-upload-list-item-name"
+                              >
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
+                                  {{ file.name }}
+                                </a>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </a-form-item>
                   </a-col>
@@ -1863,7 +1894,7 @@
                               <!-- 责任部门 -->
                               <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment') + $t('colon')">
                                 <net-select
-                                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]}]"
+                                  v-decorator="['owerDeptLv1',{rules: [{ required: validInput, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]}]"
                                   :transform="selectOption"
                                   :delay="false"
                                   :allow-clear="true"
@@ -1880,7 +1911,7 @@
                               <!-- 责任人 -->
                               <a-form-item :label="$t('issue.champion') + $t('colon') ">
                                 <net-select
-                                  v-decorator="['champion',{rules: [{ required: true, message: $t('search.please_select') + $t('issue.champion')}]} ]"
+                                  v-decorator="['champion',{rules: [{ required: validInput, message: $t('search.please_select') + $t('issue.champion')}]} ]"
                                   :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=${record.owerDeptLv1}`"
                                   :transform="selectOptionChampion"
                                   :delay="false"
@@ -1903,7 +1934,7 @@
                             self-update
                           >
                             <a-textarea
-                              v-decorator="['comment',{rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+                              v-decorator="['comment',{rules: [{ required: validInput, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: validInput, max: 160, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
                             >
                             </a-textarea>
@@ -1918,7 +1949,7 @@
                             self-update
                           >
                             <a-textarea
-                              v-decorator="['comment',{rules: [{ max: 160, message: $t('validate.less_then_160')}]} ]"
+                              v-decorator="['notes',{rules: [{ max: 160, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
                             >
                             </a-textarea>
@@ -1972,25 +2003,40 @@
                       <!-- 责任判定附件 -->
                       <div
                         v-if="d1FileList && d1FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
+                        class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
-                        <span
+                        <div
                           v-for="(file, index) in d1FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                          class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.name"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.url, file.name)">
-                              {{ file.name }}
-                            </a>
-                          </span>
-                        </span>
+                          <div class="ant-upload-list-item-info">
+                            <span>
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
+                              <span
+                                :title="file.name"
+                                style="padding-left: 0;"
+                                class="ant-upload-list-item-name"
+                              >
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
+                                  {{ file.name }}
+                                </a>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </a-form-item>
                   </a-col>
@@ -2074,7 +2120,7 @@
                           'rootCauseDescription',
                           {
                             rules:[
-                              {required: true, message: $t('search.please_input') }
+                              {required: validInput, message: $t('search.please_input') }
                             ]}
                         ]"
                         placeholder="请输入"
@@ -2137,21 +2183,33 @@
                       <div
                         v-if="d2FileList && d2FileList.length"
                         class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
                         <div
                           v-for="(file, index) in d2FileList"
                           :key="index"
                           class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
                           <div class="ant-upload-list-item-info">
                             <span>
-                              <a-icon type="paper-clip" />
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
                               <span
                                 :title="file.name"
-                                style="height: 28px;"
+                                style="padding-left: 0;"
                                 class="ant-upload-list-item-name"
                               >
-                                <a :href="getDownloadURL(file.url, file.name)">
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
                                   {{ file.name }}
                                 </a>
                               </span>
@@ -2198,7 +2256,7 @@
                           self-update
                         >
                           <a-textarea
-                            v-decorator="['comment',{rules: [{max: 160, message: $t('validate.less_then_160')}]} ]"
+                            v-decorator="['notes',{rules: [{max: 160, message: $t('validate.less_then_160')}]} ]"
                             placeholder="请输入"
                           >
                           </a-textarea>
@@ -2413,25 +2471,40 @@
                       <!-- 措施制定附件 -->
                       <div
                         v-if="d3FileList && d3FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
+                        class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
-                        <span
+                        <div
                           v-for="(file, index) in d3FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                          class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.name"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.url, file.name)">
-                              {{ file.name }}
-                            </a>
-                          </span>
-                        </span>
+                          <div class="ant-upload-list-item-info">
+                            <span>
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
+                              <span
+                                :title="file.name"
+                                style="padding-left: 0;"
+                                class="ant-upload-list-item-name"
+                              >
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
+                                  {{ file.name }}
+                                </a>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </a-form-item>
                   </a-col>
@@ -2487,7 +2560,7 @@
                 >
                   <v-textarea
                     v-decorator="[
-                      'comment',
+                      'notes',
                       {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入备注"
@@ -2651,25 +2724,40 @@
                       <!-- 措施实施附件 -->
                       <div
                         v-if="d4FileList && d4FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
+                        class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
-                        <span
+                        <div
                           v-for="(file, index) in d4FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                          class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.name"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.url, file.name)">
-                              {{ file.name }}
-                            </a>
-                          </span>
-                        </span>
+                          <div class="ant-upload-list-item-info">
+                            <span>
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
+                              <span
+                                :title="file.name"
+                                style="padding-left: 0;"
+                                class="ant-upload-list-item-name"
+                              >
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
+                                  {{ file.name }}
+                                </a>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </a-form-item>
                   </a-col>
@@ -2719,7 +2807,7 @@
                 >
                   <v-textarea
                     v-decorator="[
-                      'comment',
+                      'notes',
                       {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入备注"
@@ -2940,25 +3028,40 @@
                     <a-form-item :label="`附件`">
                       <div
                         v-if="d5FileList && d5FileList.length"
-                        class="ant-upload-list-item-info"
-                        style="margin-top: 10px"
+                        class="ant-upload-list ant-upload-list-text"
+                        style="overflow-y: scroll; height: 82px; margin-top: 8px; z-index: 10;"
                       >
-                        <span
+                        <div
                           v-for="(file, index) in d5FileList"
                           :key="index"
-                          style="display: inline-block; height: 28px; line-height: 22px; margin-right: 24px;"
+                          class="ant-upload-list-item ant-upload-list-item-done"
+                          style="margin-top: 0; margin-right: 14px;"
                         >
-                          <a-icon type="paper-clip" />
-                          <span
-                            :title="file.name"
-                            style="height: 28px;"
-                            class="ant-upload-list-item-name"
-                          >
-                            <a :href="getDownloadURL(file.url, file.name)">
-                              {{ file.name }}
-                            </a>
-                          </span>
-                        </span>
+                          <div class="ant-upload-list-item-info">
+                            <span>
+                              <a-icon
+                                type="paper-clip"
+                                style="top: 3px; left: 0;"
+                              />
+                              <span
+                                :title="file.name"
+                                style="padding-left: 0;"
+                                class="ant-upload-list-item-name"
+                              >
+                                <a
+                                  :title="file.name"
+                                  :href="getDownloadURL(file.url, file.name)"
+                                  :download="file.name"
+                                  rel="noopener noreferrer"
+                                  class="ant-upload-list-item-name"
+                                  style="padding-left: 14px;"
+                                >
+                                  {{ file.name }}
+                                </a>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </a-form-item>
                   </a-col>
@@ -3059,7 +3162,7 @@
                 >
                   <v-textarea
                     v-decorator="[
-                      'comment',
+                      'notes',
                       {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
                     ]"
                     placeholder="请输入备注"
@@ -3128,7 +3231,7 @@
                   >
                     <v-textarea
                       v-decorator="[
-                        'comment',
+                        'notes',
                         {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
                       ]"
                       placeholder="请输入备注"
@@ -3183,8 +3286,10 @@
                         v-decorator="[ 'signLeaderId',{rules: [{ required: true, message: '请选择加签领导' }]} ]"
                         :url="`issue/v1/workflow/getSysUser?issueSource=${detailList.source}&type=director`"
                         :transform="selectOptionSingn"
+                        :delay="false"
                         :allow-clear="true"
                         placeholder="请选择"
+                        show-search
                         style="width:272px;height:32px;"
                       >
                       </net-select>
@@ -3590,8 +3695,10 @@ export default {
         button_redistribution_3: false
       },
       visibleSubmit: false, // 提交弹框是否显示标识
+      submitLoading: false, // 提交按钮loading
       SuppelyIcon: 'down',
       routerFlag: true,
+      validInput: true,
       // 流程状态
       statusCode: {
         statusMaxCode: 0,
@@ -3823,7 +3930,8 @@ export default {
         Review: '1',
         signRemark: '',
         isClose: '0',
-        reason: ''
+        reason: '',
+        notes:'', // 审核通过的备注
       },
       // 再分配
       redistributionForm: {
@@ -3936,7 +4044,7 @@ export default {
         'icaExecDescription', 'icaExecTime', 'pcaExecDescription',
         'description', 'proposerVerification', 'breakpointVin', 'breakpointDate',
         'recurrencePrevention', 'isClose',
-        'reason'
+        'reason','notes'
       ], 'record');
     },
     resMapPropsToFields () {
@@ -4070,7 +4178,7 @@ export default {
         userId: this.userId, //  当前用户id
         variables: {
           businessKey: this.id, // 问题id
-          comment: resComment || data.comment || '0',
+          comment: resComment,
           assigner: data.diamondOwner1,
           coChair: this.sysUser.coChair,
           monitor: this.sysUser.monitor,
@@ -4156,6 +4264,21 @@ export default {
           value: item.userId,
           label: item.username
         });
+      });
+      return optionArray;
+    },
+    // 再分配责任人选择，不能选择本人
+    selectUser (input) {
+      const optionArray = [];
+      const id = this.$store.getters.getUser().id;
+      input.forEach((item) => {
+        if(item.userId !== id){
+          optionArray.push({
+            value: item.userId,
+            label: item.username
+          });
+        }
+      
       });
       return optionArray;
     },
@@ -4700,6 +4823,7 @@ export default {
     },
     // 再分配弹框
     showModal () {
+      this.rediStribution.updateFields(this.resMapPropsToFields());
       this.visibleRes = true;
     },
     handleOk () {
@@ -4730,6 +4854,7 @@ export default {
      * @param String param - 8D的流程标识（0, 1, 2, 3 ... 6）
      */
     goto (param) {
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       this.backCurrent = param > this.stepMax ? this.stepCurrent : param;
       if (this.stepCurrent !== 6 && this.stepMax === 6 && param === 6) {
         this.backCurrent = this.stepCurrent;
@@ -4937,6 +5062,7 @@ export default {
     // 提交弹框确认按钮
     submitOk () {
       this.visibleSubmit = false;
+      this.submitLoading = true;
       this.handleSubmitFunction();
     },
     // 提交弹框取消按钮
@@ -4968,18 +5094,34 @@ export default {
     },
     // 点击提交
     handleSubmit () {
-      this.visibleSubmit = true;
-      const commitButton = this.$refs.commitButton;
-      commitButton.reset();
+      const vm = this;
+      const commitButton = vm.$refs.commitButton;
+      if (!vm.allowCommit) {
+        vm.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
+        return;
+      }
+      if(this.backCurrent!=this.stepCurrent){
+        this.goto(this.stepCurrent);
+      }else {
+        this.formDcontent.validateFields((err) => {
+          if (!err) {
+            this.visibleSubmit = true;
+          }
+        });
+      }
+    },
+    isEmpty (e) {
+      return (e === undefined || e === '');
     },
     // 提交调用接口函数
     handleSubmitFunction () {
       const commitButton = this.$refs.commitButton;
-      if (!this.allowCommit) {
-        this.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
-        return;
-      }
       const vm = this;
+      // if (!vm.allowCommit) {
+      //   vm.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
+      //   return;
+      // }
+    
       this.formDcontent.validateFields((err) => {
         if (!err) {
           this.routerFlag = false;
@@ -4988,6 +5130,13 @@ export default {
           if (Number(vm.detailList.status) === 201500) {
             data.endSeven = '1';
           }
+          // console.log(this.record);
+          //备注
+          if(parseInt(this
+            .statusCode.statusNewCode, 10) === 100200){
+            this.record.isPass = data.isProject;
+          }
+          const commentVal = this.record.isPass==='0'? this.record.comment : this.record.notes;
           const transData = {
             businessKey: this.id, // 问题id
             businessTitle: data.title, // 问题title
@@ -4997,7 +5146,7 @@ export default {
             userId: this.userId, //  当前用户id
             variables: {
               businessKey: this.id, // 问题id
-              comment: data.comment || '0',
+              comment: commentVal,
               assigner: data.diamondOwner1,
               coChair: vm.sysUser.coChair,
               monitor: vm.sysUser.monitor,
@@ -5032,7 +5181,7 @@ export default {
             // 如果当前步骤为D0并且选择立项那么页面不跳转
             if ((this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
               .statusCode.statusNewCode, 10) > 100100) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
-              commitButton.reset();
+              //commitButton.reset();
               // this.init();
               this.$store.dispatch('refresh');
             } else {
@@ -5148,7 +5297,7 @@ export default {
           });
         }
       });
-      if (this.stepCurrent === 2) {
+      if (this.stepCurrent === 2&&this.pagePermission.A2_1_3) {
         data.id = this.idReason;
         data.optCounter = this.optCounterD2;
         if (this.d2FileList && this.d2FileList.length) {
@@ -5189,10 +5338,18 @@ export default {
       if (data.breakpointDate) {
         data.breakpointDate = data.breakpointDate.format('YYYY-MM-DD HH:mm:ss');
       }
-      if (this.stepCurrent === 3) {
+      //措施实施表单回写
+      if (this.stepCurrent === 3&&this.pagePermission.A3_1_3 ) {
         if (this.d3FileList && this.d3FileList.length) {
           data.files = this.d3FileList;
         }
+        //措施实施表单回写
+        data.icaExecDescription = this.stepMeasures.icaExecDescription;
+        data.icaExecTime = this.stepMeasures.icaExecTime;
+        data.pcaExecDescription = this.stepMeasures.pcaExecDescription;
+        data.pcaExecTime = this.stepMeasures.pcaExecTime;
+
+
         data.type = '0';
         data.icaOptCounter = this.icaOptCounter;
         data.optCounter = this.optCounterD3;
@@ -5214,10 +5371,18 @@ export default {
             }
           });
         });
-      } else if (this.stepCurrent === 4) {
+      } else if (this.stepCurrent === 4&&this.pagePermission.A4_1_3) {
         if (this.d4FileList && this.d4FileList.length) {
           data.files = this.d4FileList;
         }
+        //措施指定表单回写
+        data.icaDescription = this.stepImplementation.icaDescription;
+        data.pcaDescription = this.stepImplementation.pcaDescription;
+        data.pcaPlanTime = this.stepImplementation.pcaPlanTime;
+        data.pcaValidPlanTime = this.stepImplementation.pcaValidPlanTime;
+        data.smallBatchValidation = this.stepImplementation.smallBatchValidation;
+        data.estimatedClosureTime = this.stepImplementation.estimatedClosureTime;
+        //措施实施表单
         data.id = this.id2;
         data.optCounter = this.optCounterD4;
         data.icaOptCounter = this.icaOptCounter;
@@ -5240,9 +5405,18 @@ export default {
             });
           }
         });
-      } else if (this.stepCurrent === 5) {
+      } else if (this.stepCurrent === 5&&(this.pagePermission.A5_1_3||this.pagePermission.A5_4_3)) {
         if (this.d5FileList && this.d5FileList.length) {
           data.files = this.d5FileList;
+        }
+        //当为提出人填写时给效果验证填写表单赋值
+        if(this.pagePermission.A5_4_3){
+          data.description = this.stepEffect.description;
+          data.breakpointVin = this.stepEffect.breakpointVin;
+          data.breakpointDate = this.stepEffect.breakpointDate;
+        }
+        if(this.pagePermission.A5_1_3){
+          data.proposerVerification =this.stepEffect.proposerVerification;
         }
         data.id = this.idEffct;
         data.optCounter = this.optCounterD5;
@@ -5259,7 +5433,7 @@ export default {
             }
           });
         });
-      } else if (this.stepCurrent === 6) {
+      } else if (this.stepCurrent === 6&&(this.pagePermission.A6_1_3||this.pagePermission.A6_2_3)) {
         if (this.d6FileList && this.d6FileList.length) {
           data.files = this.d6FileList;
         }
@@ -5268,6 +5442,16 @@ export default {
         // 如果领导审阅的时候备注为空，根据后台要求传入一个空格给到后台数据库
         if (data.signRemark === null || data.signRemark === '') {
           data.signRemark = ' ';
+        }
+        if(this.pagePermission.A6_2_3){
+          data.signLeaderId = this.stepClose.signLeaderId;
+          data.creatorName = this.stepClose.creatorName;
+          data.stepClose = this.stepClose.createDate;
+          data.recurrencePrevention = this.stepClose.recurrencePrevention;
+
+        }
+        if(this.pagePermission.A6_1_3){
+          data.signRemark = this.stepClose.signRemark;
         }
         this.closeSave(data).then(() => {
           this.closeDetail(this.id).then(res => {
@@ -5317,10 +5501,12 @@ export default {
       // this.record.isNeedIca = '0';
       if (e.target.value === '1') {
         this.satisfyFlag = true;
+        this.record.isPass = '1';
         // 可以保存
         this.pagePermission.button_commit_3 = true;
       } else if (e.target.value === '0') {
         this.satisfyFlag = false;
+        this.record.isPass = '0';
         // 不可以保存
         this.pagePermission.button_commit_3 = false;
       }

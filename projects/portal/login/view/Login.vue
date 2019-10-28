@@ -11,11 +11,33 @@
           <div class="ant-drawer-wrapper-body">
             <div class="ant-drawer-body">
               <div>
-                <div class="logo"></div>
+                <div class="logo">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    height="100%" 
+                    width="100%"
+                  >
+                    <image 
+                      xlink:href="/static/logo.svg" 
+                      height="100%" 
+                      width="100%" 
+                    />
+                  </svg>
+                </div>
                 <div class="radio-group">
                   <language-radio class="language-radio"></language-radio>
                 </div>
               </div>
+              <a-row
+                v-if="$store.state.isBuildTest"
+                style="position: absolute; left: calc(50% - 44px)"
+              >
+                <h2
+                  style="color: red"
+                >
+                  {{ $t('env.name') }}
+                </h2>
+              </a-row>
               <a-row>
                 <h1 class="title">
                   TQIS
@@ -48,85 +70,262 @@ export default {
   .ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
       box-shadow: none;
   }
-  .div-wrapper {
-    width: 35%;
-    height:100%;
-    padding: 5% 5% 5% 0;
-    box-shadow:none;
-  }
-  .title {
-    margin-bottom: 4px;
-    padding-top: 9.3%;
-    font-size: 38px;
-    color: #0097E0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .subtitle {
-    margin-bottom: 4px;
-    font-size: 11px;
-    color: #0097E0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
   .login_wrapper {
     width: 100%;
     height: 100%;
     // background-image: url(/static/portal/login_bg.png);
     background-repeat:no-repeat;
-    background-size: cover;
+    background-size: 100% 100%;
     -webkit-font-smoothing: antialiased;
 
     /deep/ .ant-drawer-content {
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.66);
+      min-height: 520px;
     }
   }
-  .logo {
-    display: inline-block;
-    width: 160px;
-    height: 32px;
-    margin: 0;
-    padding: 0;
-    background-image: url("/static/logo.svg");
-    background-size: 100%;
+  /deep/ .ant-radio-button-wrapper-checked {
+    box-shadow: -1px 0 0 0 #ccc;
   }
-  .logo:before,:after {
-    display: inline;
-  }
-  .language-radio {
-    line-height: 1;
-    position: relative;
-    display: inline;
-    margin:0;
-    padding-left: 15%;
-    padding-bottom: 4px;
-    /deep/ .ant-radio-group{
+  
+  @media screen and(min-width: 1366px) {
+    .div-wrapper {
+      width: 546px;
+      padding: 64px;
+      border:none;
+    }
+    .ant-drawer-content {
+      border-radius: 8px;
+    }
+    .title {
+      margin-bottom: 4px;
+      margin-top: 72px;
+      font-size: 32px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .subtitle {
+      margin-bottom: 4px;
+      font-size: 10px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo {
+      display: inline-block;
+      width: 160px;
+      height: 32px;
+    }
+    .logo:before,:after {
+      display: inline-block;
+    }
+    .language-radio {
+      padding-left: 10px;
+    }
+    .login-form {
+      height:274px;
+      margin: auto 32px;
+      /deep/ .ant-row {
+        height: 40px;
+      }
+      /deep/ .ant-form-item,
+      /deep/ .ant-checkbox-wrapper {
+        margin-bottom:24px;
+      }
+    }
+    .radio-group {
+      display: inline-block !important;
+      height: 32px;
+      overflow: hidden;
+      /deep/ .a-radio-button {
+        display: inline-block;
+      }
+      /deep/ div {
+        padding-left: 95px;
+      }
+    }
+    .language-radio {
+      line-height: 1;
       display: inline;
+      /deep/ .ant-radio-group{
+        display: inline;
+        font-size: 12px !important;
+      }
+      /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+        color: #26b1ed;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper {
+        border:none;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper:last-child span{
+        padding: 0 3px;
+      }
+    }
+  }
+  @media screen and(min-width: 1536px) {
+    .div-wrapper {
+      width: 546px;
+      padding: 64px 72px 64px 0;
+      border:none;
+    }
+    .ant-drawer-content {
+      border-radius: 8px;
+    }
+    .title {
+      margin-bottom: 4px;
+      margin-top: 72px;
+      font-size: 32px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .subtitle {
+      margin-bottom: 4px;
+      font-size: 10px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo {
+      display: inline-block;
+      width: 160px;
+      height: 32px;
+    }
+    .logo:before,:after {
+      display: inline-block;
+    }
+    .language-radio {
+      padding-left: 10px;
+    }
+    .login-form {
+      height:274px;
+      margin: auto 32px;
+      /deep/ .ant-row {
+        height: 40px;
+      }
+      /deep/ .ant-form-item,
+      /deep/ .ant-checkbox-wrapper {
+        margin-bottom:24px;
+      }
+    }
+    .radio-group {
+      display: inline-block !important;
+      height: 32px;
+      overflow: hidden;
+      /deep/ .a-radio-button {
+        display: inline-block;
+      }
+      /deep/ div {
+        padding-left: 155px;
+      }
+    }
+    .language-radio {
+      line-height: 1;
+      display: inline;
+      /deep/ .ant-radio-group{
+        display: inline;
+        font-size: 12px !important;
+      }
+      /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+        color: #26b1ed;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper {
+        border:none;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper:last-child span{
+        padding: 0 3px;
+      }
+    }
+  }
+  @media screen and(min-width: 1920px) {
+    .div-wrapper {
+      width: 726px;
+      padding: 112px 152px 112px 0;
+      border:none;
+    }
+    .ant-drawer-content {
+      border-radius: 8px;
+    }
+    .title {
+      margin-bottom: 4px;
+      margin-top: 72px;
+      font-size: 32px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .subtitle {
+      margin-bottom: 4px;
+      font-size: 10px;
+      color: #0097E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo {
+      display: inline-block;
+      width: 216px;
+      height: 44px;
+    }
+    .logo:before,:after {
+      display: inline-block;
+    }
+    .language-radio {
+      padding-left: 10px;
+    }
+    .login-form {
+      height:430px;
+      margin: auto 72px;
+      /deep/ .ant-row {
+        height: 56px;
+      }
+      /deep/ .ant-form-item,
+      /deep/ .ant-checkbox-wrapper {
+        margin-bottom:32px;
+      }
+    }
+    .radio-group {
+      display: inline-block !important;
+      height: 44px;
+      overflow: hidden;
+      /deep/ .a-radio-button {
+        display: inline-block;
+      }
+      /deep/ div {
+        padding-left: 180px;
+        padding-top: 5px;
+      }
+    }
+    .language-radio {
+      line-height: 1;
+      display: inline;
+      /deep/ .ant-radio-group{
+        display: inline;
+        font-size: 12px !important;
+      }
+      /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+        color: #26b1ed;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper {
+        border:none;
+        background: rgba(0,0,0,0);
+      }
+      /deep/ .ant-radio-button-wrapper:last-child span{
+        padding: 0 3px;
+      }
     }
   }
   .language-radio:before,:after {
     display: inline;
-  }
-  .login-form {
-    height:28%;
-    margin: auto 7%;
-    /deep/ .ant-row {
-      height: 5.2%;
-    }
-    /deep/ .ant-form-item,
-    /deep/ .ant-checkbox-wrapper {
-      margin-bottom:7%;
-    }
-    .checked {
-      height: 14px;
-    }
-  }
-  .radio-group {
-    display: inline !important;
-    /deep/ .a-radio-button {
-      display: inline;
-    }
   }
 </style>

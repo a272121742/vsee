@@ -1,4 +1,6 @@
 const moment = require('moment');
+const userName = require('git-user-name');
+
 const project = process.env.npm_config_project;
 const isProd = process.env.NODE_ENV === 'production';
 // 数据加载模式（test: true - 联调模式； false - 本地模式）
@@ -10,6 +12,7 @@ module.exports = config => {
       args[0]['process.env'].test = test;
       args[0]['process.env'].project = JSON.stringify(project);
       args[0]['process.env'].buildDate = JSON.stringify(moment().format('YYYY/MM/DD HH:mm:ss'));
+      args[0]['process.env'].user = JSON.stringify(userName());
       return args;
     });
 };

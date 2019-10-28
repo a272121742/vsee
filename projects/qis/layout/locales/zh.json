@@ -29,6 +29,9 @@
     "required_message": "密码不能为空",
     "unconfirm_message": "两次输入不一致"
   },
+  "env": {
+    "name": "测试环境"
+  },
   "changePassword": {
     "title": "修改密码",
     "success": "密码修改成功，正在跳转登录页",

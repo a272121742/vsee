@@ -88,7 +88,6 @@ export default {
   },
   created () {
     // 生成截流函数
-    this.dropdownVisibleChange = debounce(this.dropdownVisibleChange, 0);
     this.onTextChange = debounce(this.onTextChange, 200);
     this.init();
   },

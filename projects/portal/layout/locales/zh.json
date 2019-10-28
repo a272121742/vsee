@@ -35,6 +35,9 @@
     "success": "密码修改成功，正在跳转登录页",
     "failure": "密码修改失败"
   },
+  "env": {
+    "name": "测试环境"
+  },
   "SERVER": {
     "ERROR": {
       "ECONNABORTED": "软件引起的连接中止",

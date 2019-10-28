@@ -4,7 +4,7 @@
     @submit.stop.self.prevent="handleSubmit"
   >
     <!-- uuid -->
-    <a-form-item>
+    <a-form-item class="hidden">
       <a-input
         v-decorator="['uuid', {initialValue: record.uuid}]"
         type="hidden"

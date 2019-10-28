@@ -35,6 +35,9 @@
     "success": "success",
     "failure": "failure"
   },
+  "env": {
+    "name": "Test Environment"
+  },
   "SERVER": {
     "ERROR": {
       "ECONNABORTED": "Software Caused Connection Abort",
