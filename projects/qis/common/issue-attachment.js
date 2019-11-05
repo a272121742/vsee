@@ -80,6 +80,7 @@ export default {
   methods: {
     file2client,
     file2server,
+    
     /**
      * 获取下载链接
      * @param {*} url - 下载地址（相对）
@@ -98,13 +99,25 @@ export default {
      * @param {*} file
      */
     download (file) {
-      const a = document.createElement('a');
-      a.setAttribute('href', this.getDownloadURL(file.url || file.response.data.path, file.name));
-      a.setAttribute('download', file.name);
-      // a.click在火狐下无法被触发，必须通过这种方式下载
-      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-      a.remove();
+      if (file.status === 'done') {
+        const a = document.createElement('a');
+        a.setAttribute('href', this.getDownloadURL(file.url || file.response.data.path, file.name));
+        a.setAttribute('download', file.name);
+        // a.click在火狐下无法被触发，必须通过这种方式下载
+        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+        a.remove();
+      }
       return false;
+    },
+    beforeUpload (file) {
+      // 小于20M的非空文件
+      const downloadFlag = file.size > 0 && file.size <= 52428800;
+      if (!downloadFlag) {
+        file.response = {
+          code: file.size ? 100001001 : 100001002
+        };
+      }
+      return downloadFlag;
     },
     /**
      * 上传成功后，将客户端文件转换为服务端文件
@@ -116,6 +129,9 @@ export default {
       return function changeHandler (info) {
         // 处理预览显示
         previews.splice(0, previews.length, ...info.fileList.map(tap(file => {
+          if (file.error) {
+            file.response = file.error.status ? vm.$t(`SERVER.ERROR.${file.error.status}`) : file.error.message;
+          }
           if (file.response) {
             if (!file.response.code && file.response.data) {
               file.url = file.response.data.path;
@@ -141,12 +157,30 @@ export default {
      * 删除文件
      * @param {*} pre 保存的数据文件（服务端文件）
      */
-    removeFile: records => file => {
-      const index = records.findIndex(item => item.id === file.id);
-      if (index !== -1) {
-        records.splice(index, 1);
-      }
-      return index !== -1 || !file.size || file.status === 'error';
-    }
+    removeFile (records) {
+      return function removeHandler (file) {
+        const index = records.findIndex(item => item.id === file.id);
+        if (index !== -1) {
+          records.splice(index, 1);
+        }
+        return true;
+      };
+    },
+    /**
+     * 下载/static路径下文件
+     * @param {*} file
+     */
+    downloadFromStatic (fileName) {
+      const a = document.createElement('a');
+      a.setAttribute('href', '/static/' + fileName);
+      a.setAttribute('download', fileName);
+      // a.click在火狐下无法被触发，必须通过这种方式下载
+      a.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      }));
+      a.remove();
+    },
   }
 };

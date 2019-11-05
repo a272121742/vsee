@@ -28,6 +28,10 @@
         font-weight: normal;
         font-style: normal;
       }
+      :root {
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
       * {
         font-family: "SYHT", "roboto";
       }
@@ -42,6 +46,13 @@
         background-color: rgba(0,0,0, 0.04);
         /* background-color: yellow; */
       }
+      body.modal-open {
+        position: fixed;
+        width: 100%;
+      }
+      /* #app {
+         padding-left: calc(100vw - 100%);
+      } */
       #SplashScreen {
         contain: strict;
         width: 100%;

@@ -28,17 +28,12 @@
                   <language-radio class="language-radio"></language-radio>
                 </div>
               </div>
-              <a-row
-                v-if="$store.state.isBuildTest"
-                style="position: absolute; left: calc(50% - 44px)"
-              >
-                <h2
-                  style="color: red"
+              <a-row style="text-align:center;">
+                <span
+                  style="width:370px;color: red;"
                 >
                   {{ $t('env.name') }}
-                </h2>
-              </a-row>
-              <a-row>
+                </span>
                 <h1 class="title">
                   TQIS
                 </h1>

@@ -1,26 +1,39 @@
 <template>
   <a-layout>
     <!-- 头部，固定 -->
-    <a-affix class="affix-header">
-      <layout-header></layout-header>
-    </a-affix>
-    <!-- 内容区域 -->
-    <transition name="page-transition">
-      <a-spin :spinning="refreshing">
-        <a-layout-content v-if="!refreshing">
-          <div class="child-view">
-            <router-view />
-          </div>
-        </a-layout-content>
-      </a-spin>
-    </transition>
-    <!-- 开发辅助区域 -->
-    <helper v-if="$store.state.isDev || $store.state.isDebug"></helper>
-    <!-- 底部区域 -->
-    <a-affix :offset-bottom="0">
-      <a-layout-footer>
-      </a-layout-footer>
-    </a-affix>
+    <div style="z-index:6000;position:absolute;width:100%;margin:auto;">
+      <a-affix class="affix-header">
+        <layout-header></layout-header>
+      </a-affix>
+    </div>
+    <div class="test-env">
+      <h2 
+        v-if="$store.state.isBuildTest"
+        style="color:red;"
+      >
+        <!-- 测试环境 -->
+        {{ $t('env.name') }}
+      </h2>
+    </div>
+    <div style="margin-top:64px;">
+      <!-- 内容区域 -->
+      <transition name="page-transition">
+        <a-spin :spinning="refreshing">
+          <a-layout-content v-if="!refreshing">
+            <div class="child-view">
+              <router-view />
+            </div>
+          </a-layout-content>
+        </a-spin>
+      </transition>
+      <!-- 开发辅助区域 -->
+      <helper v-if="$store.state.isDev || $store.state.isDebug"></helper>
+      <!-- 底部区域 -->
+      <a-affix :offset-bottom="0">
+        <a-layout-footer>
+        </a-layout-footer>
+      </a-affix>
+    </div>
   </a-layout>
 </template>
 
@@ -109,5 +122,17 @@ export default {
   .page-transition-enter .page-transition-container,
   .page-transition-leave-active .page-transition-container {
     transform: scale(1.1);
+  }
+  .test-env {
+    z-index:6000;
+    position:fixed;
+    width:360px;
+    margin:0 auto;
+    left:0;
+    padding-left:calc(100vw - 100%);
+    right:40px;
+    text-align: center;
+    height:64px;
+    line-height:64px;
   }
 </style>

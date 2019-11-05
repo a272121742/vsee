@@ -1,0 +1,178 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import VTextarea from '@comp/form/VTextarea.vue';
+import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
+
+<Meta title="组件库|Form表单/Textarea文本域" />
+
+# 文本域 VTextarea
+
+> 继承：Ant Design Vue [Textarea](https://www.antdv.com/components/input-cn/)
+
+> 混入：[]
+
+> 排除属性： ['autosize', 'rows']
+
+> 拓展属性： ['limit', 'zh', 'allowClear', 'helperOut'] 见下方
+
+## 属性列表
+
+<Props of={ VTextarea } />
+
+## 案例
+
+### 原生写法
+
+按照**AntD**原生所提供的文本域写法，所提供的功能参照**Element**和**iView**并不丰富：
+
+<Preview withToolbar>
+<Story name="基础">
+{{
+  template: `
+    <div>
+      文本输入框：
+      <a-textarea
+        :autosize="{ minRows: 2, maxRows: 4}"
+        :rows="3"
+      />
+    </div>
+  `,
+}}
+</Story>
+</Preview>
+
+## 允许清空
+
+当输入文本之后，组件允许一键清空文本全部信息，只需要配置`allowClear`属性即可。注意，清空会让组件文本值还原回`undefined`状态，这是大多数表单组件所具备的特性。
+
+<Preview withToolbar>
+<Story name="允许清空">
+{{
+  template: `
+    <div>
+      文本输入框：
+      <v-textarea
+        :autosize="{ minRows: 2, maxRows: 4 }"
+        :rows="3"
+        allowClear
+      />
+    </div>
+  `,
+}}
+</Story>
+</Preview>
+
+## 长度限制
+
+扩展后的文本域支持字数限制，字数限制采取原生字符串长度`String.prototype.length`来进行获取。这里并不支持中文长度的获取，若要支持中文长度的计算，请加入**zh**配置参数。
+
+
+<Preview withToolbar>
+<Story name="长度限制">
+{{
+  template: `
+    <div>
+      文本输入框：
+      <v-textarea
+        :autosize="{ minRows: 2, maxRows: 4 }"
+        :rows="3"
+        :limit="20"
+      />
+    </div>
+  `,
+}}
+</Story>
+</Preview>
+
+## 中文模式
+
+默认不配置中文长度的计算，这将导致输入的文本内容只能按照字符串长度计算，那么持久化数据库的字符串可能会超过数据库限制，中文在存储过程中占用2个字符长度，如果希望和数据库定义相互匹配，请开启此项：
+
+<Preview withToolbar>
+<Story name="中文模式">
+{{
+  template: `
+    <div>
+      文本输入框：
+      <v-textarea
+        :autosize="{ minRows: 2, maxRows: 4 }"
+        :rows="3"
+        :limit="20"
+        zh
+      />
+    </div>
+  `,
+}}
+</Story>
+</Preview>
+
+## 外部助手
+
+助手显示是在默认开启`limit`或`allowClear`后自动启用并显示在文本域内部的，如果希望启用在外部，可以开启`helperOut`：
+
+
+<Preview withToolbar>
+<Story name="外部助手">
+{{
+  template: `
+    <div>
+      文本输入框：
+      <v-textarea
+        :autosize="{ minRows: 2, maxRows: 4 }"
+        :rows="3"
+        :limit="20"
+        zh
+        helper-out
+      />
+    </div>
+  `,
+}}
+</Story>
+</Preview>
+
+## 配合表单使用
+
+在AntD的生态系统中，自定义的表单控件需要按照官方的要求来自定义，否则很难使用`v-decorator`的特性。 `VTextarea`已经对AntDesign中的表单作了完美适配，因此，可以完全兼容官方内置的表单组件。
+
+<Preview withToolbar>
+<Story name="配合表单">
+{{
+  template: `
+    <a-form :form="form">
+      <a-form-item
+        label="文本输入框"
+        self-update
+      >
+        <v-textarea
+          v-decorator="['textarea']"
+          :limit="20"
+          allow-clear
+          zh
+        />
+      </a-form-item>
+      <a-button @click="print" block>
+        打印结果
+      </a-button>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['textarea'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  },
+  methods: {
+    print () {
+      const values = this.form.getFieldsValue();
+      this.$message.info(JSON.stringify(values));
+    }
+  }
+}}
+</Story>
+</Preview>

@@ -1,17 +1,16 @@
-import { MODULE_DYNAMIC_CACHE } from '~/config.js';
 import { createNamespacedHelpers } from 'vuex';
 
-export default (moduleName = 'home') => {
+export default (moduleName = 'question') => {
   const { mapState, mapMutations } = createNamespacedHelpers(moduleName);
   return {
     computed: {
       ...mapState({
-        advancePageConfig: MODULE_DYNAMIC_CACHE
+        advancePageConfig: state => state
       })
     },
     methods: {
       ...mapMutations({
-        changeAdvancePageConfig: MODULE_DYNAMIC_CACHE
+        changeAdvancePageConfig: 'setState'
       })
     }
   };

@@ -21,6 +21,7 @@ import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
 import { debounce } from '@util/fnhelper.js';
+import { treeFilter } from '@util/datahelper.js';
 import store from '@store';
 
 
@@ -71,6 +72,9 @@ router.beforeEach((to, from, next) => {
   NProgress.start(); // 开始进度条
   if (!store.state.menus.length) {
     store.dispatch('fetchMenus').then(res => {
+      store.commit('setMenus', treeFilter((item) => {
+        return item.appCode === 'ISSUE';
+      }, res));
       next(findNext(res));
     });
   } else {

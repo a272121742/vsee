@@ -32,9 +32,10 @@
           <a-modal
             :visible="visibleSubmit"
             :title="$t('confirm.title')"
+            :z-index="5001"
             style="top:200px!important;"
             @ok="submitOk"
-            @cancel="submitCancel"
+            @cancel="submitCancel"         
           >
             <p>{{ $t('confirm.content') }}</p>
           </a-modal>
@@ -52,6 +53,7 @@
           <!-- 删除按钮 -->
           <a-button
             v-if="delBtn"
+            :z-index="5001"
             style="marginLeft: 8px"
             class="cancelBtn"
             @click="handleDelete"
@@ -124,16 +126,14 @@
                           v-decorator="[
                             'vehicleModelId',
                             {rules: [{
-                              required: valiRequire, message:$t('search.please_select') + $t('issue.vehicleModelName')
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
                           :transform="selectOption"
-                          :filter-option="filterOption"
-                          :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+                          :placeholder="$t('search.please_select')"
                           allow-clear
                           url="/masterdata/v1/vehiclemodel"
-                          show-search
-                          @select="vehicleModelIdChange"
+                          @change="vehicleModelIdChange"
                         ></net-select>
                       </a-form-item>
                     </a-col>
@@ -146,14 +146,12 @@
                           v-decorator="[
                             'faultTreeIds1',
                             {rules:[{
-                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds1')
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
                           :transform="selectOption"
-                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
-                          :filter-option="filterOption"
-                          :allow-clear="true"
-                          show-search
+                          :placeholder="$t('search.please_select')"
+                          allow-clear
                           url="/issue/v1/faultcategory?p_id=0"
                           @change="handleSystem"
                         >
@@ -167,18 +165,17 @@
                           v-decorator="[
                             'faultTreeIds2',
                             {rules:[{
-                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds2')
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
-                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select')"
                           :disabled="!record.faultTreeIds1"
                           :delay="!isEdit || !record.faultTreeIds1"
-                          :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
+                          :url="`/issue/v1/faultcategory`"
+                          :query="{p_id: record.faultTreeIds1}"
                           :cache="false"
                           :transform="selectOption"
-                          :allow-clear="true"
-                          show-search
+                          allow-clear
                           @change="faultTreeIds2Change"
                         >
                         </net-select>
@@ -191,18 +188,17 @@
                           v-decorator="[
                             'faultTreeIds3',
                             {rules:[{
-                              required: valiRequire, message:$t('search.please_select') + $t('issue.faultTreeIds3')
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
+                          :placeholder="$t('search.please_select')"
                           :delay="!isEdit || !record.faultTreeIds2"
-                          :filter-option="filterOption"
                           :disabled="!record.faultTreeIds2"
-                          :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+                          :url="`/issue/v1/faultTree`"
+                          :query="{fault_category_id: record.faultTreeIds2}"
                           :cache="false"
                           :transform="selectOption"
-                          :allow-clear="true"
-                          show-search
+                          allow-clear
                           @change="faultTreeIds3Change"
                         >
                         </net-select>
@@ -217,15 +213,13 @@
                           v-decorator="[
                             'source',
                             {rules:[{
-                              required: valiRequire, message:$t('search.please_select') + $t('issue.source')
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select') + $t('issue.source')"
-                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select')"
                           :transform="selectOptiondict"
-                          :allow-clear="true"
+                          allow-clear
                           :disabled="sourceDisabled"
-                          show-search
                           url="/sys/dict?dictType=issue_source"
                           @change="handleSource"
                         >
@@ -239,14 +233,12 @@
                           v-decorator="[
                             'grade',
                             {rules:[{
-                              required: valiRequire, message: $t('search.please_select') + $t('issue.grade')
+                              required: valiRequire, message: $t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select') + $t('issue.grade')"
-                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select')"
                           :transform="selectOptiondict"
-                          :allow-clear="true"
-                          :disabled="sourceDisabled"
+                          allow-clear
                           show-search
                           url="/sys/dict?dictType=issue_grade"
                         >
@@ -260,13 +252,12 @@
                           v-decorator="[
                             'projectPhase',
                             {rules:[{
-                              required: valiRequire, message: $t('search.please_select')+$t('issue.projectPhase')
+                              required: valiRequire, message: $t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select')+$t('issue.projectPhase')"
-                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select')"
                           :transform="selectOptiondict"
-                          :allow-clear="true"
+                          allow-clear
                           show-search
                           url="/sys/dict?dictType=issue_phase"
                         >
@@ -280,7 +271,7 @@
                           v-decorator="[
                             'failureDate'
                           ]"
-                          :placeholder="$t('search.please_select') + $t('issue.failureDate')"
+                          :placeholder="$t('search.please_select')"
                           :format="GLOBAL_SELECT_DATE_FORMAT"
                           :disabled-date="disabledDate"
                           style="width:261px;"
@@ -296,14 +287,12 @@
                           v-decorator="[
                             'manufactureBaseId',
                             {rules:[{
-                              required: valiRequire, message: $t('search.please_select')+$t('issue.manufactureBase')
+                              required: valiRequire, message: $t('search.please_select')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_select')+$t('issue.manufactureBase')"
-                          :filter-option="filterOption"
+                          :placeholder="$t('search.please_select')"
                           :transform="selectOptionBase"
-                          :allow-clear="true"
-                          show-search
+                          allow-clear
                           url="/masterdata/v1/manufactureBase"
                         />
                       </a-form-item>
@@ -315,16 +304,14 @@
                           v-decorator="[
                             'responsibleDepartmentId',
                             {rules:[{
-                              required: valiRequire, message: $t('search.please_select')+$t('issue.responsibleDepartmentId')
+                              required: valiRequire, message: $t('search.please_select')
                             }]}
                           ]"
-                          :filter-option="filterOption"
                           :transform="selectOptionSingn"
-                          :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
+                          :placeholder="$t('search.please_select')"
                           :delay="!isEdit"
-                          :allow-clear="true"
-                          :disabled="sourceDisabled"
-                          show-search
+                          allow-clear
+                          :disabled="resdeptDisabled"
                           url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
                         >
                         </net-select>
@@ -340,11 +327,9 @@
                           v-decorator="[
                             'frequency',
                             {rules: [
-                              {required: valiRequire, message: $t('search.please_input')+$t('issue.frequency')},
-                              {validator: intVer
-                              }]}
+                              {required: valiRequire, message: $t('search.please_input')}]}
                           ]"
-                          :placeholder="$t('search.please_input') + $t('issue.frequency')"
+                          :placeholder="$t('search.please_input')"
                           allow-clear
                         />
                       </a-form-item>
@@ -360,11 +345,11 @@
                           v-decorator="[
                             'contact',
                             {rules: [
-                              {required: valiRequire, message: $t('search.please_input')+$t('issue.contact')},
+                              {required: valiRequire, message: $t('search.please_input')},
                               {validator: phoneVer}
                             ]}
                           ]"
-                          :placeholder="$t('search.please_input') + $t('issue.contact')"
+                          :placeholder="$t('search.please_input')"
                           allow-clear
                           max="11"
                           len="11"
@@ -384,12 +369,13 @@
                           v-decorator="[
                             'description',
                             {rules: [{
-                              required: valiRequire, message: $t('search.please_input') + $t('issue.description')
+                              required: valiRequire, message: $t('search.please_input')
                             }]}
                           ]"
-                          :placeholder="$t('search.please_input') + $t('issue.description')"
+                          :placeholder="$t('search.please_input')"
+                          :limit="2000"
+                          zh
                           allow-clear
-                          maxlength="254"
                         />
                       </a-form-item>
                     </a-col>
@@ -400,6 +386,7 @@
                           :headers="headers"
                           :multiple="true"
                           :file-list="fileList"
+                          :before-upload="beforeUpload"
                           :remove="file => removeFile(record.fileList)(file)"
                           :action="uploadUrl"
                           name="file"
@@ -443,10 +430,10 @@
                       v-decorator="[
                         'vinNo',
                         {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinOrLicense')
+                          required: validVinOrlicense, message:$t('search.please_input')
                         },{validator: vinVer}]}
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.vinNo')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                       @change="changeVinNoRequired"
                     />
@@ -463,10 +450,10 @@
                       v-decorator="[
                         'license',
                         {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input') + $t('issue.vinOrLicense')
+                          required: validVinOrlicense, message:$t('search.please_input')
                         }]}
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.license')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                       maxlength="20"
                       @change="changeLicenseRequired"
@@ -480,13 +467,11 @@
                       v-decorator="[
                         'firstCausePart',
                       ]"
-                      :filter-option="false"
-                      :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOption"
-                      :allow-clear="true"
-                      :query="{orderField: 'name'}"
-                      word-key="name"
-                      show-search
+                      allow-clear
+                      :query="{id: '${value}', name: '${search}' , orderField: 'name'}"
+                      :cache="false"
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
@@ -498,13 +483,11 @@
                       v-decorator="[
                         'firstCausePart',
                       ]"
-                      :filter-option="false"
-                      :placeholder="$t('search.please_select') + $t('issue.partId')"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOptionId"
-                      :allow-clear="true"
-                      :query="{orderField: 'code'}"
-                      word-key="code"
-                      show-search
+                      allow-clear
+                      :query="{id: '${value}', code: '${search}', orderField: 'code'}"
+                      :cache="false"
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
@@ -521,11 +504,9 @@
                       v-decorator="[
                         'supplierId',
                       ]"
-                      :filter-option="filterOption"
-                      :placeholder="$t('search.please_select') + $t('issue.supplierId')"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOption"
-                      :allow-clear="true"
-                      show-search
+                      allow-clear
                       url="/masterdata/v1/supplier"
                     ></net-select>
                   </a-form-item>
@@ -540,7 +521,7 @@
                       v-decorator="[
                         'productDate'
                       ]"
-                      :placeholder="$t('search.please_select') + $t('issue.productDate')"
+                      :placeholder="$t('search.please_select')"
                       :format="GLOBAL_SELECT_DATE_FORMAT"
                       :disabled-date="disabledDate"
                       style="width:261px;"
@@ -557,11 +538,9 @@
                       v-decorator="[
                         'testType',
                       ]"
-                      :filter-option="filterOption"
-                      :placeholder="$t('search.please_select') + $t('issue.testType')"
+                      :placeholder="$t('search.please_select')"
                       :transform="selectOptiondict"
-                      :allow-clear="true"
-                      show-search
+                      allow-clear
                       url="/sys/dict?dictType=issue_test_type"
                     ></net-select>
                   </a-form-item>
@@ -576,7 +555,7 @@
                       v-decorator="[
                         'milage'
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.milage')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -593,7 +572,7 @@
                       v-decorator="[
                         'maintenanceStation',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.maintenanceStation')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -608,7 +587,7 @@
                       v-decorator="[
                         'softwareVersion',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.softwareVersion')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -623,7 +602,7 @@
                       v-decorator="[
                         'calibrationVersion',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.calibrationVersion')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -638,7 +617,7 @@
                       v-decorator="[
                         'hardwareVersion',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.hardwareVersion')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -655,7 +634,7 @@
                       v-decorator="[
                         'confirmationVersion',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.confirmationVersion')"
+                      :placeholder="$t('search.please_input')"
                       allow-clear
                     />
                   </a-form-item>
@@ -670,8 +649,9 @@
                       v-decorator="[
                         'workConditionInfo'
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.workConditionInfo')"
-                      maxlength="1000"
+                      :placeholder="$t('search.please_input')"
+                      :limit="2000"
+                      zh
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -686,8 +666,9 @@
                       v-decorator="[
                         'preliminaryInvestigation',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.preliminaryInvestigation')"
-                      maxlength="1000"
+                      :placeholder="$t('search.please_input')"
+                      :limit="2000"
+                      zh
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -702,8 +683,9 @@
                       v-decorator="[
                         'remark',
                       ]"
-                      :placeholder="$t('search.please_input') + $t('issue.remark')"
-                      maxlength="1000"
+                      :placeholder="$t('search.please_input')"
+                      :limit="2000"
+                      zh
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -728,6 +710,7 @@ import {
 import moment from 'moment';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
+import { toggleForbidScrollThrough } from '~~/scroll.js';
 
 const {
   mapActions
@@ -794,6 +777,7 @@ export default {
       coChair: null,
       monitor: null,
       sourceDisabled: false,
+      resdeptDisabled: false,
       labelCol: {
         // xs: { span: 24 },
         sm: {
@@ -900,8 +884,9 @@ export default {
             vm.delBtn = true;
             vm.submitBtn = true;
           } 
-          else if (status > 100300) {
+          else if (status > 100300||status==100200) {
             vm.sourceDisabled = true;
+            vm.resdeptDisabled = status < 300100?false:true;
           } 
           else {
             vm.submitBtn = false;
@@ -944,20 +929,20 @@ export default {
     vinVer (rule, value, callback) {
       var myreg = /^[A-Z0-9]{8,17}$/;
       if (value && !myreg.test(value)) {
-        callback(new Error('请输入正确的VIN'));
+        callback(new Error(this.$t('issue_workflow.D5.vinVer')));
       } else {
         callback();
       }
     },
     // 问题频次整数校验
-    intVer (rule, value, callback) {
-      var myreg = /^[1-9]\d*$/;
-      if (value && !myreg.test(value)) {
-        callback(new Error('请输入整数'));
-      } else {
-        callback();
-      }
-    },
+    // intVer (rule, value, callback) {
+    //   var myreg = /^[1-9]\d*$/;
+    //   if (value && !myreg.test(value)) {
+    //     callback(new Error('请输入整数'));
+    //   } else {
+    //     callback();
+    //   }
+    // },
     // 禁用未开始的日期
     disabledDate (current) {
       // Can not select days before today and today
@@ -967,7 +952,7 @@ export default {
     phoneVer (rule, value, callback) {
       var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
       if (value && !myreg.test(value)) {
-        callback(new Error('请输入11位有效手机号'));
+        callback(new Error(this.$t('issue.phoneVer')));
       } else {
         callback();
       }
@@ -988,15 +973,18 @@ export default {
       this.sourceName = value;
     },
     handleDelete () {
+      toggleForbidScrollThrough(true);
       this.visibleDelete = true;
     },
     // 删除弹框确认按钮
     deleteOk () {
+      toggleForbidScrollThrough(false);
       this.visibleDelete = false;
       this.handleDeleteFunction();
     },
     // 删除弹框取消按钮
     deleteCancel () {
+      toggleForbidScrollThrough(false);
       this.visibleDelete = false;
     },
     handleDeleteFunction () {
@@ -1126,155 +1114,156 @@ export default {
         }
       }
     },
-    // 点击提交按钮
-    handleSubmit () {
-      this.visibleSubmit = true;
-    },
     // 提交弹框点击取消
     submitCancel () {
+      toggleForbidScrollThrough(false);
       this.visibleSubmit = false;
       const commitButton = this.$refs.commitButton;
       commitButton.reset();
     },
     //  提交弹框点击确定
     submitOk () {
+      toggleForbidScrollThrough(false);
       this.visibleSubmit = false;
-      this.handleSubmitFunction();
+      const commitButton = this.$refs.commitButton;
+      const hide = this.$message.loading(this.$t('issue_workflow.submitIng'), 0);
+      const data = this.form.getFieldsValue();
+      if (data.milage === undefined) {
+        data.milage = '';
+      }
+      data.fileList = this.record.fileList;
+      const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
+      data.faultTreeIds = tree;
+      const title2 = this.faultTreeIds2Title || '';
+      const title3 = this.codeTitle || '';
+
+      const fault2 = title2.substr(title2.indexOf('-'), title2.length);
+      const fault3 = title3.substr(title3.indexOf('-'), title3.length);
+      const title = this.carTitle + fault2 + fault3;
+
+      data.title = title;
+      this.businessTitle = title;
+      // 日期格式化
+      if (data.failureDate) {
+        const failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
+        data.failureDate = failureDate;
+      }
+      if (data.productDate) {
+        const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
+        data.productDate = productDate;
+      }
+
+      const id = this.$store.getters.getUser().id;
+      const vm = this;
+      const param1 = {
+        issueSource: data.source,
+        type: 'coChair'
+      };
+      const param2 = {
+        issueSource: data.source,
+        type: 'monitor'
+      };
+      const cocharFunction = vm.getSysUser(param1).then(res => {
+        vm.coChair = vm.coChair ? vm.coChair : res.id;
+        return vm.coChair;
+      });
+      const monitorFunction = vm.getSysUser(param2).then(res => {
+        vm.monitor = vm.monitor ? vm.monitor : res.id;
+        return vm.monitor;
+      });
+      // vm.coChair = vm.coChair ? vm.coChair : cocharId;
+      // vm.monitor = vm.monitor ? vm.monitor : monitorId;
+      if (this.businessKey) {
+        data.id = this.id;
+        data.optCounter = this.optCounter;
+        Promise.all([cocharFunction, monitorFunction]).then((result) => {
+          this.editSaveQuestion(data).then(res => {
+            this.businessKey = res.id;
+            this.optCounter = res.optCounter;
+            const param = {
+              businessKey: this.businessKey,
+              businessTitle: this.businessTitle,
+              processDefinitionKey: 'IRS1',
+              subSys: 'irs',
+              taskId: null,
+              userId: id,
+              variables: {
+                coChair: result[0],
+                monitor: result[1],
+                issc: '0',
+                businessKey: this.businessKey,
+                assigner: vm.monitor
+              }
+            };
+            this.workFlowSubmit(param).then(res2 => {
+              if (res2) {
+                setTimeout(() => {
+                  hide();
+                  this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                    commitButton.reset();
+                    this.$router.push({
+                      path: this.$route.query.form || '/'
+                    });
+                  });
+                }, 200);
+              }
+            });
+          });
+        });
+      } else {
+        data.id = this.id;
+        data.optCounter = this.optCounter;
+        Promise.all([cocharFunction, monitorFunction]).then((result) => {
+          this.saveQuestion(data).then(res => {
+            this.businessKey = res.id;
+            const param = {
+              businessKey: this.businessKey,
+              businessTitle: this.businessTitle,
+              processDefinitionKey: 'IRS1',
+              subSys: 'irs',
+              taskId: null,
+              userId: id,
+              variables: {
+                coChair: result[0],
+                monitor: result[1],
+                issc: '0',
+                businessKey: this.businessKey,
+                assigner: vm.monitor
+              }
+            };
+            this.workFlowSubmit(param).then(res2 => {
+              if (res2) {
+                setTimeout(() => {
+                  hide();
+                  this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                    commitButton.reset();
+                    this.$router.push({
+                      path: this.$route.query.form || '/'
+                    });
+                  });
+                }, 200);
+              }
+            });
+          });
+        });
+      }
+      setTimeout(() => { hide();
+      }, 200);
     },
     // 提交接口调用函数
-    handleSubmitFunction () {
+    handleSubmit () {
       this.valiRequire = true;
       this.validVinOrlicense = !this.record.vinNo && !this.record.license;
       const commitButton = this.$refs.commitButton;
-      const hide = this.$message.loading('正在提交中...', 0);
       this.form.validateFields((err) => {
         if (!err) {
-          const data = this.form.getFieldsValue();
-          if (data.milage === undefined) {
-            data.milage = '';
-          }
-          data.fileList = this.record.fileList;
-          const tree = `所属系统-${data.faultTreeIds1},所属功能-${data.faultTreeIds2},故障代码-${data.faultTreeIds3}`;
-          data.faultTreeIds = tree;
-          const title2 = this.faultTreeIds2Title || '';
-          const title3 = this.codeTitle || '';
-
-          const fault2 = title2.substr(title2.indexOf('-'), title2.length);
-          const fault3 = title3.substr(title3.indexOf('-'), title3.length);
-          const title = this.carTitle + fault2 + fault3;
-
-          data.title = title;
-          this.businessTitle = title;
-          // 日期格式化
-          if (data.failureDate) {
-            const failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
-            data.failureDate = failureDate;
-          }
-          if (data.productDate) {
-            const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
-            data.productDate = productDate;
-          }
-
-          const id = this.$store.getters.getUser().id;
-          const vm = this;
-          const param1 = {
-            issueSource: data.source,
-            type: 'coChair'
-          };
-          const param2 = {
-            issueSource: data.source,
-            type: 'monitor'
-          };
-          const cocharFunction = vm.getSysUser(param1).then(res => {
-            vm.coChair = vm.coChair ? vm.coChair : res.id;
-            return vm.coChair;
-          });
-          const monitorFunction = vm.getSysUser(param2).then(res => {
-            vm.monitor = vm.monitor ? vm.monitor : res.id;
-            return vm.monitor;
-          });
-          // vm.coChair = vm.coChair ? vm.coChair : cocharId;
-          // vm.monitor = vm.monitor ? vm.monitor : monitorId;
-          if (this.businessKey) {
-            data.id = this.id;
-            data.optCounter = this.optCounter;
-            Promise.all([cocharFunction, monitorFunction]).then((result) => {
-              this.editSaveQuestion(data).then(res => {
-                this.businessKey = res.id;
-                this.optCounter = res.optCounter;
-                const param = {
-                  businessKey: this.businessKey,
-                  businessTitle: this.businessTitle,
-                  processDefinitionKey: 'IRS1',
-                  subSys: 'irs',
-                  taskId: null,
-                  userId: id,
-                  variables: {
-                    coChair: result[0],
-                    monitor: result[1],
-                    issc: '0',
-                    businessKey: this.businessKey,
-                    assigner: vm.monitor
-                  }
-                };
-                this.workFlowSubmit(param).then(res2 => {
-                  if (res2) {
-                    setTimeout(() => {
-                      hide();
-                      this.$message.success('提交成功', 1).then(() => {
-                        commitButton.reset();
-                        this.$router.push({
-                          path: this.$route.query.form || '/'
-                        });
-                      });
-                    }, 200);
-                  }
-                });
-              });
-            });
-          } else {
-            data.id = this.id;
-            data.optCounter = this.optCounter;
-            Promise.all([cocharFunction, monitorFunction]).then((result) => {
-              this.saveQuestion(data).then(res => {
-                this.businessKey = res.id;
-                const param = {
-                  businessKey: this.businessKey,
-                  businessTitle: this.businessTitle,
-                  processDefinitionKey: 'IRS1',
-                  subSys: 'irs',
-                  taskId: null,
-                  userId: id,
-                  variables: {
-                    coChair: result[0],
-                    monitor: result[1],
-                    issc: '0',
-                    businessKey: this.businessKey,
-                    assigner: vm.monitor
-                  }
-                };
-                this.workFlowSubmit(param).then(res2 => {
-                  if (res2) {
-                    setTimeout(() => {
-                      hide();
-                      this.$message.success('提交成功', 1).then(() => {
-                        commitButton.reset();
-                        this.$router.push({
-                          path: this.$route.query.form || '/'
-                        });
-                      });
-                    }, 200);
-                  }
-                });
-              });
-            });
-          }
+          this.visibleSubmit = true;
+          toggleForbidScrollThrough(true);
         } else {
           commitButton.reset();
+          this.visibleSubmit = false;
         }
       });
-      setTimeout(() => { hide();
-      }, 200);
     },
     handleSave () {
       this.valiRequire = false;
@@ -1283,8 +1272,8 @@ export default {
       //   saveButton.reset();
       //   this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
       // });
-
-      const hide = this.$message.loading('正在保存中...', 0);
+      // 正在保存中...
+      const hide = this.$message.loading(this.$t('issue_workflow.saveIng'), 0);
       const data = this.form.getFieldsValue();
       data.fileList = this.record.fileList;
       if (data.milage === undefined) {
@@ -1319,7 +1308,7 @@ export default {
             this.optCounter = res.optCounter;
             setTimeout(() => {
               hide();
-              this.$message.success('保存成功', 1).then(() => {
+              this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
                   path: this.$route.query.form || '/'
@@ -1332,7 +1321,7 @@ export default {
             this.businessKey = res.id;
             setTimeout(() => {
               hide();
-              this.$message.success('保存成功', 1).then(() => {
+              this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
                   path: this.$route.query.form || '/'
@@ -1360,7 +1349,7 @@ export default {
                 this.optCounter = res.optCounter;
                 setTimeout(() => {
                   hide();
-                  this.$message.success('保存成功', 1).then(() => {
+                  this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                     saveButton.reset();
                     this.$router.push({
                       path: this.$route.query.form || '/'
@@ -1381,7 +1370,7 @@ export default {
             this.optCounter = res.optCounter;
             setTimeout(() => {
               hide();
-              this.$message.success('保存成功', 1).then(() => {
+              this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
                   path: this.$route.query.form || '/'

@@ -17,7 +17,7 @@
             v-decorator="[
               'title'
             ]"
-            :placeholder="$t('search.please_input') + $t('issue.title')"
+            :placeholder="$t('search.please_input')"
             autocomplete="off"
             allow-clear
           />
@@ -36,7 +36,7 @@
             v-decorator="[
               'code'
             ]"
-            :placeholder="$t('search.please_input') + $t('issue.code')"
+            :placeholder="$t('search.please_input')"
             autocomplete="off"
             allow-clear
           />
@@ -50,12 +50,10 @@
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
             v-decorator="['vehicleModelId']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+            :placeholder="$t('search.please_select')"
             :transform="transformVehicleModelName"
-            allow-clear
-            show-search
             url="/masterdata/v1/vehiclemodel"
+            allow-clear
           />
         </a-form-item>
       </a-col>
@@ -67,11 +65,9 @@
         <a-form-item :label="$t('issue.faultTreeIds1')">
           <net-select
             v-decorator="['faultTreeIds1']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.faultTreeIds1')"
+            :placeholder="$t('search.please_select')"
             :transform="transformFaultTreeIds1"
             allow-clear
-            show-search
             url="/issue/v1/faultcategory?p_id=0"
             @change="faultTreeIds1Change"
           />
@@ -85,12 +81,11 @@
         <a-form-item :label="$t('issue.faultTreeIds2')">
           <net-select
             v-decorator="['faultTreeIds2']"
-            :filter-option="filterOption"
-            :url="`/issue/v1/faultcategory?p_id=${record.faultTreeIds1}`"
+            :url="`/issue/v1/faultcategory`"
+            :query="{p_id: record.faultTreeIds1}"
             :cache="false"
             :disabled="!record.faultTreeIds1"
-            :delay="!record.faultTreeIds1"
-            :placeholder="$t('search.please_select') + $t('issue.faultTreeIds2')"
+            :placeholder="$t('search.please_select')"
             :transform="transformFaultTreeIds2"
             allow-clear
             show-search
@@ -106,12 +101,11 @@
         <a-form-item :label="$t('issue.faultTreeIds3')">
           <net-select
             v-decorator="['faultTreeIds3']"
-            :filter-option="filterOption"
-            :url="`/issue/v1/faultTree?fault_category_id=${record.faultTreeIds2}`"
+            :url="`/issue/v1/faultTree`"
+            :query="{fault_category_id: record.faultTreeIds2}"
             :cache="false"
             :disabled="!record.faultTreeIds2"
-            :delay="!record.faultTreeIds2"
-            :placeholder="$t('search.please_select') + $t('issue.faultTreeIds3')"
+            :placeholder="$t('search.please_select')"
             :transform="transformFaultTreeIds3"
             allow-clear
             show-search
@@ -126,14 +120,14 @@
         <a-form-item :label="$t('issue.source')">
           <net-select
             v-decorator="['source']"
-            :filter-option="filterOption"
-            :cache="false"
-            :delay="!record.source"
-            :placeholder="$t('search.please_select') + $t('issue.source')"
+            :placeholder="$t('search.please_select')"
             :transform="transformSource"
-            allow-clear
-            show-search
+            :max-tag-count="2"
+            mode="multiple"
             url="/sys/dict?dictType=issue_source"
+            allow-clear
+            close-search
+            delay
           />
         </a-form-item>
       </a-col>
@@ -145,12 +139,14 @@
         <a-form-item :label="$t('issue.grade')">
           <net-select
             v-decorator="['grade']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.grade')"
+            :max-tag-count="2"
+            :placeholder="$t('search.please_select')"
             :transform="transformGrade"
-            allow-clear
-            show-search
+            mode="multiple"
             url="/sys/dict?dictType=issue_grade"
+            allow-clear
+            close-search
+            delay
           />
         </a-form-item>
       </a-col>
@@ -162,12 +158,15 @@
         <a-form-item :label="$t('issue.projectPhase')">
           <net-select
             v-decorator="['projectPhase']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.projectPhase')"
+            :placeholder="$t('search.please_select')"
             :transform="transformPhase"
+            :max-tag-count="2"
+            mode="multiple"
+            url="/sys/dict?dictType=issue_phase"
             allow-clear
             show-search
-            url="/sys/dict?dictType=issue_phase"
+            close-search
+            delay
           />
         </a-form-item>
       </a-col>
@@ -179,12 +178,14 @@
         <a-form-item :label="$t('issue.manufactureBase')">
           <net-select
             v-decorator="['manufactureBaseId']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.manufactureBase')"
+            :placeholder="$t('search.please_select')"
             :transform="transformManufactureBase"
-            allow-clear
-            show-search
+            :max-tag-count="1"
+            mode="multiple"
             url="/masterdata/v1/manufactureBase"
+            allow-clear
+            close-search
+            delay
           />
         </a-form-item>
       </a-col>
@@ -196,14 +197,12 @@
         <a-form-item :label="$t('issue.firstCausePart')">
           <net-select
             v-decorator="['firstCausePart']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.firstCausePart')"
+            :placeholder="$t('search.please_select')"
             :transform="transformFirstCausePart"
-            :delay="true"
+            :query="{name: '${search}'}"
             url="/masterdata/v1/part"
-            word-key="name"
             allow-clear
-            show-search
+            delay
           />
         </a-form-item>
       </a-col>
@@ -211,16 +210,15 @@
         v-if="advanced"
         :span="6"
       >
-        <!-- 供应商ID -->
+        <!-- 供应商名称 -->
         <a-form-item :label="$t('issue.supplierId')">
           <net-select
             v-decorator="['supplierId']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.supplierId')"
+            :placeholder="$t('search.please_select')"
             :transform="transformSupplierId"
-            allow-clear
-            show-search
             url="/masterdata/v1/supplier"
+            allow-clear
+            delay
           />
         </a-form-item>
       </a-col>
@@ -233,12 +231,13 @@
         <a-form-item :label="$t('issue.proposerName')">
           <net-select
             v-decorator="['creator']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.proposerName')"
+            :placeholder="$t('search.please_select')"
             :transform="filterOptionCreator"
-            allow-clear
-            show-search
+            :max-tag-count="1"
+            mode="multiple"
             url="/issue/v1/issue/getIssueCreatorList"
+            allow-clear
+            delay
           >
           </net-select>
         </a-form-item>
@@ -248,16 +247,17 @@
         v-if="advanced"
         :span="6"
       >
-        <!-- 「当前办理人」下拉 -->
+        <!-- 「当前处理人」下拉 -->
         <a-form-item :label="$t('issue.assignerName')">
           <net-select
             v-decorator="['assigner']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.assignerName')"
+            :placeholder="$t('search.please_select')"
             :transform="filterOptionAssigner"
-            allow-clear
-            show-search
+            :max-tag-count="1"
+            mode="multiple"
             url="/issue/v1/issue/getIssueAssignerList"
+            allow-clear
+            delay
           >
           </net-select>
         </a-form-item>
@@ -272,9 +272,10 @@
         <a-form-item :label="$t('issue.responsibleDepartmentId')">
           <net-select
             v-decorator="['responsibleDepartmentId']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.responsibleDepartmentId')"
+            :placeholder="$t('search.please_select')"
             :transform="filterOptionResponsibleDepId"
+            :max-tag-count="1"
+            mode="multiple"
             allow-clear
             show-search
             url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
@@ -400,7 +401,7 @@ export default {
     vm.mapPropsToFields = mapPropsToFields(vm, [
       'title', 'code', 'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
       'source', 'grade', 'projectPhase', 'manufactureBaseId', 'firstCausePart',
-      'supplierId', 'failureDate', 'closeDate', 'planCloseDate', ''
+      'supplierId', 'creator', 'assigner', 'responsibleDepartmentId', 'failureDate', 'closeDate', 'planCloseDate', ''
     ], 'record');
     return {
       // 通过映射数据源生成表单
@@ -493,9 +494,11 @@ export default {
         if (record.hasOwnProperty(prop)) {
           str += `&${prop}=${record[prop]}`;
         }
+        console.log(prop);
       }
       const a = document.createElement('a');
       const preUrl = this.$store.getters.getUrl();
+      
       const token = this.$store.state.token;
       a.setAttribute('href', preUrl + `/issue/v1/issue/export?token=${token}` + str);
       // a.click在火狐下无法被触发，必须通过这种方式下载

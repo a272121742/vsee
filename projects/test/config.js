@@ -4,8 +4,8 @@ export const LANGUAGE_DEFAULT = 'zh_CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
 
 export const AUTH_API = {
-  login: '',
-  logout: ''
+  login: '/auth/login',
+  logout: '/auth/logout'
 };
 export const GLOBAL_API = {
   user: ['/sys/user/info', { appCode: 'ISSUE' }],

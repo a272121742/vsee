@@ -1,39 +1,41 @@
 <template>
-  <a-select
-    v-bind="exclude(['options', 'label-in-value'], $attrs)"
-    label-in-value
-    :value="labelValue"
-    :default-active-first-option="false"
-    :options="options"
-    :show-search="!closeSearch"
-    :filter-option="$attrs['filter-option'] || filterOption"
-    :disabled="$attrs.disabled || rending"
-    :max-tag-count="$attrs['max-tag-count'] || 0"
-    :get-popup-container="el => el.parentNode"
-    v-on="exclude(['change'], $listeners)"
-    @dropdownVisibleChange="dropdownVisibleChange"
-    @search="onTextChange"
-    @change="onChange"
-  >
-    <template #suffixIcon>
-      <a-icon :type="suffixType" />
-    </template>
-    <template #notFoundContent>
-      <a-spin
-        v-if="fetching"
-        size="small"
-      >
-        <a-icon
-          slot="indicator"
-          type="loading"
-          spin
+  <div>
+    <a-select
+      v-bind="exclude(['options', 'label-in-value'], $attrs)"
+      label-in-value
+      :value="labelValue"
+      :default-active-first-option="false"
+      :options="options"
+      :show-search="!closeSearch"
+      :filter-option="$attrs['filter-option'] || filterOption"
+      :disabled="$attrs.disabled || rending"
+      :max-tag-count="$attrs['max-tag-count'] || 0"
+      :get-popup-container="el => el.parentNode"
+      v-on="exclude(['change'], $listeners)"
+      @dropdownVisibleChange="dropdownVisibleChange"
+      @search="onTextChange"
+      @change="onChange"
+    >
+      <template #suffixIcon>
+        <a-icon :type="suffixType" />
+      </template>
+      <template #notFoundContent>
+        <a-spin
+          v-if="fetching"
+          size="small"
+        >
+          <a-icon
+            slot="indicator"
+            type="loading"
+            spin
+          />
+        </a-spin>
+        <a-empty
+          v-else
         />
-      </a-spin>
-      <a-empty
-        v-else
-      />
-    </template>
-  </a-select>
+      </template>
+    </a-select>
+  </div>
 </template>
 
 <script>
@@ -62,17 +64,6 @@ function transformQuery (query) {
     }
   }
   return transQuery;
-}
-
-function toggleForbidScrollThrough (isForbide) {
-  let scrollTop = window.pageYOffset;
-  if (isForbide) {
-    document.body.classList.add('modal-open');
-    document.body.style.top = -scrollTop + 'px';
-  } else {
-    document.body.classList.remove('modal-open');
-    document.scrollingElement.scrollTop = scrollTop;
-  }
 }
 
 export default {
@@ -249,7 +240,7 @@ export default {
             }
           }
         } else {
-          this.labelValue = void 0;
+          this.labelValue = value;
         }
       }
     }

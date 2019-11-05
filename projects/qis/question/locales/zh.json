@@ -68,7 +68,8 @@
     "closeDate": "关闭日期",
     "planCloseDate": "计划关闭日期",
     "seeMore": "查看更多",
-    "vinOrLicense": "vin或者车号"
+    "vinOrLicense": "vin或者车号",
+    "phoneVer":"请输入11位有效手机号"
   },
   "search": {
     "find_button": "查询",
@@ -116,6 +117,11 @@
     "reanalysis": "再分析"
   },
   "issue_workflow": {
+    "submitSuccess":"提交成功",
+    "rejectSuccess":"再分析成功",
+    "saveSuccess":"保存成功",
+    "submitIng":"正在提交中...",
+    "saveIng":"正在保存中...",
     "D": {
       "processName": "草稿"
     },
@@ -137,8 +143,10 @@
       "champion": "问题责任人",
       "champion_short": "责任人",
       "analysis_champion": "分析责任人",
+      "endAnalysis":"结束7钻分析",
       "analysis": "7钻分析",
       "before_analysis": "7钻分析之前",
+      "1-3stDiamond": "第1-3钻",
       "1stDiamond": "第1钻",
       "rightProcess": "过程是否正确",
       "2ndDiamond": "第2钻",
@@ -157,7 +165,17 @@
       "actual": "实际情况",
       "conclusion": "结论",
       "champion_span": "请指定7钻分析责任人:",
-      "7thDiamond_flow": "7钻流程"
+      "7thDiamond_flow": "7钻流程",
+      "6drillAna":"6钻分析",
+      "drilloOwner":"7钻分析责任人:",
+      "analysisLeader":"分析责任人",
+      "firstDrill":"第1钻： 过程是否正确？",
+      "secDrill":"第2钻： 工具是否正确？",
+      "thirdDrill":"第3钻： 物料是否正确？",
+      "fourthDrill":"第4钻： 物料规格检测？",
+      "fifthDrill":"第5钻： 过程变更？",
+      "sixDrill":"第6钻： 部件变更？",
+      "sevenDrill":"第7钻： 是否是极端复杂问题？"
     },
     "D2": {
       "processName": "原因分析",
@@ -198,13 +216,20 @@
       "controlPlan": "控制计划",
       "flowChart": "过程流程图",
       "ois": "操作指导书",
-      "addUpdateFile": "添加更新文件"
+      "addUpdateFile": "添加更新文件",
+      "leaderReview":"加签领导审阅结果:",
+      "vinVer":"请输入正确的vin"
     },
     "D6": {
       "processName": "问题关闭",
       "addPreventList": "是否需要进入再发防止库",
       "needReview": "是否加签",
-      "leader": "加签领导"
+      "leader": "加签领导",
+      "closePerson":"关闭人",
+      "closeTime":"关闭时间",
+      "plusReview":"加签审阅",
+      "reviewLeadership":"审阅领导",
+      "reviewTime":"审阅时间"
     },
     "steps": {
       "D0": "D0-问题定义",
@@ -229,7 +254,9 @@
     "champion": "问题责任人",
     "isReview": "是否审阅",
     "reviewed": "已审阅",
-    "remark": "备注"
+    "remark": "备注",
+    "personverification":"提出人验证",
+    "validationResults":"验证结果"
   },
   "issue_reason": {
     "publishing": "该问题正在立项中",
@@ -243,6 +270,7 @@
   "colon": "：",
   "question_mark": "?",
   "analysis": "分析",
+  "analysising": "分析中",
   "label": {
     "reanalysis_reason": "再分析原因",
     "rediStribution_reason": "再分配原因"
@@ -252,12 +280,31 @@
     "enter_update": "请输入更新内容",
     "less_then_160": "请输入最多160个字符"
   },
-  "operation": {
+  "operationTable": {
     "operation": "操作记录",
     "node": "解决进度",
-    "creatorName": "变更人",
+    "creatorName": "操作人",
     "createDate": "操作时间",
     "content": "备注"
+  },
+  "fileUpdateTable":{
+    "fileName": "文件名称",
+    "isUpdaeName": "是否更新",
+    "updateContent": "更新内容",
+    "files":"附件",
+    "operation": "操作",
+    "view": "查看",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "AnalysisTable":{
+    "sevenmonds": "7钻流程",
+    "championName":"责任人",
+    "standard":"标准要求",
+    "actualSituation":"实际情况",
+    "conclusion":"结论",
+    "files":"附件",
+    "operation":"操作"
   },
   "confirm": {
     "content": "提交后将无法撤回，是否确认提交？",

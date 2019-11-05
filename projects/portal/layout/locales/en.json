@@ -36,7 +36,7 @@
     "failure": "failure"
   },
   "env": {
-    "name": "Test Environment"
+    "name": "This is test ENV,only for test"
   },
   "SERVER": {
     "ERROR": {
@@ -108,5 +108,8 @@
       "10100": "The current data has been modified. Please refresh and try again.",
       "100001003": "Account already exists under the current classification file path does not exist!"
     }
+  },
+  "download": {
+    "user_manual": "BTQIS-IRS End User Guide(2019-10-20).pdf"
   }
 }

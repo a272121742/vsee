@@ -62,7 +62,7 @@ export default {
     return {
       modules: [{
         name: 'issue',
-        path: '/qis/home/home',
+        path: '/qis',
         icon: '#iconzhiliang-'
       }, {
         name: 'bigdata',
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     isAdmin () {
-      return this.$store.state.userInfo.superAdmin === 1;
+      return this.$store.state.userInfo.superAdmin === 1 || this.$store.state.menus.some(item => item.appCode === 'ADMIN');
     }
   },
   methods: {

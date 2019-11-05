@@ -5,12 +5,12 @@ export const LOGIN_CACHE_KEY = 'cache_login_info';
 
 // 授权API
 export const AUTH_API = {
-  login: '/auth/login',
-  logout: '/auth/logout'
+  login: ['/auth/login', { appCode: 'ADMIN' }],
+  logout: ['/auth/logout', {}]
 };
 export const GLOBAL_API = {
   user: ['/sys/user/info', { appCode: 'ISSUE' }],
-  menus: ['/sys/menu/nav', { appCode: 'ISSUE' }],
+  menus: ['/sys/menu/nav', { appCode: 'ADMIN' }],
   permissions: ['/sys/menu/permissions', { appCode: 'ISSUE' }]
 };
 

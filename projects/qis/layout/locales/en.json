@@ -35,7 +35,7 @@
     "failure": "failure"
   },
   "env": {
-    "name": "Test Environment"
+    "name": "This is test ENV,only for test"
   },
   "SERVER": {
     "ERROR": {
@@ -105,9 +105,13 @@
       "10016": "The parameter format is incorrect. Use JSON format",
       "10017": "Account already exists",
       "10100": "The current data has been modified. Please refresh and try again.",
-      "100001002": "File is empty",
+      "100001001": "File upload failed, the size cannot be more than 50M",
+      "100001002": "File upload failed, File can not be empty",
       "100001003": "Account already exists under the current classification file path does not exist!",
       "100004007": "Redistribution Task"
     }
+  },
+  "download": {
+    "user_manual": "BTQIS-IRS End User Guide(2019-10-20).pdf"
   }
 }

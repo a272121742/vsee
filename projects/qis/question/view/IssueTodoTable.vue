@@ -9,7 +9,7 @@
     <a-table
       :loading="loading"
       :data-source="data"
-      :scroll="{ x: 1700 }"
+      :scroll="{ x: 1720 }"
       :pagination="{ total, current: page, limit, showTotal, showQuickJumper: true }"
       row-key="id"
       @change="handleTableChange"

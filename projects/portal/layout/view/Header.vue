@@ -16,13 +16,6 @@
           title="全面质量信息管理系统"
           desc="Total Quality Information System"
         ></banner>
-        <h2
-          v-if="$store.state.isBuildTest"
-          style="color: red; margin-right: 80px;"
-        >
-          <!-- 测试环境 -->
-          {{ $t('env.name') }}
-        </h2>
       </div>
       <div class="header-index-right user-wrapper">
         <div class="content-box">
@@ -38,13 +31,12 @@
             </span>
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a href="/">
+                <a @click="downloadFromStatic($t('download.user_manual'))">
                   {{ $t('user_action.manual') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
                 <a @click="toChangePd">
-
                   {{ $t('user_action.change_pd') }}
                 </a>
               </a-menu-item>
@@ -62,12 +54,15 @@
 </template>
 
 <script>
+import attachment from '~~/attachment.js';
+
 export default {
   components: {
     Banner: () => import('@comp/head/Banner.vue'),
     ChangePassword: () => import('./ChangePassword.vue'),
     LanguageRadio: () => import('@comp/i18n/LanguageRadio.vue')
   },
+  mixins: [attachment],
   data () {
     return {
       showChangePassword: false
@@ -80,7 +75,7 @@ export default {
   },
   methods: {
     toPortal () {
-      window.location.href = '/';
+      window.location.replace(this.$store.state.isProd ? '/portal' : '/');
     },
     toChangePd () {
       this.showChangePassword = true;

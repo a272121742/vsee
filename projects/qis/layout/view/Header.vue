@@ -15,13 +15,6 @@
         <banner
           :title="$t('SystemName')"
         ></banner>
-        <h2
-          v-if="$store.state.isBuildTest"
-          style="color: red; margin-right: 80px;"
-        >
-          <!-- 测试环境 -->
-          {{ $t('env.name') }}
-        </h2>
         <a-menu
           :selected-keys="defaultActiveMenu"
           mode="horizontal"
@@ -50,13 +43,12 @@
             </div>
             <a-menu slot="overlay">
               <a-menu-item key="0">
-                <a href="javascript:;">
+                <a @click="downloadFromStatic($t('download.user_manual'))">
                   {{ $t('user_action.manual') }}
                 </a>
               </a-menu-item>
               <a-menu-item key="1">
                 <a @click="toChangePd">
-
                   {{ $t('user_action.change_pd') }}
                 </a>
               </a-menu-item>
@@ -81,7 +73,7 @@
 <script>
 import { clearObserver } from '@util/datahelper.js';
 import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
-import { MODULE_DYNAMIC_CACHE } from '~/config.js';
+import attachment from '~~/issue-attachment.js';
 
 export default {
   name: 'Header',
@@ -89,6 +81,7 @@ export default {
     Banner: () => import('@comp/head/Banner.vue'),
     ChangePassword: () => import('./ChangePassword.vue')
   },
+  mixins: [attachment],
   data () {
     return {
       menuMap: {
@@ -130,7 +123,7 @@ export default {
       case 'QuestionSuccess':
         return ['List'];
       default:
-        return [name];
+        return name ? [name] : [];
       }
     },
     user () {
@@ -155,7 +148,7 @@ export default {
   },
   methods: {
     toPortal () {
-      window.location.href = '/';
+      window.location.replace(this.$store.state.isProd ? '/portal' : '/');
     },
     toChangePd () {
       this.showChangePassword = true;
@@ -165,7 +158,7 @@ export default {
       if (resolved.name === '404') {
         this.$message.warning('前端未配置的路由');
       } else {
-        this.$store.commit(`question/${MODULE_DYNAMIC_CACHE}`);
+        this.$store.commit('question/initState');
         this.$router.push({ path: resolved.path });
         this.$store.dispatch('refresh');
       }
@@ -200,10 +193,10 @@ export default {
     }
     .header-index-wide {
       width: 1200px;
-      margin: 0 auto;
+      height: 64px;
+      margin: auto;
       padding-left: 0;
       display: flex;
-      height: 64px;
     }
     .header-index-left {
       flex: 0 1 calc(100% - 128px);

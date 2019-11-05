@@ -66,7 +66,7 @@ module.exports = {
     // 代理配置
     proxy: !test ? undefined : {
       '/api': {
-        target: 'http://106.75.63.69:8091/mojo-gateway',
+        target: 'http://192.168.2.247:20021',
         changeOrigin: true,
         // 关闭https安全证书
         secure: false,

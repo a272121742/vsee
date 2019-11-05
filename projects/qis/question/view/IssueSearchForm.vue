@@ -17,7 +17,7 @@
             v-decorator="[
               'code'
             ]"
-            :placeholder="$t('search.please_input') + $t('issue.code')"
+            :placeholder="$t('search.please_input')"
             autocomplete="off"
             allow-clear
           />
@@ -26,15 +26,15 @@
       <a-col
         :span="8"
       >
-        <!-- 车型 -->
+        <!-- 车型名称 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
           <net-select
             v-decorator="['vehicleModelId']"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.vehicleModelName')"
+            :placeholder="$t('search.please_select')"
             :transform="transformField"
-            allow-clear
             url="/masterdata/v1/vehiclemodel"
+            delay
+            allow-clear
           />
         </a-form-item>
       </a-col>
@@ -45,11 +45,14 @@
         <a-form-item :label="$t('issue.grade')">
           <net-select
             v-decorator="['grade']"
+            mode="multiple"
             :transform="transformGrade"
-            :filter-option="filterOption"
-            :placeholder="$t('search.please_select') + $t('issue.grade')"
+            :max-tag-count="2"
+            :placeholder="$t('search.please_select')"
             url="/sys/dict?dictType=issue_grade"
+            delay
             allow-clear
+            close-search
           />
         </a-form-item>
       </a-col>
@@ -60,12 +63,14 @@
         <a-form-item :label="$t('issue.source')">
           <net-select
             v-decorator="['source']"
-            :filter-option="filterOption"
-            :delay="!record.source"
-            :placeholder="$t('search.please_select') + $t('issue.source')"
+            mode="multiple"
+            :max-tag-count="2"
+            :placeholder="$t('search.please_select')"
             :transform="transformSource"
-            allow-clear
             url="/sys/dict?dictType=issue_source"
+            delay
+            allow-clear
+            close-search
           />
         </a-form-item>
       </a-col>

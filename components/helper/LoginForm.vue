@@ -123,6 +123,9 @@ export default {
       
       accounts: [
         'suwei1' + mailback,
+        'fanjiangnan' + mailback,
+        'zhanghaitao' + mailback,
+        'liangchao' + mailback,
         'youtao' + mailback,
         'zhaojiaqi' + mailback,
         'jiayanmin'+ mailback,
@@ -170,7 +173,14 @@ export default {
         'lihuihui'+ mailback,
         'songzhixue'+ mailback,
         'marubin'+ mailback,
-        'zhoujinling'+ mailback
+        'zhoujinling'+ mailback,
+        'yangsuoyu@baicvbu.com',
+        'zhengyunfei'+ mailback,
+        'tangxiangdong'+ mailback,
+        'xutengda'+ mailback,
+        'mapengcheng'+ mailback,
+        'lixinghua'+ mailback,
+        'marubin'+ mailback
 
       ]
     };

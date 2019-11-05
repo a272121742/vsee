@@ -52,7 +52,7 @@
     "responsibleDepartmentId": "Responsible Department ID",
     "responsibleDepartmentName": "Resp. Department",
     "softwareVersion": "Software Version",
-    "source": "Issue Category",
+    "source": "Issue Source",
     "sourceName": "Source Name",
     "status": "Status",
     "supplierId": "Supplier",
@@ -73,7 +73,8 @@
     "closeDate": "Close Date",
     "planCloseDate": "Plan Close Date",
     "seeMore": "See More",
-    "vinOrLicense": "VIN or License"
+    "vinOrLicense": "VIN or License",
+    "phoneVer":"Please enter 11 valid mobile phone numbers"
   },
   "search": {
     "find_button": "Search",
@@ -122,29 +123,36 @@
     "reanalysis": "Reanalysis"
   },
   "issue_workflow": {
+    "submitSuccess":"Submit Success",
+    "rejectSuccess":"Reanalysis success",
+    "saveSuccess":"Save success",
+    "submitIng":"Submitting...",
+    "saveIng":"Saving...",
     "D": {
       "processName": "Draft"
     },
     "D0": {
       "processName": "Issue Definiton",
-      "publish": "Publish or not",
+      "publish": "Publish or Not",
       "reason": "Reason",
-      "needICA": "Need ICA or not",
+      "needICA": "Need ICA or Not",
       "ICA": "ICA",
-      "need": "yes",
-      "unneed": "no",
+      "need": "Yes",
+      "unneed": "No",
       "publist_condition": "Publish Condition"
     },
     "D1": {
       "processName": "Find Causer",
-      "confirm": "Confirm resposible person",
+      "confirm": "Confirm Resposible Person",
       "needAnalysis": "Need 7 diamonds analysis",
-      "resposibleDepartment": "Resposible Department",
+      "resposibleDepartment": "Resp. Department",
       "champion": "Champion",
       "champion_short": "Champion",
       "analysis": "7 Diamonds Analysis",
+      "endAnalysis":"End 7 drill analysis",
       "analysis_champion": "Analysis Champion",
       "before_analysis": "before 7 Diamonds Analysis",
+      "1-3stDiamond": "1-3st Diamond",
       "1stDiamond": "1st Diamond",
       "rightProcess": "Right Process",
       "2ndDiamond": "2nd Diamond",
@@ -163,7 +171,18 @@
       "actual": "Actual situation",
       "conclusion": "Conclusion",
       "champion_span": "Please Assign 7th Diamond Champion:",
-      "7thDiamond_flow": "7th Diamond Flow"
+      "7thDiamond_flow": "7th Diamond Flow",
+      "6drillAna":"6 drill analysis",
+      "drilloOwner":"7 drill owner:",
+      "analysisLeader":"Analysis leader",
+      "firstDrill":"1st drill: Is the process correct?",
+      "secDrill":"2nd drill: Is the tool correct?",
+      "thirdDrill":"3rd drill: Is the material correct?",
+      "fourthDrill":"4th drill: Material specification test?",
+      "fifthDrill":"5th drill: Process change?",
+      "sixDirll":"6th drill: Parts change?",
+      "sevenDrill":"7th drill: Extremely complicated problem?"
+
     },
     "D2": {
       "processName": "Root Cause",
@@ -174,16 +193,16 @@
       "shortSolution": "Short term solution",
       "longSolution": "Long term solution",
       "pilotVlidate": "Pilot production validation",
-      "longSolutionImplementDate": "Planned date for long term solution implementation",
-      "longSolutionValidationDate": "Planned date for long term solution validation",
+      "longSolutionImplementDate": "Pln. Date for long term solution Impl.",
+      "longSolutionValidationDate": "PPln. Date for long term solution Vld.",
       "closureDate": "Planned closure date"
     },
     "D4": {
       "processName": "Implementation",
       "shortEffect": "Short term effect",
-      "sortSolutionImplementDate": "Actual date for short term solution implementation",
+      "sortSolutionImplementDate": "Actl. Date for short term solution Impl.",
       "longTermEffect": "Long term effect",
-      "longSolutionImplementDate": "Actual date for long term solution implementation"
+      "longSolutionImplementDate": "Actl. Date for long term solution Impl."
     },
     "D5": {
       "processName": "Feedback",
@@ -203,13 +222,20 @@
       "controlPlan": "Control plan",
       "flowChart": "Process flow chart",
       "ois": " OIS",
-      "addUpdateFile": "Add update file"
+      "addUpdateFile": "Add update file",
+      "leaderReview":"Adding leadership review results:",
+      "vinVer":"Please enter the correct vin"
     },
     "D6": {
       "processName": "Issue Closure",
       "addPreventList": "Add prevent recurrence issue list",
       "needReview": "Need leader review",
-      "leader": "Leader"
+      "leader": "Leader",
+      "closePerson":"Close Person",
+      "closeTime":"Closing Time",
+      "plusReview":"Plus review",
+      "reviewLeadership":"Review Leadership",
+      "reviewTime":"Review Time"
     },
     "steps": {
       "D0": "D0-Issue Definiton",
@@ -230,11 +256,13 @@
     "reject": "Reject",
     "yes": "Yes",
     "no": "No",
-    "resposibleDepartment": "Resposible Department",
+    "resposibleDepartment": "Resp. Department",
     "champion": "Champion",
     "isReview": "Review or not",
     "reviewed": "Reviewed",
-    "remark": "Remark"
+    "remark": "Remark",
+    "personverification":"Proof of person verification",
+    "validationResults":"Validation results"
   },
   "issue_reason": {
     "publishing": "The issue is publishing",
@@ -248,6 +276,7 @@
   "colon": ":",
   "question_mark": "?",
   "analysis": " Analysis",
+  "analysising": "Analysising",
   "label": {
     "reanalysis_reason": "Reanalysis Reason",
     "rediStribution_reason": "Reassign Reason"
@@ -257,12 +286,31 @@
     "enter_update": "Please enter the update",
     "less_then_160": "Please enter up to 160 characters"
   },
-  "operation": {
+  "operationTable": {
     "operation": "Operation Record",
     "node": "Resolve Progress",
-    "creatorName": "Creator",
+    "creatorName": "Task Owner",
     "createDate": "Creator Date",
     "content": "Remark"
+  },
+  "fileUpdateTable":{
+    "fileName": "File Name",
+    "isUpdaeName": "Updated or not",
+    "updateContent": "Updated contents",
+    "files":"File",
+    "operation": "Operation",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "AnalysisTable":{
+    "sevenmonds": "7th Diamond Flow",
+    "championName":"Responsible",
+    "standard":"Standard requirement",
+    "actualSituation":"The actual situation",
+    "conclusion":"In conclusion",
+    "files":"annex",
+    "operation":"operating"
   },
   "confirm": {
     "content": "Cannot be withdrawn after submission, is it confirmed to submit?",

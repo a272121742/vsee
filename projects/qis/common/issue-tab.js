@@ -1,8 +1,10 @@
 import { createNamespacedHelpers } from 'vuex';
-import { MODULE_DYNAMIC_CACHE } from '~/config.js';
-const { mapState, mapMutations, mapActions } = createNamespacedHelpers('question');
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
+
+const { mapActions } = createNamespacedHelpers('question');
 
 export default {
+  mixins: [moduleDynamicCache('question')],
   components: {
     IssueTodoTable: () => import('~/question/view/IssueTodoTable.vue'),
     IssueDraftTable: () => import('~/question/view/IssueDraftTable.vue'),
@@ -20,9 +22,6 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      advancePageConfig: MODULE_DYNAMIC_CACHE
-    }),
     defaultActiveKey () {
       return this.advancePageConfig.selectTabKey;
     },
@@ -39,9 +38,6 @@ export default {
     });
   },
   methods: {
-    ...mapMutations({
-      changeAdvancePageConfig: MODULE_DYNAMIC_CACHE
-    }),
     ...mapActions([
       // 分页查询待办列表
       'getIssueTodoPage',

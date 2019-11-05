@@ -2,7 +2,7 @@
   <a-table
     :data-source="data"
     :loading="loading"
-    :scroll="{ x: 1700 }"
+    :scroll="{ x: 1720 }"
     :pagination="{total: total, current: page, pageSize, showTotal, showQuickJumper: true}"
     row-key="id"
     v-on="$listeners"

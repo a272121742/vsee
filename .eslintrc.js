@@ -39,7 +39,8 @@ module.exports = {
       'x-invalid-end-tag': false
     }],
     'vue/html-self-closing': 0,
-    'import/no-unresolved': [2, { ignore: ['^~', '^@'] }]
+    'import/no-unresolved': [2, { ignore: ['^~', '^@'] }],
+    'no-control-regex': 0
   },
   parserOptions: {
     parser: "babel-eslint"

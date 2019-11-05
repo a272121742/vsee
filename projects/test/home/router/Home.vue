@@ -10,13 +10,13 @@
       placeholder="Select list"
     >
     </net-select>
-    <net-tree-select
+    <!-- <net-tree-select
       url="/gettree"
       style="width: 120px"
       placeholder="Select tree"
       delay
     >
-    </net-tree-select>
+    </net-tree-select> -->
     <net-button
       url="/getdata"
       @fetch="fetch"
@@ -37,12 +37,15 @@
     >
       普通按钮
     </a-button>
-    <async-component path="/order/router/List.vue"></async-component>
+    <v-textarea
+      :limit="10"
+    ></v-textarea>
   </a-layout-content>
 </template>
 <script>
 export default {
   components: {
+    VTextarea: () => import('../view/VTextarea.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     NetTreeSelect: () => import('@comp/form/NetTreeSelect.vue'),
     NetButton: () => import('@comp/button/NetButton.vue'),
