@@ -87,7 +87,8 @@ export default {
       menuMap: {
         '/home/home': 'Home',
         '/question/list': 'List',
-        '/question/search': 'Search'
+        '/question/search': 'Search',
+        '/question/report': 'Report'
       },
       form: null,
       visible: false,

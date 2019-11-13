@@ -1,0 +1,56 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="组件库|Alert告示/SingleMessage单例消息" />
+
+# 单例消息 SingleMessage
+
+> 继承：Ant Design Vue [Notification](https://github.com/vueComponent/ant-design-vue/blob/master/components/vc-notification/Notification.jsx)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： [] 
+
+> 备注： 使用底层代码拓展，拓展到`Vue.prototype.$message`中；
+
+产生原因： 由于AntDesign中不存在单例的消息框，这在某些场合下使用非常的不方便。例如在工作流处理中，提交数据前会经过很多数据处理，但是每一次处理的时候都会弹出各种弹窗，消息弹窗过程中缺乏自然的流动性，因此设计出一个单例弹窗，以确保系统消息的唯一性。
+
+## 引入方法
+
+```js
+import Vue from 'vue';
+// 先引入Ant Design Vue并注册
+import Antd from 'ant-design-vue';
+Vue.use(Antd);
+// 注册成功后，引入该组件，并挂载拓展属性
+import SingleMessage from '@comp/alert/SingleMessage.js';
+Vue.prototype.$message.show = SingleMessage.show;
+Vue.prototype.$message.close = SingleMessage.close;
+```
+
+## 方法指引
+
+按照以往消息弹窗的经典命名方式，我们增加了`show`和`close`方法；`close`方法无任何参数，`show`方法的参数如下：
+
+```js
+{
+  content: '内容',  // 消息内容
+  duration: 4,     // 消息持续时间
+  type: 'info',    // 消息类型 ['info', 'success', 'error', 'warning', 'loading']
+}
+// 例如：
+this.$message.show({
+  content: '内容',  // 消息内容
+  duration: 4,     // 消息持续时间
+  type: 'info',    // 消息类型 ['info', 'success', 'error', 'warning', 'loading']
+});
+```
+
+1. 由于该消息框是一个单例的，所有的参数采用的是传入式继承，即上一次`show`方法调用的参数会被保存，下一次调用时可以直接继承；
+2. `loading`模式和`info`模式（包含`info`、`success`、`error`、`warning`）是**互斥**的，`loading`模式下**不计时**，由人为的进行关闭或者更新操作，这样做的体验可以连续调用多个异步请求。`info`模式下是会进行**计时**的，如果设定时间`duration`为`null`，则关闭计时器，改为手工关闭模式。
+
+
+
+
+

@@ -1,0 +1,11 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="组件库|Form表单/VTable扩展表格" />
+
+# 扩展表格
+
+Ant Design Vue 中所提供的`table`存在一个问题，就是没有定高，导致数据行很少的时候，表格的整体高度会被收缩，影响视觉效果。计划为表格增加如下拓展：
+
+1. 定高（fixed，依据内部配置或外部配置的pageSize自动补充高度）
+2. 可拖拽行（dragable: { row: '$slot'}）
+2. 可拖拽列（dragable: { col: '$slot'}）

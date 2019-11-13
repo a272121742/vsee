@@ -1,7 +1,8 @@
 const isProd = process.env.NODE_ENV === 'production';
+const unzip = !!process.env.npm_config_unzip;
 
 module.exports = config => {
-  isProd &&
+  isProd && !unzip &&
     config.optimization.splitChunks({
       chunks: 'all',
       maxAsyncRequests: 5, // 按需加载时候最大的并行请求数

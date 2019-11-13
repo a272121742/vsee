@@ -22,7 +22,9 @@ import '~~/global.less';
 import AsyncComponent from '@comp/AsyncComponent';
 import { debounce } from '@util/fnhelper.js';
 import { treeFilter } from '@util/datahelper.js';
+import SingleMessage from '@comp/alert/SingleMessage.js';
 import store from '@store';
+
 
 
 Vue.component('async-component', AsyncComponent);
@@ -32,56 +34,49 @@ import('@dir/v-permission.js');
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
-const token = store.getters.getToken();
-// 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）
-
-
-router.beforeEach((to, from, next) => {
-  /**
-   * 查找去向
-   * @param {*} menus 服务端传回的地址
-   * @param {*} flag 标记，是需要服务端验证，默认`false`
-   */
-  function findNext (menus = []) {
-    const urlList = menus.map(item => item.url);
+Vue.prototype.$message.show = SingleMessage.show;
+Vue.prototype.$message.close = SingleMessage.close;
+router.beforeEach((to, from , next) => {
+  function findNext (menus) {
     if (~['/403', '/404', '/500'].indexOf(to.path)) {
       return true;
     }
-    // 本地找不到这个地址
-    if (router.matcher.match(to.path).name === '404') {
-      return { path: '404' };
-    }
-    // 服务端未配置这个地址
+    const urlList = menus.map(item => item.url);
+    // 服务端配置中找不到该地址
     if (!~urlList.indexOf(to.path)) {
       if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
-        return { path: urlList[0] };
+        return { ...to, path: urlList[0], replace: true };
       }
-      if (!~['/home/home', '/question/list', '/question/search'].indexOf(to.path)) {
-        return true;
-      }
-      return { path: '404' };
     }
-    if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
-      return { path: urlList[0] };
+    // 客户端配置中找不到该地址
+    if (!router.test(to.path)) {
+      if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
+        return { ...to, path: urlList[0], replace: true };
+      }
+      return { path: '404', replace: true };
     }
     return true;
   }
-  if (process.env.NODE_ENV === 'production' && !token) {
-    store.commit('logout');
-  }
-  NProgress.start(); // 开始进度条
-  if (!store.state.menus.length) {
-    store.dispatch('fetchMenus').then(res => {
-      store.commit('setMenus', treeFilter((item) => {
-        return item.appCode === 'ISSUE';
-      }, res));
-      next(findNext(res));
-    });
+  // 判断登陆状态
+  if (store.state.isLogin) {
+    // 如果加载过菜单
+    if (store.state.isMenuLoaded) {
+      next(findNext(store.state.menus));
+    } else {
+      store.dispatch('fetchMenus').then(res => {
+        const issueMenus = treeFilter((item = {}) => {
+          return item.appCode === 'ISSUE' && !!item.url && router.test(item.url);
+        }, res);
+        store.commit('setMenus', issueMenus);
+        next(findNext(issueMenus));
+      });
+    }
   } else {
-    next(findNext(store.state.menus));
+    store.dispatch('logout');
   }
   next();
 });
+
 router.afterEach(() => {
   NProgress.done(); // 完成进度条
 });

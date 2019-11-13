@@ -17,16 +17,6 @@
         v-bind="scope"
       />
     </template>
-    <template v-if="allowClear">
-      <a-icon
-        v-show="text"
-        slot="suffix"
-        class="allow-clear"
-        type="close-circle"
-        theme="filled"
-        @click="clear"
-      />
-    </template>
     <a-spin
       slot="suffix"
       :spinning="spinning"
@@ -47,22 +37,18 @@ export default {
   mixins: [fetch],
   props: {
     /**
-     * 请求地址
+     * 输入框的值
      */
-    url: {
-      type: String,
-      default: ''
-    },
     value: {
       type: String,
       default: undefined
     },
     /**
-     * 是否允许自动清除
+     * 验证码请求地址
      */
-    allowClear: {
-      type: Boolean,
-      default: false
+    url: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -87,10 +73,6 @@ export default {
     this.loadCaptche();
   },
   methods: {
-    clear () {
-      this.$emit('change', { target: { value: null } });
-      this.text = null;
-    },
     loadCaptche () {
       if (!this.spinning) {
         this.spinning = true;

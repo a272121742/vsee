@@ -230,4 +230,12 @@ export default {
   delIssue (store, param) {
     return api.delIssue(param);
   },
+  /**
+   * 模版下载
+   * @param {*} store 
+   * @param {*} param 
+   */
+  getTemplateDownload (store, param) {
+    return api.getTemplateDownload(param);
+  }
 };

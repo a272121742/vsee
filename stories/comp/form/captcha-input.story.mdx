@@ -1,0 +1,222 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import CaptchaInput from '@comp/form/CaptchaInput.vue';
+import { getUUID } from '@util/datahelper.js';
+import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
+
+<Meta title="组件库|Form表单/CaptchaInput验证码" />
+
+# 验证码 CaptchaInput
+
+> 继承：Ant Design Vue [Input](https://www.antdv.com/components/input-cn/)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： ['url', 'allowClear'] 见下方
+
+## 属性列表
+
+<Props of={ CaptchaInput } />
+
+## 案例
+
+### 请求验证码
+
+通过配置`url`参数即可请求一个验证码。注意：
+
+1. 提供的接口必须是一个`get`类型的，否则将无法正确取得数据，组件内部默认调用的就是`get`方法；
+2. 返回的数据可以是流媒体，或者经过`BASE64`转换过的图片字符串，图片都会正确显示，但最好不要是图片的引入地址（src），但一般也不会这么干。
+
+<Preview withToolbar>
+<Story name="请求验证码">
+{{
+  template: `
+    <div>
+      请输入验证码（点击图片不会切换）：
+      <captcha-input
+        placeholder="请输入验证码"
+        url="/auth/captcha"
+      />
+    </div>
+  `
+}}
+</Story>
+</Preview>
+
+### 更新验证码
+
+要想更换验证码，只要更换验证码参数即可。通常验证码都是发送`UUID`数据信息给服务端，返回一个生成的验证码，我们只要将`UUID`参数挂到`url`上保持它是动态的即可保证验证码刷新。这里，我们通过`click-captcha`事件来触发上层`UUID`的切换。验证码更新过程是自带加载状态的，特别是网络延时很严重时特别有效。
+
+<Preview withToolbar>
+<Story name="刷新验证码">
+{{
+  template: `
+    <div>
+      请输入验证码（点击图片自动切换）：
+      <captcha-input
+        placeholder="请输入验证码"
+        :url="\`/auth/captcha?uuid=$\{uuid1\}\`"
+        @click-captcha="() => uuid1 = getUUID()"
+      />
+      请输入验证码（延时加载，加载中不会重复点击）：
+      <captcha-input
+        placeholder="请输入验证码"
+        :url="'/auth/captcha/timeout?uuid=' + uuid2"
+        @click-captcha="timeoutClick"
+      />
+    </div>
+  `,
+  data () {
+    return {
+      uuid1: getUUID(),
+      uuid2: getUUID()
+    }
+  },
+  methods: {
+    getUUID,
+    timeoutClick () {
+      this.uuid2 = getUUID();
+      this.$message.info('延时加载请稍等', 2);
+    }
+  }
+}}
+</Story>
+</Preview>
+
+### 清空验证码
+
+验证码允许清空，由于验证码输入框是继承`a-input`组件，因此可以直接使用`allow-clear`属性来清空；
+
+<Preview withToolbar>
+<Story name="清空验证码">
+{{
+  template: `
+    <div>
+      请输入验证码（点击图片自动切换）：
+      <captcha-input
+        placeholder="请输入验证码"
+        :url="'/auth/captcha?uuid=' + uuid"
+        allow-clear
+        @click-captcha="() => uuid = getUUID()"
+      />
+    </div>
+  `,
+  data () {
+    return {
+      uuid: getUUID()
+    }
+  },
+  methods: {
+    getUUID
+  }
+}}
+</Story>
+</Preview>
+
+### 配合表单使用
+
+<Preview withToolbar>
+<Story name="配合表单">
+{{
+  template: `
+    <a-form :form="form">
+      <a-form-item
+        label="验证码输入框（点击图片自动切换）"
+        self-update
+      >
+        <captcha-input
+          v-decorator="['captcha']"
+          placeholder="请输入验证码"
+          :url="'/auth/captcha?uuid=' + uuid"
+          @click-captcha="() => uuid = getUUID()"
+        />
+      </a-form-item>
+      <a-button @click="print" block>
+        打印结果
+      </a-button>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null,
+      uuid: getUUID()
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['captcha'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  },
+  methods: {
+    getUUID,
+    print () {
+      const values = this.form.getFieldsValue();
+      this.$message.info(JSON.stringify(values));
+    }
+  }
+}}
+</Story>
+</Preview>
+
+### 使用继承属性
+
+上述案例中，`captcha-input`其实已经继承了全部的`a-input`属性，除了这些，你还可以参考`a-input`的事例编写其他好看的样式。
+
+<Preview withToolbar>
+<Story name="其他样式">
+{{
+  template: `
+    <a-form :form="form">
+      <a-form-item
+        label="验证码输入框（带有前缀且更大的输入框）"
+        self-update
+      >
+        <captcha-input
+          v-decorator="['captcha']"
+          placeholder="请输入验证码"
+          :url="'/auth/captcha?uuid=' + uuid"
+          autocomplete="off"
+          allow-clear
+          size="large"
+          @click-captcha="() => uuid = getUUID()"
+        >
+          <a-icon
+            slot="prefix"
+            type="idcard"
+            style="color: rgba(0,0,0,.25)"
+          />
+        </captcha-input>
+      </a-form-item>
+      <a-button @click="print" block>
+        打印结果
+      </a-button>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null,
+      uuid: getUUID()
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['captcha'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  },
+  methods: {
+    getUUID,
+    print () {
+      const values = this.form.getFieldsValue();
+      this.$message.info(JSON.stringify(values));
+    }
+  }
+}}
+</Story>
+</Preview>

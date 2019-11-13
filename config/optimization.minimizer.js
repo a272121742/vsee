@@ -1,7 +1,8 @@
 const isProd = process.env.NODE_ENV === 'production';
+const unzip = !!process.env.npm_config_unzip;
 
 module.exports = config => {
-  isProd &&
+  isProd && !unzip &&
     config.optimization.minimizer('terser').tap(args => {
       Object.assign(args[0].terserOptions.compress, {
         // 警告：true保留警告，false不保留

@@ -89,5 +89,7 @@ export default {
   // 数据导出
   exportData: (param) => $.get('/issue/v1/issue/export', param),
   //删除问题
-  delIssue: (param) => $.post('/issue/v1/issue/', param)
+  delIssue: (param) => $.post('/issue/v1/issue/', param),
+  // 获取模版下载
+  getTemplateDownload: param => $.get('/issue/v1/file/template', param)
 };

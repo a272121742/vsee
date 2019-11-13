@@ -80,7 +80,6 @@
           v-if="showSearch"
           v-permission="'issue:list:todo:search'"
           :ghost="true"
-          icon="search"
           type="primary"
           @click="changeFormShown"
         >
@@ -88,8 +87,36 @@
           {{ $t('search.search_button') }}
         </a-button>
         <a-button
+          v-if="showTemplateDownload"
+          v-permission="'issue:list:draft:temp_download'"
+          type="primary"
+          ghost
+          @click="templateDownload"
+        >
+          <!-- 模版下载按钮 -->
+          {{ $t('issue_action.template_download') }}
+        </a-button>
+        <a-upload
+          accept=".xlsx"
+          :action="$store.getters.getUrl('/issue/v1/issue/import')"
+          :headers="headers"
+          :show-upload-list="false"
+          style="display: inline-block;"
+          @change="batchImport"
+        >
+          <a-button
+            v-if="showBatchImport"
+            v-permission="'issue:list:draft:batch_import'"
+            type="primary"
+            ghost
+          >
+            <!-- 批量导入按钮 -->
+            {{ $t('issue_action.batch_import') }}
+          </a-button>
+        </a-upload>
+        
+        <a-button
           v-permission="'issue:list:todo:create'"
-          icon="plus-circle"
           type="primary"
           @click="createQuestion"
         >
@@ -103,10 +130,11 @@
 
 <script>
 import issueTab from '~~/issue-tab.js';
+import attachmentMix from '~~/issue-attachment.js';
 
 export default {
   name: 'QuestionList',
-  mixins: [issueTab]
+  mixins: [issueTab, attachmentMix]
 };
 
 </script>

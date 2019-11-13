@@ -5,6 +5,7 @@
     "calibrationVersion": "标定版本号",
     "details": "问题详情",
     "workflow": "问题流程",
+    "creatorSelectorCheck": "提出人科长审核",
     "code": "问题编号",
     "confirmationVersion": "配置字版本号",
     "contact": "提出人手机",
@@ -103,6 +104,8 @@
   },
   "issue_action": {
     "create": "创建问题",
+    "template_download": "模版下载",
+    "batch_import": "批量导入",
     "edit_issue": "编辑问题",
     "detail": "详情",
     "edit": "编辑",
@@ -259,6 +262,7 @@
     "validationResults":"验证结果"
   },
   "issue_reason": {
+    "creatorSelectCheck": "该问题提出人科长审核中",
     "publishing": "该问题正在立项中",
     "defining": "该问题正在责任判定中",
     "analysising": "问题原因正在分析填写中",

@@ -3,6 +3,7 @@
   "Home": "Home",
   "List": "My Issue",
   "Search": "Issue Search",
+  "Report": "Report Analysis",
   "IRS首页": "Home",
   "我的问题": "My Issue",
   "问题检索": "Issue Search",
@@ -36,6 +37,16 @@
   },
   "env": {
     "name": "This is test ENV,only for test"
+  },
+  "file_download": {
+    "success": "File Download Success!",
+    "failure": "File Download Failure!",
+    "downloading": "File Downloading ..."
+  },
+  "file_upload": {
+    "success": "File Upload Success!",
+    "failure": "File Upload Failure!",
+    "uploading": "File Uploading ..."
   },
   "SERVER": {
     "ERROR": {

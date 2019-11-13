@@ -71,8 +71,11 @@
                 self-update
               >
                 <v-textarea
-                  v-decorator="[ 'rediStributionMessage',{rules: [{ required: false,max: 160, message: $t('validate.less_then_160')}]} ]"
+                  v-decorator="[ 'rediStributionMessage',{rules: [{ required: false,max: 320, message: $t('validate.less_then_160')}]} ]"
                   :placeholder="$t('search.please_input')"
+                  :limit="320"
+                  zh
+                                    allow-clear
                 >
                 </v-textarea>
               </a-form-item>
@@ -108,8 +111,11 @@
               self-update
             >
               <v-textarea
-                v-decorator="[ 'commentReject',{rules: [{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+                v-decorator="[ 'commentReject',{rules: [{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
                 :placeholder="$t('search.please_input')"
+                :limit="320"
+                zh
+                                allow-clear
               >
               </v-textarea>
             </a-form-item>
@@ -143,7 +149,9 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                maxlength="1000"
+                :limit="2000"
+                zh
+                                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -162,7 +170,9 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                maxlength="1000"
+                :limit="2000"
+                zh
+                                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -181,7 +191,9 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                maxlength="1000"
+                :limit="2000"
+                allow-clear
+                zh
               />
             </a-form-item>
           </a-col>
@@ -200,7 +212,9 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                maxlength="1000"
+                :limit="2000"
+                zh
+                                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -257,7 +271,7 @@
             <!-- 标准要求 -->
             <a-form-item
               :label="$t('issue_workflow.D1.standard')"
-              style="margin-bottom:0;"
+              style="margin-bottom:0;width:550px;"
             >
               <p>
                 {{ DetailForm.standard }}
@@ -270,7 +284,7 @@
             <!-- 实际情况 -->
             <a-form-item
               :label="$t('issue_workflow.D1.actual')"
-              style="margin-bottom:0;"
+              style="margin-bottom:0;width:550px;"
             >
               <p>
                 {{ DetailForm.actualSituation }}
@@ -283,7 +297,7 @@
             <!-- 结论 -->
             <a-form-item
               :label="$t('issue_workflow.D1.conclusion')"
-              style="margin-bottom:0;"
+              style="margin-bottom:0;width:550px;"
             >
               <p>
                 {{ DetailForm.conclusion }}
@@ -428,7 +442,9 @@
                   ]"
                   :placeholder="$t('search.please_input')"
                   style="width:340px;margin-bottom: 10px;"
-                  maxlength="1000"
+                  :limit="2000"
+                  zh
+                                    allow-clear
                 />
               </a-form-item>
             </a-col>
@@ -1215,8 +1231,113 @@
         :form="formDcontent"
         class="shadown-block-normal ant-advanced-search-form"
       >
+        <!-- 提出人科长审核-->
         <a-card
-          v-if="pagePermission.A3_2"
+          v-if="statusCode.statusNewCode==100105||statusCode.statusNewCode==100108"
+          class="cardTitle"
+        >
+          <template #title>
+            {{ $t('issue.creatorSelectorCheck') }}
+          </template>
+          <div class="ant-advanced-search-form">
+            <div class="Dcontent1 D1back">
+              <div v-if="pagePermission.A_0_0_2_3"> 
+                <div class="examine">
+                  <div class="Dtitle examineTitle">
+                    <!-- 审核 -->
+                    <span>{{ $t('issue_workflow.approval') }}</span>
+                  </div>
+                  <a-row>
+                    <a-col :span="21">
+                      <!-- 是否通过审核 -->
+                      <a-form-item :label="$t('issue_workflow.approvalResult')">
+                        <a-radio-group
+                          v-decorator="[ 'isPass',{rules: [{ required: true, message: $t('search.please_select')+$t('issue_workflow.approvalResult') }]}]"
+                          :options="verifyRadio"
+                        />
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row v-if="record.isPass==='0'">
+                    <a-col :span="21">
+                      <a-form-item
+                        :label="$t('issue_workflow.rejectReason2')"
+                        self-update
+                      >
+                        <v-textarea
+                          v-decorator="['comment',{rules: [{ required: true, min: 1, message:$t('search.please_input')+$t('issue_workflow.rejectReason2') },{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
+                          :placeholder="$t('search.please_input')"
+                          :limit="320"
+                          zh
+                          allow-clear
+                        >
+                        </v-textarea>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row v-if="record.isPass==='1'">
+                    <a-col :span="21">
+                      <a-form-item 
+                        :label="$t('issue.remark')"
+                        self-update
+                      >
+                        <v-textarea
+                          v-decorator="['notes',{rules: [{max: 320, message: $t('validate.less_then_160')}]} ]"
+                          :placeholder="$t('search.please_input')"
+                          :limit="320"
+                          zh
+                          allow-clear
+                        >
+                        </v-textarea>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                </div>
+              </div>
+              <div v-if="statusCode.statusNewCode==100108&&pagePermission.A_0_0_2_2">
+                <div
+                  class="examineResult"
+                  style="left:530px;"
+                >
+                  <!-- 审核结果 -->
+                  <div class="Dtitle examineTitle">
+                    <span>{{ $t('issue_workflow.approval_result') }}</span>
+                  </div>
+                  <!-- 审核不通过 -->
+                  <a-form-item :label="$t('issue_workflow.approval')">
+                    <!-- 不通过 -->
+                    <p>{{ $t('issue_workflow.reject') }}</p>
+                  </a-form-item>
+                  <!-- 不通过理由 -->
+                  <a-form-item :label="$t('issue_workflow.rejectReason')">
+                    <p>{{ examineReason }}</p>
+                  </a-form-item>
+                </div>
+              </div>
+              <div 
+                v-if="pagePermission.A_0_0_1_2&&(!pagePermission.A_0_0_2_3)"
+                class="examineResult"
+              >
+                <a-row>
+                  <a-col
+                    :span="24"
+                    style="text-align:center;"
+                  >
+                    <!-- 该问题正在提出人科长审核中 -->
+                    {{ $t('issue_reason.creatorSelectCheck') }}
+                  </a-col>
+                </a-row>
+              </div>
+            </div> 
+          </div>
+        </a-card>
+
+
+
+
+        <!--问题管理工作流-->
+        <a-card
+          v-if="pagePermission.A3_2&&statusCode.statusNewCode>=100200"
           class="cardTitle"
         >
           <!-- 问题流程 -->
@@ -1359,13 +1480,16 @@
                         :label="$t('issue_workflow.D0.reason')"
                         self-update
                       >
-                        <a-textarea
+                        <v-textarea
                           v-decorator="[
                             'comment',
-                            {rules: [{ required: true,min :1, message: $t('search.please_input') + $t('issue_workflow.D0.reason') },{ required: true,max: 160, message: $t('validate.less_then_160') }]}
+                            {rules: [{ required: true,min :1, message: $t('search.please_input') + $t('issue_workflow.D0.reason') },{ required: true,max: 320, message: $t('validate.less_then_160') }]}
                           ]"
                           :placeholder="$t('search.please_input')"
-                        ></a-textarea>
+                          :limit="320"
+                                                    zh
+                                                    allow-clear
+                        ></v-textarea>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1393,11 +1517,14 @@
                         :label="$t('issue_workflow.D0.ICA')"
                         self-update
                       >
-                        <a-textarea
+                        <v-textarea
                           v-decorator="[ 'icaDescriptionD1',{rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D0.ICA') }]}]"
                           :placeholder="$t('search.please_input')"
                           style="width:572px;"
-                        ></a-textarea>
+                                                    :limit="2000"
+                          zh
+                                                    allow-clear
+                        ></v-textarea>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -1959,6 +2086,7 @@
                           <a-table-column
                             :key="col.dataIndex"
                             v-bind="filterTitle(col)"
+                            :class="[col.dataIndex !='files' ? 'spantable' : '']"
                           >
                             <span slot="title">{{ $t(`AnalysisTable.${col.dataIndex}`) }}</span>
                             <template slot-scope="text,row">
@@ -2069,13 +2197,15 @@
                             :label="$t('issue_workflow.rejectReason2') + $t('colon')"
                             self-update
                           >
-                            <a-textarea
-                              v-decorator="['comment',{rules: [{ required: validInput, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: validInput, max: 160, message: $t('validate.less_then_160')}]} ]"
+                            <v-textarea
+                              v-decorator="['comment',{rules: [{ required: validInput, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: validInput, max: 320, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
-                              :limit="2000"
+                              :limit="320"
                               zh
+                                                        
+                              allow-clear
                             >
-                            </a-textarea>
+                            </v-textarea>
                           </a-form-item>
                         </a-col>
                       </a-row>
@@ -2086,13 +2216,14 @@
                             :label="$t('issue_workflow.remark')"
                             self-update
                           >
-                            <a-textarea
-                              v-decorator="['notes',{rules: [{ max: 160, message: $t('validate.less_then_160')}]} ]"
+                            <v-textarea
+                              v-decorator="['notes',{rules: [{ max: 320, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
-                              :limit="2000"
+                              :limit="320"
+                              allow-clear
                               zh
                             >
-                            </a-textarea>
+                            </v-textarea>
                           </a-form-item>
                         </a-col>
                       </a-row>
@@ -2220,6 +2351,7 @@
                       <a-table-column
                         :key="col.dataIndex"
                         v-bind="filterTitle(col)"
+                        :class="[col.dataIndex !='files' ? 'spantable' : '']"
                       >
                         <span slot="title">{{ $t(`AnalysisTable.${col.dataIndex}`) }}</span>
                         <template slot-scope="text,row">
@@ -2289,7 +2421,7 @@
                       :label="$t('issue_workflow.D2.cause')"
                       self-update
                     >
-                      <a-textarea
+                      <v-textarea
                         v-decorator="[
                           'rootCauseDescription',
                           {
@@ -2299,7 +2431,10 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;margin-bottom:20px;"
-                      ></a-textarea>
+                                                :limit="2000"
+                        zh
+                                                allow-clear
+                      ></v-textarea>
                     </a-form-item>
                   </a-col>
                 </a-row>
@@ -2420,11 +2555,15 @@
                           :label="$t('issue_workflow.rejectReason2')"
                           self-update
                         >
-                          <a-textarea
-                            v-decorator="['comment',{rules: [{ required: true, min: 1, message:$t('search.please_input')+$t('issue_workflow.rejectReason2') },{ required: true,max: 160, message: $t('validate.less_then_160')}]} ]"
+                          <v-textarea
+                            v-decorator="['comment',{rules: [{ required: true, min: 1, message:$t('search.please_input')+$t('issue_workflow.rejectReason2') },{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
                             :placeholder="$t('search.please_input')"
+                            :limit="320"
+                            zh
+                                                      
+                            allow-clear
                           >
-                          </a-textarea>
+                          </v-textarea>
                         </a-form-item>
                       </a-col>
                     </a-row>
@@ -2435,11 +2574,15 @@
                           :label="$t('issue.remark')"
                           self-update
                         >
-                          <a-textarea
-                            v-decorator="['notes',{rules: [{max: 160, message: $t('validate.less_then_160')}]} ]"
+                          <v-textarea
+                            v-decorator="['notes',{rules: [{max: 320, message: $t('validate.less_then_160')}]} ]"
                             :placeholder="$t('search.please_input')"
+                            :limit="320"
+                            zh
+                                                      
+                            allow-clear
                           >
-                          </a-textarea>
+                          </v-textarea>
                         </a-form-item>
                       </a-col>
                     </a-row>
@@ -2489,7 +2632,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2510,7 +2655,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                                                :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2522,13 +2669,16 @@
                       :label="$t('issue_workflow.D3.pilotVlidate')"
                       self-update
                     >
-                      <v-input
+                      <v-textarea
                         v-decorator="[
                           'smallBatchValidation',
                         ]"
                         allow-clear
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
+                        :limit="2000"
+                        zh
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2753,10 +2903,13 @@
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1, message: $t('search.please_input')+$t('issue_workflow.rejectReason') },{ required: true,max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ required: true, min: 1, message: $t('search.please_input')+$t('issue_workflow.rejectReason') },{ required: true,max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -2768,10 +2921,13 @@
                   <v-textarea
                     v-decorator="[
                       'notes',
-                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
               </div>
@@ -2818,7 +2974,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2855,7 +3013,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3021,10 +3181,13 @@
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1,message: $t('search.please_input')+ $t('issue_workflow.rejectReason')},{ required: true,max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ required: true, min: 1,message: $t('search.please_input')+ $t('issue_workflow.rejectReason')},{ required: true,max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -3036,10 +3199,13 @@
                   <v-textarea
                     v-decorator="[
                       'notes',
-                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
               </div>
@@ -3088,7 +3254,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3167,6 +3335,7 @@
                             <a-table-column
                               :key="col.dataIndex"
                               v-bind="filterTitle(col)"
+                              :class="[col.dataIndex !='files' ? 'spantable' : '']"
                             >
                               <span slot="title">{{ $t(`fileUpdateTable.${col.dataIndex}`) }}</span>
                               <template slot-scope="text, row">
@@ -3353,6 +3522,7 @@
                           <a-table-column
                             :key="col.dataIndex"
                             v-bind="filterTitle(col)"
+                            :class="[col.dataIndex !='files' ? 'spantable' : '']"
                           >
                             <span slot="title">{{ $t(`fileUpdateTable.${col.dataIndex}`) }}</span>
                             <template slot-scope="text,row">
@@ -3442,10 +3612,13 @@
                   <v-textarea
                     v-decorator="[
                       'comment',
-                      {rules: [{ required: true, min: 1, message: $t('search.please_input')+$t('issue_workflow.rejectReason') },{ required: true,max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ required: true, min: 1, message: $t('search.please_input')+$t('issue_workflow.rejectReason') },{ required: true,max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -3457,10 +3630,13 @@
                   <v-textarea
                     v-decorator="[
                       'notes',
-                      {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                      {rules: [{ max: 320, message: $t('validate.less_then_160')}]}
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
+                    :limit="320"
+                    zh
+                                        allow-clear
                   />
                 </a-form-item>
               </div>
@@ -3486,7 +3662,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="2000"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3522,7 +3700,9 @@
                       ]"
                       :placeholder="$t('search.please_input')"
                       style="width:572px;"
-                      maxlength="1000"
+                      :limit="320"
+                      zh
+                                            allow-clear
                     />
                   </a-form-item>
                   <!-- 备注 -->
@@ -3534,10 +3714,13 @@
                     <v-textarea
                       v-decorator="[
                         'notes',
-                        {rules: [{ max: 160, message: $t('validate.less_then_160')}]}
+                        {rules: [{ max: 320, message: $t('validate.less_then_160')}]}
                       ]"
                       :placeholder="$t('search.please_input')"
                       style="width:572px;"
+                      :limit="320"
+                      zh
+                                            allow-clear
                     />
                   </a-form-item>
                 </div>
@@ -3689,7 +3872,9 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        maxlength="1000"
+                        :limit="320"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3704,7 +3889,9 @@
                       <v-textarea
                         v-decorator="[ 'signRemark' ]"
                         :placeholder="$t('search.please_input')"
-                        maxlength="1000"
+                        :limit="320"
+                        zh
+                                                allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3792,7 +3979,7 @@
                 <template slot-scope="text">
                   <a-tooltip>
                     <template #title>
-                      {{ $t(`operationTable.${col.dataIndex}`) }}
+                      {{ text }}
                     </template>
                     {{ text }}
                   </a-tooltip>
@@ -6154,6 +6341,7 @@ export default {
 
 </script>
 <style lang="less">
+
   /deep/ form textarea.ant-input{
     margin-bottom:-10px;
   }
@@ -6174,6 +6362,60 @@ export default {
 
 </style>
 <style lang="less" scoped>
+  .formConetnt .v-textarea /deep/ .v-input-helper{
+    background-color: #f5f5f5 !important;
+  }
+  .spantable span{
+    display:block; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;
+    width:100px;
+  }
+  .spantable {
+    width:100px;
+  }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(2) span { 
+    
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(2) { 
+  //  width:100px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(3) span { 
+  //   display:block; 
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap; 
+  //   overflow: hidden;
+  //   width:147px;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(3) { 
+  //  width:100px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(4) span { 
+  //   // display:block; 
+  //   // text-overflow: ellipsis;
+  //   // white-space: nowrap; 
+  //   // overflow: hidden;
+  //   // width:70px;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(4) { 
+  // //  width:100px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
+  //   // display:block; 
+  //   // text-overflow: ellipsis;
+  //   // white-space: nowrap; 
+  //   // overflow: hidden;
+  //   // width:226px;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  //  width:100px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
  // 回看时候置灰
  .D0back,.D1back,.D2back,.D3back,.D4back,.D5back,.D6back{
       // 统一设置问题流程的字体颜色
@@ -7166,6 +7408,44 @@ export default {
       }
       /deep/ .ant-table-tbody > tr > td { 
         max-width: 250px;
-      }
+      }   
     }
+
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
+  //   display:block; 
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap; 
+  //   overflow: hidden;
+  //   width:70px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  //  width:100px;
+  //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
+  // }
+   
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::before { 
+  //     float:left;width:5px;content:'';height:40px;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::after { 
+  //   float:right;content:'...';height:20px;line-height:20px;
+	// 	width:30px;margin-left:-30px;/*更改宽度和边距，移动省略号位置*/
+	// 	position:relative;left:100%;top:-20px;
+	// 	padding-right:5px;background:#999;
+  // }
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  //     height:40px;line-height:20px;overflow: hidden;width:200px;background:#999;
+  // }
+  
+  
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
+  //   overflow : hidden;
+  //   text-overflow: ellipsis;
+  //   display: -webkit-box;
+  //   -webkit-line-clamp: 3;
+  //   -webkit-box-orient: vertical;
+   
+  // }
+
 </style>
+

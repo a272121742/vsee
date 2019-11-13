@@ -3,6 +3,7 @@
   "Home": "首页",
   "List": "我的问题",
   "Search": "问题检索",
+  "Report": "报表分析",
   "IRS首页": "首页",
   "我的问题": "我的问题",
   "问题检索": "问题检索",
@@ -36,6 +37,16 @@
     "title": "修改密码",
     "success": "密码修改成功，正在跳转登录页",
     "failure": "密码修改失败"
+  },
+  "file_download": {
+    "success": "文件下载成功",
+    "failure": "文件下载失败",
+    "downloading": "文件下载中..."
+  },
+  "file_upload": {
+    "success": "文件上传成功",
+    "failure": "文件上传失败",
+    "uploading": "文件上传中..."
   },
   "SERVER": {
     "ERROR": {

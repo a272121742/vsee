@@ -122,7 +122,21 @@
                     <a-col :span="6">
                       <!-- 「车型名称」下拉 -->
                       <a-form-item :label="$t('issue.vehicleModelName')">
-                        <net-select
+                        <net-single-tree-select
+                          v-decorator="[
+                            'vehicleModelId',
+                            {rules: [{
+                              required: valiRequire, message:$t('search.please_select')
+                            }]}
+                          ]"
+                          :transform="vehicleModelTreeTransform"
+                          :placeholder="$t('search.please_select')"
+                          allow-clear
+                          url="/masterdata/v1/platform/treeAll"
+                          :query="{ id: '${value}' }"
+                          @change="vehicleModelIdChange"
+                        />
+                        <!-- <net-select
                           v-decorator="[
                             'vehicleModelId',
                             {rules: [{
@@ -134,7 +148,7 @@
                           allow-clear
                           url="/masterdata/v1/vehiclemodel"
                           @change="vehicleModelIdChange"
-                        ></net-select>
+                        ></net-select> -->
                       </a-form-item>
                     </a-col>
                     <a-col :span="6">
@@ -708,6 +722,7 @@ import {
   createNamespacedHelpers
 } from 'vuex';
 import moment from 'moment';
+import { transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
 import { toggleForbidScrollThrough } from '~~/scroll.js';
@@ -720,6 +735,7 @@ export default {
   name: 'QuestionCreate',
   components: {
     NetSelect: () => import('@comp/form/NetSelect.vue'),
+    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
@@ -880,7 +896,7 @@ export default {
           this.validVinOrlicense = !res.vinNo && !res.license;
           vm.statusCode = res.status;
           const status = Number(this.statusCode);
-          if (vm.statusCode === '100100') {
+          if (vm.statusCode === '100100'||vm.statusCode === '100300'||vm.statusCode === '100108') {
             vm.delBtn = true;
             vm.submitBtn = true;
           } 
@@ -1022,6 +1038,10 @@ export default {
         this.DetailSuppely = true;
       }
     },
+    /**
+     * 车型数据转换
+     */
+    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
     selectOption (input) {
       const optionArray = [];
       input.forEach((item) => {
@@ -1086,12 +1106,8 @@ export default {
       });
     },
     // 车型选择
-    vehicleModelIdChange (value, option) {
-      if (option && option.context) {
-        const options = option.context.options || [];
-        const selected = options.find(item => item.value === value) || {};
-        this.carTitle = selected.label;
-      }
+    vehicleModelIdChange (value, label) {
+      this.carTitle = label;
     },
     // 所属功能选择
     faultTreeIds2Change (value, option) {

@@ -41,11 +41,13 @@ function hasProp (instance, selfProp) {
   const propsData = $options.propsData || {};
   return selfProp in propsData;
 }
-function getLength (text = '', isZh = false) {
+function getLength (t = '', isZh = false) {
+  const text = t || '';
   const transValue = text.replace(/[^\x00-\xff]/g, isZh ? '**' : '*');
   return transValue.length;
 }
-function zhSubString (text = '', length = 0) {
+function zhSubString (t = '', length = 0) {
+  const text = t || '';
   let len = 0;
   let limit = 0;
   for (const c of text) {

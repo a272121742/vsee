@@ -5,6 +5,7 @@
     "calibrationVersion": "Calibration Version",
     "details": "Issue Details",
     "workflow": "Issue Workflow",
+    "creatorSelectorCheck": "Proof of person Selector Check",
     "code": "Issue Number",
     "confirmationVersion": "Confirmation Version Nr.",
     "contact": "Proposer Cellphone",
@@ -109,6 +110,8 @@
   },
   "issue_action": {
     "create": "Create",
+    "template_download": "Template Download",
+    "batch_import": "Batch Import",
     "edit_issue": "Edit",
     "detail": "Detail",
     "edit": "Edit",
@@ -265,6 +268,7 @@
     "validationResults":"Validation results"
   },
   "issue_reason": {
+    "creatorSelectCheck": "The question is raised in the review of the chief of staff",
     "publishing": "The issue is publishing",
     "defining": "The issue is defining",
     "analysising": "Root cause fill in",

@@ -19,6 +19,10 @@ import 'nprogress/nprogress.css';
 import AsyncComponent from '@comp/AsyncComponent';
 import store from '@store';
 
+import SingleMessage from './home/view/SingleMessage.js';
+
+
+
 Vue.component('async-component', AsyncComponent);
 
 // 加载权限控制
@@ -26,6 +30,8 @@ import('@dir/v-permission.js');
 
 Vue.config.productionTip = false;
 Vue.use(Antd);
+Vue.prototype.$message.show = SingleMessage.show;
+Vue.prototype.$message.close = SingleMessage.close;
 
 const token = store.getters.getToken();
 // 生产环境下，将多个项目关联起来（本项目是无授权的，要通过其他项目授权）

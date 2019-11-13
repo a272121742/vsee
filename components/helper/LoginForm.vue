@@ -13,32 +13,34 @@
     </a-form-item>
     <!-- 用户名 -->
     <a-form-item>
-      <a-select
+      <a-auto-complete
         v-decorator="['username', {
           initialValue: record.username,
           rules: [{type: 'string', required: true, message: $t('username.required_message')}]
         }]"
+        :data-source="accounts"
         :placeholder="$t('username.placeholder')"
         :dropdown-style="{'z-index': 6001}"
         allow-clear
         show-search
         autocomplete="off"
         size="large"
-        @change="handleSubmit"
+        @search="handleSearch"
+        @select="handleSubmit"
       >
         <a-icon
           slot="prefix"
           type="user"
           style="color: rgba(0,0,0,.25)"
         />
-        <a-select-option
+        <!-- <a-select-option
           v-for="(act, index) in accounts"
           :key="index"
           :value="act"
         >
           {{ act.slice(0, -12) }}
-        </a-select-option>
-      </a-select>
+        </a-select-option> -->
+      </a-auto-complete>
     </a-form-item>
     <!-- 密码 -->
     <a-form-item>
@@ -97,7 +99,66 @@ import { getUUID } from '@util/datahelper.js';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 
 const mailback = '@bjev.com.cn';
-
+const accounts = [
+  'suwei1' + mailback,
+  'fanjiangnan' + mailback,
+  'zhanghaitao' + mailback,
+  'liangchao' + mailback,
+  'youtao' + mailback,
+  'zhaojiaqi' + mailback,
+  'jiayanmin'+ mailback,
+  'gufeng'+ mailback,
+  'lihongbin'+ mailback,
+  'zhaojia'+ mailback,
+  'wangxueying'+ mailback,
+  'raomiaotao'+ mailback,
+  'wangchunjie'+ mailback,
+  'baijie'+ mailback,
+  'zhangliquan'+ mailback,
+  'tianxiongwei'+ mailback,
+  'zhangpeng'+ mailback,
+  'chaihonggen'+ mailback,
+  'houjun'+ mailback,
+  'tianyuli'+ mailback,
+  'liujie1'+ mailback,
+  'chenguoqi'+ mailback,
+  'wangtao'+ mailback,
+  'liyuan'+ mailback,
+  'liulizhi'+ mailback,
+  'sunshuailong'+ mailback,
+  'duxiangzheng'+ mailback,
+  'lixifu'+ mailback,
+  'zhangshouyuan'+ mailback,
+  'shendawei'+ mailback,
+  'xuehongwei'+ mailback,
+  'renxianfei'+ mailback,
+  'liyongfei'+ mailback,
+  'qiaozenan'+ mailback,
+  'hanzhiqiang'+ mailback,
+  'liuyundong'+ mailback,
+  'liyunduan'+ mailback,
+  'duheng'+ mailback,
+  'luolinlan'+ mailback,
+  'shijunbo'+ mailback,
+  'yanliguo'+ mailback,
+  'sunwentao'+ mailback,
+  'tangdianju'+ mailback,
+  'chenwenwu'+ mailback,
+  'zhangyule'+ mailback,
+  'zhangyouhuan'+ mailback,
+  'wangjianfeng'+ mailback,
+  'yutao1'+ mailback,
+  'lihuihui'+ mailback,
+  'songzhixue'+ mailback,
+  'zhoujinling'+ mailback,
+  'yangsuoyu@baicvbu.com',
+  'zhengyunfei'+ mailback,
+  'tangxiangdong'+ mailback,
+  'xutengda'+ mailback,
+  'mapengcheng'+ mailback,
+  'lixinghua'+ mailback,
+  'marubin'+ mailback
+];
 export default {
   components: {
     // VInput: () => import('@comp/form/VInput.vue'),
@@ -121,68 +182,7 @@ export default {
         uuid: getUUID()
       },
       
-      accounts: [
-        'suwei1' + mailback,
-        'fanjiangnan' + mailback,
-        'zhanghaitao' + mailback,
-        'liangchao' + mailback,
-        'youtao' + mailback,
-        'zhaojiaqi' + mailback,
-        'jiayanmin'+ mailback,
-        'gufeng'+ mailback,
-        'lihongbin'+ mailback,
-        'zhaojia'+ mailback,
-        'wangxueying'+ mailback,
-        'raomiaotao'+ mailback,
-        'wangchunjie'+ mailback,
-        'baijie'+ mailback,
-        'zhangliquan'+ mailback,
-        'tianxiongwei'+ mailback,
-        'zhangpeng'+ mailback,
-        'chaihonggen'+ mailback,
-        'houjun'+ mailback,
-        'tianyuli'+ mailback,
-        'liujie1'+ mailback,
-        'chenguoqi'+ mailback,
-        'wangtao'+ mailback,
-        'liyuan'+ mailback,
-        'liulizhi'+ mailback,
-        'sunshuailong'+ mailback,
-        'duxiangzheng'+ mailback,
-        'lixifu'+ mailback,
-        'zhangshouyuan'+ mailback,
-        'shendawei'+ mailback,
-        'xuehongwei'+ mailback,
-        'renxianfei'+ mailback,
-        'liyongfei'+ mailback,
-        'qiaozenan'+ mailback,
-        'hanzhiqiang'+ mailback,
-        'liuyundong'+ mailback,
-        'liyunduan'+ mailback,
-        'duheng'+ mailback,
-        'luolinlan'+ mailback,
-        'shijunbo'+ mailback,
-        'yanliguo'+ mailback,
-        'sunwentao'+ mailback,
-        'tangdianju'+ mailback,
-        'chenwenwu'+ mailback,
-        'zhangyule'+ mailback,
-        'zhangyouhuan'+ mailback,
-        'wangjianfeng'+ mailback,
-        'yutao1'+ mailback,
-        'lihuihui'+ mailback,
-        'songzhixue'+ mailback,
-        'marubin'+ mailback,
-        'zhoujinling'+ mailback,
-        'yangsuoyu@baicvbu.com',
-        'zhengyunfei'+ mailback,
-        'tangxiangdong'+ mailback,
-        'xutengda'+ mailback,
-        'mapengcheng'+ mailback,
-        'lixinghua'+ mailback,
-        'marubin'+ mailback
-
-      ]
+      accounts: [],
     };
   },
   created () {
@@ -212,6 +212,9 @@ export default {
           });
         }
       });
+    },
+    handleSearch (value) {
+      this.accounts = accounts.filter(item => item.indexOf(value));
     },
     /**
      * 验证码更新

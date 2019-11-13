@@ -7,6 +7,7 @@
     :value="labelValue"
     :tree-data="options"
     :show-search="true"
+    :disabled="$attrs.disabled || rending"
     :filter-tree-node="filterTreeNode"
     :dropdown-style="{ 'max-height': '300px', 'min-height': 'auto' }"
     dropdown-match-select-width
@@ -201,10 +202,14 @@ export default {
         this.fetching = false;
       });
     },
-    handlerChange (labelValue) {
-      console.log(labelValue);
+    handlerChange (labelValue, label, extra) {
       this.labelValue = labelValue;
-      this.$emit('change', labelValue.key || labelValue.value);
+      if (labelValue === void 0 || labelValue === null) {
+        this.$emit('change', void 0, extra.triggerNode.label);
+      } else {
+        this.$emit('change', labelValue.key || labelValue.value,  extra.triggerNode.label);
+      }
+      
     },
     filterTreeNode (input = '', treeNode) {
       const label = treeNode.componentOptions.propsData.label || '';

@@ -52,7 +52,6 @@
         v-if="showSearch"
         v-permission="'issue:home:todo:search'"
         :ghost="true"
-        icon="search"
         type="primary"
         @click="changeFormShown"
       >
@@ -60,8 +59,27 @@
         {{ $t('search.search_button') }}
       </a-button>
       <a-button
+        v-if="showTemplateDownload"
+        v-permission="'issue:home:draft:temp_download'"
+        type="primary"
+        ghost
+        @click="templateDownload"
+      >
+        <!-- 模版下载按钮 -->
+        {{ $t('issue_action.template_download') }}
+      </a-button>
+      <a-button
+        v-if="showBatchImport"
+        v-permission="'issue:home:draft:batch_import'"
+        type="primary"
+        ghost
+        @click="batchImport"
+      >
+        <!-- 批量导入按钮 -->
+        {{ $t('issue_action.batch_import') }}
+      </a-button>
+      <a-button
         v-permission="'issue:home:todo:create'"
-        icon="plus-circle"
         type="primary"
         @click="createQuestion"
       >

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { transform, treeTransform } from '@util/datahelper.js';
 
 // 问题编号
 const code = {
@@ -145,3 +146,8 @@ export const transform3 = transformField({ value: 'id', label: 'nameZh' });
 export const transform4 = transformField({ value: 'creator', label: 'creatorName' });
 export const transform5 = transformField({ value: 'assigner', label: 'assignerName' });
 export const transform6 = transformField({ value: 'code', label: 'name' });
+
+/**
+ * 树的转换结构
+ */
+export const transformTree = treeTransform(transform({ value: 'id', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) }));

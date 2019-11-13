@@ -47,7 +47,7 @@ export default {
   components: {
     VTextarea: () => import('../view/VTextarea.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
-    NetTreeSelect: () => import('@comp/form/NetTreeSelect.vue'),
+    NetTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     NetButton: () => import('@comp/button/NetButton.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue'),
     AsyncComponent: () => import('@comp/AsyncComponent')

@@ -48,13 +48,21 @@
       >
         <!-- 车型名称 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
-          <net-select
+          <net-single-tree-select
+            v-decorator="['vehicleModelId']"
+            :placeholder="$t('search.please_select')"
+            :transform="vehicleModelTreeTransform"
+            allow-clear
+            url="/masterdata/v1/platform/treeAll"
+            :query="{ id: '${value}' }"
+          />
+          <!-- <net-select
             v-decorator="['vehicleModelId']"
             :placeholder="$t('search.please_select')"
             :transform="transformVehicleModelName"
             url="/masterdata/v1/vehiclemodel"
             allow-clear
-          />
+          /> -->
         </a-form-item>
       </a-col>
       <a-col
@@ -382,7 +390,7 @@ import { omit } from 'ramda';
 import {
   createNamespacedHelpers
 } from 'vuex';
-import { transform1, transform2, transform3, transform4, transform5, transform6 } from '~~/model.js';
+import { transform1, transform2, transform3, transform4, transform5, transform6, transformTree } from '~~/model.js';
 import timeFormatMix from '~~/time-format.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
@@ -392,7 +400,8 @@ const {
 export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
-    NetSelect: () => import('@comp/form/NetSelect.vue')
+    NetSelect: () => import('@comp/form/NetSelect.vue'),
+    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue')
   },
   mixins: [timeFormatMix, moduleDynamicCache('question')],
   data () {
@@ -538,8 +547,9 @@ export default {
     transformManufactureBase: transform3,
     filterOptionCreator: transform4,
     filterOptionAssigner: transform5,
-    filterOptionResponsibleDepId: transform6
-
+    filterOptionResponsibleDepId: transform6,
+    vehicleModelTreeTransform: transformTree
+    
   }
 };
 </script>
