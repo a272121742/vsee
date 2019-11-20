@@ -5,16 +5,12 @@
 <template>
   <div class="error403">
     <div class="error403-body-con">
-      <i-card>
+      <a-card>
         <div class="error403-body-con-title">
-          4
-          <span class="error403-0-span">
-            <Icon type="android-lock" />
-          </span>
           <span class="error403-key-span">
-            <Icon
+            <a-icon
               size="220"
-              type="ios-bolt"
+              type="lock"
             />
           </span>
         </div>
@@ -22,24 +18,24 @@
           您似乎没有权限访问该页面！
         </p>
         <div class="error403-btn-con">
-          <i-button
+          <a-button
             size="large"
             style="width: 200px;"
             type="text"
             @click="goHome"
           >
             返回首页
-          </i-button>
-          <i-button
+          </a-button>
+          <a-button
             size="large"
             style="width: 200px;margin-left: 40px;"
             type="primary"
             @click="goBack"
           >
             返回上一页
-          </i-button>
+          </a-button>
         </div>
-      </i-card>
+      </a-card>
     </div>
   </div>
 </template>

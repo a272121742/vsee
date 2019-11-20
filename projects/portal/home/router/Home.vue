@@ -12,11 +12,11 @@
           :title="$t('title.appEntry')"
           class="shadown-block-normal module-card"
         >
-          <a-row :gutter="16">
+          <a-row style="display: flex; flex-wrap: wrap;">
             <a-col
               v-for="(m, index) in modules"
               :key="index"
-              :span="8"
+              :span="6"
               class="module-center"
             >
               <template
@@ -63,27 +63,31 @@ export default {
       modules: [{
         name: 'issue',
         path: '/qis',
-        icon: '#iconzhiliang-'
+        icon: '#iconportal_icon_zhiliang_default'
       }, {
         name: 'bigdata',
         path: '/',
-        icon: '#icondashuju-'
+        icon: '#iconportal_icon_dashuju_default'
       }, {
         name: 'traceability',
         path: '/',
-        icon: '#iconzhuisu-'
+        icon: '#iconportal_icon_zhuisu_default'
       }, {
         name: 'aftersales',
         path: '/',
-        icon: '#iconshouhou-'
+        icon: '#iconportal_icon_shouhou_default'
       }, {
         name: 'manufacturing',
         path: '/',
-        icon: '#iconguocheng-'
+        icon: '#iconportal_icon_guocehng_default'
+      }, {
+        name: 'zhushuju',
+        path: '/master',
+        icon: '#iconportal_icon_zhushuju_default'
       }, {
         name: 'system',
         path: '/sys',
-        icon: '#iconzhiliang-1'
+        icon: '#iconportal_icon_xitong_default'
       }]
     };
   },

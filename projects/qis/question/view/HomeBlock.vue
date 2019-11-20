@@ -58,6 +58,7 @@
         <!-- 搜索按钮 -->
         {{ $t('search.search_button') }}
       </a-button>
+      
       <a-button
         v-if="showTemplateDownload"
         v-permission="'issue:home:draft:temp_download'"
@@ -68,16 +69,25 @@
         <!-- 模版下载按钮 -->
         {{ $t('issue_action.template_download') }}
       </a-button>
-      <a-button
-        v-if="showBatchImport"
-        v-permission="'issue:home:draft:batch_import'"
-        type="primary"
-        ghost
-        @click="batchImport"
+      <a-upload
+        accept=".xlsx"
+        :action="$store.getters.getUrl('/issue/v1/issue/import')"
+        :headers="headers"
+        :show-upload-list="false"
+        style="display: inline-block;"
+        @change="batchImport"
       >
-        <!-- 批量导入按钮 -->
-        {{ $t('issue_action.batch_import') }}
-      </a-button>
+        <a-button
+          v-if="showBatchImport"
+          v-permission="'issue:home:draft:batch_import'"
+          type="primary"
+          ghost
+          @click="batchImport"
+        >
+          <!-- 批量导入按钮 -->
+          {{ $t('issue_action.batch_import') }}
+        </a-button>
+      </a-upload>
       <a-button
         v-permission="'issue:home:todo:create'"
         type="primary"
@@ -92,10 +102,11 @@
 
 <script>
 import issueTab from '~~/issue-tab.js';
+import attachmentMix from '~~/issue-attachment.js';
 
 export default {
   name: 'HomeBlock',
-  mixins: [issueTab]
+  mixins: [issueTab, attachmentMix]
 };
 
 </script>

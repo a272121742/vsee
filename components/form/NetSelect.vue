@@ -64,17 +64,6 @@ function transformQuery (query) {
   return transQuery;
 }
 
-function toggleForbidScrollThrough (isForbide) {
-  let scrollTop = window.pageYOffset;
-  if (isForbide) {
-    document.body.classList.add('modal-open');
-    document.body.style.top = -scrollTop + 'px';
-  } else {
-    document.body.classList.remove('modal-open');
-    document.scrollingElement.scrollTop = scrollTop;
-  }
-}
-
 export default {
   props: {
     value: {

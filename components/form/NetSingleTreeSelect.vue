@@ -38,11 +38,11 @@
 import { find } from 'ramda';
 import $ from '@lib/ajax.js';
 
-function hasProp (instance, selfProp) {
-  const $options = instance.$options || {};
-  const propsData = $options.propsData || {};
-  return selfProp in propsData;
-}
+// function hasProp (instance, selfProp) {
+//   const $options = instance.$options || {};
+//   const propsData = $options.propsData || {};
+//   return selfProp in propsData;
+// }
 function transformQuery (query) {
   const transQuery = {};
   for (const i in query) {

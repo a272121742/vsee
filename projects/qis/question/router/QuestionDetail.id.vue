@@ -1,4 +1,3 @@
-/* eslint-disable vue/max-attributes-per-line */
 <template>
   <div id="components-form-demo-advanced-search">
     <div style="z-index:5001;">
@@ -22,19 +21,20 @@
         >
           <a-row>
             <a-col :span="21">
-              <!-- 责任部门 -->
+              <!-- 「责任部门」下拉 -->
               <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
-                <net-select
-                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') }]} ]"
-                  :transform="selectOption"
+                <net-single-tree-select
+                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
+                  :transform="responseDeptTreeTransform"
                   :disabled="depDisable"
                   :placeholder="$t('search.please_select')"
-                  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                  style="width:272px;height:32px;"
+                  :query="{ nameCode: '${value}' }"
                   allow-clear
+                  style="width:272px;height:32px;"
+                  show-search
+                  url="/masterdata/v1/workflowgroupname/tree?typeCode=RESPONSIBLE_DEPARTMENT"
                   @change="owerDeptChange"
-                >
-                </net-select>
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -49,14 +49,15 @@
                   ]"
                   :placeholder="$t('search.please_select')"
                   :disabled="!redistributionForm.owerDeptLv1"
-                  url="/sys/workflowGroup/groupMemberByName"
-                  :query="{typeCode: 'RESPONSIBLE_DEPARTMENT', nameCode: redistributionForm.owerDeptLv1}"
+                  url="/masterdata/v1/workflowgroupmember"
+                  :query="{workflowGroupNameCode: redistributionForm.owerDeptLv1}"
                   :cache="false"
-                  :transform="selectUser"
+                  :transform="userOption"
                   :allow-clear="true"
                   style="width:272px;height:32px;"
                   show-search
                   delay
+                  @change="(value) => worlkChampionOrProposer(value, 'champion')"
                 >
                 </net-select>
               </a-form-item>
@@ -73,9 +74,8 @@
                 <v-textarea
                   v-decorator="[ 'rediStributionMessage',{rules: [{ required: false,max: 320, message: $t('validate.less_then_160')}]} ]"
                   :placeholder="$t('search.please_input')"
-                  :limit="320"
-                  zh
-                                    allow-clear
+                  :limit="160"
+                  allow-clear
                 >
                 </v-textarea>
               </a-form-item>
@@ -113,9 +113,8 @@
               <v-textarea
                 v-decorator="[ 'commentReject',{rules: [{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
                 :placeholder="$t('search.please_input')"
-                :limit="320"
-                zh
-                                allow-clear
+                :limit="160"
+                allow-clear
               >
               </v-textarea>
             </a-form-item>
@@ -149,9 +148,8 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                :limit="2000"
-                zh
-                                allow-clear
+                :limit="1000"
+                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -170,9 +168,8 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                :limit="2000"
-                zh
-                                allow-clear
+                :limit="1000"
+                allow-clear
               />
             </a-form-item>
           </a-col>
@@ -191,9 +188,8 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                :limit="2000"
+                :limit="1000"
                 allow-clear
-                zh
               />
             </a-form-item>
           </a-col>
@@ -212,18 +208,20 @@
                 ]"
                 :placeholder="$t('search.please_input')"
                 style="width:340px;"
-                :limit="2000"
-                zh
-                                allow-clear
+                :limit="1000"
+                allow-clear
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="18">
+          <a-col :span="22">
             <!-- 附件 -->
-            <a-form-item :label="$t('issue_workflow.attachment')">
+            <a-form-item>
               <!-- 七钻分析 -->
+              <template #label>
+                {{ $t('issue_workflow.attachment') }}
+              </template>
               <a-upload
                 :headers="headers"
                 :multiple="true"
@@ -239,6 +237,9 @@
                   <!-- 「上传文件」文本 -->
                   {{ $t('issue_action.upload') }}
                 </a-button>
+                <span style="color: red;">
+                  ({{ $t('issue_workflow.attachment_limit') }})
+                </span>
               </a-upload>
             </a-form-item>
           </a-col>
@@ -442,9 +443,8 @@
                   ]"
                   :placeholder="$t('search.please_input')"
                   style="width:340px;margin-bottom: 10px;"
-                  :limit="2000"
-                  zh
-                                    allow-clear
+                  :limit="1000"
+                  allow-clear
                 />
               </a-form-item>
             </a-col>
@@ -452,9 +452,10 @@
           <a-row>
             <a-col :span="22">
               <!-- 附件 -->
-              <a-form-item
-                :label="$t('issue_workflow.attachment')"
-              >
+              <a-form-item>
+                <template #label>
+                  {{ $t('issue_workflow.attachment') }}
+                </template>
                 <!-- 涉及文件更新 -->
                 <a-upload
                   :headers="headers"
@@ -471,6 +472,9 @@
                     <!-- 「上传文件」文本 -->
                     {{ $t('issue_action.upload') }}
                   </a-button>
+                  <span style="color: red;">
+                    ({{ $t('issue_workflow.attachment_limit') }})
+                  </span>
                 </a-upload>
               </a-form-item>
             </a-col>
@@ -639,7 +643,7 @@
             bind="both"
             style="marginLeft: 8px"
             class="saveBtn"
-            @click="handleSave"
+            @click="handleSave(1)"
           >
             <!-- 保存 -->
             {{ $t('issue_action.save') }}
@@ -780,6 +784,18 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="6">
+                    <!-- 「模块」 -->
+                    <a-form-item :label="$t('issue.smt')">
+                      <p
+                        v-if="detailList.smtName"
+                        :title="detailList.smtName"
+                      >
+                        {{ detailList.smtName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+
+                  <a-col :span="6">
                     <!-- 「问题严重等级」 -->
                     <a-form-item :label="$t('issue.grade')">
                       <p
@@ -790,6 +806,19 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                  <a-col :span="6">
+                    <!-- 「问题管理负责人」 -->
+                    <a-form-item :label="$t('issue.responsibleUserId')">
+                      <p
+                        v-if="detailList.responsibleUserName"
+                        :title="detailList.responsibleUserName"
+                      >
+                        {{ detailList.responsibleUserName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「问题阶段」 -->
                     <a-form-item :label="$t('issue.projectPhase')">
@@ -812,8 +841,6 @@
                       </p>
                     </a-form-item>
                   </a-col>
-                </a-row>
-                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「生产基地」 -->
                     <a-form-item :label="$t('issue.manufactureBase')">
@@ -836,6 +863,8 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                </a-row>
+                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「问题频次」 -->
                     <a-form-item :label="$t('issue.frequency')">
@@ -844,6 +873,28 @@
                         :title="detailList.frequency"
                       >
                         {{ detailList.frequency }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <!-- 「提出人部门」 -->
+                    <a-form-item :label="$t('issue.proposerDepartmentId')">
+                      <p
+                        v-if="detailList.advanceDeptName"
+                        :title="detailList.advanceDeptName"
+                      >
+                        {{ detailList.advanceDeptName }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <!-- 「提出人」 -->
+                    <a-form-item :label="$t('issue.proposer')">
+                      <p
+                        v-if="detailList.advanceUserName"
+                        :title="detailList.advanceUserName"
+                      >
+                        {{ detailList.advanceUserName }}
                       </p>
                     </a-form-item>
                   </a-col>
@@ -863,6 +914,28 @@
                   </a-col>
                 </a-row>
                 <a-row :gutter="24">
+                  <a-col :span="6">
+                    <!-- 「VIN」 -->
+                    <a-form-item :label="$t('issue.vinNo')">
+                      <p
+                        v-if="detailList.vinNo"
+                        :title="detailList.vinNo"
+                      >
+                        {{ detailList.vinNo }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="6">
+                    <!-- 「license」 -->
+                    <a-form-item :label="$t('issue.license')">
+                      <p
+                        v-if="detailList.license"
+                        :title="detailList.license"
+                      >
+                        {{ detailList.license }}
+                      </p>
+                    </a-form-item>
+                  </a-col>
                   <a-col :span="6">
                     <!-- 「创建人」 -->
                     <a-form-item :label="$t('issue.creatorName')">
@@ -885,6 +958,8 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                </a-row>
+                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「问题提报日期」 -->
                     <a-form-item :label="$t('issue.createDate')">
@@ -896,6 +971,8 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                  <a-col :span="12">
+</a-col>
                   <a-col
                     :span="6"
                     style="height: 0px;"
@@ -967,7 +1044,6 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-
                 <a-row 
                   :gutter="24"
                   style="margin-right:272px; "
@@ -1122,29 +1198,7 @@
                       </p>
                     </a-form-item>
                   </a-col>
-                  <a-col :span="6">
-                    <!-- 「VIN」 -->
-                    <a-form-item :label="$t('issue.vinNo')">
-                      <p
-                        v-if="detailList.vinNo"
-                        :title="detailList.vinNo"
-                      >
-                        {{ detailList.vinNo }}
-                      </p>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="6">
-                    <!-- 「license」 -->
-                    <a-form-item :label="$t('issue.license')">
-                      <p
-                        v-if="detailList.license"
-                        :title="detailList.license"
-                      >
-                        {{ detailList.license }}
-                      </p>
-                    </a-form-item>
-                  </a-col>
-                </a-row>
+</a-row>
                 <a-row>
                   <a-col :span="6">
                     <!-- 「生产时间」 -->
@@ -1267,8 +1321,7 @@
                         <v-textarea
                           v-decorator="['comment',{rules: [{ required: true, min: 1, message:$t('search.please_input')+$t('issue_workflow.rejectReason2') },{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
                           :placeholder="$t('search.please_input')"
-                          :limit="320"
-                          zh
+                          :limit="160"
                           allow-clear
                         >
                         </v-textarea>
@@ -1284,8 +1337,7 @@
                         <v-textarea
                           v-decorator="['notes',{rules: [{max: 320, message: $t('validate.less_then_160')}]} ]"
                           :placeholder="$t('search.please_input')"
-                          :limit="320"
-                          zh
+                          :limit="160"
                           allow-clear
                         >
                         </v-textarea>
@@ -1343,6 +1395,19 @@
           <!-- 问题流程 -->
           <template #title>
             {{ $t('issue.workflow') }}
+          </template>
+          <template 
+            v-if="statusCode.statusNewCode>100300"
+            #extra
+          >
+            <a-button
+              v-permission="'issue:detail:report_download'"
+              type="primary"
+              @click="issueReportDownload"
+            >
+              <!-- 下载单页报告按钮 -->
+              {{ $t('issue_action.issue_report_download') }}
+            </a-button>
           </template>
           <div class="ant-advanced-search-form">
             <div class="step">
@@ -1486,9 +1551,8 @@
                             {rules: [{ required: true,min :1, message: $t('search.please_input') + $t('issue_workflow.D0.reason') },{ required: true,max: 320, message: $t('validate.less_then_160') }]}
                           ]"
                           :placeholder="$t('search.please_input')"
-                          :limit="320"
-                                                    zh
-                                                    allow-clear
+                          :limit="160"
+                          allow-clear
                         ></v-textarea>
                       </a-form-item>
                     </a-col>
@@ -1521,9 +1585,8 @@
                           v-decorator="[ 'icaDescriptionD1',{rules: [{ required: true, message: $t('search.please_input') + $t('issue_workflow.D0.ICA') }]}]"
                           :placeholder="$t('search.please_input')"
                           style="width:572px;"
-                                                    :limit="2000"
-                          zh
-                                                    allow-clear
+                          :limit="1000"
+                          allow-clear
                         ></v-textarea>
                       </a-form-item>
                     </a-col>
@@ -1532,7 +1595,10 @@
                 <a-row v-if="satisfyFlag">
                   <a-col :span="21">
                     <!-- 问题定义 附件 -->
-                    <a-form-item :label="$t('issue_workflow.attachment') ">
+                    <a-form-item>
+                      <template #label>
+                        {{ $t('issue_workflow.attachment') }}
+                      </template>
                       <a-upload
                         :headers="headers"
                         :multiple="true"
@@ -1548,6 +1614,9 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
+                        <span style="color: red">
+                          ({{ $t('issue_workflow.attachment_limit') }})
+                        </span>
                       </a-upload>
                     </a-form-item>
                   </a-col>
@@ -1708,7 +1777,7 @@
                     <a-col :span="21">
                       <a-form-item>
                         <a-radio-group
-                          v-decorator="[ 'type']"
+                          v-decorator="['type']"
                           :options="determineRadio"
                           @change="determineChange"
                         />
@@ -1718,20 +1787,20 @@
                   <div v-if="NeedFlage">
                     <a-row>
                       <a-col :span="21">
-                        <!-- 责任部门 -->
+                        <!-- 「责任部门」下拉 -->
                         <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
-                          <net-select
+                          <net-single-tree-select
                             v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
-                            :transform="selectOption"
+                            :transform="responseDeptTreeTransform"
+                            :placeholder="$t('search.please_select')"
+                            :query="{ nameCode: '${value}' }"
                             :delay="false"
-                            :placeholder="$t('search.please_input')"
-                            url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                            allow-clear
                             style="width:272px;height:32px;"
                             show-search
-                            allow-clear
+                            url="/masterdata/v1/workflowgroupname/tree?typeCode=RESPONSIBLE_DEPARTMENT"
                             @change="DeptChange"
-                          >
-                          </net-select>
+                          />
                         </a-form-item>
                       </a-col>
                     </a-row>
@@ -1746,13 +1815,56 @@
                             ]"
                             :placeholder="$t('search.please_select')"
                             :disabled="!record.owerDeptLv1"
-                            url="/sys/workflowGroup/groupMemberByName"
-                            :query="{typeCode: 'RESPONSIBLE_DEPARTMENT', nameCode: record.owerDeptLv1}"
+                            url="/masterdata/v1/workflowgroupmember"
+                            :query="{workflowGroupNameCode:record.owerDeptLv1}"
                             :cache="false"
                             :delay="false"
-                            :transform="selectOptionChampion"
+                            :transform="userOption"
                             allow-clear
                             style="width:272px;height:32px;"
+                            @change="(value) => worlkChampionOrProposer(value, 'champion')" 
+                          >
+                          </net-select>
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row>
+                      <a-col :span="21">
+                        <!-- 「cochair部门」下拉 -->
+                        <a-form-item :label="$t('issue_workflow.D1.cochairDepartment')">
+                          <net-single-tree-select
+                            v-decorator="['cochairDepartment']"
+                            :transform="deptTreeTransform"
+                            :placeholder="$t('search.please_select')"
+                            :query="{ id: '${value}'}"
+                            allow-clear
+                            :delay="false"
+                            style="width:272px;height:32px;"
+                            show-search
+                            url="/sys/dept/deptList/getDeptTree"
+                            @change="cochairDeptChange"
+                          />
+                        </a-form-item>
+                      </a-col>
+                    </a-row>
+                    <a-row>
+                      <a-col :span="21">
+                        <!-- cochair -->
+                        <a-form-item :label="$t('issue_workflow.D1.cochair')">
+                          <net-select
+                            v-decorator="[
+                              'cochair'
+                            ]"
+                            :placeholder="$t('search.please_select')"
+                            :disabled="!record.cochairDepartment"
+                            url="/sys/user/useList/getUsersByDept"
+                            :query="{ deptId: record.cochairDepartment,userId:'${value}' }"
+                            :cache="false"
+                            :delay="false"
+                            :transform="userCochairOption"
+                            allow-clear
+                            style="width:272px;height:32px;"
+                            @change="(value) => workflowRoleChange(value, 'coChair')" 
                           >
                           </net-select>
                         </a-form-item>
@@ -1761,7 +1873,10 @@
                     <a-row>
                       <a-col :span="21">
                         <!-- 附件 -->
-                        <a-form-item :label="$t('issue_workflow.attachment')">
+                        <a-form-item>
+                          <template #label>
+                            {{ $t('issue_workflow.attachment') }}
+                          </template>
                           <!-- 责任判定 -->
                           <a-upload
                             :headers="headers"
@@ -1778,6 +1893,9 @@
                               <!-- 「上传文件」文本 -->
                               {{ $t('issue_action.upload') }}
                             </a-button>
+                            <span style="color: red">
+                              ({{ $t('issue_workflow.attachment_limit') }})
+                            </span>
                           </a-upload>
                         </a-form-item>
                       </a-col>
@@ -1801,12 +1919,19 @@
                             <span>{{ $t('issue_workflow.D1.1stDiamond') + $t('colon') + $t('issue_workflow.D1.rightProcess') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000027`"
-                                :transform="selectOptionChampion"
-                                allow-clear
+                                v-decorator="[
+                                  'diamondOwner1',
+                                  {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                ]"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
+                                url="/masterdata/v1/workflowgroupmember"
+                                :query="{workflowGroupNameCode:'1010000000000000027'}"
+                                :cache="false"
+                                :delay="false"
+                                :transform="userOption"
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
                               >
                               </net-select>
                             </a-form-item>
@@ -1816,12 +1941,19 @@
                             <span>{{ $t('issue_workflow.D1.2ndDiamond') + $t('colon') + $t('issue_workflow.D1.rightTools') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000027`"
-                                :transform="selectOptionChampion"
-                                allow-clear
+                                v-decorator="[
+                                  'diamondOwner1',
+                                  {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                ]"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
+                                url="/masterdata/v1/workflowgroupmember"
+                                :query="{workflowGroupNameCode:'1010000000000000027'}"
+                                :cache="false"
+                                :delay="false"
+                                :transform="userOption"
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
                               >
                               </net-select>
                             </a-form-item>
@@ -1831,12 +1963,19 @@
                             <span>{{ $t('issue_workflow.D1.3rdDiamond') + $t('colon') + $t('issue_workflow.D1.rightMaterials') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000027`"
-                                :transform="selectOptionChampion"
-                                allow-clear
+                                v-decorator="[
+                                  'diamondOwner1',
+                                  {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                ]"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
+                                url="/masterdata/v1/workflowgroupmember"
+                                :query="{workflowGroupNameCode:'1010000000000000027'}"
+                                :cache="false"
+                                :delay="false"
+                                :transform="userOption"
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
                               >
                               </net-select>
                             </a-form-item>
@@ -1846,13 +1985,19 @@
                             <span>{{ $t('issue_workflow.D1.4thDiamond') + $t('colon') + $t('issue_workflow.D1.specification') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner4',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000022`"
-                                :transform="selectOptionChampion"
-                                delay
-                                allow-clear
+                                v-decorator="[
+                                  'diamondOwner4',
+                                  {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                ]"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
+                                url="/masterdata/v1/workflowgroupmember"
+                                :query="{workflowGroupNameCode:'1010000000000000022'}"
+                                :cache="false"
+                                :delay="false"
+                                :transform="userOption"
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner4')" 
                               >
                               </net-select>
                             </a-form-item>
@@ -1862,13 +2007,19 @@
                             <span>{{ $t('issue_workflow.D1.5thDiamond') + $t('colon') + $t('issue_workflow.D1.processChange') + $t('question_mark') }}</span>
                             <a-form-item>
                               <net-select
-                                v-decorator="['diamondOwner5',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1009000000000000003`"
-                                :transform="selectOptionChampion"
-                                delay
-                                allow-clear
+                                v-decorator="[
+                                  'diamondOwner5',
+                                  {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                ]"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
+                                url="/masterdata/v1/workflowgroupmember"
+                                :query="{workflowGroupNameCode:'1009000000000000003'}"
+                                :cache="false"
+                                :delay="false"
+                                :transform="userOption"
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner5')" 
                               >
                               </net-select>
                             </a-form-item>
@@ -1877,32 +2028,34 @@
                             <!-- 第6钻 部件变更 -->
                             <span>{{ $t('issue_workflow.D1.6thDiamond') + $t('colon') + $t('issue_workflow.D1.partChange') + $t('question_mark') }}</span>
                             <a-form-item>
-                              <net-select
+                              <net-single-tree-select
                                 v-decorator="['diamondOwner6',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000001`"
-                                :transform="selectOptionChampion"
-                                delay
-                                allow-clear
+                                :transform="demondUserTreeTransform"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
-                              >
-                              </net-select>
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                show-search
+                                :url="`/masterdata/v1/workflowgroupname/deptUserTree`"
+                                :query="{userId:'${value}',typeCode:'RESPONSIBLE_DEPARTMENT',nameCode:'1009000000000000004'}"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner6')"
+                              />
                             </a-form-item>
                           </li>
                           <li class="clearfix">
                             <!-- 第7钻 是否极端复杂问题 -->
                             <span>{{ $t('issue_workflow.D1.7thDiamond') + $t('colon') + $t('issue_workflow.D1.complex') + $t('question_mark') }}</span>
                             <a-form-item>
-                              <net-select
+                              <net-single-tree-select
                                 v-decorator="['diamondOwner7',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.champion_short') }]} ]"
-                                :url="`/sys/workflowGroup/groupMemberByName?typeCode=RESPONSIBLE_DEPARTMENT&nameCode=1010000000000000017`"
-                                :transform="selectOptionChampion"
-                                delay
-                                allow-clear
+                                :transform="demondUserTreeTransform"
                                 :placeholder="$t('search.please_select')"
-                                style="width:200px;height:32px"
-                              >
-                              </net-select>
+                                allow-clear
+                                style="width:272px;height:32px;"
+                                show-search
+                                :url="`/masterdata/v1/workflowgroupname/deptUserTree`"
+                                :query="{userId:'${value}',typeCode:'RESPONSIBLE_DEPARTMENT',nameCode:'1009000000000000004'}"
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner7')"
+                              />
                             </a-form-item>
                           </li>
                         </ul>
@@ -1979,14 +2132,14 @@
                       <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
                         <!-- 第1钻 -->
                         <span>{{ $t('issue_workflow.D1.1stDiamond') }}</span>
-                        <p>{{ $t('issue_workflow.D1.rightTools') }}</p>
+                        <p>{{ $t('issue_workflow.D1.rightProcess') }}</p>
                         <div></div>
                       </li>
                       <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
                         <div></div>
                         <!-- 第2钻 -->
                         <span>{{ $t('issue_workflow.D1.2ndDiamond') }}</span>
-                        <p>{{ $t('issue_workflow.D1.rightProcess') }}</p>
+                        <p>{{ $t('issue_workflow.D1.rightTools') }}</p>
                         <div></div>
                       </li>
                       <li :class="{'activefirst': statusCode.statusNewCode>=200100&&statusCode.maxDiamonds>=1}">
@@ -2086,7 +2239,7 @@
                           <a-table-column
                             :key="col.dataIndex"
                             v-bind="filterTitle(col)"
-                            :class="[col.dataIndex !='files' ? 'spantable' : '']"
+                            :class="[col.dataIndex !== 'files' ? 'spantable' : '']"
                           >
                             <span slot="title">{{ $t(`AnalysisTable.${col.dataIndex}`) }}</span>
                             <template slot-scope="text,row">
@@ -2151,39 +2304,70 @@
                         <div v-if=" record.endSeven==='1' ">
                           <a-row>
                             <a-col :span="21">
-                              <!-- 责任部门 -->
-                              <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment') + $t('colon')">
-                                <net-select
-                                  v-decorator="['owerDeptLv1',{rules: [{ required: validInput, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]}]"
-                                  :transform="selectOption"
-                                  delay
-                                  allow-clear
+                              <!-- 「责任部门」下拉 -->
+                              <a-form-item :label="$t('issue_workflow.D1.resposibleDepartment')">
+                                <net-single-tree-select
+                                  v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
+                                  :transform="responseDeptTreeTransform"
                                   :placeholder="$t('search.please_select')"
-                                  url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
+                                  :query="{ nameCode: '${value}' }"
+                                  :delay="false"
+                                  allow-clear
                                   style="width:272px;height:32px;"
-                                  @change="DeptChangeDemaonds"
-                                >
-                                </net-select>
+                                  show-search
+                                  url="/masterdata/v1/workflowgroupname/tree?typeCode=RESPONSIBLE_DEPARTMENT"
+                                  @change="DeptChange"
+                                />
                               </a-form-item>
                             </a-col>
                           </a-row>
                           <a-row>
                             <a-col :span="21">
                               <!-- 责任人 -->
-                              <a-form-item :label="$t('issue.champion') + $t('colon') ">
+                              <a-form-item :label="$t('issue.champion')">
                                 <net-select
-                                  v-decorator="['champion',{rules: [{ required: validInput, message: $t('search.please_select') + $t('issue.champion')}]} ]"
-                                  :url="`/sys/workflowGroup/groupMemberByName`"
-                                  :query="{typeCode: 'RESPONSIBLE_DEPARTMENT', nameCode: record.owerDeptLv1}"
-                                  :transform="selectOptionChampion"
-                                  :disabled="!record.owerDeptLv1"
-                                  :delay="false"
-                                  :cache="false"
-                                  allow-clear
+                                  v-decorator="[
+                                    'champion',
+                                    {rules:[{required:true, message: $t('search.please_select') + $t('issue.champion')}]}
+                                  ]"
                                   :placeholder="$t('search.please_select')"
+                                  :disabled="!record.owerDeptLv1"
+                                  url="/masterdata/v1/workflowgroupmember"
+                                  :query="{workflowGroupNameCode:record.owerDeptLv1}"
+                                  :cache="false"
+                                  :delay="false"
+                                  :transform="userOption"
+                                  allow-clear
                                   style="width:272px;height:32px;"
+                                  @change="(value) => worlkChampionOrProposer(value, 'champion')" 
                                 >
                                 </net-select>
+                              </a-form-item>
+                            </a-col>
+                            <!-- 上传附件新加 -->
+                            <a-col :span="21">
+                              <!-- 附件 -->
+                              <a-form-item :label="$t('issue_workflow.attachment')">
+                                <!-- 七钻分析 -->
+                                <a-upload
+                                  :headers="headers"
+                                  :multiple="true"
+                                  :file-list="d1FileList"
+                                  :before-upload="beforeUpload"
+                                  :remove="file => removeFile(record.fileList)(file)"
+                                  :action="getUploadUrl('/issue/v1/file/upload?recType=10021006')"
+                                  name="file"
+                                  @preview="download"
+                                  @change="info => changeFileList(record.fileList, d1FileList)(info)"
+                                >
+                                  <a-button icon="upload">
+                                    <!-- 「上传文件」文本 -->
+                                    {{ $t('issue_action.upload') }}
+                                  </a-button>
+                                  <span style="color: red">
+                                    ({{ $t('issue_workflow.attachment_limit') }})
+                                  </span>
+                                </a-upload>
                               </a-form-item>
                             </a-col>
                           </a-row>
@@ -2200,9 +2384,7 @@
                             <v-textarea
                               v-decorator="['comment',{rules: [{ required: validInput, message: $t('search.please_input') + $t('issue_workflow.rejectReason2') },{ required: validInput, max: 320, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
-                              :limit="320"
-                              zh
-                                                        
+                              :limit="160"
                               allow-clear
                             >
                             </v-textarea>
@@ -2219,9 +2401,8 @@
                             <v-textarea
                               v-decorator="['notes',{rules: [{ max: 320, message: $t('validate.less_then_160')}]} ]"
                               :placeholder="$t('search.please_input')"
-                              :limit="320"
+                              :limit="160"
                               allow-clear
-                              zh
                             >
                             </v-textarea>
                           </a-form-item>
@@ -2268,52 +2449,70 @@
                   </a-col>
                 </a-row>
                 <a-row>
-                  <a-col :span="21">
-                    <!-- 附件 -->
-                    <a-form-item
-                      :label="$t('issue_workflow.attachment')"
-                      style="height:auto;"
-                    >
-                      <!-- 责任判定附件 -->
-                      <div
-                        v-if="d1FileList && d1FileList.length"
-                        class="ant-upload-list ant-upload-list-text"
-                        style="overflow-y: auto; max-height: 82px; margin-top: 8px; z-index: 10;"
+                  <a-row v-if="NeedFlage">
+                    <a-col :span="21">
+                      <!-- 责任部门 -->
+                      <a-form-item :label="$t('issue_workflow.D1.cochairDepartment')">
+                        <p>{{ issueDefinitionData.cochairDepartmentName }}</p>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row v-if="NeedFlage">
+                    <a-col :span="21">
+                      <!-- 责任人 -->
+                      <a-form-item :label="$t('issue_workflow.D1.cochair')">
+                        <p>{{ issueDefinitionData.cochairName }}</p>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row>
+                    <a-col :span="21">
+                      <!-- 附件 -->
+                      <a-form-item
+                        :label="$t('issue_workflow.attachment')"
+                        style="height:auto;"
                       >
+                        <!-- 责任判定附件 -->
                         <div
-                          v-for="(file, index) in d1FileList"
-                          :key="index"
-                          class="ant-upload-list-item ant-upload-list-item-done"
-                          style="margin-top: 0; margin-right: 14px;"
+                          v-if="d1FileList && d1FileList.length"
+                          class="ant-upload-list ant-upload-list-text"
+                          style="overflow-y: auto; max-height: 82px; margin-top: 8px; z-index: 10;"
                         >
-                          <div class="ant-upload-list-item-info">
-                            <span>
-                              <a-icon
-                                type="paper-clip"
-                                style="top: 3px; left: 0;"
-                              />
-                              <span
-                                :title="file.name"
-                                style="padding-left: 0;"
-                                class="ant-upload-list-item-name"
-                              >
-                                <a
+                          <div
+                            v-for="(file, index) in d1FileList"
+                            :key="index"
+                            class="ant-upload-list-item ant-upload-list-item-done"
+                            style="margin-top: 0; margin-right: 14px;"
+                          >
+                            <div class="ant-upload-list-item-info">
+                              <span>
+                                <a-icon
+                                  type="paper-clip"
+                                  style="top: 3px; left: 0;"
+                                />
+                                <span
                                   :title="file.name"
-                                  :href="getDownloadURL(file.url, file.name)"
-                                  :download="file.name"
-                                  rel="noopener noreferrer"
+                                  style="padding-left: 0;"
                                   class="ant-upload-list-item-name"
-                                  style="padding-left: 14px;"
                                 >
-                                  {{ file.name }}
-                                </a>
+                                  <a
+                                    :title="file.name"
+                                    :href="getDownloadURL(file.url, file.name)"
+                                    :download="file.name"
+                                    rel="noopener noreferrer"
+                                    class="ant-upload-list-item-name"
+                                    style="padding-left: 14px;"
+                                  >
+                                    {{ file.name }}
+                                  </a>
+                                </span>
                               </span>
-                            </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </a-form-item>
-                  </a-col>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
                 </a-row>
               </div>
               <div v-if="!NeedFlage">
@@ -2351,7 +2550,7 @@
                       <a-table-column
                         :key="col.dataIndex"
                         v-bind="filterTitle(col)"
-                        :class="[col.dataIndex !='files' ? 'spantable' : '']"
+                        :class="[col.dataIndex !== 'files' ? 'spantable' : '']"
                       >
                         <span slot="title">{{ $t(`AnalysisTable.${col.dataIndex}`) }}</span>
                         <template slot-scope="text,row">
@@ -2431,9 +2630,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;margin-bottom:20px;"
-                                                :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       ></v-textarea>
                     </a-form-item>
                   </a-col>
@@ -2441,7 +2639,10 @@
                 <a-row>
                   <a-col :span="21">
                     <!-- 附件 -->
-                    <a-form-item :label="$t('issue_workflow.attachment')">
+                    <a-form-item>
+                      <template #label>
+                        {{ $t('issue_workflow.attachment') }}
+                      </template>
                       <!-- 原因分析 -->
                       <a-upload
                         :headers="headers"
@@ -2458,6 +2659,9 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
+                        <span style="color: red">
+                          ({{ $t('issue_workflow.attachment_limit') }})
+                        </span>
                       </a-upload>
                     </a-form-item>
                   </a-col>
@@ -2558,9 +2762,7 @@
                           <v-textarea
                             v-decorator="['comment',{rules: [{ required: true, min: 1, message:$t('search.please_input')+$t('issue_workflow.rejectReason2') },{ required: true,max: 320, message: $t('validate.less_then_160')}]} ]"
                             :placeholder="$t('search.please_input')"
-                            :limit="320"
-                            zh
-                                                      
+                            :limit="160"
                             allow-clear
                           >
                           </v-textarea>
@@ -2577,9 +2779,7 @@
                           <v-textarea
                             v-decorator="['notes',{rules: [{max: 320, message: $t('validate.less_then_160')}]} ]"
                             :placeholder="$t('search.please_input')"
-                            :limit="320"
-                            zh
-                                                      
+                            :limit="160"
                             allow-clear
                           >
                           </v-textarea>
@@ -2632,9 +2832,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2655,9 +2854,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                                                :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -2676,9 +2874,7 @@
                         allow-clear
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                        allow-clear
+                        :limit="1000"
                       />
                     </a-form-item>
                   </a-col>
@@ -2686,7 +2882,10 @@
                 <!-- 附件 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="$t('issue_workflow.attachment')">
+                    <a-form-item>
+                      <template #label>
+                        {{ $t('issue_workflow.attachment') }}
+                      </template>
                       <!-- 措施制定 -->
                       <a-upload
                         :multiple="true"
@@ -2703,6 +2902,9 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
+                        <span style="color: red">
+                          ({{ $t('issue_workflow.attachment_limit') }})
+                        </span>
                       </a-upload>
                     </a-form-item>
                   </a-col>
@@ -2907,9 +3109,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -2925,9 +3126,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
               </div>
@@ -2974,9 +3174,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3013,9 +3212,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3023,7 +3221,10 @@
                 <!-- 附件 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="$t('issue_workflow.attachment')">
+                    <a-form-item>
+                      <template #label>
+                        {{ $t('issue_workflow.attachment') }}
+                      </template>
                       <!-- 措施实施 -->
                       <a-upload
                         :headers="headers"
@@ -3040,6 +3241,9 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
+                        <span style="color: red">
+                          ({{ $t('issue_workflow.attachment_limit') }})
+                        </span>
                       </a-upload>
                     </a-form-item>
                   </a-col>
@@ -3185,9 +3389,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -3203,9 +3406,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
               </div>
@@ -3254,9 +3456,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3264,7 +3465,10 @@
                 <!-- 附件 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item :label="$t('issue_workflow.attachment')">
+                    <a-form-item>
+                      <template #label>
+                        {{ $t('issue_workflow.attachment') }}
+                      </template>
                       <!-- 效果验证 -->
                       <a-upload
                         :headers="headers"
@@ -3281,6 +3485,9 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
+                        <span style="color: red">
+                          ({{ $t('issue_workflow.attachment_limit') }})
+                        </span>
                       </a-upload>
                     </a-form-item>
                   </a-col>
@@ -3335,7 +3542,7 @@
                             <a-table-column
                               :key="col.dataIndex"
                               v-bind="filterTitle(col)"
-                              :class="[col.dataIndex !='files' ? 'spantable' : '']"
+                              :class="[col.dataIndex !== 'files' ? 'spantable' : '']"
                             >
                               <span slot="title">{{ $t(`fileUpdateTable.${col.dataIndex}`) }}</span>
                               <template slot-scope="text, row">
@@ -3522,7 +3729,7 @@
                           <a-table-column
                             :key="col.dataIndex"
                             v-bind="filterTitle(col)"
-                            :class="[col.dataIndex !='files' ? 'spantable' : '']"
+                            :class="[col.dataIndex !== 'files' ? 'spantable' : '']"
                           >
                             <span slot="title">{{ $t(`fileUpdateTable.${col.dataIndex}`) }}</span>
                             <template slot-scope="text,row">
@@ -3616,9 +3823,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
                 <!-- 备注 -->
@@ -3634,9 +3840,8 @@
                     ]"
                     :placeholder="$t('search.please_input')"
                     style="width:572px;"
-                    :limit="320"
-                    zh
-                                        allow-clear
+                    :limit="160"
+                    allow-clear
                   />
                 </a-form-item>
               </div>
@@ -3662,9 +3867,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="2000"
-                        zh
-                                                allow-clear
+                        :limit="1000"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3700,9 +3904,8 @@
                       ]"
                       :placeholder="$t('search.please_input')"
                       style="width:572px;"
-                      :limit="320"
-                      zh
-                                            allow-clear
+                      :limit="160"
+                      allow-clear
                     />
                   </a-form-item>
                   <!-- 备注 -->
@@ -3718,9 +3921,8 @@
                       ]"
                       :placeholder="$t('search.please_input')"
                       style="width:572px;"
-                      :limit="320"
-                      zh
-                                            allow-clear
+                      :limit="160"
+                      allow-clear
                     />
                   </a-form-item>
                 </div>
@@ -3773,13 +3975,14 @@
                       <net-select
                         v-decorator="[ 'signLeaderId',{rules: [{ required: true, message:$t('search.please_select')+$t('issue_workflow.D6.leader')}]} ]"
                         :url="`issue/v1/workflow/getSysUser`"
-                        :query="{issueSource: detailList.source, type: 'director'}"
-                        :transform="selectOptionSingn"
+                        :query="{productId: detailList.vehicleModelId, irtCode:detailList.source,gradeCode:detailList.grade,irtModuleCode:detailList.smt,irtRole: 'director',userId:'${value}'}"
+                        :transform="responsibleUserOption"
                         :cache="false"
                         :delay="false"
                         allow-clear
                         :placeholder="$t('search.please_select')"
                         style="width:272px;height:32px;"
+                        @change="(value) => workflowRoleChange(value, 'additionalApproval')"
                       >
                       </net-select>
                     </a-form-item>
@@ -3872,9 +4075,8 @@
                         ]"
                         :placeholder="$t('search.please_input')"
                         style="width:572px;"
-                        :limit="320"
-                        zh
-                                                allow-clear
+                        :limit="160"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -3889,9 +4091,8 @@
                       <v-textarea
                         v-decorator="[ 'signRemark' ]"
                         :placeholder="$t('search.please_input')"
-                        :limit="320"
-                        zh
-                                                allow-clear
+                        :limit="160"
+                        allow-clear
                       />
                     </a-form-item>
                   </a-col>
@@ -4003,10 +4204,10 @@ import {
   createNamespacedHelpers
 } from 'vuex';
 import moment from 'moment';
-import { clearObserver } from '@util/datahelper.js';
+import { clearObserver , transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
-import { disableScroll,enableScroll } from '~~/scroll.js';
+import { disableScroll, enableScroll } from '~~/scroll.js';
 
 const {
   mapActions
@@ -4231,6 +4432,7 @@ export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
     // EditableCell: () => import('~/question/view/EditableCell'),
+    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
     PreventButton: () => import('@comp/button/PreventButton.vue')
@@ -4283,7 +4485,9 @@ export default {
       stepId: '', // 每一步id
       userId: vm.$store.getters.getUser().id,
       taskId: null, // 任务id
+      procDefKey: 'IRS1',
       processInstanceId: '',
+      wkprocessInstanceId: '',
       DetailSuppely: true,
       // 再分配弹框
       ModalText: 'Content of the modal',
@@ -4377,6 +4581,36 @@ export default {
         label: '已审阅',
         value: 1
       }],
+      labelCol: {
+        // xs: { span: 24 },
+        sm: {
+          span: 8
+        }
+      },
+      wrapperCol: {
+        // xs: { span: 24 },
+        sm: {
+          span: 16
+        }
+      },
+      workflowRolesList: [],
+      workflowRoles: {
+        createUser: '',
+        advanceUser: '',
+        advanceSelector: '',
+        coChair: '',
+        monitor: '',
+        additionalApproval: '',
+        champion: '',
+        sectorManager: '',
+        director: '',
+        diamondOwner1: '',
+        diamondOwner4: '',
+        diamondOwner5: '',
+        diamondOwner6: '',
+        diamondOwner7: ''
+       
+      },
       id1: '', // 措施判定id
       id2: '', // 措施实施id
       idDef: '', // 问题定义id
@@ -4461,6 +4695,8 @@ export default {
         // D1
         owerDeptLv1: '', // 责任部门
         champion: '', // 责任人
+        cochairDepartment: '',//cochia部门
+        cochair: void 0, //cochia
         type: '0', // 判定
         verifySeven: '1', // 7钻审核
         sevenFailReason: '', // 不通过原因
@@ -4603,13 +4839,18 @@ export default {
       'redistributionFun',
       'saveSevenDiamonds',
       'updateChampionFun',
-      'delIssue'
+      'delIssue',
+      'issueExportTemplate',
+      'addActIdMembership',
+      'getUserByPositionCode',
+      'getUserByworkflowPositionCode',
+      'getActIdMembership'
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
         'isProject', 'comment', 'isNeedIca', 'icaDescriptionD1', 'icaDescription',
         'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
-        'owerDeptLv1', 'champion', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5',
+        'owerDeptLv1', 'champion','cochairDepartment','cochair', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5',
         'diamondOwner6', 'isPass', 'rootCauseDescription',
         'diamondOwner7', 'rootcause', 'D2file', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'pcaValidPlanTime', 'estimatedClosureTime',
@@ -4684,13 +4925,18 @@ export default {
     },
     // 再分配责任部门改变
     owerDeptChange () {
-      this.redistributionForm.champion = '';
+      this.redistributionForm.champion = void 0;
       this.rediStribution.updateFields(this.resMapPropsToFields());
     },
     // D流程中责任部门改变
     DeptChange () {
-      this.formDcontent.champion = '';
-      this.record.champion = '';
+      this.formDcontent.champion = void 0;
+      this.record.champion = void 0;
+      this.formDcontent.updateFields(this.mapPropsToFieldsForm());
+    },
+    cochairDeptChange (){
+      this.formDcontent.cochair = void 0;
+      this.record.cochair = void 0;
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     DeptChangeDemaonds () {
@@ -4809,9 +5055,6 @@ export default {
               businessKey: this.id, // 问题id
               comment: resComment,
               assigner: data.diamondOwner1,
-              coChair: this.sysUser.coChair,
-              monitor: this.sysUser.monitor,
-              champion: data.champion, // 责任人
               isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList.gradeName
                 === 'B') ? '1' : '0', // 是否直接极端严重事情
               isEnd: this.record.isClose, // 是否关闭
@@ -4823,24 +5066,28 @@ export default {
               isQZ: data.type, // 是否需要七钻
               isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
               isLeaderSign: this.record.isSign, // 领导加签
-              additionalApproval: this.record.signLeaderId, // 加签人
               isItem: data.isProject, // 是否立项
-              isWD: data.isNeedIca, // 是否围堵
-              diamondOwner1: data.diamondOwner1,
-              diamondOwner4: data.diamondOwner4,
-              diamondOwner5: data.diamondOwner5,
-              diamondOwner6: data.diamondOwner6,
-              diamondOwner7: data.diamondOwner7
+              isWD: data.isNeedIca // 是否围堵
             }
           };
-          this.workFlowSubmit(transData).then(() => {
+          for(let item in this.workflowRoles) {
+            transData.variables[item]=this.workflowRoles[item];
+          }
+          //保存任务角色
+          for(let item in this.workflowRoles) {
+		        this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+          }
+          this.addActIdMembership(this.workflowRolesList).then(result => {
+           
+            this.workFlowSubmit(transData).then(() => {
             // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
             // if (res.taskId) {
             //   this.taskId = res.taskId;
             // }
             //  再分析成功
-            this.$message.success(this.$t('issue_workflow.rejectSuccess'));
-            this.$store.dispatch('refresh');
+              this.$message.success(this.$t('issue_workflow.rejectSuccess'));
+              this.$store.dispatch('refresh');
+            });
           });
         }
 
@@ -4891,6 +5138,23 @@ export default {
 
       return optionArray;
     },
+    responsibleUserOption (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.USERID,
+          label: item.USERNAMEZH
+        });
+      });
+
+      return optionArray;
+    },
+    //工作流部门筛选框
+    deptTreeTransform: treeTransform(transform({ value: 'ID', label: 'NAME', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    responseDeptTreeTransform: treeTransform(transform({ value: 'code', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    demondUserTreeTransform: treeTransform(transform({ value: 'id', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+
     selectOption (input) {
       const optionArray = [];
       input.forEach((item) => {
@@ -4901,14 +5165,30 @@ export default {
       });
       return optionArray;
     },
-    selectOptionChampion (input) {
+    //用户下拉框
+    userOption (input) {
       const optionArray = [];
+
       input.forEach((item) => {
         optionArray.push({
           value: item.userId,
-          label: item.username
+          label: item.realName
         });
       });
+
+      return optionArray;
+    },
+    //cochair选择器
+    userCochairOption (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.realName
+        });
+      });
+
       return optionArray;
     },
     // 再分配责任人选择，不能选择本人
@@ -4927,6 +5207,7 @@ export default {
       return optionArray;
     },
     showAnalysis (param) {
+      disableScroll();
       let index = param.index;
       // 编辑
       if(index === 0){
@@ -5084,6 +5365,7 @@ export default {
     showUpdate (param) {
       this.$set(this, 'recordUpdate', param || { isUpdae: '1', files: [] });
       this.visibleUpdate = true;
+      disableScroll();
       this.updateEditFlag = true;
       this.updateContentFlag = true;
       if (param) {
@@ -5123,6 +5405,7 @@ export default {
       }
     },
     UpdateFind (param) {
+      disableScroll();
       this.visibleUpdate = true;
       this.updateFindFlag = true;
       this.updateEditFlag = false;
@@ -5148,6 +5431,7 @@ export default {
     // },
     // 确定7钻分析弹框
     AnalysisOk () {
+      enableScroll();
       this.AnalysisForm.validateFields((err) => {
         if (!err) {
           this.visibleAnalysis = false;
@@ -5175,11 +5459,14 @@ export default {
     },
     AnalysisDetailOk () {
       this.visibleDetail = false;
+      enableScroll();
     },
     AnalysisDetailCancel () {
       this.visibleDetail = false;
+      enableScroll();
     },
     updateOk () {
+      enableScroll();
       this.updateForm.validateFields((err) => {
         if (!err) {
           this.visibleUpdate = false;
@@ -5233,6 +5520,7 @@ export default {
       });
     },
     updateCancel () {
+      enableScroll();
       this.visibleUpdate = false;
       this.updateForm.resetFields();
       this.updateFile(this.id).then(res => {
@@ -5242,6 +5530,7 @@ export default {
     // 关闭7钻分析弹框
     AnalysisCancel () {
       this.visibleAnalysis = false;
+      enableScroll();
     },
     // 是否同意关闭
     CloseRadioChange (e) {
@@ -5259,27 +5548,24 @@ export default {
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         this.detailList = res;
-        this.getSysUser({
-          issueSource: this.detailList.source,
-          type: 'coChair'
-        }).then(res1 => {
-          this.sysUser.coChair = res1.id;
-        });
-        this.getSysUser({
-          issueSource: this.detailList.source,
-          type: 'monitor'
-        }).then(res2 => {
-          this.sysUser.monitor = res2.id;
-        });
         this.processInstanceId = res.processInstanceId;
         // taskId改为从问题详情读取 2019/9/23 16：44
         if (res.taskId) {
           this.taskId = res.taskId;
         }
-        if (this.detailList.status === '100300' && res.creator === this.$store.getters.getUser().id) {
+        if ((this.detailList.status === '100300'||this.detailList.status === '100108') && res.creator === this.$store.getters.getUser().id) {
           this.delBtn = true;
           this.optCounter = res.optCounter;
-        }
+        }        
+        //初始化工作流角色人员
+        const transData = {
+          procInstId: this.wkprocessInstanceId,
+          procDefKey: this.procDefKey,
+          businessKey: this.id
+        };
+        this.getActIdMembership(transData).then(ress => {
+          this.workflowRoles = ress;
+        });
         return this.detailList;
       });
       const statusCode2 = this.getStatusCode(this.id).then(res => {
@@ -5307,7 +5593,10 @@ export default {
         if (res[1].A2_1_3) {
           // this.depDisable = true;
           this.redistributionForm.owerDeptLv1 = res[0].responsibleDepartmentId;
-          this.depDisable = true;
+          //当问题分类为tir和bir时不限制
+          if(this.detailList.source=='tir'||this.detailList.source=='bir'||this.detailList.source=='ctir'||this.detailList.source=='pir'||this.detailList.source=='dir'||this.detailList.source=='fir(pe)'||this.detailList.source=='icr'){
+            this.depDisable = true;
+          }
           this.rediStribution.updateFields(this.resMapPropsToFields());
         } else {
           this.depDisable = false;
@@ -5344,8 +5633,6 @@ export default {
       this.stepCurrent === 0 && this.problemDefinition(id).then(res => {
         this.problemDefinitionData = res || {};
         if (res) {
-          this.satisfyFlag = res.isProject === '1';
-          this.conActionFlag = res.isNeedIca === '1';
           this.d0FileList = (res.files || []).map(this.file2client);
           this.record.fileList = res.files || [];
           this.problemDefinitionData.icaDescriptionD1 = res.icaDescription;
@@ -5353,10 +5640,12 @@ export default {
           this.idDef = res.id;
           this.optCounterD0 = res.optCounter;
           if (res.isProject) {
+            this.record.isNeedIca = res.isNeedIca;
+            this.satisfyFlag = res.isProject === '1';
+            this.conActionFlag = res.isNeedIca === '1';
             this.record.isProject = res.isProject;
           }
           this.record.comment = res.comment;
-          this.record.isNeedIca = res.isNeedIca;
           this.record.icaDescriptionD1 = res.icaDescription;
           // 初始化的时候判断如果不立项的话，去掉保存按钮
           if (res.isProject === '0') {
@@ -5392,6 +5681,8 @@ export default {
         }
         this.record.owerDeptLv1 = res.owerDeptLv1;
         this.record.champion = res.champion;
+        this.record.cochair = res.cochair || void 0;
+        this.record.cochairDepartment = res.cochairDepartment;
         
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
@@ -5654,6 +5945,7 @@ export default {
     determineChange (e) {
       if (e.target.value === '1') {
         this.NeedFlage = false;
+        this.workflowRoleChange( void 0, 'coChair');
       } else if (e.target.value === '0') {
         this.NeedFlage = true;
       }
@@ -5833,6 +6125,8 @@ export default {
               responsibleDepartmentId: data.owerDeptLv1,
               message: data.rediStributionMessage
             };
+            // 修改后台角色人员信息
+            this.handelActRoles();
             // 修改后台当前责任人
             this.updateChampionFun(championUpate).then(() => {
               // const updateDate = res.data;
@@ -5920,7 +6214,7 @@ export default {
       this.formDcontent.validateFields((err) => {
         if (!err) {
           this.routerFlag = false;
-          this.handleSave();
+          this.handleSave(2);
           const data = this.formDcontent.getFieldsValue();
           if (Number(vm.detailList.status) === 201500) {
             data.endSeven = '1';
@@ -5946,16 +6240,12 @@ export default {
               businessKey: this.id, // 问题id
               comment: commentVal,
               assigner: data.diamondOwner1,
-              coChair: vm.sysUser.coChair,
-              monitor: vm.sysUser.monitor,
-              champion: data.champion, // 责任人
               isDirectSerious: (this.detailList.gradeName === 'A' || this.detailList
                 .gradeName === 'B') ? '1' : '0', // 是否直接极端严重事情
               isEnd: this.record.isClose, // 是否关闭
               isPass: data.verifySeven || this.record.isPass, // 审核是否通过
               isQZEnd: data.endSeven, // 是否结束七钻
-              isHaveCO: this.sysUser.coChair == null ? '0' : '1', // 是否SC
-              additionalApproval: this.record.signLeaderId, // 加签人
+              isHaveCO: this.workflowRoles.coChair == null ? '0' : '1', // 是否SC
               isAB: (this.detailList.gradeName === 'A' || this.detailList.gradeName
                 === 'B') ? '1' : '0',
               isQZ: data.type, // 是否需要七钻
@@ -5963,38 +6253,47 @@ export default {
               isLeaderSign: this.record.isSign, // 领导加签
               isItem: data.isProject, // 是否立项
               isWD: data.isNeedIca, // 是否围堵
-              diamondOwner1: data.diamondOwner1,
-              diamondOwner4: data.diamondOwner4,
-              diamondOwner5: data.diamondOwner5,
-              diamondOwner6: data.diamondOwner6,
-              diamondOwner7: data.diamondOwner7
             }
           };
-          vm.workFlowSubmit(transData).then(() => {
+          //保存任务角色
+          for(let item in this.workflowRoles) {
+            transData.variables[item]=this.workflowRoles[item];
+            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+          }
+          this.addActIdMembership(this.workflowRolesList).then(addResult => {
+            for(let item in addResult) {
+              transData.variables[item] = addResult[item];
+            }
+            vm.workFlowSubmit(transData).then(() => {
             // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
             // if (res.taskId) {
             //   this.taskId = res.taskId;
             // }
-            vm.$message.success(vm.$t('issue_workflow.submitSuccess'));
-            // 如果当前步骤为D0并且选择立项那么页面不跳转
-            if ((this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
-              .statusCode.statusNewCode, 10) > 100100) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
+              vm.$message.success(vm.$t('issue_workflow.submitSuccess'));
+              // 如果当前步骤为D0并且选择立项那么页面不跳转
+              if ((this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
+                .statusCode.statusNewCode, 10) == 100200) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
               //commitButton.reset();
               // this.init();
-              this.$store.dispatch('refresh');
-            } else {
-              this.$router.push({
-                path: this.$route.query.form || '/'
-              });
-            }
-          }).finally(commitButton.reset);
+                this.$store.dispatch('refresh');
+              } else {
+                this.$router.push({
+                  path: this.$route.query.form || '/'
+                });
+              }
+            }).finally(commitButton.reset);
+          });
+          
         } else {
           commitButton.reset();
           this.routerFlag = true;
         }
       });
     },
-    handleSave () {
+    handleSave (status) {
+      if(status == 1){
+        this.handelActRoles();
+      }
       const saveButton = this.$refs.saveButton;
       const data = this.formDcontent.getFieldsValue();
       // eslint-disable-next-line no-underscore-dangle
@@ -6007,7 +6306,7 @@ export default {
         });
       }
       // 判断当前步骤
-      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode, 10) > 100100) {
+      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode, 10) > 100100&&this.pagePermission.A0_1_3) {
         if (this.d0FileList && this.d0FileList.length) {
           data.files = this.d0FileList;
         }
@@ -6038,55 +6337,61 @@ export default {
           if(this.issueDefinitionData.sevenDiamondsVos){
             optCoustValid = true;            
           }
-          console.log(this.issueDefinitionData.sevenDiamondsVos);
-          if (!_this.analysisData.length) {
+          if (!_this.analysisData.length||this.statusCode.statusNewCode === '200105') {
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS01',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[0].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[0].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[0].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS02',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[1].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[1].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[1].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS03',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[2].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[2].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[2].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner4,
                 type: 'DIAMONDS04',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[3].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[3].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[3].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner5,
                 type: 'DIAMONDS05',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[4].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[4].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[4].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner6,
                 type: 'DIAMONDS06',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[5].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[5].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[5].id:null
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner7,
                 type: 'DIAMONDS07',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[6].optCounter:null
+                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[6].optCounter:null,
+                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[6].id:null
               });
             }
           }
@@ -6098,15 +6403,13 @@ export default {
             });
           });
           data.sevenDiamondsVos = _this.analysisData;
-           
-          this.saveSevenDiamonds({
-            sevenDiamondsVOS: _this.analysisData
-          });
           data.optCounter = this.optCounterD1;
-          
-          if(this.issueDefinitionData.type === '1'){
-            data.type = this.issueDefinitionData.type;
+          if(!data.type){
+            data.type = this.record.type;
           }
+          this.saveSevenDiamonds({
+             sevenDiamondsVOS:data.sevenDiamondsVos
+          });
           this.issueDefinitionAdd(data).then(res => {
             this.optCounterD1 = res.optCounter;
             saveButton.reset();
@@ -6331,15 +6634,77 @@ export default {
         // 不可以保存
         this.pagePermission.button_commit_3 = false;
       }
-    }
-    // faultCodeClassM(){
-    //   var p=document.getElementById('pid');
-    //   console.log(p);
-    // }
+    },
+    // 单页报告下载
+    issueReportDownload () {
+      this.issueExportTemplate({id: this.id}).then(res => {
+        const url = res.url || '';
+        const name = res.name || '';
+        const a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', name);
+        // a.click在火狐下无法被触发，必须通过这种方式下载
+        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+        a.remove();
+      });
+    },
+    //保存工作流角色人物
+    handelActRoles (){
+      for(let item in this.workflowRoles) {
+		    this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+      }
+      this.addActIdMembership(this.workflowRolesList).then(() => {
+
+      });
+    },
+    //更换工作流角色人员
+    workflowRoleChange (value ,role){
+      this.workflowRoles[role] = value;
+    },
+    //更新责任人或者提出人科长或者部长
+    worlkChampionOrProposer (value ,role){
+      this.workflowRoles[role] = value;
+      if(role=='advanceUser'){
+        if(value){
+          this.getUserByPositionCodeFunction(value,'sectorManager','advanceSelector');
+        }else{
+          this.workflowRoles.advanceSelector = '';
+        }
+        
+      }else if(role=='champion'){
+        if(value){
+          this.getUserByworkFlowPositionCodeFunction(value,'sectorManager','sectorManager');
+          this.getUserByworkFlowPositionCodeFunction(value,'director','director');
+        }else{
+          this.workflowRoles.sectorManager = '';
+          this.workflowRoles.director = '';
+        }
+      }
+    },
+    //获取对应人科长或者部长信息
+    getUserByPositionCodeFunction (value,positionCode,role){
+      const parmas = {
+        userId: value,
+        positionCode: positionCode
+      };
+      this.getUserByPositionCode(parmas).then(res => {
+        this.workflowRoles[role] = res[0].id;
+      });
+    },
+    //获取工作流对应人科长或者部长信息
+    getUserByworkFlowPositionCodeFunction (value,positionCode,role){
+      const parmas = {
+        userId: value,
+        positionCode: positionCode
+      };
+      this.getUserByworkflowPositionCode(parmas).then(res => {
+        this.workflowRoles[role] = res[0].id;
+      });
+    },
   }
 };
-
 </script>
+
 <style lang="less">
 
   /deep/ form textarea.ant-input{
@@ -6373,8 +6738,20 @@ export default {
     width:100px;
   }
   .spantable {
-    width:100px;
+    width:100px;   
   }
+  .D5back /deep/ .ant-table-thead > tr > th{
+     padding: 16px 12px !important;
+   }
+   .D5back /deep/ .ant-table-tbody > tr > td{
+     padding: 16px 12px !important;
+   }
+   .D5content /deep/ .ant-table-thead > tr > th{
+     padding: 16px 12px !important;
+   }
+   .D5content /deep/ .ant-table-tbody > tr > td{
+     padding: 16px 12px !important;
+   }
   // /deep/ .ant-table-tbody > tr > td:nth-child(2) span { 
     
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
@@ -7167,7 +7544,7 @@ export default {
   }
 
   /deep/ .ant-affix {
-    z-index:5000;
+    z-index:1000;
     // position: fixed;
     left: 0px !important;
     width: 100% !important;

@@ -49,6 +49,8 @@
     "relevanceIssuesId": "重复关联问题",
     "remark": "备注",
     "responsibleDepartmentId": "责任部门",
+    "proposerDepartmentId": "问题提出人部门",
+    "proposer": "问题提出人",
     "responsibleDepartmentName": "责任部门名称",
     "softwareVersion": "软件版本号",
     "source": "问题分类",
@@ -70,7 +72,11 @@
     "planCloseDate": "计划关闭日期",
     "seeMore": "查看更多",
     "vinOrLicense": "vin或者车号",
-    "phoneVer":"请输入11位有效手机号"
+    "phoneVer":"请输入11位有效手机号",
+    "smt": "模块",
+    "responsibleUserId": "问题管理负责人",
+    "vin_lable": "(批量VIN可填写备注或上传附件)",
+    "license_lable": "(VIN和车号选填一项)"
   },
   "search": {
     "find_button": "查询",
@@ -117,7 +123,8 @@
     "upload": "上传文件",
     "download": "下载文件",
     "reassign": "再分配",
-    "reanalysis": "再分析"
+    "reanalysis": "再分析",
+    "issue_report_download": "下载单页报告"
   },
   "issue_workflow": {
     "submitSuccess":"提交成功",
@@ -143,6 +150,8 @@
       "confirm": "直接判定",
       "needAnalysis": "需要7钻分析",
       "resposibleDepartment": "责任部门",
+      "cochairDepartment": "问题管理参与人部门",
+      "cochair": "问题管理参与人",
       "champion": "问题责任人",
       "champion_short": "责任人",
       "analysis_champion": "分析责任人",
@@ -244,6 +253,7 @@
       "D6": "D6-问题关闭"
     },
     "attachment": "附件",
+    "attachment_limit": "附件大小限制50M以内",
     "approvalResult": "是否通过审核",
     "approval_result": "审核结果",
     "approval": "审核",

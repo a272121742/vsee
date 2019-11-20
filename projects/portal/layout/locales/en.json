@@ -12,6 +12,7 @@
     "traceability": "Quality Information Traceability System",
     "aftersales": "Aftersales Quality System",
     "manufacturing": "Manufacturing Quality System",
+    "zhushuju": "Master Data Maintainence",
     "system": "System Setup"
   },
   "old_password": {
@@ -36,7 +37,7 @@
     "failure": "failure"
   },
   "env": {
-    "name": "This is test ENV,only for test"
+    "name": "Only for test"
   },
   "SERVER": {
     "ERROR": {

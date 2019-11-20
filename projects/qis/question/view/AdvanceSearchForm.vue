@@ -53,7 +53,7 @@
             :placeholder="$t('search.please_select')"
             :transform="vehicleModelTreeTransform"
             allow-clear
-            url="/masterdata/v1/platform/treeAll"
+            url="/masterdata/v1/vehicleproject/treeAll"
             :query="{ id: '${value}' }"
           />
           <!-- <net-select
@@ -73,10 +73,11 @@
         <a-form-item :label="$t('issue.faultTreeIds1')">
           <net-select
             v-decorator="['faultTreeIds1']"
+            :transform="selectOptionFaultTree"
             :placeholder="$t('search.please_select')"
-            :transform="transformFaultTreeIds1"
+            :query="{ id: '${value}'}"
             allow-clear
-            url="/issue/v1/faultcategory?p_id=0"
+            url="/masterdata/v1/pfscategory?p_id=0"
             @change="faultTreeIds1Change"
           />
         </a-form-item>
@@ -89,12 +90,13 @@
         <a-form-item :label="$t('issue.faultTreeIds2')">
           <net-select
             v-decorator="['faultTreeIds2']"
-            :url="`/issue/v1/faultcategory`"
-            :query="{p_id: record.faultTreeIds1}"
+            url="/masterdata/v1/pfscategory"
+            :query="{p_id: record.faultTreeIds1, id: '${value}'}"
+            :delay="!record.faultTreeIds1"
             :cache="false"
             :disabled="!record.faultTreeIds1"
             :placeholder="$t('search.please_select')"
-            :transform="transformFaultTreeIds2"
+            :transform="selectOptionFaultTree"
             allow-clear
             show-search
             @change="faultTreeIds2Change"
@@ -109,12 +111,13 @@
         <a-form-item :label="$t('issue.faultTreeIds3')">
           <net-select
             v-decorator="['faultTreeIds3']"
-            :url="`/issue/v1/faultTree`"
-            :query="{fault_category_id: record.faultTreeIds2}"
+            url="/masterdata/v1/pfsfault"
+            :query="{psId: record.faultTreeIds2, id: '${value}'}"
+            :delay="!record.faultTreeIds2"
             :cache="false"
             :disabled="!record.faultTreeIds2"
             :placeholder="$t('search.please_select')"
-            :transform="transformFaultTreeIds3"
+            :transform="selectOptionFaultTree3"
             allow-clear
             show-search
           />
@@ -385,12 +388,12 @@
 
 <script>
 import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
-import { clearObserver } from '@util/datahelper.js';
+import { clearObserver, transform, treeTransform } from '@util/datahelper.js';
 import { omit } from 'ramda';
 import {
   createNamespacedHelpers
 } from 'vuex';
-import { transform1, transform2, transform3, transform4, transform5, transform6, transformTree } from '~~/model.js';
+import { transform1, transform2, transform3, transform4, transform5, transform6 } from '~~/model.js';
 import timeFormatMix from '~~/time-format.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
@@ -548,8 +551,27 @@ export default {
     filterOptionCreator: transform4,
     filterOptionAssigner: transform5,
     filterOptionResponsibleDepId: transform6,
-    vehicleModelTreeTransform: transformTree
-    
+    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    selectOptionFaultTree (input) {
+      const optionArray = [];
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.psNameZh
+        });
+      });
+      return optionArray;
+    },
+    selectOptionFaultTree3 (input) {
+      const optionArray = [];
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.faultNameZh
+        });
+      });
+      return optionArray;
+    },
   }
 };
 </script>

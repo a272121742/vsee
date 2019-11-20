@@ -91,5 +91,14 @@ export default {
   //删除问题
   delIssue: (param) => $.post('/issue/v1/issue/', param),
   // 获取模版下载
-  getTemplateDownload: param => $.get('/issue/v1/file/template', param)
+  getTemplateDownload: param => $.get('/issue/v1/file/template', param),
+  issueExportTemplate: param => $.get('/issue/v1/issue/exportTemplate', param, {responseType: 'blob'}),
+  // 查看工作流角色任务信息
+  getActIdMembership: (param) => $.get('/issue/v1/workflow/getActIdMembership', param),
+  // 保存工作流角色对应用户关系
+  addActIdMembership: (data) => $.post('/issue/v1/workflow/addActIdMembership', data),
+  //获取科长部长
+  getUserByPositionCode: (param) =>$.get('/sys/user/userInfo/getByPositionCode', param),
+  //获取工作流科长部长
+  getUserByworkflowPositionCode: (param) =>$.get('/sys/user/workflowuserInfo/getByPositionCode', param)
 };

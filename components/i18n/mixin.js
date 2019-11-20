@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export default {
   data () {
     return {
@@ -8,27 +6,27 @@ export default {
           lang: 'zh',
           text: '中文',
           title: '中',
-          name: 'zh_CN'
+          name: 'zh-CN'
         },
         en: {
           lang: 'en',
           text: 'EN',
           title: 'en',
-          name: 'en_GB'
+          name: 'en-US'
         }
       },
       langs: [{
         lang: 'zh',
         text: '中文',
         title: '中',
-        name: 'zh_CN'
+        name: 'zh-CN'
       }, {
         lang: 'en',
         text: 'EN',
         title: 'en',
-        name: 'en_GB'
+        name: 'en-US'
       }]
-    }
+    };
   },
   computed: {
     lang () {
@@ -37,19 +35,10 @@ export default {
   },
   methods: {
     changeLanguage ({ key }, { name }) {
-      // 调用统一接口设置语言
-      this.$store && this.$store.commit('setLanguage', name);
       // 变更i18n的国际化
       this.$i18n && (this.$i18n.locale = key);
-      // 变更ant-design UI组件的国际化
-      import('ant-design-vue/lib/locale-provider/' + name).then(res => {
-        this.$root && this.$root.locale && (this.$root.locale = res.default);
-        if (name !== 'zh_CN') {
-          moment.locale('en');
-        } else {
-          moment.locale('zh-cn');
-        }
-      });
+      // 调用统一接口设置语言
+      this.$store.dispatch('loadLanguage', name);
     }
   }
-}
+};

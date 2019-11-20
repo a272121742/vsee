@@ -12,6 +12,7 @@
     "traceability": "质量信息追溯平台",
     "aftersales": "售后质量模块",
     "manufacturing": "过程质量模块",
+    "zhushuju": "主数据维护",
     "system": "系统设置"
   },
   "old_password": {
@@ -36,7 +37,7 @@
     "failure": "密码修改失败"
   },
   "env": {
-    "name": "本系统是测试环境，仅用于系统测试"
+    "name": "本系统仅用于测试"
   },
   "SERVER": {
     "ERROR": {

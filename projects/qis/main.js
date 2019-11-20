@@ -53,7 +53,7 @@ router.beforeEach((to, from , next) => {
       if (to.path === '/' && urlList[0] && urlList[0] !== '/') {
         return { ...to, path: urlList[0], replace: true };
       }
-      return { path: '404', replace: true };
+      return { path: '403', replace: true };
     }
     return true;
   }
@@ -88,23 +88,6 @@ new Vue({
   i18n,
   el: '#app',
   name: 'App',
-  data () {
-    return {
-      locale: null
-    };
-  },
-  beforeCreate () {
-    this.$store && this.$store.dispatch('loadLanguage').then(locale => {
-      import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-        this.$set(this, 'locale', res.default);
-      });
-      if (locale !== 'zh_CN') {
-        moment.locale('en');
-      } else {
-        moment.locale('zh-cn');
-      }
-    });
-  },
   mounted () {
     // 消息全局配置
     this.$message.config({
@@ -118,7 +101,7 @@ new Vue({
   render () {
     return (
       <div id="app">
-        <a-locale-provider locale={this.locale}>
+        <a-locale-provider locale={this.$store.state.local4antd}>
           <router-view />
         </a-locale-provider>
       </div>

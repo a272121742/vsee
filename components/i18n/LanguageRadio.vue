@@ -1,6 +1,6 @@
 <template>
   <a-radio-group
-    :default-value="value"
+    :value="value"
     size="small"
     button-style="solid"
     @change="updateLanguage"
@@ -22,8 +22,7 @@ export default {
   mixins: [mixin],
   computed: {
     value () {
-      const locale = this.$i18n ? this.$i18n.locale : 'cn';
-      return locale;
+      return this.$store.state.local;
     }
   },
   methods: {

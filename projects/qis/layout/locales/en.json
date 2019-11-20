@@ -7,6 +7,7 @@
   "IRS首页": "Home",
   "我的问题": "My Issue",
   "问题检索": "Issue Search",
+  "分析报表": "Report",
   "user_action": {
     "manual": "user manual",
     "editinfo": "edit info",
@@ -36,7 +37,7 @@
     "failure": "failure"
   },
   "env": {
-    "name": "This is test ENV,only for test"
+    "name": "Only for test"
   },
   "file_download": {
     "success": "File Download Success!",

@@ -237,5 +237,39 @@ export default {
    */
   getTemplateDownload (store, param) {
     return api.getTemplateDownload(param);
-  }
+  },
+  /**
+   * 下载单页报告
+   */
+  issueExportTemplate (store, param) {
+    return api.issueExportTemplate(param);
+  },
+  /**
+   * 查看工作流角色任务信息
+   */
+  getActIdMembership (store, param) {
+    return api.getActIdMembership(param);
+  },
+  /**
+   * 保存工作流角色对应用户关系
+   */
+  addActIdMembership (store, data) {
+    return api.addActIdMembership(data);
+  },
+  /**
+   * 获取对应人科长或者部长信息
+   * @param {*} store 
+   * @param {*} data 
+   */
+  getUserByPositionCode (store, data) {
+    return api.getUserByPositionCode(data);
+  },
+  /**
+   * 获取工作流对应人科长或者部长信息
+   * @param {*} store 
+   * @param {*} data 
+   */
+  getUserByworkflowPositionCode (store, data) {
+    return api.getUserByworkflowPositionCode(data);
+  },
 };

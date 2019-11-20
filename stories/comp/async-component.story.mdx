@@ -1,0 +1,355 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="组件库|Other其他/AsyncComponent异步组件" />
+
+# 问题总览
+
+> 前言：在vue[官方资料][components-dynamic-async]中，我们可以可以很学会如何通过vue构建“动态组件”以及“异步组件”，然而，在官方资料中，并没有涉及到真正的“动态异步”组件，经过大量的时间研究和技术分析，我们给出目前比较合理的技术实现方式，并分析一下vue动态异步组件的实现思路。
+
+
+
+## 动态/异步组件的问题
+
+官网中介绍，动态组件是通过tag`component`来构建，在当中绑定组件的引用即可，大致代码如下：
+
+```html
+<template>
+	<component :is="currentComp"></component>
+</template>
+<script>
+  import compA from './CompA';
+  import compB from './CompB';
+  import compC from './CompC';
+  export default {
+    data () {
+      return {
+        currentComp: compA
+      }
+    },
+    methods: {
+      changeComp (name) {
+        switch (name) {
+          case 'compA' : {
+            this.currentComp = compA; 
+            break;
+          case 'compB' : 
+            this.currentComp = compB; 
+            break;
+          case 'compC' : 
+            this.currentComp = compC; 
+            break;
+          default :
+            this.currentComp = compA;
+            break;
+        }
+      }
+    }
+  }
+</script>
+```
+
+简单说明一下，通过对字符串的判断，来切换组件的实例，实例发生变化后，`component`组件会自动切换。这就是vue中最基本的动态组件。但是，这样的代码有个很显著的问题：
+
+1. 所有的组件都是写死的，比如在代码层面上提前定义，即代码5-7行；
+2. 组件的引入是同步的，即便compB和compC在一开始没渲染，但组件的内存已经被加载；
+
+对于第二点，我们可以很容易的使用require或者import语法来进行异步加载。然而这并没有解决问题1所带来的隐患。按照实际的要求，我们需要一个可以在客户端随意配置的组件，即通过组件的地址或配置在进行动态加载的方式。这就是为什么要进行动态异步组件的构建。
+
+这种构建方式是刚需的，一方面他可以构筑类似`portal`中的`porlet`组件，另一方面，他的实现方式将给组件加载带来巨大的提升。
+
+
+
+## 构建AsyncComponent
+
+首先，我们看一下预期的结果，我们希望构建如下的代码模式：
+
+```html
+<template>
+	<async-component path="/views/moduleA/compA"></async-component>
+</template>
+```
+
+因此，我们创建一个`AsyncComponent.vue`文件，并书写代码：
+
+```html
+<template>
+	<component v-bind:is="componentFile"></component>
+</template>
+
+<script>
+  export default {
+    props: {
+      path: {
+        type: String,
+        required: true,
+        default: () => null
+      }
+    },
+    data () {
+      const componentFile = this.render;
+      return {
+        componentFile: componentFile
+      }
+    },
+    methods: {
+      render () {
+        this.componentFile =  (resolve) => ({
+          component: import(`@/${this.path}`),
+          loading: { template: '<div style="height: 100%; width: 100%; display: table;"><div style="display: table-cell; vertical-align: middle; text-align: center;"><div>加载中</div></div></div>' },
+          error:  { template: '<div style="height: 100%; width: 100%; display: table;"><div style="display: table-cell; vertical-align: middle; text-align: center;"><div>加载错误</div></div></div>' },
+          delay: 200,
+          timeout: 10000
+        });
+      }
+    },
+    watch: {
+      file () {
+        this.render();
+      }
+    }
+  }
+</script>
+```
+
+这个代码很好解释：
+
+1. 组件中传入`path`属性，构建时候通过`render`函数创建异步组件；
+2. `render`函数为官网的异步组件构建方式；
+3. 监控`path`属性，当发生变化时，重新通过render函数构建；
+
+为了能够让组件可被重新激活，并且重用性更高，我们对组件进行更多的参数化，最终结果如下：
+
+```html
+<template>
+  <keep-alive v-if="keepAlive">
+    <component
+      :is="AsyncComponent"
+      v-bind="$attrs"
+      v-on="$listeners"/>
+  </keep-alive>
+  <component
+    v-else
+    :is="AsyncComponent"
+    v-bind="$attrs"
+    v-on="$listeners"/>
+</template>
+
+<script>
+import factory from './factory.js';
+
+/**
+ * 动态文件加载器
+ */
+export default {
+  inheritAttrs: false,
+  // 外部传入属性
+  props: {
+    // 文件的路径
+    path: {
+      type: String,
+      default: null
+    },
+    // 是否保持缓存
+    keepAlive: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    // 延迟加载时间
+    delay: {
+      type: Number,
+      default: 20
+    },
+    // 超时警告时间
+    timeout: {
+      type: Number,
+      default: 2000
+    }
+  },
+  data () {
+    return {
+      // 构建异步组件 - 懒加载实现
+      AsyncComponent: factory(this.path, this.delay, this.timeout)
+    }
+  },
+  watch: {
+    path () {
+      this.AsyncComponent = factory(this.path, this.delay, this.timeout);
+    }
+  },
+  methods: {
+    load (path = this.path) {
+      this.AsyncComponent = factory(path, this.delay, this.timeout);
+    }
+  }
+}
+</script>
+```
+
+具体改动如下：
+
+1. 代码第2行增加`keep-alive`配置，可让组件持久化；
+2. 代码第5行增加属性绑定，可让异步渲染的组件通过外部(`async-component`tag)传参；
+3. 代码第6行增加事件绑定，可让异步渲染的组件通过外部(`async-component`tag)进行事件监听；
+4. 代码16行为封装**异步组件构造器factory**（工厂模式），可暴露出去方便其他开发者使用；
+5. `factory`函数增加**加载组件**、**错误组件**、**未定义组件**的封装；
+6. 增加了`delay`、`timeout`配置；
+7. 暴露了`load`函数，方便外部`JavaScript`调用；
+
+至此，我们可以通过`<async-component path="/views/moduleA/compA.vue"></async-component>`来构建组件，如果`path`是一个传入属性，通过改变该属性触发`watch`来重新加载新组件。或者给该组件添加`ref`属性来获取异步组件容器，通过调用`load`方法来重新装载。
+
+
+## 后续的问题
+
+看上去，现在的封装已经非常好，但是距离完美还差很大一截。虽然已经解决了开发人员重复造轮子的问题，并优化了最佳的代码模式，然而我们仍然能发现一个问题：`ref`之后，拿到的是`AsyncComponent`组件，并非能像`<component>`tag一样可以直接对内部组件进行获取。如果按照这样的理想去思考，有利也是有弊的。**利**是我们构建出了`<component>`tag的动态异步版，**弊**是`AsyncComponent`作为容器的属性很容易被内部的装载物所替换，比如`load`方法。
+
+且不考虑这样实现之后的问题，我们可以在开发过程中通过约束来避免，代码中也可以增加属性检测机制。但这样的实现方式非常困难，我尝试过如下方式，均不能实现：
+
+> 函数式组件： 通过添加`functional: true`可以把一个组件函数化，这样使得该组件无法获取到`this`即组件实例，因此他所挂载的就是内部的装载组件。然而在构建过程中，出现了无限递归`render`函数的问题，无法解决，而且`createElement`函数无法创建空节点，导致组件总会出现一个不必要的标签。
+
+> 抽象化组件： 通过添加`abstract: true`可以把一个组件抽象化，这样组件是无法渲染其自身，而只会挂在内部的装载组件。但这样做之后，会导致外部容器无法通过`ref`属性查找到它，更无法获取到装载组件，因此也以失败告终。
+
+> 继承式组件： 通过添加`extends`可以在构建`AsyncComponent`的时候实现继承，这样装载组件的属性都会传入到`AsyncComponent`中，然而，这样的方式不支持动态继承，所以还是宣告失败。
+
+虽然都是失败的结果，但这并不能停止我们的想象，相信未来会有方法来解决这个问题。目前，我们还只能老老实实的把`AsyncComponent`当做容器来使用。
+
+
+
+## 动态异步的未来
+
+你要问我动态异步组件的未来是什么，我会告诉你我们的梦想有多大。我们希望实现分布式前端UIServer，让`AsyncComponent`可以加载远程组件。远程组件就可以实现配置化，就可以脱离代码本身而进行前端的组件构建。
+
+## 案例
+
+异步组件的使用场景非常广泛，尤其应用在系统配置化中，例如门户，由于大部分的组件已经写好打包，因此不需要在特定页面显示的编写`import`语法，而直接将小模块或小组件的地址存储到数据库，形成动态配置。
+
+### 动态地址渲染
+
+我们可以通过填入`path`值，来告诉异步组件去渲染哪个特定组件。默认情况下，我们是开启了`keep-alive`，以保证组件不会重新渲染，提升效率。
+
+<Preview>
+<Story name="动态地址">
+{{
+  data () {
+    return {
+      path: '/views/Card1.vue',
+      options: [
+        {value: '/views/Card1.vue', label: '/views/Card1.vue'},
+        {value: '/views/Card2.vue', label: '/views/Card2.vue'},
+        {value: '/views/Card3.vue', label: '/views/Card3.vue'}
+      ]
+    }
+  },
+  template: `
+    <div>
+      <div style="margin-bottom: 18px;">
+        &nbsp;&nbsp;注意查看控制台中，已经渲染过的组件不会重新渲染；
+        <a-select 
+          :options="options"
+          placeholder="请选择组件"
+          @change="changeView"
+          style="width: 200px; float: right;"
+        ></a-select>
+      </div>
+      <async-component :path="path" />
+    </div>
+  `,
+  methods: {
+    changeView (path) {
+      this.path = path;
+    }
+  }
+}}
+</Story>
+</Preview>
+
+### 缓存策略
+
+如果你希望组件每次渲染时，都重新刷新一下数据，可以关闭`keep-alive`的默认值。
+
+<Preview>
+<Story name="缓存策略">
+{{
+  data () {
+    return {
+      path: '/views/Card1.vue',
+      options: [
+        {value: '/views/Card1.vue', label: '/views/Card1.vue'},
+        {value: '/views/Card2.vue', label: '/views/Card2.vue'},
+        {value: '/views/Card3.vue', label: '/views/Card3.vue'}
+      ]
+    }
+  },
+  template: `
+    <div>
+      <div style="margin-bottom: 18px;">
+        &nbsp;&nbsp;注意查看控制台中，每次下拉时，组件会重新加载和渲染；
+        <a-select
+          :default-value="path"
+          :options="options"
+          placeholder="请选择组件"
+          @change="changeView"
+          style="width: 200px; float: right;"
+        ></a-select>
+      </div>
+      <async-component :path="path" :keep-alive="false" />
+    </div>
+  `,
+  methods: {
+    changeView (path) {
+      this.path = path;
+    }
+  }
+}}
+</Story>
+</Preview>
+
+### 参数传递
+
+如何将参数传递给被选中的组件，只需要按照普通组件传参一样设置即可：
+
+<Preview>
+<Story name="参数传递">
+{{
+  data () {
+    return {
+      path: '/views/Card1.vue',
+      title: '',
+      options: [
+        {value: '/views/Card1.vue', label: '/views/Card1.vue'},
+        {value: '/views/Card2.vue', label: '/views/Card2.vue'},
+        {value: '/views/Card3.vue', label: '/views/Card3.vue'}
+      ]
+    }
+  },
+  template: `
+    <div>
+      <div style="margin-bottom: 18px;">
+        &nbsp;&nbsp;加载时，将下拉选框的值传给卡片的标题进行渲染；
+        <a-select 
+          :options="options"
+          placeholder="请选择组件"
+          @change="changeView"
+          style="width: 200px; float: right;"
+        ></a-select>
+      </div>
+      <async-component :path="path" :title="title" />
+    </div>
+  `,
+  methods: {
+    changeView (path) {
+      this.path = path;
+      this.title = path;
+    }
+  }
+}}
+</Story>
+</Preview>
+
+> 注意：
+> 1. 如果你希望属性都是动态的，这将使用`vue`的魔法，也就是`v-bind`（不用带冒号）;
+> 2. 同理监听事件也是可以传递的；
+> 3. 同理`slot`继承也是可以的；
+
+
+[components-dynamic-async]: https://cn.vuejs.org/v2/guide/components-dynamic-async.html#ad	"动态组件&amp;异步组件"

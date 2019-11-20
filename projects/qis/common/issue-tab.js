@@ -69,12 +69,6 @@ export default {
       });
     },
     templateDownload () {
-      // const url = '';
-      // const preUrl = this.$store.getters.getUrl();
-      // const encodePath = window.encodeURIComponent(url);
-      // const encodeFileName = window.encodeURIComponent(name);
-      // const token = this.headers.token;
-      // return window.decodeURI(`${preUrl}/oss/ossFile/download?path=${encodePath}&originalFilename=${encodeFileName}&token=${token}`);
       this.getTemplateDownload({rec_type: 20021001}).then((res = {}) => {
         const url = res.path;
         const name = res.originalFilename;
@@ -91,16 +85,23 @@ export default {
       });
     },
     batchImport ({ file }) {
-      if (file.status !== 'done') {
-        this.$message.show({ content: this.$t('file_upload.uploading'), type: 'loading' });
-      } else {
-        if (file.response && file.response.code === 0) {
-          this.$message.show({ content: this.$t('file_upload.success'), type: 'success', duration: 3 });
+      if (file) {
+        if (file.status !== 'done') {
+          this.$message.show({ content: this.$t('file_upload.uploading'), type: 'loading' });
         } else {
-          this.$message.show({ content: this.$t('file_upload.failure'), type: 'error', duration: 3 });
+          if (file.response && file.response.code === 0) {
+            this.$message.show({ content: this.$t('file_upload.success'), type: 'success', duration: 3 });
+            this.$store.dispatch('refresh');
+          } else {
+            if (file.response.msg) {
+              this.$message.show({ content: file.response.msg, type: 'error', duration: 3 });
+            } else {
+              this.$message.show({ content: this.$t('file_upload.failure'), type: 'error', duration: 3 });
+            }
+            
+          }
         }
       }
-      
     }
   }
 };

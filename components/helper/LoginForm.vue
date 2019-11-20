@@ -157,7 +157,17 @@ const accounts = [
   'xutengda'+ mailback,
   'mapengcheng'+ mailback,
   'lixinghua'+ mailback,
-  'marubin'+ mailback
+  'marubin'+ mailback,
+  'luodengyuan'+ mailback,
+  'jiwei01'+ mailback,
+  'jiujiajie'+ mailback,
+  'wangpeiyu@bjev.com.cn',
+  'yuguixia@bjev.com.cn',
+  'yidihua@bjev.com.cn',
+  'liuweihong@bjev.com.cn',
+  'wangjinkui@bjev.com.cn',
+  'liyanfang@bjev.com.cn',
+  'markcobbett@bjev.com.cn'
 ];
 export default {
   components: {
@@ -182,7 +192,7 @@ export default {
         uuid: getUUID()
       },
       
-      accounts: [],
+      accounts: accounts,
     };
   },
   created () {
@@ -214,7 +224,7 @@ export default {
       });
     },
     handleSearch (value) {
-      this.accounts = accounts.filter(item => item.indexOf(value));
+      this.accounts = accounts.filter(item => ~item.indexOf(value));
     },
     /**
      * 验证码更新
@@ -233,7 +243,7 @@ export default {
      */
     onValuesChange (props, values) {
       return autoUpdateFileds(this, 'record')(props, values);
-    }
+    },
   }
 };
 </script>

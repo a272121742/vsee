@@ -50,6 +50,21 @@ this.$message.show({
 1. 由于该消息框是一个单例的，所有的参数采用的是传入式继承，即上一次`show`方法调用的参数会被保存，下一次调用时可以直接继承；
 2. `loading`模式和`info`模式（包含`info`、`success`、`error`、`warning`）是**互斥**的，`loading`模式下**不计时**，由人为的进行关闭或者更新操作，这样做的体验可以连续调用多个异步请求。`info`模式下是会进行**计时**的，如果设定时间`duration`为`null`，则关闭计时器，改为手工关闭模式。
 
+<Preview>
+<Story name="基本用法">
+{{
+  template: `
+    <a-button @click="showTime">查看事件</a-button>
+  `,
+  methods: {
+    showTime () {
+      this.$message.show({content: '时间' + new Date().toLocaleString()});
+    }
+  }
+}}
+</Story>
+</Preview>
+
 
 
 

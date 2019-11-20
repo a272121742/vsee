@@ -16,17 +16,26 @@
           :title="$t('SystemName')"
         ></banner>
         <a-menu
-          :selected-keys="defaultActiveMenu"
+          :default-selected-keys="defaultActiveMenu"
           mode="horizontal"
+          @select="jump"
         >
-          <a-menu-item
+          <template
             v-for="menu in menus"
-            :key="menu.key"
-            :title="$t(menu.key)"
-            @click="jump(menu.url)"
           >
-            {{ $t(menu.key) }}
-          </a-menu-item>
+            <a-menu-item
+              v-if="!menu.children || !menu.children.length"
+              :key="menu.key"
+              :title="$t(menu.title)"
+            >
+              {{ $t(menu.title) }}
+            </a-menu-item>
+            <sub-menu
+              v-else
+              :key="menu.key"
+              :menu-info="menu"
+            />
+          </template>
         </a-menu>
       </div>
       <div class="header-index-right user-wrapper">
@@ -71,7 +80,7 @@
 </template>
 
 <script>
-import { clearObserver } from '@util/datahelper.js';
+import { clearObserver, treeTransform, treeFind } from '@util/datahelper.js';
 import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 import attachment from '~~/issue-attachment.js';
 
@@ -79,6 +88,7 @@ export default {
   name: 'Header',
   components: {
     Banner: () => import('@comp/head/Banner.vue'),
+    SubMenu: () => import('@comp/head/SubMenu.vue'),
     ChangePassword: () => import('./ChangePassword.vue')
   },
   mixins: [attachment],
@@ -109,22 +119,32 @@ export default {
   computed: {
     menus () {
       const { menuMap } = this;
-      return this.$store.state.menus.map(menu => {
+      return treeTransform(menu => {
         return {
+          id: menu.id,
           url: menu.url,
-          key: menuMap[menu.url]
+          key: menuMap[menu.url] || menu.id,
+          title: menu.name,
+          children: menu.children,
+          icon: menu.icon
         };
-      });
+      }, this.$store.state.menus);
     },
     defaultActiveMenu () {
+      const $route = this.$route;
+      const $store = this.$store;
       const name = this.$route.name;
       switch (name) {
       case 'QuestionCreate':
       case 'QuestionDetail':
       case 'QuestionSuccess':
         return ['List'];
+      case 'Report':
+        const parentMenu = $store.state.menus.find(item => item.url === $route.path);
+        const selectItem = parentMenu.children.find(item => $route.fullPath.indexOf(item.url));
+        return selectItem.id ? [selectItem.id] : ['Report'];
       default:
-        return name ? [name] : [];
+        return name ? [name] : ['Home'];
       }
     },
     user () {
@@ -154,13 +174,15 @@ export default {
     toChangePd () {
       this.showChangePassword = true;
     },
-    jump (path) {
+    jump (selectedMenu) {
+      const menu = treeFind(item => item.key === selectedMenu.key ,this.menus);
+      const path = menu.url;
       const resolved = this.$router.resolve(path).resolved;
       if (resolved.name === '404') {
         this.$message.warning('前端未配置的路由');
       } else {
         this.$store.commit('question/initState');
-        this.$router.push({ path: resolved.path });
+        this.$router.push({...resolved, path});
         this.$store.dispatch('refresh');
       }
     },
@@ -191,6 +213,10 @@ export default {
     /deep/ .ant-menu-item {
       height: 64px;
       line-height: 64px;
+    }
+    /deep/ .ant-menu-submenu {
+      top: 2px;
+      line-height: 60px;
     }
     .header-index-wide {
       width: 1200px;

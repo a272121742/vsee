@@ -126,11 +126,11 @@ export default {
   .test-env {
     z-index:6000;
     position:fixed;
-    width:360px;
-    margin:0 auto;
-    left:0;
-    padding-left:calc(100vw - 100%);
-    right:40px;
+    width:180px;
+    // margin:0 auto;
+    left:40%;
+    // padding-left:calc(100vw - 100%);
+    // right:40px;
     text-align: center;
     height:64px;
     line-height:64px;

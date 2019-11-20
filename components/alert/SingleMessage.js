@@ -53,7 +53,6 @@ function getMessageInstance (callback) {
 // type NoticeType = 'info' | 'success' | 'error' | 'warning';
 
 function notice (args) {
-  console.log(args);
   // 停留时间，默认一直停留
   const duration = args.duration !== undefined ? args.duration : defaultDuration;
   // 获取类型
@@ -76,42 +75,44 @@ function notice (args) {
     };
     // 获取实例
     getMessageInstance(instance => {
-      console.log(duration);
       instance.notice({
         key,
         duration,
         style: {},
-        content: h => (
-          <div
-            class={`${prefixCls}-custom-content${type ? ` ${prefixCls}-${type}` : ''}`}
-            style={{ 'max-width': '480px', 'text-align': 'left' }}
-          >
-            {args.icon ? (
-              typeof args.icon === 'function' ? (
-                args.icon(h)
-              ) : (
-                args.icon
-              )
-            ) : iconType ? (
-              <Icon type={iconType} theme={ isLoadingMode ? 'outlined' : 'filled' } />
-            ) : (
-              ''
-            )}
-            <span>{typeof args.content === 'function' ? args.content(h) : args.content}</span>
-            {
-              isLoadingMode ? '' : (
-                (duration !== null && duration >= 0) ? (
-                  <span style={{ float: 'right', 'margin': 'auto 5px auto 24px' }}>
-                    <Icon type='loading' theme='outlined' />
-                    <span style={{ color: 'rgb(153, 153, 153)' }}> { duration } </span>
-                  </span>
-                ) : (
-                  <Icon onClick={() => instance.removeNotice(key)} type='close' class={`${prefixCls}-close-icon`} style={closeStyle} />
-                )
-              )
-            }
-          </div>
-        ),
+        content: () => 
+          `<div>123</div>`
+        ,
+        // content: h => (
+        // <div
+        //   class={`${prefixCls}-custom-content${type ? ` ${prefixCls}-${type}` : ''}`}
+        //   style={{ 'max-width': '480px', 'text-align': 'left' }}
+        // >
+        //   {args.icon ? (
+        //     typeof args.icon === 'function' ? (
+        //       args.icon(h)
+        //     ) : (
+        //       args.icon
+        //     )
+        //   ) : iconType ? (
+        //     <Icon type={iconType} theme={ isLoadingMode ? 'outlined' : 'filled' } />
+        //   ) : (
+        //     ''
+        //   )}
+        //   <span>{typeof args.content === 'function' ? args.content(h) : args.content}</span>
+        //   {
+        //     isLoadingMode ? '' : (
+        //       (duration !== null && duration >= 0) ? (
+        //         <span style={{ float: 'right', 'margin': 'auto 5px auto 24px' }}>
+        //           <Icon type='loading' theme='outlined' />
+        //           <span style={{ color: 'rgb(153, 153, 153)' }}> { duration }s </span>
+        //         </span>
+        //       ) : (
+        //         <Icon onClick={() => instance.removeNotice(key)} type='close' class={`${prefixCls}-close-icon`} style={closeStyle} />
+        //       )
+        //     )
+        //   }
+        // </div>
+        // ),
         onClose: callback,
       });
     });
@@ -140,18 +141,20 @@ const api = {
     } 
     function run () {
       const hide = notice(argsDefault);
-      if (argsDefault.duration && argsDefault.duration <= 0) {
+      const isNumber = typeof argsDefault.duration === 'number';
+      if (isNumber) {
+        argsDefault.duration--;
+      }
+      if (isNumber && argsDefault.duration < 0) {
         clearInterval(timer);
         hide();
-      } else {
-        argsDefault.duration--;
+        argsDefault.duration = null;
       }
       return argsDefault.duration > 0;
     }
     timer = run() && setInterval(run, 1000);
   },
   close: () => {
-    console.log(messageInstance);
     if (timer) {
       clearInterval(timer);
     } 

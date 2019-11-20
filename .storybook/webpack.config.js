@@ -32,15 +32,22 @@ module.exports = async ({ config }) => {
   // });
   config.module.rules.push({
     test: /\.less$/,
-    loader: "style-loader!css-loader!less-loader"
+    loader: "style-loader!css-loader!less-loader?javascriptEnabled=true",
+  });
+  config.module.rules.push({
+    resourceQuery: /blockType=i18n/,
+    type: 'javascript/auto',
+    loader: '@kazupon/vue-i18n-loader'
   });
   config.resolve.extensions.push('.ts', '.tsx', '.vue');
   config.resolve.alias['@'] = resolve('./');
+  
   config.resolve.alias['@comp'] = resolve('components');
   config.resolve.alias['@lib'] = resolve('lib');
   config.resolve.alias['@util'] = resolve('lib/utils');
   config.resolve.alias['@mix'] = resolve('lib/mixins');
   config.resolve.alias['@dir'] = resolve('lib/directives');
-
+  // config.resolve.alias['@story'] = resolve('.storybook');
+  config.resolve.alias['~'] = resolve('stories/src');
   return config;
 };

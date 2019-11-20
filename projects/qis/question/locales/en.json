@@ -5,7 +5,7 @@
     "calibrationVersion": "Calibration Version",
     "details": "Issue Details",
     "workflow": "Issue Workflow",
-    "creatorSelectorCheck": "Proof of person Selector Check",
+    "creatorSelectorCheck": "Selector for proposer review",
     "code": "Issue Number",
     "confirmationVersion": "Confirmation Version Nr.",
     "contact": "Proposer Cellphone",
@@ -51,6 +51,8 @@
     "remark": "Remark",
     "remark_colon": "Remark:",
     "responsibleDepartmentId": "Responsible Department ID",
+    "proposerDepartmentId": "Proposer Department",
+    "proposer": "Proposer",
     "responsibleDepartmentName": "Resp. Department",
     "softwareVersion": "Software Version",
     "source": "Issue Source",
@@ -66,7 +68,7 @@
     "updater": "Modify Person",
     "vehicleModelId": "Vehicle Model ID",
     "vehicleModelName": "Vehicle Model",
-    "vinNo": "VIN Number",
+    "vinNo": "VIN",
     "license": "License",
     "workConditionInfo": "Working condition",
     "workConditionInfo_colon": "Working condition:",
@@ -75,7 +77,12 @@
     "planCloseDate": "Plan Close Date",
     "seeMore": "See More",
     "vinOrLicense": "VIN or License",
-    "phoneVer":"Please enter 11 valid mobile phone numbers"
+    "phoneVer":"Please enter 11 valid mobile phone numbers",
+    "smt": "Smt",
+    "responsibleUserId": "Step Monitor",
+    "vin_lable": "(Batch VIN can fill in notes or attachments)",
+    "license_lable": "(VIN and car number optional)"
+
   },
   "search": {
     "find_button": "Search",
@@ -90,7 +97,8 @@
     "expand_button": "Expand",
     "collapse_button": "Collapse",
     "begin_date": "Begin Date",
-    "end_date": "End Date"
+    "end_date": "End Date",
+    "vin_please_input": "please in"
   },
   "pagination": {
     "total": "Total",
@@ -123,7 +131,8 @@
     "upload": "Upload",
     "download": "Download",
     "reassign": "Reassign",
-    "reanalysis": "Reanalysis"
+    "reanalysis": "Reanalysis",
+    "issue_report_download": "Download Report"
   },
   "issue_workflow": {
     "submitSuccess":"Submit Success",
@@ -149,6 +158,8 @@
       "confirm": "Confirm Resposible Person",
       "needAnalysis": "Need 7 diamonds analysis",
       "resposibleDepartment": "Resp. Department",
+      "cochairDepartment": "coChair Department",
+      "cochair": "coChair",
       "champion": "Champion",
       "champion_short": "Champion",
       "analysis": "7 Diamonds Analysis",
@@ -268,7 +279,7 @@
     "validationResults":"Validation results"
   },
   "issue_reason": {
-    "creatorSelectCheck": "The question is raised in the review of the chief of staff",
+    "creatorSelectCheck": "Selector of proposer reviewing",
     "publishing": "The issue is publishing",
     "defining": "The issue is defining",
     "analysising": "Root cause fill in",

@@ -113,8 +113,8 @@
                     style="display:inline-block;"
                   >
                     <span class="carTitle">{{ carTitle }}</span>
-                    <span class="faultTreeIds2Title"> {{ (faultTreeIds2Title || '').substr((faultTreeIds2Title || '').indexOf('-'),(faultTreeIds2Title || '').length) }}</span>
-                    <span class="codeTitle">{{ (codeTitle || '').substr((codeTitle || '').indexOf('-'), (codeTitle || '').length) }}</span>
+                    <span class="faultTreeIds2Title"> {{ (faultTreeIds2Title ? '-' + faultTreeIds2Title: '') }}</span>
+                    <span class="codeTitle">{{ codeTitle ? '-' + codeTitle: '' }}</span>
                   </div>
                 </div>
                 <div style="margin-left:32px;">
@@ -132,7 +132,8 @@
                           :transform="vehicleModelTreeTransform"
                           :placeholder="$t('search.please_select')"
                           allow-clear
-                          url="/masterdata/v1/platform/treeAll"
+                          :disabled="sourceDisabled"
+                          url="/masterdata/v1/vehicleproject/treeAll"
                           :query="{ id: '${value}' }"
                           @change="vehicleModelIdChange"
                         />
@@ -163,10 +164,11 @@
                               required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
-                          :transform="selectOption"
+                          :transform="selectOptionFaultTree"
                           :placeholder="$t('search.please_select')"
+                          :query="{ id: '${value}'}"
                           allow-clear
-                          url="/issue/v1/faultcategory?p_id=0"
+                          url="/masterdata/v1/pfscategory?p_id=0"
                           @change="handleSystem"
                         >
                         </net-select>
@@ -185,10 +187,10 @@
                           :placeholder="$t('search.please_select')"
                           :disabled="!record.faultTreeIds1"
                           :delay="!isEdit || !record.faultTreeIds1"
-                          :url="`/issue/v1/faultcategory`"
-                          :query="{p_id: record.faultTreeIds1}"
+                          url="/masterdata/v1/pfscategory"
+                          :query="{p_id: record.faultTreeIds1, id: '${value}'}"
                           :cache="false"
-                          :transform="selectOption"
+                          :transform="selectOptionFaultTree"
                           allow-clear
                           @change="faultTreeIds2Change"
                         >
@@ -208,10 +210,10 @@
                           :placeholder="$t('search.please_select')"
                           :delay="!isEdit || !record.faultTreeIds2"
                           :disabled="!record.faultTreeIds2"
-                          :url="`/issue/v1/faultTree`"
-                          :query="{fault_category_id: record.faultTreeIds2}"
+                          url="/masterdata/v1/pfsfault"
+                          :query="{psId: record.faultTreeIds2, id: '${value}'}"
                           :cache="false"
-                          :transform="selectOption"
+                          :transform="selectOptionFaultTree3"
                           allow-clear
                           @change="faultTreeIds3Change"
                         >
@@ -241,6 +243,26 @@
                       </a-form-item>
                     </a-col>
                     <a-col :span="6">
+                      <!-- 「模块」下拉 -->
+                      <a-form-item :label="$t('issue.smt')">
+                        <net-select
+                          v-decorator="[
+                            'smt',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select')"
+                          :transform="selectOptiondict"
+                          allow-clear
+                          :disabled="sourceDisabled"
+                          url="/sys/dict?dictType=smt"
+                          @change="handleResponsibleUserId"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
                       <!-- 「问题严重等级」下拉 -->
                       <a-form-item :label="$t('issue.grade')">
                         <net-select
@@ -253,12 +275,39 @@
                           :placeholder="$t('search.please_select')"
                           :transform="selectOptiondict"
                           allow-clear
+                          :disabled="sourceDisabled"
                           show-search
                           url="/sys/dict?dictType=issue_grade"
+                          @change="handleResponsibleUserId"
                         >
                         </net-select>
                       </a-form-item>
                     </a-col>
+                    <a-col :span="6">
+                      <!-- 「问题管理负责人」下拉 -->
+                      <a-form-item :label="$t('issue.responsibleUserId')">
+                        <net-select
+                          v-decorator="[
+                            'responsibleUserId',
+                            {rules:[{
+                              required: valiRequire, message:$t('search.please_select')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_select')"
+                          :transform="responsibleUserOption"
+                          allow-clear
+                          :disabled="sourceDisabled"
+                          :cache="false"
+                          :delay="!isEdit"
+                          url="/issue/v1/workflow/getSysUser"
+                          :query="{productId: record.vehicleModelId, irtCode:record.source,gradeCode:record.grade,irtModuleCode:record.smt,irtRole: 'monitor',userId:'${value}'}"
+                          @change="(value) => workflowRoleChange(value, 'monitor')"
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row :gutter="24">
                     <a-col :span="6">
                       <!-- 「问题阶段」下拉 -->
                       <a-form-item :label="$t('issue.projectPhase')">
@@ -292,8 +341,7 @@
                         />
                       </a-form-item>
                     </a-col>
-                  </a-row>
-                  <a-row :gutter="24">
+
                     <a-col :span="6">
                       <!-- 「生产基地」下拉 -->
                       <a-form-item :label="$t('issue.manufactureBase')">
@@ -314,23 +362,23 @@
                     <a-col :span="6">
                       <!-- 「责任部门」下拉 -->
                       <a-form-item :label="$t('issue.responsibleDepartmentId')">
-                        <net-select
+                        <net-single-tree-select
                           v-decorator="[
                             'responsibleDepartmentId',
-                            {rules:[{
-                              required: valiRequire, message: $t('search.please_select')
+                            {rules: [{
+                              required: valiRequire, message:$t('search.please_select')
                             }]}
                           ]"
-                          :transform="selectOptionSingn"
+                          :transform="responseDeptTreeTransform"
                           :placeholder="$t('search.please_select')"
-                          :delay="!isEdit"
+                          :query="{nameCode: '${value}' }"
                           allow-clear
-                          :disabled="resdeptDisabled"
-                          url="/sys/workflowGroup/groupNameByType?typeCode=RESPONSIBLE_DEPARTMENT"
-                        >
-                        </net-select>
+                          url="/masterdata/v1/workflowgroupname/tree?typeCode=RESPONSIBLE_DEPARTMENT"
+                        />
                       </a-form-item>
                     </a-col>
+                  </a-row>
+                  <a-row :gutter="24">
                     <a-col :span="6">
                       <!-- 「问题频次」输入 -->
                       <a-form-item
@@ -348,6 +396,51 @@
                         />
                       </a-form-item>
                     </a-col>
+
+                    <a-col :span="6">
+                      <!-- 「提出人部门」下拉 -->
+                      <a-form-item :label="$t('issue.proposerDepartmentId')">
+                        <net-single-tree-select
+                          v-decorator="[
+                            'advanceDeptId',
+                            {rules: [{
+                              required: valiRequire, message:$t('search.please_select')
+                            }]}
+                          ]"
+                          :transform="deptTreeTransform"
+                          :placeholder="$t('search.please_select')"
+                          :query="{ id: '${value}' }"
+                          allow-clear
+                          :disabled="advanceUserDisabled"
+                          url="/sys/dept/deptList/getDeptTree"
+                          @change="userDeptChange"
+                        />
+                      </a-form-item>
+                    </a-col>
+                    <!-- 「提出人」下拉 -->
+                    <a-col :span="6">
+                      <a-form-item :label="$t('issue.proposer')">
+                        <net-select
+                          v-decorator="[
+                            'advanceUserId',
+                            {rules:[{
+                              required: valiRequire, message: $t('search.please_select')
+                            }]}
+                          ]"
+                          :transform="userOption"
+                          :placeholder="$t('search.please_select')"
+                          :disabled="!record.advanceDeptId||sourceDisabled"
+                          :query="{ deptId: record.advanceDeptId }"
+                          :delay="!isEdit"
+                          :cache="false"
+                          allow-clear
+                          url="/sys/user/useList/getUsersByDept"
+                          @change="(value) => worlkChampionOrProposer(value, 'advanceUser')" 
+                        >
+                        </net-select>
+                      </a-form-item>
+                    </a-col>
+
                     <a-col :span="6">
                       <!-- 「相关人手机」输入 -->
                       <a-form-item
@@ -372,8 +465,54 @@
                     </a-col>
                   </a-row>
                   <a-row :gutter="24">
+                    <a-col :span="6">
+                      <!-- 「VIN」输入 -->
+                      <a-form-item
+                        self-update
+                      >
+                        <template #label>
+                          {{ $t('issue.vinNo') }}
+                          <span style="font-size: 10px;">{{ $t('issue.vin_lable') }}</span>
+                        </template>
+                        <v-input
+                          v-decorator="[
+                            'vinNo',
+                            {rules: [{
+                              required: validVinOrlicense, message:$t('search.please_input')
+                            },{validator: vinVer}]}
+                          ]"
+                          :placeholder="$t('search.please_input')"
+                          allow-clear
+                          @change="changeVinNoRequired"
+                        />
+                      </a-form-item>
+                    </a-col>
+
+                    <a-col :span="6">
+                      <!-- 「license」输入 -->
+                      <a-form-item
+                        self-update
+                      > 
+                        <template #label>
+                          {{ $t('issue.license') }}
+                          <span style="font-size: 10px;">{{ $t('issue.license_lable') }}</span>
+                        </template>
+                        <v-input
+                          v-decorator="[
+                            'license',
+                            {rules: [{
+                              required: validVinOrlicense, message:$t('search.please_input')
+                            }]}
+                          ]"
+                          :placeholder="$t('search.please_input')"
+                          allow-clear
+                          maxlength="20"
+                          @change="changeLicenseRequired"
+                        />
+                      </a-form-item>
+                    </a-col>
                     <!-- 「问题描述」输入 -->
-                    <a-col :span="16">
+                    <a-col :span="6">
                       <a-form-item
                         :label="$t('issue.description')"
                         class="form-item-flex-2"
@@ -387,15 +526,20 @@
                             }]}
                           ]"
                           :placeholder="$t('search.please_input')"
-                          :limit="2000"
-                          zh
+                          :limit="1000"
                           allow-clear
                         />
                       </a-form-item>
                     </a-col>
-                    <a-col :span="8">
+                    <a-col :span="6">
                       <!-- 「附件」上传 -->
-                      <a-form-item :label="$t('issue_workflow.attachment')">
+                      <a-form-item>
+                        <template #label>
+                          {{ $t('issue_workflow.attachment') }}
+                          <span style="color: red">
+                            ({{ $t('issue_workflow.attachment_limit') }})
+                          </span>
+                        </template>
                         <a-upload
                           :headers="headers"
                           :multiple="true"
@@ -435,46 +579,6 @@
             <div :class="supplyContent">
               <a-row :gutter="24">
                 <a-col :span="6">
-                  <!-- 「VIN」输入 -->
-                  <a-form-item
-                    :label="$t('issue.vinNo')"
-                    self-update
-                  >
-                    <v-input
-                      v-decorator="[
-                        'vinNo',
-                        {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input')
-                        },{validator: vinVer}]}
-                      ]"
-                      :placeholder="$t('search.please_input')"
-                      allow-clear
-                      @change="changeVinNoRequired"
-                    />
-                  </a-form-item>
-                </a-col>
-
-                <a-col :span="6">
-                  <!-- 「license」输入 -->
-                  <a-form-item
-                    :label="$t('issue.license')"
-                    self-update
-                  >
-                    <v-input
-                      v-decorator="[
-                        'license',
-                        {rules: [{
-                          required: validVinOrlicense, message:$t('search.please_input')
-                        }]}
-                      ]"
-                      :placeholder="$t('search.please_input')"
-                      allow-clear
-                      maxlength="20"
-                      @change="changeLicenseRequired"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="6">
                   <!-- 「祸首件」下拉 -->
                   <a-form-item :label="$t('issue.firstCausePart')">
                     <net-select
@@ -506,8 +610,6 @@
                     ></net-select>
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「供应商名称」下拉 -->
                   <a-form-item
@@ -542,6 +644,8 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「试验类型」下拉-->
                   <a-form-item
@@ -574,8 +678,6 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「维修网点」输入 -->
                   <a-form-item
@@ -606,6 +708,8 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「标定版本号」输入 -->
                   <a-form-item
@@ -636,8 +740,6 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「配置字版本号」输入 -->
                   <a-form-item
@@ -653,6 +755,8 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「工况信息」输入 -->
                   <a-form-item
@@ -664,8 +768,7 @@
                         'workConditionInfo'
                       ]"
                       :placeholder="$t('search.please_input')"
-                      :limit="2000"
-                      zh
+                      :limit="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -681,8 +784,7 @@
                         'preliminaryInvestigation',
                       ]"
                       :placeholder="$t('search.please_input')"
-                      :limit="2000"
-                      zh
+                      :limit="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -698,8 +800,7 @@
                         'remark',
                       ]"
                       :placeholder="$t('search.please_input')"
-                      :limit="2000"
-                      zh
+                      :limit="1000"
                       allow-clear
                     ></v-textarea>
                   </a-form-item>
@@ -726,6 +827,7 @@ import { transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
 import { toggleForbidScrollThrough } from '~~/scroll.js';
+import { disableScroll, enableScroll } from '~~/scroll.js';
 
 const {
   mapActions
@@ -792,8 +894,14 @@ export default {
       codeTitle: '', // 故障代码标题
       coChair: null,
       monitor: null,
+      advanceUserDisabled: false,
       sourceDisabled: false,
       resdeptDisabled: false,
+      smt:'',         //模块
+      responsibleUserId: '', //问题管理负责人
+      advanceDeptId: '',   //提出人部门
+      advanceUserId: '',   //提出人
+      procDefKey: 'IRS1',
       labelCol: {
         // xs: { span: 24 },
         sm: {
@@ -805,6 +913,24 @@ export default {
         sm: {
           span: 16
         }
+      },
+      workflowRolesList: [],
+      workflowRoles: {
+        createUser: '',
+        advanceUser: '',
+        advanceSelector: '',
+        coChair: '',
+        monitor: '',
+        additionalApproval: '',
+        champion: '',
+        sectorManager: '',
+        director: '',
+        diamondOwner1: '',
+        diamondOwner4: '',
+        diamondOwner5: '',
+        diamondOwner6: '',
+        diamondOwner7: ''
+       
       },
       // 数据模板
       record: {
@@ -823,6 +949,10 @@ export default {
         description: '', // 问题描述
         file: '', // 文件上传
         contact: '', // 问题相关人员联系方式
+        smt:'',         //模块
+        responsibleUserId: '', //问题管理负责人
+        advanceDeptId: '',   //提出人部门
+        advanceUserId: '',   //提出人
         /**
            * 补充信息
            */
@@ -840,7 +970,8 @@ export default {
         maintenanceStation: '', // 维修网点
         milage: '',
         remark: '',
-        workConditionInfo: '' // 工况信息
+        workConditionInfo: '', // 工况信息
+        processInstanceId: ''//实例ID
       }
     };
   },
@@ -866,6 +997,10 @@ export default {
       'updateQuestion',
       'getQuestionPage',
       'eidtQuestion',
+      'addActIdMembership',
+      'getUserByPositionCode',
+      'getUserByworkflowPositionCode',
+      'getActIdMembership',
       'saveQuestion',
       'editSaveQuestion',
       'workFlowSubmit',
@@ -885,8 +1020,12 @@ export default {
         vm.questionTitle = vm.$t('issue_action.create');
         vm.submitBtn = true;
         vm.actiive = 'saveBtn';
+        //初始化工作流角色
+        vm.record.advanceDeptId = this.$store.getters.getUser().deptId;
+        vm.record.advanceUserId = this.$store.getters.getUser().id;
+        this.worlkChampionOrProposer(this.$store.getters.getUser().id,'advanceUser');
+        vm.form.updateFields(vm.mapPropsToFields());
       } else if (vm.name === 'edit') {
-        
         vm.questionTitle = vm.$t('issue_action.edit_issue');
         vm.submitBtn = false;
         vm.actiive = 'activeClass';
@@ -896,12 +1035,13 @@ export default {
           this.validVinOrlicense = !res.vinNo && !res.license;
           vm.statusCode = res.status;
           const status = Number(this.statusCode);
-          if (vm.statusCode === '100100'||vm.statusCode === '100300'||vm.statusCode === '100108') {
+          if (vm.statusCode === '100100') {
             vm.delBtn = true;
             vm.submitBtn = true;
           } 
-          else if (status > 100300||status==100200) {
-            vm.sourceDisabled = true;
+          else if (status>=100105 && status != 100300 && status != 100108) {
+            vm.advanceUserDisabled = true;
+            vm.sourceDisabled = status >= 100200?true:false;
             vm.resdeptDisabled = status < 300100?false:true;
           } 
           else {
@@ -938,6 +1078,15 @@ export default {
           vm.carTitle = vm.record.vehicleModelName; // 车型标题
           vm.faultTreeIds2Title = vm.record.faultTreeIds2Name; // 功能标题，
           vm.codeTitle = vm.record.faultTreeIds3Name; // 故障代码标题
+          
+          //初始化工作流角色人员
+          const transData = {
+            procDefKey: this.procDefKey,
+            businessKey: vm.id
+          };
+          vm.getActIdMembership(transData).then(ress => {
+            vm.workflowRoles = ress;
+          });
         });
       }
     },
@@ -986,9 +1135,17 @@ export default {
       return optionArray;
     },
     handleSource (value) {
+      this.record.responsibleUserId= void 0;
       this.sourceName = value;
+      this.form.updateFields(this.mapPropsToFields());
     },
+    handleResponsibleUserId () {
+      this.record.responsibleUserId= void 0;
+      this.form.updateFields(this.mapPropsToFields());
+    },
+    
     handleDelete () {
+      disableScroll();
       toggleForbidScrollThrough(true);
       this.visibleDelete = true;
     },
@@ -997,11 +1154,13 @@ export default {
       toggleForbidScrollThrough(false);
       this.visibleDelete = false;
       this.handleDeleteFunction();
+      enableScroll();
     },
     // 删除弹框取消按钮
     deleteCancel () {
       toggleForbidScrollThrough(false);
       this.visibleDelete = false;
+      enableScroll();
     },
     handleDeleteFunction () {
       const vm = this;
@@ -1041,13 +1200,36 @@ export default {
     /**
      * 车型数据转换
      */
-    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    deptTreeTransform: treeTransform(transform({ value: 'ID', label: 'NAME', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    responseDeptTreeTransform: treeTransform(transform({ value: 'code', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    // 下拉转换函数
     selectOption (input) {
       const optionArray = [];
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
           label: item.name
+        });
+      });
+      return optionArray;
+    },
+    selectOptionFaultTree (input) {
+      const optionArray = [];
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.psNameZh
+        });
+      });
+      return optionArray;
+    },
+    selectOptionFaultTree3 (input) {
+      const optionArray = [];
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.faultNameZh
         });
       });
       return optionArray;
@@ -1065,6 +1247,33 @@ export default {
 
       return optionArray;
     },
+    //用户下拉框
+    userOption (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: item.realName
+        });
+      });
+
+      return optionArray;
+    },
+
+    responsibleUserOption (input) {
+      const optionArray = [];
+
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.USERID,
+          label: item.USERNAMEZH
+        });
+      });
+
+      return optionArray;
+    },
+
     selectOptionBase (input) {
       const optionArray = [];
 
@@ -1108,6 +1317,8 @@ export default {
     // 车型选择
     vehicleModelIdChange (value, label) {
       this.carTitle = label;
+      this.record.responsibleUserId='';
+      this.form.updateFields(this.mapPropsToFields());
     },
     // 所属功能选择
     faultTreeIds2Change (value, option) {
@@ -1129,6 +1340,13 @@ export default {
           }
         }
       }
+    },
+    /**
+     * 提出人部门下拉
+     */
+    userDeptChange () {
+      this.record.advanceUserId = void 0;
+      this.form.updateFields(this.mapPropsToFields());
     },
     // 提交弹框点击取消
     submitCancel () {
@@ -1153,8 +1371,8 @@ export default {
       const title2 = this.faultTreeIds2Title || '';
       const title3 = this.codeTitle || '';
 
-      const fault2 = title2.substr(title2.indexOf('-'), title2.length);
-      const fault3 = title3.substr(title3.indexOf('-'), title3.length);
+      const fault2 = title2 ? '-' + title2 : '';
+      const fault3 = title3 ? '-' + title3 : '';
       const title = this.carTitle + fault2 + fault3;
 
       data.title = title;
@@ -1171,46 +1389,53 @@ export default {
 
       const id = this.$store.getters.getUser().id;
       const vm = this;
-      const param1 = {
-        issueSource: data.source,
-        type: 'coChair'
-      };
-      const param2 = {
-        issueSource: data.source,
-        type: 'monitor'
-      };
-      const cocharFunction = vm.getSysUser(param1).then(res => {
-        vm.coChair = vm.coChair ? vm.coChair : res.id;
-        return vm.coChair;
-      });
-      const monitorFunction = vm.getSysUser(param2).then(res => {
-        vm.monitor = vm.monitor ? vm.monitor : res.id;
-        return vm.monitor;
-      });
+      // const param1 = {
+      //   issueSource: data.source,
+      //   type: 'coChair'
+      // };
+      // const param2 = {
+      //   issueSource: data.source,
+      //   type: 'monitor'
+      // };
+      // const cocharFunction = vm.getSysUser(param1).then(res => {
+      //   vm.coChair = vm.coChair ? vm.coChair : res.id;
+      //   return vm.coChair;
+      // });
+      // const monitorFunction = vm.getSysUser(param2).then(res => {
+      //   vm.monitor = vm.monitor ? vm.monitor : res.id;
+      //   return vm.monitor;
+      // });
       // vm.coChair = vm.coChair ? vm.coChair : cocharId;
       // vm.monitor = vm.monitor ? vm.monitor : monitorId;
       if (this.businessKey) {
         data.id = this.id;
         data.optCounter = this.optCounter;
-        Promise.all([cocharFunction, monitorFunction]).then((result) => {
-          this.editSaveQuestion(data).then(res => {
-            this.businessKey = res.id;
-            this.optCounter = res.optCounter;
-            const param = {
+        //Promise.all([cocharFunction, monitorFunction]).then((result) => {
+        this.editSaveQuestion(data).then(res => {
+          this.businessKey = res.id;
+          this.optCounter = res.optCounter;       
+          const param = {
+            businessKey: this.businessKey,
+            businessTitle: this.businessTitle,
+            processDefinitionKey: 'IRS1',
+            subSys: 'irs',
+            taskId: null,
+            userId: id,
+            variables: {
+              issc: '0',
               businessKey: this.businessKey,
-              businessTitle: this.businessTitle,
-              processDefinitionKey: 'IRS1',
-              subSys: 'irs',
-              taskId: null,
-              userId: id,
-              variables: {
-                coChair: result[0],
-                monitor: result[1],
-                issc: '0',
-                businessKey: this.businessKey,
-                assigner: vm.monitor
-              }
-            };
+              assigner: vm.monitor
+            }
+          };
+            //保存任务角色
+          for(let item in this.workflowRoles) {
+            param.variables[item]=this.workflowRoles[item];
+            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+          }
+          this.addActIdMembership(this.workflowRolesList).then(roleResult => {
+            for(let item in roleResult) {
+              param.variables[item] = roleResult[item];
+            }
             this.workFlowSubmit(param).then(res2 => {
               if (res2) {
                 setTimeout(() => {
@@ -1225,28 +1450,40 @@ export default {
               }
             });
           });
+            
         });
+        // });
       } else {
         data.id = this.id;
         data.optCounter = this.optCounter;
-        Promise.all([cocharFunction, monitorFunction]).then((result) => {
-          this.saveQuestion(data).then(res => {
-            this.businessKey = res.id;
-            const param = {
+        //Promise.all([cocharFunction, monitorFunction]).then((result) => {
+        this.saveQuestion(data).then(res => {
+          this.workflowRoleChange(this.$store.getters.getUser().id,'createUser');
+          this.businessKey = res.id;
+          const param = {
+            businessKey: this.businessKey,
+            businessTitle: this.businessTitle,
+            processDefinitionKey: 'IRS1',
+            subSys: 'irs',
+            taskId: null,
+            userId: id,
+            variables: {
+              // coChair: result[0],
+              // monitor: result[1],
+              issc: '0',
               businessKey: this.businessKey,
-              businessTitle: this.businessTitle,
-              processDefinitionKey: 'IRS1',
-              subSys: 'irs',
-              taskId: null,
-              userId: id,
-              variables: {
-                coChair: result[0],
-                monitor: result[1],
-                issc: '0',
-                businessKey: this.businessKey,
-                assigner: vm.monitor
-              }
-            };
+              assigner: vm.monitor
+            }
+          };
+            //保存任务角色
+          for(let item in this.workflowRoles) {
+            param.variables[item]=this.workflowRoles[item];
+            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+          }
+          this.addActIdMembership(this.workflowRolesList).then(roleResult => {
+            for(let item in roleResult) {
+              param.variables[item] = roleResult[item];
+            }
             this.workFlowSubmit(param).then(res2 => {
               if (res2) {
                 setTimeout(() => {
@@ -1261,7 +1498,9 @@ export default {
               }
             });
           });
+            
         });
+        // });
       }
       setTimeout(() => { hide();
       }, 200);
@@ -1300,8 +1539,8 @@ export default {
       const title2 = this.faultTreeIds2Title || '';
       const title3 = this.codeTitle || '';
 
-      const fault2 = title2.substr(title2.indexOf('-'), title2.length);
-      const fault3 = title3.substr(title3.indexOf('-'), title3.length);
+      const fault2 = title2 ? '-' + title2 : '';
+      const fault3 = title3 ? '-' + title3 : '';
       const title = this.carTitle + fault2 + fault3;
 
       data.title = title;
@@ -1314,7 +1553,6 @@ export default {
         const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
         data.productDate = productDate;
       }
-
       if (this.name === 'create') {
         if (this.businessKey) {
           data.id = this.id;
@@ -1322,6 +1560,7 @@ export default {
           this.editSaveQuestion(data).then(res => {
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
+            this.handelActRoles(res);
             setTimeout(() => {
               hide();
               this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
@@ -1335,6 +1574,9 @@ export default {
         } else {
           this.saveQuestion(data).then(res => {
             this.businessKey = res.id;
+            //工作流角色创建人
+            this.workflowRoleChange(this.$store.getters.getUser().id,'createUser');
+            this.handelActRoles(res);
             setTimeout(() => {
               hide();
               this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
@@ -1363,6 +1605,7 @@ export default {
               this.editSaveQuestion(data).then(res => {
                 this.businessKey = res.id;
                 this.optCounter = res.optCounter;
+                this.handelActRoles(res);
                 setTimeout(() => {
                   hide();
                   this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
@@ -1382,6 +1625,7 @@ export default {
           });
         } else {
           this.editSaveQuestion(data).then(res => {
+            this.handelActRoles(res);
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
             setTimeout(() => {
@@ -1398,6 +1642,66 @@ export default {
       }
       setTimeout(() => { hide();}, 100);
     },
+    //保存工作流角色人物
+    handelActRoles (res){
+      for(let item in this.workflowRoles) {
+		      this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+      }
+      this.addActIdMembership(this.workflowRolesList).then(result => {
+
+      });
+    },
+    //更换工作流角色人员
+    workflowRoleChange (value ,role){
+      this.workflowRoles[role] = value;
+    },
+    //更新责任人或者提出人科长或者部长
+    worlkChampionOrProposer (value ,role){
+      this.workflowRoles[role] = value;
+      if(role=='advanceUser'){
+        if(value){
+          this.getUserByPositionCodeFunction(value,'sectorManager','advanceSelector');
+        }else{
+          this.workflowRoles.advanceSelector = '';
+        }
+        
+      }else if(role=='champion'){
+        if(value){
+          this.getUserByworkFlowPositionCodeFunction(value,'sectorManager','sectorManager');
+          this.getUserByworkFlowPositionCodeFunction(value,'director','director');
+        }else{
+          this.workflowRoles.sectorManager = '';
+          this.workflowRoles.director = '';
+        }
+      }
+    },
+    //获取对应人科长或者部长信息
+    getUserByPositionCodeFunction (value,positionCode,role){
+      const parmas = {
+        userId: value,
+        positionCode: positionCode
+      };
+      this.getUserByPositionCode(parmas).then(res => {
+        if(res){
+          this.workflowRoles[role] = res[0].id;
+        }else{
+          this.workflowRoles[role] = '';
+        }
+      });
+    },
+
+    //获取工作流对应人科长或者部长信息
+    getUserByworkFlowPositionCodeFunction (value,positionCode,role){
+      const parmas = {
+        userId: value,
+        positionCode: positionCode
+      };
+      this.getUserByworkflowPositionCode(parmas).then(res => {
+        this.workflowRoles[role] = res[0].id;
+      });
+    },
+    
+
     handleSearch (e) {
       e.preventDefault();
     },
@@ -1436,7 +1740,8 @@ export default {
       return createFormFields(this, [
         'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3', 'grade', 'source', 'vehicleModelId',
         'projectPhase',
-        'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'description', 'file',
+        'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'advanceUserId','responsibleUserId','smt',
+        'advanceDeptId','description', 'file',
         'contact', 'testType',
         'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
         'hardwareVersion', 'confirmationVersion', 'vinNo','license', 'productDate', 'maintenanceStation', 'milage',
@@ -1583,7 +1888,7 @@ export default {
   }
 
   /deep/ .ant-affix {
-    z-index:5000;
+    z-index:1000;
     left: 0px!important;
     width: 100%!important;
     // background: rgba(0, 0, 0, 0.6); rgba(0,0,0, 0.04)

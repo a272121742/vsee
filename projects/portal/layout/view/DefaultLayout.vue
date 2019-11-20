@@ -121,10 +121,10 @@ export default {
   .test-env {
     z-index:6000;
     position:fixed;
-    width:360px;
-    margin:0 auto;
-    left:0;
-    right:0;
+    width:180px;
+    // margin:0 auto;
+    left:40%;
+    // right:0;
     text-align: center;
     height:64px;
     line-height:64px;

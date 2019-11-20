@@ -40,7 +40,8 @@ module.exports = {
     }],
     'vue/html-self-closing': 0,
     'import/no-unresolved': [2, { ignore: ['^~', '^@'] }],
-    'no-control-regex': 0
+    'no-control-regex': 0,
+    'no-case-declarations': 0
   },
   parserOptions: {
     parser: "babel-eslint"
