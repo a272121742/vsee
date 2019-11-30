@@ -5,8 +5,6 @@
       v-bind="$attrs"
       v-on="exclude(['change'], $listeners)"
       @change="handleChange"
-      @compositionstart="handleCompositionStart"
-      @compositionend="handleCompositionEnd"
     />
     <div
       v-if="showHelper"
@@ -108,11 +106,11 @@ export default {
     },
   },
   data () {
-    const value = this.value;
+    const value = this.value || '';
+    const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
     return {
-      text: value,
+      text: value === undefined ? value : limitValue,
       exclude: omit,
-      composing: false
     };
   },
   computed: {
@@ -120,14 +118,7 @@ export default {
      * 文本长度
      */
     length () {
-      return getLength(this.composing ? this.cacheText : this.text, this.zh);
-    },
-    /**
-     * 文本中文字树
-     */
-    zlength () {
-      const value = this.text || '';
-      return this.length - value.length;
+      return getLength(this.text, this.zh);
     },
     /**
      * 是否显示helper，配置了allowClear或者limit的时候启用
@@ -148,21 +139,12 @@ export default {
     }
   },
   methods: {
-    handleCompositionStart (e) {
-      this.composing = true;
-      this.cacheText = e.target.value;
-    },
-    handleCompositionEnd (e) {
-      if (this.composing) {
-        this.composing = false;
-        this.handleChange(e);
-      }
-    },
     handleChange (e) {
       const value = e.target.value || '';
       const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
-      const changedValue = this.composing ? e.target.value : limitValue;
-      this.triggerChange(changedValue);
+      if (this.text !== limitValue) {
+        this.triggerChange(limitValue);
+      }
     },
     triggerChange (changedValue) {
       if (!hasProp(this, 'value')) {

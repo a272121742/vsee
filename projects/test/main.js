@@ -10,7 +10,7 @@ import { router } from '@lib/auto-router.js';
 // 加载本地store
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
-import moment from 'moment';
+import { debounce } from 'lodash';
 
 // 添加进度条
 import NProgress from 'nprogress';
@@ -54,30 +54,24 @@ new Vue({
   i18n,
   el: '#app',
   name: 'App',
-  data () {
-    return {
-      locale: null
-    };
-  },
-  beforeCreate () {
-    this.$store && this.$store.dispatch('loadLanguage').then(locale => {
-      import(`ant-design-vue/lib/locale-provider/${locale}`).then(res => {
-        this.$set(this, 'locale', res.default);
-      });
-      if (locale !== 'zh_CN') {
-        moment.locale('en');
-      } else {
-        moment.locale('zh-cn');
-      }
+  mounted () {
+    // 消息全局配置
+    this.$message.config({
+      top: '80px'
     });
+    window.addEventListener('scroll', debounce(() => {
+      document.querySelectorAll('input:focus').forEach(item => item.blur());
+      document.querySelectorAll('.ant-select-open').forEach(item => item.click());
+    }, 400));
   },
   render () {
     return (
       <div id="app">
-        <a-locale-provider locale={this.locale}>
+        <a-locale-provider locale={this.$store.state.local4antd}>
           <router-view />
         </a-locale-provider>
       </div>
     );
   }
 });
+

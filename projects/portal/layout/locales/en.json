@@ -106,11 +106,13 @@
       "10015": "Please delete the users under the Department first.",
       "10016": "The parameter format is incorrect. Use JSON format",
       "10017": "Account already exists",
+      "10018": "Change password cannot be initial password",
       "10100": "The current data has been modified. Please refresh and try again.",
       "100001003": "Account already exists under the current classification file path does not exist!"
     }
   },
   "download": {
-    "user_manual": "BTQIS-IRS End User Guide(2019-10-20).pdf"
-  }
+    "user_manual": "BTQIS-IRS End User Guide.pdf"
+  },
+  "pdValid": "8-12 letters and numbers,case sensitive"
 }

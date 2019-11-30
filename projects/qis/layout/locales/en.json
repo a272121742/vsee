@@ -124,6 +124,7 @@
     }
   },
   "download": {
-    "user_manual": "BTQIS-IRS End User Guide(2019-10-20).pdf"
-  }
+    "user_manual": "BTQIS-IRS End User Guide.pdf"
+  },
+  "pdValid": "8-12 letters and numbers,case sensitive"
 }

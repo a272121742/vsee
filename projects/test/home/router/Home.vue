@@ -38,14 +38,18 @@
       普通按钮
     </a-button>
     <v-textarea
-      :limit="10"
+      :limit="3"
+      @change="textChange"
     ></v-textarea>
+    <div style="width: 500px; height: 240px;">
+      <async-component path="/home/view/Table2.vue"></async-component>
+    </div>
   </a-layout-content>
 </template>
 <script>
 export default {
   components: {
-    VTextarea: () => import('../view/VTextarea.vue'),
+    VTextarea: () => import('@comp/form/VTextarea.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     NetTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     NetButton: () => import('@comp/button/NetButton.vue'),
@@ -56,6 +60,9 @@ export default {
     console.log(this);
   },
   methods: {
+    textChange (e) {
+      console.log(e);
+    },
     transform (list) {
       console.log(list);
       return list;

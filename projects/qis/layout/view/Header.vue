@@ -41,8 +41,8 @@
       <div class="header-index-right user-wrapper">
         <div class="content-box">
           <a-dropdown
-            :trigger="['click', 'hover']"
-            :get-popup-container="getPopupContainer"
+            :trigger="['click']"
+            :get-popup-container="e => e.parentNode"
             class="user-info"
           >
             <div>
@@ -185,9 +185,6 @@ export default {
         this.$router.push({...resolved, path});
         this.$store.dispatch('refresh');
       }
-    },
-    getPopupContainer () {
-      return document.querySelector('.user-info');
     },
     logoutHandle () {
       this.$store.dispatch('logout');

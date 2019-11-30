@@ -4,4 +4,84 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 # 数据模拟
 
-可以用于进行数据模拟
+预计实现的功能包含：
+
+- [x] 基于`RESTFUL的等价模拟`；
+- [x] 模拟`HTTP_STSTUS`；
+- [x] 模拟`HTTP_TIMEOUT`；
+- [ ] 模拟`SOCKET`;
+
+## 前言
+
+为了让前后端能够真正的分离，需要前端开发过程中能够自己模拟数据。前端的数据模拟通常有四种方式：
+
+1. 嵌入式代码（Injected Code）；
+2. 数据拦截（Mock Intercept）；
+3. 本地数据模拟（Mock Server）；
+4. 网络数据模拟（Mock Server）；
+
+其中，嵌入式代码的最大问题在于生产环境中需要人为的清理，而调试的时候又可能要还原。本地数据模拟和网络数据模拟都是常用的`mock`方案，但都无法实现动态数据模拟。因此`vsee`框架中选择了数据拦截的方式，其原理就应用切面编程原理，在网络发起请求后，拦截请求并且模拟数据返回，不仅可以返回成功的数据，还可以返回服务器各种异常问题情况以及延时情况，帮助前端开发过程中需要注意的用户体验。
+
+## 使用方式
+
+数据模拟模块的模拟方式和数据请求的方式如出一辙，之所以制作成类似`RESTFUL`风格，也是为了提升开发人员的使用体验，对于开发者来说几乎是减少学习成本的迁移。
+
+### 引入mock
+
+```javascript
+import mock from '@lib/mock.js';
+```
+
+### 模拟数据
+
+模拟数据的方式请[参考这里](http://mockjs.com/examples.html)，我们完全移植了`Mock.js`里的模拟功能。
+
+### 拦截请求
+
+```javascript
+// 拦截RESTFUL请求
+Mock.get('/api/users', () => {});
+Mock.post('/api/user', () => {});
+ 
+// 动态模拟，拦截占位符参数
+Mock.get('/api/user/:id', id => {});
+ 
+// 动态模拟，同时拦截占位符参数和Query参数
+Mock.get('/api/user/:id', (id, params) => {});
+ 
+// 拦截请求，同时拦截Body参数
+Mock.post('/api/user', data => {});
+ 
+// 拦截请求，并且返回数据
+Mock.get('/api/user/:id', id => {
+  return { /* 返回response数据 */ };
+});
+// 拦截请求，并且返回异步数据，因此你可以使用前端数据库
+Mock.get('/api/user/:id', id => {
+  return Promise.resolve({ /* 返回response数据 */ });
+});
+ 
+// 拦截请求，并且设置响应时间
+Mock.get('/api/users', () => {
+  return { /* 返回response数据 */ };
+}, {timeout: 4000}); // 4000毫秒之后返回数据
+ 
+// 拦截请求，并设置服务端响应状态码
+Mock.get('/api/users', () => {
+  return { /* 返回response数据 */ };
+}, {code: 500});	// 返回服务端500的状态码
+```
+
+> 注意： `mock`包含有`get/post/put/patch/delete/head/options`方法，这些方法的第二个参数是模拟服务器接受到请求参数，参数包含有**Body参数**、**Query参数**和**占位符参数**，其中**占位符参数**的位置是优先于其他参数的，而**Body参数**和**Query参数**只会出现一个。
+
+### 数据模版
+
+```javascript
+// 返回对应响应的数据模版
+mock.result({
+  data: {},
+  code: 0,
+  msg: '',
+  token: ''
+})
+```

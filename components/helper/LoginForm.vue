@@ -187,7 +187,7 @@ export default {
        */
       record: {
         username: null,
-        password: '1234',
+        password: 'bjev2019',
         // captcha: null,
         uuid: getUUID()
       },

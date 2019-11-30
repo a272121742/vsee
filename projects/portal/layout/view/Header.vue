@@ -21,7 +21,8 @@
         <div class="content-box">
           <language-radio />
           <a-dropdown
-            :trigger="['click', 'hover']"
+            :trigger="['click']"
+            :get-popup-container="e => e.parentNode"
             class="user-info"
           >
             <span>

@@ -124,6 +124,7 @@
     }
   },
   "download": {
-    "user_manual": "BTQIS-IRS系统操作手册(2019-10-20).pdf"
-  }
+    "user_manual": "BTQIS-IRS系统操作手册.pdf"
+  },
+  "pdValid": "8-12位字母与数字组合，区分大小写"
 }

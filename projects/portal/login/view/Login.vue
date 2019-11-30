@@ -30,6 +30,7 @@
               </div>
               <a-row style="text-align:center;">
                 <span
+                  v-if="$store.state.isBuildTest"
                   style="width:370px;color: red;"
                 >
                   {{ $t('env.name') }}
@@ -66,7 +67,7 @@ export default {
       box-shadow: none;
   }
   .login_wrapper {
-    width: 100%;
+    // width: 100%;
     height: 100%;
     // background-image: url(/static/portal/login_bg.png);
     background-repeat:no-repeat;
@@ -75,73 +76,47 @@ export default {
 
     /deep/ .ant-drawer-content {
       background: rgba(255, 255, 255, 0.66);
-      min-height: 520px;
+      // min-height: 520px;
+    }
+    /deep/ .ant-drawer-body {
+      width: 432px;
+      padding: 24px 24px 0px 24px;
     }
   }
   /deep/ .ant-radio-button-wrapper-checked {
     box-shadow: -1px 0 0 0 #ccc;
   }
-  
-  @media screen and(min-width: 1366px) {
-    .div-wrapper {
-      width: 546px;
-      padding: 64px;
-      border:none;
-    }
-    .ant-drawer-content {
-      border-radius: 8px;
-    }
-    .title {
-      margin-bottom: 4px;
-      margin-top: 72px;
-      font-size: 32px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .subtitle {
-      margin-bottom: 4px;
-      font-size: 10px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .logo {
+  .ant-drawer .ant-drawer-content {
+  }
+  .ant-drawer-content {
+    border-radius: 8px;
+  }
+  .title,.subtitle{
+    color: #0097E0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .logo {
       display: inline-block;
       width: 160px;
       height: 32px;
-    }
-    .logo:before,:after {
-      display: inline-block;
-    }
-    .language-radio {
-      padding-left: 10px;
-    }
-    .login-form {
-      height:274px;
-      margin: auto 32px;
-      /deep/ .ant-row {
-        height: 40px;
-      }
-      /deep/ .ant-form-item,
-      /deep/ .ant-checkbox-wrapper {
-        margin-bottom:24px;
-      }
-    }
-    .radio-group {
+  }
+  .logo:before,:after {
+    display: inline-block;
+  }
+  .ant-drawer-right .ant-drawer-content-wrapper {
+    padding:4.6%;
+  }
+  .radio-group {
       display: inline-block !important;
       height: 32px;
       overflow: hidden;
-      /deep/ .a-radio-button {
-        display: inline-block;
-      }
       /deep/ div {
         padding-left: 95px;
       }
-    }
-    .language-radio {
+  }
+  .language-radio {
       line-height: 1;
       display: inline;
       /deep/ .ant-radio-group{
@@ -159,164 +134,88 @@ export default {
       /deep/ .ant-radio-button-wrapper:last-child span{
         padding: 0 3px;
       }
-    }
   }
-  @media screen and(min-width: 1536px) {
-    .div-wrapper {
-      width: 546px;
-      padding: 64px 72px 64px 0;
-      border:none;
-    }
-    .ant-drawer-content {
-      border-radius: 8px;
-    }
-    .title {
-      margin-bottom: 4px;
-      margin-top: 72px;
-      font-size: 32px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .subtitle {
-      margin-bottom: 4px;
-      font-size: 10px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .logo {
-      display: inline-block;
-      width: 160px;
-      height: 32px;
-    }
-    .logo:before,:after {
-      display: inline-block;
-    }
-    .language-radio {
-      padding-left: 10px;
-    }
-    .login-form {
+  .login-form {
       height:274px;
       margin: auto 32px;
-      /deep/ .ant-row {
+      /deep/ .ant-input {
         height: 40px;
       }
       /deep/ .ant-form-item,
       /deep/ .ant-checkbox-wrapper {
-        margin-bottom:24px;
+        padding-bottom: 8px;
       }
-    }
-    .radio-group {
-      display: inline-block !important;
-      height: 32px;
-      overflow: hidden;
-      /deep/ .a-radio-button {
-        display: inline-block;
-      }
-      /deep/ div {
-        padding-left: 155px;
-      }
-    }
-    .language-radio {
-      line-height: 1;
-      display: inline;
-      /deep/ .ant-radio-group{
-        display: inline;
-        font-size: 12px !important;
-      }
-      /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-        color: #26b1ed;
-        background: rgba(0,0,0,0);
-      }
-      /deep/ .ant-radio-button-wrapper {
-        border:none;
-        background: rgba(0,0,0,0);
-      }
-      /deep/ .ant-radio-button-wrapper:last-child span{
-        padding: 0 3px;
-      }
-    }
   }
-  @media screen and(min-width: 1920px) {
-    .div-wrapper {
-      width: 726px;
-      padding: 112px 152px 112px 0;
-      border:none;
-    }
-    .ant-drawer-content {
-      border-radius: 8px;
+
+  @media screen and(max-width: 1366px) {
+    .ant-drawer-right .ant-drawer-content-wrapper {
+      padding-bottom:0px;
     }
     .title {
       margin-bottom: 4px;
       margin-top: 72px;
       font-size: 32px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     .subtitle {
       margin-bottom: 4px;
       font-size: 10px;
-      color: #0097E0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
-    .logo {
-      display: inline-block;
-      width: 216px;
-      height: 44px;
+  }
+  @media screen and(min-width: 1536px) {
+    .title {
+      margin-bottom: 4px;
+      margin-top: 72px;
+      font-size: 32px;
     }
-    .logo:before,:after {
-      display: inline-block;
+    .subtitle {
+      margin-bottom: 4px;
+      font-size: 10px;
     }
-    .language-radio {
-      padding-left: 10px;
+    .radio-group {
+      display: inline-block !important;
+      width: 200px;
+      height: 32px;
+      overflow: hidden;
+      // /deep/ .a-radio-button {
+      //   display: inline-block;
+      // }
+      // /deep/ div {
+      //   padding-left: 155px;
+      // }
+    }
+  }
+  @media screen and(min-width: 1920px) {
+    .login_wrapper {
+      /deep/ .ant-drawer-body {
+        width: 574px;
+        padding: 24px;
+      }
+    }
+    .title {
+      margin-bottom: 4px;
+      margin-top: 72px;
+      font-size: 32px;
+    }
+    .subtitle {
+      margin-bottom: 4px;
+      font-size: 10px;
     }
     .login-form {
       height:430px;
       margin: auto 72px;
-      /deep/ .ant-row {
+      /deep/ .ant-input {
         height: 56px;
-      }
-      /deep/ .ant-form-item,
-      /deep/ .ant-checkbox-wrapper {
-        margin-bottom:32px;
       }
     }
     .radio-group {
       display: inline-block !important;
+      width: 224px;
+      padding-top: 10px;
       height: 44px;
       overflow: hidden;
-      /deep/ .a-radio-button {
-        display: inline-block;
-      }
       /deep/ div {
-        padding-left: 180px;
-        padding-top: 5px;
-      }
-    }
-    .language-radio {
-      line-height: 1;
-      display: inline;
-      /deep/ .ant-radio-group{
-        display: inline;
-        font-size: 12px !important;
-      }
-      /deep/ .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-        color: #26b1ed;
-        background: rgba(0,0,0,0);
-      }
-      /deep/ .ant-radio-button-wrapper {
-        border:none;
-        background: rgba(0,0,0,0);
-      }
-      /deep/ .ant-radio-button-wrapper:last-child span{
-        padding: 0 3px;
+        padding-left: 130px;
+        
       }
     }
   }

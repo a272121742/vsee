@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
+import Vuex from 'vuex';
+import i18n from 'vue-i18n';
 import { configure, addParameters } from '@storybook/vue';
 import '~/mock.js';
 import VTextarea from '@comp/form/VTextarea.vue';
@@ -10,6 +12,8 @@ import AsyncComponent from '@comp/AsyncComponent';
 import SingleMessage from '@comp/alert/SingleMessage.js';
 
 Vue.use(Antd);
+Vue.use(i18n);
+Vue.use(Vuex);
 Vue.component('v-textarea', VTextarea);
 Vue.component('captcha-input', CaptchaInput);
 Vue.component('net-select', NetSelect);

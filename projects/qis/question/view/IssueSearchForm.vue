@@ -28,13 +28,13 @@
       >
         <!-- 车型名称 -->
         <a-form-item :label="$t('issue.vehicleModelName')">
-          <net-select
+          <net-single-tree-select
             v-decorator="['vehicleModelId']"
             :placeholder="$t('search.please_select')"
-            :transform="transformField"
-            url="/masterdata/v1/vehiclemodel"
-            delay
+            :transform="vehicleModelTreeTransform"
             allow-clear
+            url="/masterdata/v1/vehicleproject/treeAll"
+            :query="{ id: '${value}' }"
           />
         </a-form-item>
       </a-col>
@@ -126,6 +126,7 @@
 
 <script>
 import { clone } from 'ramda';
+import { transform, treeTransform } from '@util/datahelper.js';
 import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 import { transform1, transform2 } from '~~/model.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
@@ -134,7 +135,8 @@ import moduleDynamicCache from '~~/module-dynamic-cache.js';
 export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
-    NetSelect: () => import('@comp/form/NetSelect.vue')
+    NetSelect: () => import('@comp/form/NetSelect.vue'),
+    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue')
   },
   mixins: [moduleDynamicCache('question')],
   data () {
@@ -199,7 +201,8 @@ export default {
      */
     transformField: transform1,
     transformGrade: transform2,
-    transformSource: transform2
+    transformSource: transform2,
+    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
   }
 };
 </script>

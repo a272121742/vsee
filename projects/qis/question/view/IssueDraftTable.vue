@@ -85,7 +85,6 @@ export default {
       loading: false
     };
   },
-
   computed: {
     order () {
       return defaultTo('', this.advancePageConfig.draftOrderData.order).slice(0, -3);
@@ -120,6 +119,11 @@ export default {
     //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[1];
     // }
   },
+  watch: {
+    '$store.state.question._t' () {
+      this.request({}, true);
+    }
+  },
   created () {
     this.request({}, true);
   },
@@ -148,8 +152,8 @@ export default {
     showTotal (total) {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
-        const pageCount = Math.ceil(total / this.limit);
-        const pageText = this.$t('pagination.page');
+        const pageCount = Math.ceil(total);
+        const pageText = this.$t('pagination.article');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
@@ -247,8 +251,8 @@ export default {
       order: 1;
     }
     li.ant-pagination-total-text {
-      order: 2;
-      margin: 1px 0 0 12px;
+      // order: 2;
+      margin: 1px 12px 0 12px;
     }
     li.ant-pagination-options {
       order: 3;

@@ -22,5 +22,28 @@
   },
   "login": {
     "submit": "Login"
-  }
+  },
+  "newPd": {
+    "label": "New Password",
+    "placeholder": "Please Input New Password",
+    "required_message": "Password Must Required"
+  },
+  "confirmPd": {
+    "label": "Repeat Password",
+    "placeholder": "Please Input New Password Repeat",
+    "required_message": "Password Must Required",
+    "unconfirm_message": "Twice Input Not Same"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "success": "success",
+    "failure": "failure"
+  },
+  "confirm": "Confirm",
+  "tip": "Login for the first time. To ensure the security of the account, please change the login password",
+  "pdValid": "8-12 letters and numbers,case sensitive",
+  "forgetPd": "Forget Password",
+  "force_change_pd_success": "Modification succeeded,please login again",
+  "forget_confirm_title": "Forgot the login password,please contact the administrator to reset the password",
+  "forgetEmail": "xiaoxia.pu@analyticservice.net"
 }

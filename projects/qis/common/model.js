@@ -124,6 +124,10 @@ export const issueDoneColumns = [code, title, faultTreeIds1Name, gradeName, sour
 export const issuePublishedColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
   projectPhase, status, assignerName, proposerName, projectDate
 ];
+// 暂存 4 - temporary 
+export const issueTemporaryColumns = [code, title, faultTreeIds1Name, gradeName, sourceName,
+  projectPhase, status, assignerName, proposerName, projectDate
+];
 // 问题检索
 export const issueColumns = [code, title, faultTreeIds1Name, gradeName, sourceName, projectPhase,
   status, assignerName, proposerName, createDate, projectDate
@@ -146,6 +150,8 @@ export const transform3 = transformField({ value: 'id', label: 'nameZh' });
 export const transform4 = transformField({ value: 'creator', label: 'creatorName' });
 export const transform5 = transformField({ value: 'assigner', label: 'assignerName' });
 export const transform6 = transformField({ value: 'code', label: 'name' });
+export const transform7 = transformField({ value: 'responsibleUserId', label: 'responsibleUserName' });
+export const transform8 = transformField({ value: 'advanceUserId', label: 'advanceUserName' });
 
 /**
  * 树的转换结构

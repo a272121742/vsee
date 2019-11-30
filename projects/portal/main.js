@@ -20,7 +20,7 @@ import 'nprogress/nprogress.css';
 import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
-import { debounce } from '@util/fnhelper.js';
+import { debounce } from 'lodash';
 
 import VueLazyload from 'vue-lazyload';
 import store from '@store';

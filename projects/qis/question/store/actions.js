@@ -98,6 +98,9 @@ export default {
   eidtQuestion (store, id) {
     return api.eidtQuestion(id);
   },
+  eidtQuestionAdd (store, id) {
+    return api.eidtQuestionAdd(id);
+  },
   getAnalysis (store, id) {
     return api.getAnalysis(id);
   },
@@ -199,6 +202,13 @@ export default {
   getIssuePublishedPage (store, param) {
     return store.dispatch('getIssuePage', { ...param, type: 3 });
   },
+  /**
+   * 获取暂存问题清单
+   * @author Mary.he
+   */
+  getIssueTemporaryPage (store, param) {
+    return store.dispatch('getIssuePage', { ...param, type: 4 });
+  },
   // 原因分析保存
   // 问题定义保存
   analysisSave (store, data) {
@@ -237,6 +247,9 @@ export default {
    */
   getTemplateDownload (store, param) {
     return api.getTemplateDownload(param);
+  },
+  issueImport (store, param) {
+    return api.issueImport(param);
   },
   /**
    * 下载单页报告

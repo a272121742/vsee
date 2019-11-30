@@ -10,7 +10,6 @@ import { router } from '@lib/auto-router.js';
 // 加载本地store
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
-import moment from 'moment';
 
 // 添加进度条
 import NProgress from 'nprogress';
@@ -20,7 +19,7 @@ import 'nprogress/nprogress.css';
 import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
-import { debounce } from '@util/fnhelper.js';
+import { debounce } from 'lodash';
 import { treeFilter } from '@util/datahelper.js';
 import SingleMessage from '@comp/alert/SingleMessage.js';
 import store from '@store';
@@ -36,6 +35,7 @@ Vue.config.productionTip = false;
 Vue.use(Antd);
 Vue.prototype.$message.show = SingleMessage.show;
 Vue.prototype.$message.close = SingleMessage.close;
+
 router.beforeEach((to, from , next) => {
   function findNext (menus) {
     if (~['/403', '/404', '/500'].indexOf(to.path)) {

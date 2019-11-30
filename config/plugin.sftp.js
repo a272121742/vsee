@@ -9,7 +9,7 @@ module.exports = config => {
     username: 'root',
     password: '7kf4s?8At[k(',
     path: 'dist',
-    remotePath: `/data/local/nginx/nginx/html/`,
+    remotePath: `/data/btqis-dev/nginx/html`,
     verbose: false
   }]);
 };

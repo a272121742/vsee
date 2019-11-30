@@ -205,7 +205,7 @@ export default {
     handlerChange (labelValue, label, extra) {
       this.labelValue = labelValue;
       if (labelValue === void 0 || labelValue === null) {
-        this.$emit('change', void 0, extra.triggerNode.label);
+        this.$emit('change', void 0, void 0);
       } else {
         this.$emit('change', labelValue.key || labelValue.value,  extra.triggerNode.label);
       }

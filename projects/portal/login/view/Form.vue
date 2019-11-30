@@ -94,6 +94,22 @@
         {{ $t('login.submit') }}
       </a-button>
     </a-form-item>
+    <a-form-item>
+      <div class="forget-pd-div-class">
+        <a @click="forgetPdClick">{{ $t('forgetPd') }}</a>
+      </div>
+    </a-form-item>
+    <force-changepd 
+      v-if="showChangePassword"
+      :visible.sync="showChangePassword" 
+      :oldpd="record.password"
+    >
+    </force-changepd>
+    <forget-pd
+      v-if="showForgetPd"
+      :visible.sync="showForgetPd"
+    >
+    </forget-pd>
   </a-form>
 </template>
 
@@ -108,6 +124,8 @@ export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
+    ForceChangepd: () => import('./ForceChangepdModal.vue'),
+    ForgetPd: () => import('./ForgetPdModal.vue'),
     Password: () => import('@comp/form/Password.vue')
   },
   data () {
@@ -128,7 +146,9 @@ export default {
       /**
        * 是否记住密码
        */
-      remember: false
+      remember: false,
+      showChangePassword: false,
+      showForgetPd: false
     };
   },
   created () {
@@ -159,24 +179,30 @@ export default {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
           this.$store.dispatch('login', loginInfo).then(res => {
-            if (res.token) {
-              const goPage = this.$route.query.redirect || '/';
-              if (this.$router.matcher.match(goPage).name === '404') {
-                this.$router.push({ path: '/' });
-              } else {
-                this.$router.push({ path: goPage });
-              }
-              if (this.remember) {
-                this.$store.commit('cacheLoginInfo', loginInfo);
-              } else {
-                this.$store.commit('cleanLoginInfo', loginInfo);
+            // 强制修改密码状态
+            if (res.isNeedUpps === 1) {
+              this.showChangePassword = true;
+            } else {
+              if (res.token) {
+                this.$store.commit('setLoginStatus', res.token);
+                const goPage = this.$route.query.redirect || '/';
+                if (this.$router.matcher.match(goPage).name === '404') {
+                  this.$router.push({ path: '/' });
+                } else {
+                  this.$router.push({ path: goPage });
+                }
+                if (this.remember) {
+                  this.$store.commit('cacheLoginInfo', loginInfo);
+                } else {
+                  this.$store.commit('cleanLoginInfo', loginInfo);
+                }
               }
             }
           }).catch(errCode => {
             errCode && this.$message.error(this.$t(errCode));
             this.record.captcha = null;
             this.form.updateFields(this.mapPropsToFields());
-            this.captchaChange();
+            // this.captchaChange();
           });
         }
       });
@@ -204,6 +230,9 @@ export default {
      */
     onValuesChange (props, values) {
       return autoUpdateFileds(this, 'record')(props, values);
+    },
+    forgetPdClick () {
+      this.showForgetPd = true;
     }
   }
 };
@@ -214,5 +243,13 @@ export default {
     /deep/ input {
       background: rgba(255, 255, 255, 0.5);
     }
+  }
+  .forget-pd-confirm-modal {
+    width: 438px;
+    height: 164px;
+  }
+  .forget-pd-div-class {
+    float: right;
+    margin-top: -25px;
   }
 </style>

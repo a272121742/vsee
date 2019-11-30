@@ -1,7 +1,787 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import { mapPropsToFields, autoUpdateFileds, validator } from '@util/formhelper.js';
 
 <Meta title="框架|助手（Helper）/表单" />
 
 # 表单助手
 
 可以用于进行表单处理
+
+
+@feature 开发列表
+
+| 方法                                              | 功能说明                                                     | 完成度 |
+| ------------------------------------------------- | ------------------------------------------------------------ | ------ |
+| mapPropsToFields(vm, path = '_self', fields = []) | 字段映射，第一个参数为组件实例，第二个参数为映射路径，第三个参数为映射的字段集合。解析条件：<br />1. 如果path是一个字符串路径，按照字符串进行解析；否则解析自己的$data<br />2. 如果fields为空，则解析path全部key，否则仅仅解析fields；如果fields和path的key都为空，则不做任何绑定； | 50%    |
+| autoUpdateFileds(vm, path = '_self', rules)       | 自动更新规则，第一个参数为组件实例，第二个参数为映射路径，第三个为自定义的更新策略。更新条件：<br />1. 如果path是一个字符串路径，按照字符串进行解析；否则解析自己的$data<br />2. 如果配置了自定义更新策略，则使用自定义，否则使用自动化更新策略； | 50%    |
+| validator（$v）                                   | 验证器，只做成一种模式，即混入器（mixin）模式，不做lib包模式，理由是lib包将会导致数据挂载在data函数（观察者模式），这样会增加组件性能消耗。 |        |
+| $v.required(msg)                                  | 必填验证                                                     | 100%   |
+| $v.maxLength(max, msg)                            | 范围验证（最大长度）                                         | 100%   |
+| $v.minLength(min, msg)                            | 范围验证（最小长度）                                         | 100%   |
+| $v.rangeLen([min, max], msg)                      | 范围验证（范围长度）                                         | 100%   |
+| $v.len(len, msg)                                  | 范围验证（固定长度）                                         | 100%   |
+| $v.max(max, msg)                                  | 范围验证（最大值）                                           | 100%   |
+| $v.min(min, msg)                                  | 范围验证（最小值）                                           | 100%   |
+| $v.range([min, max], msg)                         | 范围验证（最小值）                                           | 100%   |
+| $v.equal(value, msg)                              | 范围验证（等值）                                             | 100%   |
+| $v.enum(list, msg)                                | 范围验证（枚举）                                             | 100%   |
+| $v.email(msg)                                     | 类型验证（邮箱）                                             | 100%   |
+| $v.url(msg)                                       | 类型验证（链接，配置地址常用）                                             | 100%   |
+| $v.uri(msg)                                       | 类型验证（链接后缀，配置地址常用）                                             | 0%   |
+| $v.hex(msg)                                       | 类型验证（十六进制，取色可用）                               | 100%   |
+| $v.int(msg)                                       | 类型验证（整数）                                             | 100%   |
+| $v.float(msg)                                     | 类型验证（小数）                                             | 100%   |
+| $v.ip(msg)                                        | 类型验证（网络地址）                                         | 100%   |
+| $v.prefix(txt, msg)                               | 逻辑验证（前缀）                                             | 100%   |
+| $v.suffix(txt, msg)                               | 逻辑验证（后缀）                                             | 100%   |
+| $v.include(txt, msg)                              | 逻辑验证（包含）                                             | 100%   |
+| $v.exclude(txt, msg)                              | 逻辑验证（排除）                                             | 100%   |
+| $v.within(list, msg)                              | 逻辑验证（包括）                                             | 100%   |
+| $v.without(list, msg)                             | 逻辑验证（排除）                                             | 100%   |
+| $v.pattern(pattern, msg)                          | 自定义验证                                                   | 100%   |
+| $v.includeZh(msg)                                 | 逻辑验证（包含中文）                                         | 100%   |
+| $v.onlyZh(msg)                                    | 逻辑验证（只能中文）                                         | 100%   |
+| $v.excludeZh(msg)                                 | 逻辑验证（排除中文）                                         | 100%   |
+| $v.maybeDByte(msg)                                | 逻辑验证（包含双字节字符）                                   | 100%   |
+| $v.maybeSByte(msg)                                | 逻辑验证（包含单字节字符）                                   | 0%   |
+| $v.password(level, msg)                           | 类型验证（密码，配置为是否包含大/小写、字母、符号等）                                   | 0%   |
+| $v.idcard(msg)                                    | 类型验证（身份证）                                           | 100%   |
+| $v.phone(msg)                                     | 类型验证（手机）                                             | 100%   |
+| $v.mobile(msg)                                    | 类型验证（固话）                                             | 100%   |
+| $v.remote(msg)                                    | 远程验证                                                     | 50%   |
+| $v.vin(msg)                                       | 业务验证（VIN码）                                            | 0%   |
+
+
+## 验证器
+
+表单中内置了常用验证器，对于所有的验证器，都会有`配置参数`和`返回消息`两种参数，其中**配置参数**就是具体的值，例如下面案例中会多次出现的`max`、`min`、`txt`等；**返回消息**则会相应的以`{{max}}`、`{{min}}`、`{{txt}}`的方式将注入值写入进去，这是一种模版值的写法，对于制作统一的国际化来说非常有帮助。但除了`remote`方法是没有**返回消息**这个参数的，因为它更多的是显示服务端返回的验证消息。更多的验证器方法如下说明：
+
+### 必填验证
+
+> 配置方法： required
+>
+> 配置参数： message（String类型）
+>
+> 注入变量： 无
+
+<Preview withToolbar>
+<Story name="必填验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input', {
+            rules: [
+              $v.required('字段必填'),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['input'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 长度验证
+
+> 配置方法： maxLength/minLength/len
+>
+> 配置参数： max/min/len（Number类型）, message（String类型）
+>
+> 注入变量： {{max}}/{{min}}/{{len}}
+
+<Preview withToolbar>
+<Story name="长度验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框（最大长度6）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMax', {
+            rules: [
+              $v.maxLength(6, '超过最大长度{{max}}'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文本输入框（最小长度4）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMin', {
+            rules: [
+              $v.minLength(4, '不足最小长度{{min}}'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文本输入框（固定长度4）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputLen', {
+            rules: [
+              $v.len(4, '长度只能{{len}}位'),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['inputMax', 'inputMin', 'inputLen'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 大小验证
+
+> 配置方法： max/min
+>
+> 配置参数： max/min（Number类型）, message（String类型）
+>
+> 注入变量： {{max}}/{{min}}
+
+<Preview withToolbar>
+<Story name="大小验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框（最大值999）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMax', {
+            rules: [
+              $v.max(999, '超过最大值{{max}}'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文本输入框（最小值100）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMin', {
+            rules: [
+              $v.min(100, '不足最小值{{min}}'),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['inputMax', 'inputMin'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 范围验证
+
+> 配置方法： rangeLen/range
+>
+> 配置参数： [min, max]（[Number, Number]）, message（String类型）
+>
+> 注入变量： {{min}}, {{max}}
+
+<Preview withToolbar>
+<Story name="范围验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框（长度4到8位）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputRangeLen', {
+            rules: [
+              $v.rangeLen([4, 8], '长度必须{{min}}到{{max}}位之间'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文本输入框（大小100到999）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMin', {
+            rules: [
+              $v.range([100, 999], '大小必须{{min}}到{{max}}之间'),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['inputRangeLen', 'inputRange'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 比较验证
+
+> 配置方法： equal
+>
+> 配置参数： value（Number类型）, message（String类型）
+>
+> 注入变量： {{value}}
+
+<Preview withToolbar>
+<Story name="比较验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框（动态比较，常用来做输入确认等操作）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input1', {
+            rules: [
+              $v.equal(record.input2, '与下面输入框的值（{{value}}）不一致'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文本输入框"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input2', {
+            rules: [
+              $v.equal(record.input1, '与上面输入框的值（{{value}}）不一致'),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {
+        input1: void 0,
+        input2: void 0
+      },
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['input1', 'input2'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 枚举验证
+
+> 配置方法： enum
+>
+> 配置参数： list, message（String类型）
+>
+> 注入变量： {{list}} （注意，经过join('/')格式化过）
+
+<Preview withToolbar>
+<Story name="枚举验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="文本输入框（只能输入北京、上海、广州三个值之一，但一般可改用选择输入框）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input', {
+            rules: [
+              $v.enum(['北京', '上海', '广州'], '输入值只能是从“{{list}}”中选择')
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {
+        input1: void 0,
+        input2: void 0
+      },
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['input'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 类型验证
+
+> 配置方法： int(整数)/float(小数)
+>
+> 配置参数： message（String类型）
+>
+> 注入变量： 无
+
+<Preview withToolbar>
+<Story name="类型验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="年龄（只能输入数字）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input1', {
+            rules: [
+              $v.int('必须是数字')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="身高（必须输入小数）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input2', {
+            rules: [
+              $v.float('必须是小数')
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {
+        input1: void 0,
+        input2: void 0
+      },
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['input1', 'input2'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 逻辑验证
+
+> 配置方法： prefix(前缀)/suffix(后缀)/include(包含)/exclude(排除)/within(包括)/without(去除)
+>
+> 配置参数： message（String类型）
+>
+> 注入变量： {{txt}}/{{list}}
+
+<Preview withToolbar>
+<Story name="逻辑验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="编号（必须以NO.开头）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputPrefix', {
+            rules: [
+              $v.prefix('NO.', '必须是以{{txt}}开头')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="文件（必须以.jpg结尾）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputSuffix', {
+            rules: [
+              $v.suffix('.jpg', '必须以{{txt}}结尾')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="百度空间（必须包含baidu.com）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputInclude', {
+            rules: [
+              $v.include('baidu.com', '必须包含{{txt}}')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="爱好（不能包含“抽烟”关键字）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputExclude', {
+            rules: [
+              $v.exclude('抽烟', '不能包含{{txt}}')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="前端技能（必须包含js、html、css）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputWithin', {
+            rules: [
+              $v.within(['js', 'html', 'css'], '必须包含{{list}}')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="优点（不能包含唱歌、喝酒）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputWithout', {
+            rules: [
+              $v.without(['唱歌', '喝酒'], '不能包含{{list}}')
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {
+        input1: void 0,
+        input2: void 0
+      },
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['inputPrefix', 'inputSuffix', 'inputInclude', 'inputExclude', 'inputWithin', 'inputWithout'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 常用类型验证
+
+> 配置方法： email(邮箱)/url(链接)/hex(十六进制)/ip(网络地址)/idcard(身份证)/phone(手机)/mobile(固话)
+>
+> 配置参数： message（String类型）
+>
+> 注入变量： 无
+
+<Preview withToolbar>
+<Story name="常用类型验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="邮箱"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputEmail', {
+            initialValue: 'abc@google.com',
+            rules: [
+              $v.email('只能是邮箱格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="网址"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputUrl', {
+            initialValue: 'http://www.baidu.com',
+            rules: [
+              $v.url('只能是链接格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="颜色""
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputHex', {
+            initialValue: 'ABCFF0',
+            rules: [
+              $v.hex('只能是十六进制格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="IP地址"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputIP', {
+            initialValue: '127.0.0.1',
+            rules: [
+              $v.ip('只能是IP地址格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="身份证"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputIdcard', {
+            initialValue: '42100119900712001X',
+            rules: [
+              $v.idcard('只能是身份证格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="手机"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputPhone', {
+            initialValue: '1896543219870',
+            rules: [
+              $v.phone('只能是手机格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="固话"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['inputMobile', {
+            initialValue: '021-83831234',
+            rules: [
+              $v.mobile('只能是固话格式')
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['inputEmail', 'inputUrl', 'inputHex', 'inputIP', 'inputIdcard', 'inputPhone', 'inputMobile'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>
+
+### 其他验证
+
+除了这些验证，还有其他的，这里就不做过多的列举了，我们直接看一下API定义（后续还会加入其他的验证）：
+
+```javascript
+// 是否包含中文字符，如果完全不包含，返回错误
+$v.includeZh(message)
+// 是否只含中文字符，如果有一个不是，返回错误
+$v.onlyZh(message)
+// 是否排除中文字符，如果有一个是，返回错误
+$v.excludeZh(message)
+// 是否包含双字节字符，如果完全不包含，返回错误（双字节字符中包含中文，一个双字节字符等于`2byte`）
+$v.includeDByte(message)
+```
+
+### 异步验证
+
+> 配置方法： remote
+>
+> 配置参数： url（String类型）, query（Object类型）
+>
+> 注入变量： {{value}}
+
+<Preview withToolbar>
+<Story name="异步验证">
+{{
+  mixins: [validator],
+  template: `
+    <a-form
+      :form="form"
+      self-update
+    >
+      <a-form-item
+        label="城市（仅仅配置url，数据从服务端验证）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input1', {
+            rules: [
+              $v.remote('/remote/vali?value={{value}}'),
+            ]
+          }]"
+        />
+      </a-form-item>
+      <a-form-item
+        label="城市（配置了url和query，数据从服务端验证）"
+        has-feedback
+      >
+        <a-input
+          v-decorator="['input2', {
+            rules: [
+              $v.remote('/remote/vali', { value: '{{value}}'}),
+            ]
+          }]"
+        />
+      </a-form-item>
+    </a-form>
+  `,
+  data () {
+    return {
+      record: {},
+      form: null
+    }
+  },
+  created () {
+    this.mapPropsToFields = mapPropsToFields(this, ['input1', 'input2'], 'record');
+    this.form = this.$form.createForm(this, {
+      mapPropsToFields: this.mapPropsToFields,
+      onValuesChange: autoUpdateFileds(this, 'record')
+    });
+  }
+}}
+</Story>
+</Preview>

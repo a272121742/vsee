@@ -90,3 +90,11 @@ mock.get('/net-select/cascaderen', (param) => {
     code: 0
   }
 });
+
+mock.get('/remote/vali', ({ value = '' }) => {
+  const flag = ['北京', '上海', '深圳'].some(item => item === value);
+  return {
+    code: flag ? 0 : 1000,
+    msg: flag ? void 0 : '不包含在北京、上海、深圳中'
+  };
+});

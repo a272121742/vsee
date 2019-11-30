@@ -237,8 +237,8 @@
                   <!-- 「上传文件」文本 -->
                   {{ $t('issue_action.upload') }}
                 </a-button>
-                <span style="color: red;">
-                  ({{ $t('issue_workflow.attachment_limit') }})
+                <span class="form-item-label-desc">
+                  {{ $t('issue_workflow.attachment_limit') }}
                 </span>
               </a-upload>
             </a-form-item>
@@ -472,8 +472,8 @@
                     <!-- 「上传文件」文本 -->
                     {{ $t('issue_action.upload') }}
                   </a-button>
-                  <span style="color: red;">
-                    ({{ $t('issue_workflow.attachment_limit') }})
+                  <span class="form-item-label-desc">
+                    {{ $t('issue_workflow.attachment_limit') }}
                   </span>
                 </a-upload>
               </a-form-item>
@@ -647,6 +647,29 @@
           >
             <!-- 保存 -->
             {{ $t('issue_action.save') }}
+          </prevent-button>
+          <!-- 暂存 -->
+          <prevent-button
+            v-if="pagePermission.button_staged_3"
+            ref="saveButton"
+            bind="both"
+            style="marginLeft: 8px"
+            class="saveBtn"
+          >
+            <!-- 暂存 -->
+            {{ $t('issue_action.temporary') }}
+          </prevent-button>
+          <!-- 恢复 -->
+          <prevent-button
+            v-if="pagePermission.button_resume_3"
+            ref="saveButton"
+            bind="both"
+            style="marginLeft: 8px"
+            type="primary"
+            class="submitBtn"
+          >
+            <!-- 恢复 -->
+            {{ $t('issue_action.restore') }}
           </prevent-button>
           <!-- 删除按钮 -->
           <a-button
@@ -972,7 +995,7 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span="12">
-</a-col>
+                  </a-col>
                   <a-col
                     :span="6"
                     style="height: 0px;"
@@ -1198,7 +1221,7 @@
                       </p>
                     </a-form-item>
                   </a-col>
-</a-row>
+                </a-row>
                 <a-row>
                   <a-col :span="6">
                     <!-- 「生产时间」 -->
@@ -1614,8 +1637,8 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
-                        <span style="color: red">
-                          ({{ $t('issue_workflow.attachment_limit') }})
+                        <span class="form-item-label-desc">
+                          {{ $t('issue_workflow.attachment_limit') }}
                         </span>
                       </a-upload>
                     </a-form-item>
@@ -1841,7 +1864,7 @@
                             :delay="false"
                             style="width:272px;height:32px;"
                             show-search
-                            url="/sys/dept/deptList/getDeptTree"
+                            url="/sys/dept/deptList/getDeptTreeTwo"
                             @change="cochairDeptChange"
                           />
                         </a-form-item>
@@ -1857,7 +1880,7 @@
                             ]"
                             :placeholder="$t('search.please_select')"
                             :disabled="!record.cochairDepartment"
-                            url="/sys/user/useList/getUsersByDept"
+                            url="/sys/user/useList/getUsersByDeptPid"
                             :query="{ deptId: record.cochairDepartment,userId:'${value}' }"
                             :cache="false"
                             :delay="false"
@@ -1893,8 +1916,8 @@
                               <!-- 「上传文件」文本 -->
                               {{ $t('issue_action.upload') }}
                             </a-button>
-                            <span style="color: red">
-                              ({{ $t('issue_workflow.attachment_limit') }})
+                            <span class="form-item-label-desc">
+                              {{ $t('issue_workflow.attachment_limit') }}
                             </span>
                           </a-upload>
                         </a-form-item>
@@ -2364,8 +2387,8 @@
                                     <!-- 「上传文件」文本 -->
                                     {{ $t('issue_action.upload') }}
                                   </a-button>
-                                  <span style="color: red">
-                                    ({{ $t('issue_workflow.attachment_limit') }})
+                                  <span class="form-item-label-desc">
+                                    {{ $t('issue_workflow.attachment_limit') }}
                                   </span>
                                 </a-upload>
                               </a-form-item>
@@ -2659,8 +2682,8 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
-                        <span style="color: red">
-                          ({{ $t('issue_workflow.attachment_limit') }})
+                        <span class="form-item-label-desc">
+                          {{ $t('issue_workflow.attachment_limit') }}
                         </span>
                       </a-upload>
                     </a-form-item>
@@ -2902,8 +2925,8 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
-                        <span style="color: red">
-                          ({{ $t('issue_workflow.attachment_limit') }})
+                        <span class="form-item-label-desc">
+                          {{ $t('issue_workflow.attachment_limit') }}
                         </span>
                       </a-upload>
                     </a-form-item>
@@ -3241,8 +3264,8 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
-                        <span style="color: red">
-                          ({{ $t('issue_workflow.attachment_limit') }})
+                        <span class="form-item-label-desc">
+                          {{ $t('issue_workflow.attachment_limit') }}
                         </span>
                       </a-upload>
                     </a-form-item>
@@ -3485,8 +3508,8 @@
                           <!-- 「上传文件」文本 -->
                           {{ $t('issue_action.upload') }}
                         </a-button>
-                        <span style="color: red">
-                          ({{ $t('issue_workflow.attachment_limit') }})
+                        <span class="form-item-label-desc">
+                          {{ $t('issue_workflow.attachment_limit') }}
                         </span>
                       </a-upload>
                     </a-form-item>
@@ -4694,7 +4717,7 @@ export default {
         icaDescriptionD1: '', // 围堵措施
         // D1
         owerDeptLv1: '', // 责任部门
-        champion: '', // 责任人
+        champion: void 0, // 责任人
         cochairDepartment: '',//cochia部门
         cochair: void 0, //cochia
         type: '0', // 判定
@@ -4935,8 +4958,10 @@ export default {
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     cochairDeptChange (){
-      this.formDcontent.cochair = void 0;
+      this.formDcontent.cochair = 'void 0';
       this.record.cochair = void 0;
+      //将coChair置为空
+      this.workflowRoleChange(void 0, 'coChair');
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
     DeptChangeDemaonds () {
@@ -5557,15 +5582,6 @@ export default {
           this.delBtn = true;
           this.optCounter = res.optCounter;
         }        
-        //初始化工作流角色人员
-        const transData = {
-          procInstId: this.wkprocessInstanceId,
-          procDefKey: this.procDefKey,
-          businessKey: this.id
-        };
-        this.getActIdMembership(transData).then(ress => {
-          this.workflowRoles = ress;
-        });
         return this.detailList;
       });
       const statusCode2 = this.getStatusCode(this.id).then(res => {
@@ -5601,6 +5617,15 @@ export default {
         } else {
           this.depDisable = false;
         }
+        //加载当前工作流角色人员
+        const transData = {
+          procInstId: this.wkprocessInstanceId,
+          procDefKey: this.procDefKey,
+          businessKey: this.id
+        };
+        this.getActIdMembership(transData).then(ress => {
+          this.workflowRoles = ress;
+        });
       });
       Promise.all([editDetail, statusCode2]).then((res1) => {
         const taskDefListArray = res1[1];
@@ -5680,7 +5705,7 @@ export default {
           }
         }
         this.record.owerDeptLv1 = res.owerDeptLv1;
-        this.record.champion = res.champion;
+        this.record.champion = res.champion || void 0;
         this.record.cochair = res.cochair || void 0;
         this.record.cochairDepartment = res.cochairDepartment;
         
@@ -6007,7 +6032,7 @@ export default {
             });
             // const status = Number(this.detailList.status);
             // const pagePermission = this.pagePermission;
-            for (let i = 0; i < 7; i++) {
+            for (let i in this.issueDefinitionData.sevenDiamondsVos) {
               if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
                 if(i==0){
                   this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.1stDiamond') + ': ' + this.$t('issue_workflow.D1.rightProcess');
@@ -6408,7 +6433,7 @@ export default {
             data.type = this.record.type;
           }
           this.saveSevenDiamonds({
-             sevenDiamondsVOS:data.sevenDiamondsVos
+            sevenDiamondsVOS:data.sevenDiamondsVos
           });
           this.issueDefinitionAdd(data).then(res => {
             this.optCounterD1 = res.optCounter;
@@ -6688,7 +6713,12 @@ export default {
         positionCode: positionCode
       };
       this.getUserByPositionCode(parmas).then(res => {
-        this.workflowRoles[role] = res[0].id;
+        if(res[0]){
+          this.workflowRoles[role] = res[0].id;
+        }else{
+          this.workflowRoles[role] = void 0;
+        }
+       
       });
     },
     //获取工作流对应人科长或者部长信息
@@ -6698,7 +6728,12 @@ export default {
         positionCode: positionCode
       };
       this.getUserByworkflowPositionCode(parmas).then(res => {
-        this.workflowRoles[role] = res[0].id;
+        if(res[0]){
+          this.workflowRoles[role] = res[0].id;
+        }else{
+          this.workflowRoles[role] = void 0;
+        }
+        
       });
     },
   }
@@ -6729,6 +6764,10 @@ export default {
 <style lang="less" scoped>
   .formConetnt .v-textarea /deep/ .v-input-helper{
     background-color: #f5f5f5 !important;
+  }
+  /deep/ .form-item-label-desc {
+    color: rgba(0, 0, 0, .45);
+    font-size: 12px;
   }
   .spantable span{
     display:block; 
@@ -7373,7 +7412,7 @@ export default {
         border-right: 2px solid rgba(0, 0, 0, 0.09);
         margin-left: 52px;
         height: 426px;
-        width: 134px;
+        width: 160px;
         padding-top: 16px;
         color: rgba(0, 0, 0, 0.25);
 
@@ -7389,8 +7428,8 @@ export default {
 
         li {
           list-style: none;
-          width: 134px;
-          padding-right: 24px;
+          width: 160px;
+          padding-right: 12px;
           text-align: right;
 
           div {
@@ -7438,7 +7477,6 @@ export default {
 
   .analysisTable {
     float: left;
-    width: 798px;
     border: 1px solid rgba(0, 0, 0, 0.09);
     border-radius: 4px;
     margin-left: 65px;

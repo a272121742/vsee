@@ -9,10 +9,13 @@ export default {
     IssueTodoTable: () => import('~/question/view/IssueTodoTable.vue'),
     IssueDraftTable: () => import('~/question/view/IssueDraftTable.vue'),
     IssueDoneTable: () => import('~/question/view/IssueDoneTable.vue'),
-    IssuePublishedTable: () => import('~/question/view/IssuePublishedTable.vue')
+    IssuePublishedTable: () => import('~/question/view/IssuePublishedTable.vue'),
+    IssueBatchImport: () => import('~/question/view/IssueBatchImport.vue'),
+    IssueTemporaryTable: () => import('~/question/view/IssueTemporaryTable.vue')
   },
   data () {
     return {
+      showBatchImportModal: false,
       dotoTableConfig: {
         total: 0
       },
@@ -48,7 +51,6 @@ export default {
       // 分页查询待办列表
       'getIssueTodoPage',
       'getIssueDraftPage',
-      'getTemplateDownload'
     ]),
     changeTab (key) {
       this.changeAdvancePageConfig({ selectTabKey: key });
@@ -68,22 +70,6 @@ export default {
         }
       });
     },
-    templateDownload () {
-      this.getTemplateDownload({rec_type: 20021001}).then((res = {}) => {
-        const url = res.path;
-        const name = res.originalFilename;
-        if (!url || !name) {
-          this.$message.show({ content: this.$t('file_download.failure'), type: 'error', duration: 3 });
-        } else {
-          const a = document.createElement('a');
-          a.setAttribute('href', this.getDownloadURL(url, name));
-          a.setAttribute('download', name);
-          // a.click在火狐下无法被触发，必须通过这种方式下载
-          a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-          a.remove();
-        }
-      });
-    },
     batchImport ({ file }) {
       if (file) {
         if (file.status !== 'done') {
@@ -98,10 +84,9 @@ export default {
             } else {
               this.$message.show({ content: this.$t('file_upload.failure'), type: 'error', duration: 3 });
             }
-            
           }
         }
       }
-    }
+    },
   }
 };

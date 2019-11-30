@@ -4,6 +4,7 @@
     :confirm-loading="confirmLoading"
     :title="$t('changePassword.title')"
     style="height:232px;top:140px;"
+    :z-index="6001"
     @ok="handleOk"
     @cancel="handleCancel"
   >
@@ -17,7 +18,12 @@
       >
         <a-input-password
           v-decorator="['password', {
-            rules: [{ required: true, message: $t('old_password.required_message')}]
+            rules: [
+              $v.required($t('old_password.required_message')),
+              $v.rangeLen([8,12], $t('pdValid')),
+              $v.password(2, $t('pdValid'))
+            ],
+            validateFirst: true
           }]"
           :placeholder="$t('old_password.placeholder')"
         />
@@ -29,7 +35,12 @@
       >
         <a-input-password
           v-decorator="['newPassword', {
-            rules: [{ required: true, message: $t('new_password.required_message')}]
+            rules: [
+              $v.required($t('new_password.required_message')),
+              $v.rangeLen([8,12], $t('pdValid')),
+              $v.password(2, $t('pdValid'))
+            ],
+            validateFirst: true
           }]"
           :placeholder="$t('new_password.placeholder')"
         />
@@ -41,9 +52,13 @@
       >
         <a-input-password
           v-decorator="['repeatPassword', {
-            rules: [{
-              validator: valiRepeatPassword
-            }]
+            rules: [
+              $v.required($t('repeat_password.required_message')),
+              $v.rangeLen([8,12], $t('pdValid')),
+              $v.password(2, $t('pdValid')),
+              valiRepeatPassword
+            ],
+            validateFirst: true
           }]"
           :placeholder="$t('repeat_password.placeholder')"
         />
@@ -53,10 +68,11 @@
 </template>
 
 <script>
-import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
+import { mapPropsToFields, autoUpdateFileds, validator } from '@util/formhelper.js';
 import $ from '@lib/ajax.js';
 
 export default {
+  mixins: [validator],
   props: {
     visible: {
       type: Boolean,
@@ -99,9 +115,9 @@ export default {
             this.$message.info(this.$t('changePassword.success'));
             this.close();
             this.$store.dispatch('logout');
-          }).catch(serverError => {
-            if (serverError) {
-              this.$message.error(this.$t(serverError));
+          }).catch(errcode => {
+            if (errcode) {
+              this.$message.error(this.$t(errcode));
             } else {
               this.$message.error(this.$t('changePassword.failure'));
             }
@@ -115,7 +131,6 @@ export default {
       this.close();
     },
     close () {
-      console.log('close');
       this.$emit('update:visible', false);
     }
   }

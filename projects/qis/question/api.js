@@ -5,6 +5,8 @@ export default {
   getQuestionPage: (param) => $.get('/question/page', param),
   // 查看某个问题的详细信息
   eidtQuestion: (id) => $.get('/issue/v1/issue/' + id),
+  //新加接口
+  eidtQuestionAdd: (id) => $.get('/issue/v1/issue/getSysDeptById?deptId=' + id),
   // 查看某个问题的附件
   getFilePage: () => ('/question/annex/page'),
   // 查看某个问题的操作记录
@@ -92,6 +94,7 @@ export default {
   delIssue: (param) => $.post('/issue/v1/issue/', param),
   // 获取模版下载
   getTemplateDownload: param => $.get('/issue/v1/file/template', param),
+  issueImport: param => $.post('/issue/v1/issue/import', param),
   issueExportTemplate: param => $.get('/issue/v1/issue/exportTemplate', param, {responseType: 'blob'}),
   // 查看工作流角色任务信息
   getActIdMembership: (param) => $.get('/issue/v1/workflow/getActIdMembership', param),

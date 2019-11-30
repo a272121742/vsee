@@ -1,5 +1,5 @@
 import Notification from 'ant-design-vue/lib/vc-notification';
-import Icon from 'ant-design-vue/lib/icon';
+import SingleMessage from './SingleMessage.vue';
 
 /**
  * 三种弹出机制，
@@ -10,13 +10,6 @@ import Icon from 'ant-design-vue/lib/icon';
 
 // 默认不自动关闭
 const defaultDuration =  null;
-const closeStyle = {
-  color: 'rgba(0, 0, 0, 0.45)',
-  'font-size': '12px',
-  cursor: 'pointer',
-  float: 'right', 
-  'margin': '3px 5px'
-};
 
 let defaultTop;
 // 消息实例
@@ -52,9 +45,61 @@ function getMessageInstance (callback) {
 
 // type NoticeType = 'info' | 'success' | 'error' | 'warning';
 
+
+
+let timer;
+let argsDefault;
+
+const api = {
+  show: (args) => {
+    argsDefault = Object.assign({}, args);
+    if (!(argsDefault.duration >= 0)) {
+      argsDefault.duration = null;
+    }
+    if (timer) {
+      clearInterval(timer);
+    } 
+    function run () {
+      const hide = notice(argsDefault);
+      const isNumber = typeof argsDefault.duration === 'number';
+      if (isNumber) {
+        argsDefault.duration--;
+      }
+      if (isNumber && argsDefault.duration < 0) {
+        if (timer) {
+          clearInterval(timer);
+        } 
+        if (argsDefault.type === 'loading') {
+          argsDefault.close = true;
+          return;
+        }
+        if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
+          argsDefault.onClose();
+        }
+        hide();
+        argsDefault.duration = null;
+        
+      }
+      return argsDefault.duration > 0;
+    }
+    timer = run() && setInterval(run, 1000);
+  },
+  close: () => {
+    if (timer) {
+      clearInterval(timer);
+    } 
+    if (messageInstance) {
+      messageInstance.removeNotice(key);
+      if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
+        argsDefault.onClose();
+      }
+    }
+  }
+};
+
 function notice (args) {
-  // 停留时间，默认一直停留
-  const duration = args.duration !== undefined ? args.duration : defaultDuration;
+  // // 停留时间，默认一直停留
+  const duration = (args.duration !== undefined) ? args.duration : defaultDuration;
   // 获取类型
   const type = ~['info', 'success', 'error', 'warning', 'loading'].indexOf(args.type) ? args.type : 'info';
   const iconType = {
@@ -77,42 +122,28 @@ function notice (args) {
     getMessageInstance(instance => {
       instance.notice({
         key,
-        duration,
+        duration: null,
         style: {},
-        content: () => 
-          `<div>123</div>`
-        ,
-        // content: h => (
-        // <div
-        //   class={`${prefixCls}-custom-content${type ? ` ${prefixCls}-${type}` : ''}`}
-        //   style={{ 'max-width': '480px', 'text-align': 'left' }}
-        // >
-        //   {args.icon ? (
-        //     typeof args.icon === 'function' ? (
-        //       args.icon(h)
-        //     ) : (
-        //       args.icon
-        //     )
-        //   ) : iconType ? (
-        //     <Icon type={iconType} theme={ isLoadingMode ? 'outlined' : 'filled' } />
-        //   ) : (
-        //     ''
-        //   )}
-        //   <span>{typeof args.content === 'function' ? args.content(h) : args.content}</span>
-        //   {
-        //     isLoadingMode ? '' : (
-        //       (duration !== null && duration >= 0) ? (
-        //         <span style={{ float: 'right', 'margin': 'auto 5px auto 24px' }}>
-        //           <Icon type='loading' theme='outlined' />
-        //           <span style={{ color: 'rgb(153, 153, 153)' }}> { duration }s </span>
-        //         </span>
-        //       ) : (
-        //         <Icon onClick={() => instance.removeNotice(key)} type='close' class={`${prefixCls}-close-icon`} style={closeStyle} />
-        //       )
-        //     )
-        //   }
-        // </div>
-        // ),
+        content: (createElement) => {
+          return createElement(SingleMessage, {
+            prefixCls,
+            type,
+            iconType,
+            isLoadingMode,
+            duration,
+            content: args.content,
+            close: (args.duration < 0 && isLoadingMode) || (!isLoadingMode && args.duration === null),
+            closeHandler: () => {
+              if (args.onClose && args.onClose instanceof Function) {
+                args.onClose();
+                if (timer) {
+                  clearInterval(timer);
+                } 
+              }
+              instance.removeNotice(key);
+            }
+          });
+        },
         onClose: callback,
       });
     });
@@ -126,42 +157,5 @@ function notice (args) {
   result.promise = closePromise;
   return result;
 }
-
-let timer;
-let argsDefault = {};
-
-const api = {
-  show: (args) => {
-    argsDefault = Object.assign({}, argsDefault, args);
-    if (argsDefault.type === 'loading') {
-      argsDefault.duration = null;
-    }
-    if (timer) {
-      clearInterval(timer);
-    } 
-    function run () {
-      const hide = notice(argsDefault);
-      const isNumber = typeof argsDefault.duration === 'number';
-      if (isNumber) {
-        argsDefault.duration--;
-      }
-      if (isNumber && argsDefault.duration < 0) {
-        clearInterval(timer);
-        hide();
-        argsDefault.duration = null;
-      }
-      return argsDefault.duration > 0;
-    }
-    timer = run() && setInterval(run, 1000);
-  },
-  close: () => {
-    if (timer) {
-      clearInterval(timer);
-    } 
-    if (messageInstance) {
-      messageInstance.removeNotice(key);
-    }
-  }
-};
 
 export default api;

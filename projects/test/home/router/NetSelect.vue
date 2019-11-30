@@ -76,8 +76,15 @@
       <v-textarea
         v-decorator="['f']"
         allow-clear
-        :limit="20"
+        :limit="5"
         helper-out
+        @change="onChange"
+      />
+      <v-textarea
+        allow-clear
+        :limit="5"
+        helper-out
+        @change="onChange"
       />
     </a-form-item>
     <!-- <a-select
@@ -105,7 +112,7 @@ import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 export default {
   components: {
     NetSelect: () => import('../view/NetSelect.vue'),
-    VTextarea: () => import('../view/VTextarea.vue')
+    VTextarea: () => import('@comp/form/VTextarea.vue')
   },
   data () {
     return {
@@ -133,7 +140,7 @@ export default {
       '1001100000000002017',  // 初始化不存在
       '1001100000000002479'   // 初始化不存在
     ];
-    this.record.f = '请测试';
+    this.record.f = '请测试12345';
     this.form.updateFields();
     
   },

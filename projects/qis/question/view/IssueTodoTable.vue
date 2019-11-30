@@ -12,6 +12,7 @@
       :scroll="{ x: 1720 }"
       :pagination="{ total, current: page, limit, showTotal, showQuickJumper: true }"
       row-key="id"
+      :row-class-name="setClassName"
       @change="handleTableChange"
     >
       <template v-for="col in columns">
@@ -153,14 +154,17 @@ export default {
       delete newCol.title;
       return newCol;
     },
+    setClassName (record, index){
+      // return ( record.gradeName  === 'H' ? 'testColumn' : '');
+    },
     /**
      * 显示总数(分页组件使用)
      */
     showTotal (total) {
       if (this.data.length) {
         const totalText = this.$t('pagination.total');
-        const pageCount = Math.ceil(total / this.limit);
-        const pageText = this.$t('pagination.page');
+        const pageCount = Math.ceil(total);
+        const pageText = this.$t('pagination.article');
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
@@ -261,6 +265,9 @@ export default {
       right: 16px!important;
       margin-top: -10px!important;
     }
+   .testColumn{
+    background-color:rgba(209,42,26,0.08);
+  }
   }
   /deep/ .ant-pagination {
     display: inline-flex;
@@ -272,12 +279,13 @@ export default {
       order: 1;
     }
     li.ant-pagination-total-text {
-      order: 2;
-      margin: 1px 0 0 12px;
+      // order: 2;
+      margin: 1px 12px 0 12px;
     }
     li.ant-pagination-options {
       order: 3;
       margin-left: 12px;
     }
   }
+  
 </style>

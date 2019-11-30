@@ -80,9 +80,8 @@
     "phoneVer":"Please enter 11 valid mobile phone numbers",
     "smt": "Smt",
     "responsibleUserId": "Step Monitor",
-    "vin_lable": "(Batch VIN can fill in notes or attachments)",
-    "license_lable": "(VIN and car number optional)"
-
+    "vin_lable": "",
+    "license_lable": ""
   },
   "search": {
     "find_button": "Search",
@@ -103,7 +102,8 @@
   "pagination": {
     "total": "Total",
     "item": "Items",
-    "page": "Pages"
+    "page": "Pages",
+    "article": "Items"
   },
   "issue_entity": {
     "name1": "Issue",
@@ -114,7 +114,8 @@
     "todo": "To Do",
     "draft": "Draft",
     "done": "Done",
-    "published": "Published"
+    "published": "Published",
+    "temporary":"Temporary matter" 
   },
   "issue_action": {
     "create": "Create",
@@ -132,7 +133,9 @@
     "download": "Download",
     "reassign": "Reassign",
     "reanalysis": "Reanalysis",
-    "issue_report_download": "Download Report"
+    "issue_report_download": "Download Report",
+    "temporary":"Temporary",
+    "restore":"Restore"
   },
   "issue_workflow": {
     "submitSuccess":"Submit Success",
@@ -261,6 +264,7 @@
       "D6": "D6-Issue Closure"
     },
     "attachment": "Attachment",
+    "attachment_limit": "",
     "approvalResult": "Approval result",
     "approval_result": "Approval Result",
     "approval": "Approval",
@@ -336,5 +340,16 @@
     "content": "Cannot be revoked after deletion, is it confirmed to delete?",
     "success": "Delete Success",
     "failure": "Delete Failed"
-  }
+  },
+  "issue_import": {
+    "title": "Batch Import",
+    "ok": "ok",
+    "cancel": "cancel",
+    "click_download": "Click Download",
+    "template_download": "Template Download",
+    "template_name": "Upload Template.xlsx",
+    "batch_import": "Batch Import",
+    "upload_file": "File Upload",
+    "import_prompt": " (Not Import More Than 300 Rows)"
+  } 
 }

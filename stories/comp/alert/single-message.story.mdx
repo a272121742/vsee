@@ -29,6 +29,18 @@ Vue.prototype.$message.show = SingleMessage.show;
 Vue.prototype.$message.close = SingleMessage.close;
 ```
 
+## 属性文档
+
+| 配置     | 中文     | 说明                                                         |
+| -------- | -------- | ------------------------------------------------------------ |
+| type     | 消息类型 | 仅仅包含**info**、**warning**、**success**、**error**、**loading**五种配置，其中**loading**和其他info模式是互斥的，交互的效果也是不一样的。 |
+| content  | 消息内容 | 消息的内容，只能是纯文本，暂不支持观察变量（data）、组件插槽（slot）。 |
+| duration | 延迟时间 | 1. 如果是**loading模式**，设置为`null`时，无限加载，可通过调用函数关闭；设置为数字时，计时器归零后自动出现关闭按钮<br />2. 如果是**info模式**（包含**info**、**warning**、**success**、**error**），设置为null时，可手动点击关闭按钮进行关闭操作；否则，计时器归零后自动关闭； |
+| onClose  | 关闭回调 | 关闭之后执行的回调函数                                       |
+
+
+
+
 ## 方法指引
 
 按照以往消息弹窗的经典命名方式，我们增加了`show`和`close`方法；`close`方法无任何参数，`show`方法的参数如下：
@@ -47,19 +59,152 @@ this.$message.show({
 });
 ```
 
-1. 由于该消息框是一个单例的，所有的参数采用的是传入式继承，即上一次`show`方法调用的参数会被保存，下一次调用时可以直接继承；
-2. `loading`模式和`info`模式（包含`info`、`success`、`error`、`warning`）是**互斥**的，`loading`模式下**不计时**，由人为的进行关闭或者更新操作，这样做的体验可以连续调用多个异步请求。`info`模式下是会进行**计时**的，如果设定时间`duration`为`null`，则关闭计时器，改为手工关闭模式。
+1. 该消息框是一个单例的，不会因为多次调用`show`方法而出现累加的情况；
+2. `loading`模式和`info`模式（包含`info`、`success`、`error`、`warning`）是**互斥**的，`loading`模式下**不计时**，由人为的进行关闭或者更新操作，这样做的体验可以连续调用多个异步请求。但如果`loading`模式下也设置了`duration`，则计时器到点后会出现手动关闭的按钮。`info`模式下是会进行**计时**的，如果设定时间`duration`为`null`，则关闭计时器，改为手工关闭模式，反之计时器到点后自动关闭。
+3. 无论哪种关闭，都会触发关闭事件，你可以利用此事件做一些其他的事情。
+
+## 案例
+
+### 基本使用
+
+单例的消息框永远只会弹出一个，即便你多次连续调用，仍然只会出现这一个，并且不会出现闪烁现象。该案例中“批处理”将展示一个连续调用的模拟。
 
 <Preview>
 <Story name="基本用法">
 {{
   template: `
-    <a-button @click="showTime">查看事件</a-button>
+    <a-button-group>
+      <a-button @click="showTime">查看时间</a-button>
+      <a-button @click="showInfo">显示信息</a-button>
+      <a-button @click="showSuccess">显示成功</a-button>
+      <a-button @click="showWarning">显示警告</a-button>
+      <a-button @click="showError">显示错误</a-button>
+      <a-button type="primary" @click="batchProcess">批处理</a-button>
+    </a-button-group>
   `,
   methods: {
     showTime () {
       this.$message.show({content: '时间' + new Date().toLocaleString()});
+    },
+    showInfo () {
+      this.$message.show({ type: 'info', content: '提示信息' });
+    },
+    showSuccess () {
+      this.$message.show({ type: 'success', content: '成功信息' });
+    },
+    showWarning () {
+      this.$message.show({ type: 'warning', content: '警告信息' });
+    },
+    showError () {
+      this.$message.show({ type: 'error', content: '错误信息', duration: null });
+    },
+    batchProcess () {
+      this.$message.show({ content: '正在提交工单!', type: 'loading' });
+      setTimeout(() => {
+        this.$message.show({ content: '正在保存...' });
+        setTimeout(() => {
+          this.$message.show({ content: '正在进行数据审核...' });
+          setTimeout(() => {
+            this.$message.show({ content: '正在提交工作流...' });
+            setTimeout(() => {
+              this.$message.show({ content: '正在更新状态...' });
+              setTimeout(() => {
+                this.$message.show({ content: '提交成功!', type: 'success', duration: 3 });
+              }, 1500);
+            }, 1500);
+          }, 1500);
+        }, 1500);
+      }, 1500);
     }
+  }
+}}
+</Story>
+</Preview>
+
+### 倒计时
+
+<Preview>
+<Story name="倒计时">
+{{
+  template: `
+    <a-button-group>
+      <a-button :loading="loading" @click="showInfo">查看信息，3秒后自动隐藏</a-button>
+    </a-button-group>
+  `,
+  data () {
+    return {
+      loading: false
+    }
+  },
+  methods: {
+    showInfo () {
+      this.loading = true;
+      this.$message.show({ content: '提示信息', duration: 3, onClose: () => {
+        this.loading = false;
+      }});
+    },
+  }
+}}
+</Story>
+</Preview>
+
+### 手动关闭
+
+**info模式**下，如果没有设置时间`duration`，则表示为手动关闭，手动关闭后，可调用`onClose`方法进行后续工作。**loading模式**下，则刚好相反，如果没有设定`duration`，则会一直处于加载中，如果设置`duration`，则表示延迟一定时间后出现手动关闭按钮，这个后面的案例会讲到。除了用户点击手动关闭，还可以通过代码进行关闭，代码触发的手动关闭依然会触发`onClose`事件：
+
+<Preview>
+<Story name="手动关闭">
+{{
+  template: `
+    <a-button-group>
+      <a-button :loading="loading" @click="showInfo">查看信息，手动关闭</a-button>
+      <a-button @click="closeInfo">关闭消息</a-button>
+    </a-button-group>
+  `,
+  data () {
+    return {
+      loading: false
+    }
+  },
+  methods: {
+    showInfo () {
+      this.loading = true;
+      this.$message.show({ content: '提示信息', onClose: () => {
+        this.loading = false;
+      }});
+    },
+    closeInfo () {
+      this.$message.close();
+    }
+  }
+}}
+</Story>
+</Preview>
+
+### 加载模式
+
+加载模式下非常的特殊，因为使用加载模式时，一般是进行异步操作。而我们根本无法得知什么时候会操作完毕，因此异步模式下是不会给出关闭按钮的，除非你知道应该如何将请求撤回，这是一个非常复杂的难题，并不是在当前组件下能独立完成的。但我们仍然给出`duration`配置，但是其用法是在延迟相应秒数后出现`close`按钮。
+
+<Preview>
+<Story name="加载模式">
+{{
+  template: `
+    <a-button-group>
+      <a-button :loading="loading" @click="request">发起请求</a-button>
+    </a-button-group>
+  `,
+  data () {
+    return {
+      loading: false
+    }
+  },
+  methods: {
+    request () {
+      this.loading = true;
+      this.$message.show({ type: 'loading', content: '正在获加载模式下非常的特殊，因为使用加载模式时，一般是进行异步操作。而我们根本无法得知什么时候会操作完毕，因此异步模式下是不会给出关闭按钮的，除非你知道应该如何将请求撤回，这是一个非常复杂的难题，并不是在当前组件下能独立完成的。但我们仍然给出取数据', duration: 3, onClose: () => {
+        this.loading = false;
+      } });
+    },
   }
 }}
 </Story>

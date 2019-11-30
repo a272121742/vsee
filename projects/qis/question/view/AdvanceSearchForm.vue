@@ -193,7 +193,7 @@
             :transform="transformManufactureBase"
             :max-tag-count="1"
             mode="multiple"
-            url="/masterdata/v1/manufactureBase"
+            url="sys/dict?dictType=plant"
             allow-clear
             close-search
             delay
@@ -238,15 +238,35 @@
         v-if="advanced"
         :span="6"
       >
+        <!-- 「问题管理负责人」下拉 -->
+        <a-form-item :label="$t('issue.responsibleUserId')">
+          <net-select
+            v-decorator="['responsibleUserId']"
+            :placeholder="$t('search.please_select')"
+            :transform="filterOptionResponsibleUserId"
+            :max-tag-count="1"
+            mode="multiple"
+            url="/issue/v1/issue/getIssueResponsibleUserList"
+            allow-clear
+            delay
+          >
+          </net-select>
+        </a-form-item>
+      </a-col>
+
+      <a-col 
+        v-if="advanced"
+        :span="6"
+      >
         <!-- 「问题提出人」下拉 -->
         <a-form-item :label="$t('issue.proposerName')">
           <net-select
-            v-decorator="['creator']"
+            v-decorator="['advanceUserId']"
             :placeholder="$t('search.please_select')"
-            :transform="filterOptionCreator"
+            :transform="filterOptionAdvanceUserId"
             :max-tag-count="1"
             mode="multiple"
-            url="/issue/v1/issue/getIssueCreatorList"
+            url="/issue/v1/issue/getIssueAdvanceUserList"
             allow-clear
             delay
           >
@@ -393,7 +413,7 @@ import { omit } from 'ramda';
 import {
   createNamespacedHelpers
 } from 'vuex';
-import { transform1, transform2, transform3, transform4, transform5, transform6 } from '~~/model.js';
+import { transform1, transform2, transform3, transform4, transform5, transform6,transform7,transform8 } from '~~/model.js';
 import timeFormatMix from '~~/time-format.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
@@ -413,7 +433,7 @@ export default {
     vm.mapPropsToFields = mapPropsToFields(vm, [
       'title', 'code', 'vehicleModelId', 'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3',
       'source', 'grade', 'projectPhase', 'manufactureBaseId', 'firstCausePart',
-      'supplierId', 'creator', 'assigner', 'responsibleDepartmentId', 'failureDate', 'closeDate', 'planCloseDate', ''
+      'supplierId', 'creator', 'assigner','advanceUserId','responsibleUserId' ,'responsibleDepartmentId', 'failureDate', 'closeDate', 'planCloseDate', ''
     ], 'record');
     return {
       // 通过映射数据源生成表单
@@ -547,10 +567,12 @@ export default {
     transformGrade: transform2,
     transformPhase: transform2,
     transformSource: transform2,
-    transformManufactureBase: transform3,
+    transformManufactureBase: transform2,
     filterOptionCreator: transform4,
     filterOptionAssigner: transform5,
     filterOptionResponsibleDepId: transform6,
+    filterOptionResponsibleUserId: transform7,
+    filterOptionAdvanceUserId: transform8,
     vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
     selectOptionFaultTree (input) {
       const optionArray = [];

@@ -355,7 +355,7 @@
                           :placeholder="$t('search.please_select')"
                           :transform="selectOptionBase"
                           allow-clear
-                          url="/masterdata/v1/manufactureBase"
+                          url="/sys/dict?dictType=plant"
                         />
                       </a-form-item>
                     </a-col>
@@ -412,7 +412,7 @@
                           :query="{ id: '${value}' }"
                           allow-clear
                           :disabled="advanceUserDisabled"
-                          url="/sys/dept/deptList/getDeptTree"
+                          url="/sys/dept/deptList/getDeptTreeTwo"
                           @change="userDeptChange"
                         />
                       </a-form-item>
@@ -434,7 +434,7 @@
                           :delay="!isEdit"
                           :cache="false"
                           allow-clear
-                          url="/sys/user/useList/getUsersByDept"
+                          url="/sys/user/useList/getUsersByDeptPid"
                           @change="(value) => worlkChampionOrProposer(value, 'advanceUser')" 
                         >
                         </net-select>
@@ -472,7 +472,7 @@
                       >
                         <template #label>
                           {{ $t('issue.vinNo') }}
-                          <span style="font-size: 10px;">{{ $t('issue.vin_lable') }}</span>
+                          <span class="form-item-label-desc">{{ $t('issue.vin_lable') }}</span>
                         </template>
                         <v-input
                           v-decorator="[
@@ -495,7 +495,7 @@
                       > 
                         <template #label>
                           {{ $t('issue.license') }}
-                          <span style="font-size: 10px;">{{ $t('issue.license_lable') }}</span>
+                          <span class="form-item-label-desc">{{ $t('issue.license_lable') }}</span>
                         </template>
                         <v-input
                           v-decorator="[
@@ -536,8 +536,8 @@
                       <a-form-item>
                         <template #label>
                           {{ $t('issue_workflow.attachment') }}
-                          <span style="color: red">
-                            ({{ $t('issue_workflow.attachment_limit') }})
+                          <span class="form-item-label-desc">
+                            {{ $t('issue_workflow.attachment_limit') }}
                           </span>
                         </template>
                         <a-upload
@@ -826,8 +826,9 @@ import moment from 'moment';
 import { transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
-import { toggleForbidScrollThrough } from '~~/scroll.js';
-import { disableScroll, enableScroll } from '~~/scroll.js';
+import { toggleForbidScrollThrough , disableScroll, enableScroll } from '~~/scroll.js';
+
+import { GLOBAL_API } from '~/config.js';
 
 const {
   mapActions
@@ -997,6 +998,7 @@ export default {
       'updateQuestion',
       'getQuestionPage',
       'eidtQuestion',
+      'eidtQuestionAdd',
       'addActIdMembership',
       'getUserByPositionCode',
       'getUserByworkflowPositionCode',
@@ -1022,6 +1024,11 @@ export default {
         vm.actiive = 'saveBtn';
         //初始化工作流角色
         vm.record.advanceDeptId = this.$store.getters.getUser().deptId;
+        console.log(vm.record.advanceDeptId,99001122);
+        vm.eidtQuestionAdd(vm.record.advanceDeptId).then( res => {
+          vm.record.advanceDeptId = res;
+          vm.form.updateFields(vm.mapPropsToFields());
+        });
         vm.record.advanceUserId = this.$store.getters.getUser().id;
         this.worlkChampionOrProposer(this.$store.getters.getUser().id,'advanceUser');
         vm.form.updateFields(vm.mapPropsToFields());
@@ -1283,8 +1290,8 @@ export default {
         //   label: item.nameZh + ' ' + item.nameEn
         // });
         optionArray.push({
-          value: item.id,
-          label: item.nameZh
+          value: item.dictValue,
+          label: item.dictName
         });
       });
       return optionArray;
@@ -1682,11 +1689,12 @@ export default {
         positionCode: positionCode
       };
       this.getUserByPositionCode(parmas).then(res => {
-        if(res){
+        if(res[0]){
           this.workflowRoles[role] = res[0].id;
         }else{
-          this.workflowRoles[role] = '';
+          this.workflowRoles[role] = void 0;
         }
+       
       });
     },
 
@@ -1697,7 +1705,12 @@ export default {
         positionCode: positionCode
       };
       this.getUserByworkflowPositionCode(parmas).then(res => {
-        this.workflowRoles[role] = res[0].id;
+        if(res[0]){
+          this.workflowRoles[role] = res[0].id;
+        }else{
+          this.workflowRoles[role] = void 0;
+        }
+        
       });
     },
     
@@ -1753,15 +1766,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .ant-layout-content {
-  overflow-y: hidden;
-}
+  /deep/ .ant-layout-content {
+    overflow-y: hidden;
+  }
+
+  /deep/ .form-item-label-desc {
+    color: rgba(0, 0, 0, .45);
+    font-size: 12px;
+  }
 
  /deep/.ant-card-wider-padding {
     .ant-card-body {
       padding-bottom: 25px;
     }
- }
+  }
   #components-form-demo-advanced-search {
     overflow-y: hidden;
     .formConetnt{

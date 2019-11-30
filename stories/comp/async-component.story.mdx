@@ -351,5 +351,32 @@ export default {
 > 2. 同理监听事件也是可以传递的；
 > 3. 同理`slot`继承也是可以的；
 
+### 加载状态
+
+加载组件会有两种特殊的状态，一种是**加载中**（loading），一种是**加载失败**（error）。在加载组件的过程种，如果组件渲染的时间很长，会处于加载中，如果超时（timeout），或者加载的组件本身有问题，又或者加载组件的地址错误，都会导致加载失败。这两种状态都会出现对应的页面，容易区分。为方便演示，这里我们直接引入这两组视图（已经作过国际化）：
+
+<Preview>
+<Story name="加载状态">
+{{
+  template: `
+    <a-row>
+      <a-col :span="12">
+        <async-component path="@comp/AsyncComponent/AsyncLoading.vue" />
+      </a-col>
+      <a-col :span="12">
+        <async-component path="@comp/AsyncComponent/AsyncError.vue" />
+      </a-col>
+    </a-row>
+  `,
+  methods: {
+    changeView (path) {
+      this.path = path;
+      this.title = path;
+    }
+  }
+}}
+</Story>
+</Preview>
+
 
 [components-dynamic-async]: https://cn.vuejs.org/v2/guide/components-dynamic-async.html#ad	"动态组件&amp;异步组件"

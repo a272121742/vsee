@@ -1,7 +1,26 @@
 <template>
-  <keep-alive v-if="keepAlive">
+  <div class="async-component-wrapper">
+    <keep-alive v-if="keepAlive">
+      <component
+        :is="AsyncComponent"
+        v-bind="$attrs"
+        v-on="$listeners"
+      >
+        <!-- slot继承 -->
+        <template
+          v-for="(_, slot) of $scopedSlots"
+          v-slot:[slot]="scope"
+        >
+          <slot
+            :name="slot"
+            v-bind="scope"
+          />
+        </template>
+      </component>
+    </keep-alive>
     <component
       :is="AsyncComponent"
+      v-else
       v-bind="$attrs"
       v-on="$listeners"
     >
@@ -16,24 +35,7 @@
         />
       </template>
     </component>
-  </keep-alive>
-  <component
-    :is="AsyncComponent"
-    v-else
-    v-bind="$attrs"
-    v-on="$listeners"
-  >
-    <!-- slot继承 -->
-    <template
-      v-for="(_, slot) of $scopedSlots"
-      v-slot:[slot]="scope"
-    >
-      <slot
-        :name="slot"
-        v-bind="scope"
-      />
-    </template>
-  </component>
+  </div>
 </template>
 
 <script>
@@ -86,3 +88,10 @@ export default {
   }
 };
 </script>
+
+<style lang="less" scoped>
+  .async-component-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+</style>

@@ -17,6 +17,7 @@ export default {
     // 分页/排序信息（问题检索使用）
     searchOrderData: {},
     searchPageData: { current: 1, pageSize: 10 },
+    _t: new Date(),
     // 分页/排序信息（待办使用）
     todoOrderData: {},
     todoPageData: { current: 1, pageSize: 10 },

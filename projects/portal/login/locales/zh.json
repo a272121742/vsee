@@ -22,5 +22,28 @@
   },
   "login": {
     "submit": "登录"
-  }
+  },
+  "newPd": {
+    "label": "新密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空"
+  },
+  "confirmPd": {
+    "label": "确认密码",
+    "placeholder": "请输入新密码",
+    "required_message": "密码不能为空",
+    "unconfirm_message": "两次输入不一致"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "success": "密码修改成功，正在跳转登录页",
+    "failure": "密码修改失败"
+  },
+  "confirm": "确定",
+  "tip": "首次登录，为确保账户安全，请修改登录密码",
+  "pdValid": "8-12位字母与数字组合，区分大小写",
+  "forgetPd": "忘记密码",
+  "force_change_pd_success": "修改成功，请重新登录",
+  "forget_confirm_title": "忘记登录密码，请联系管理员重置密码",
+  "forgetEmail": "xiaoxia.pu@analyticservice.net"
 }

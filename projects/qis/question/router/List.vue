@@ -87,35 +87,6 @@
           {{ $t('search.search_button') }}
         </a-button>
         <a-button
-          v-if="showTemplateDownload"
-          v-permission="'issue:list:draft:temp_download'"
-          type="primary"
-          ghost
-          @click="templateDownload"
-        >
-          <!-- 模版下载按钮 -->
-          {{ $t('issue_action.template_download') }}
-        </a-button>
-        <a-upload
-          accept=".xlsx"
-          :action="$store.getters.getUrl('/issue/v1/issue/import')"
-          :headers="headers"
-          :show-upload-list="false"
-          style="display: inline-block;"
-          @change="batchImport"
-        >
-          <a-button
-            v-if="showBatchImport"
-            v-permission="'issue:list:draft:batch_import'"
-            type="primary"
-            ghost
-          >
-            <!-- 批量导入按钮 -->
-            {{ $t('issue_action.batch_import') }}
-          </a-button>
-        </a-upload>
-        
-        <a-button
           v-permission="'issue:list:todo:create'"
           type="primary"
           @click="createQuestion"
@@ -123,7 +94,29 @@
           <!-- 创建问题按钮 -->
           {{ $t('issue_action.create') }}
         </a-button>
+        <a-button
+          v-permission="'issue:list:batch_import'"
+          @click="() => showBatchImportModal=true"
+        >
+          <!-- 批量导入按钮，引导打开弹窗进行模版下载和导入 -->
+          {{ $t('issue_action.batch_import') }}
+          <issue-batch-import :visible.sync="showBatchImportModal"></issue-batch-import>
+        </a-button>
       </template>
+      <!-- 暂存事项 -->
+      <a-tab-pane
+        v-if="$store.getters.hasPermission('issue:list:temporary')"
+        key="4"
+      >
+        <template #tab>
+          <!-- 暂存事项-->
+          {{ $t('issue_status.temporary') }}
+        </template>
+        <issue-temporary-table
+          v-if="defaultActiveKey === '4'"
+          col-update-url="/sys/customlist?listCode=issue-temporary-columns"
+        ></issue-temporary-table>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>

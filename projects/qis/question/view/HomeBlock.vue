@@ -96,6 +96,14 @@
         <!-- 创建问题按钮 -->
         {{ $t('issue_action.create') }}
       </a-button>
+      <a-button
+        v-permission="'issue:home:batch_import'"
+        @click="() => showBatchImportModal=true"
+      >
+        <!-- 批量导入按钮，引导打开弹窗进行模版下载和导入 -->
+        {{ $t('issue_action.batch_import') }}
+        <issue-batch-import :visible.sync="showBatchImportModal"></issue-batch-import>
+      </a-button>
     </template>
   </a-tabs>
 </template>
