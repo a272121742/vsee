@@ -9,8 +9,8 @@
     width="600px"
   >
     <template slot="footer">
-      <a-button 
-        type="primary" 
+      <a-button
+        type="primary"
         html-type="submit"
         @click="handleOk"
       >
@@ -46,7 +46,7 @@
         />
       </a-form-item>
       <!-- 确认密码 -->
-      <a-form-item 
+      <a-form-item
         :label="$t('confirmPd.label')"
         :label-col="formItemLayout.labelCol"
         :wrapper-col="formItemLayout.wrapperCol"
@@ -71,18 +71,18 @@
 
 <script>
 import { mapPropsToFields, autoUpdateFileds, validator } from '@util/formhelper.js';
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 export default {
   mixins: [validator],
   props: {
     visible: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    oldpd : {
+    oldpd: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   data () {
@@ -91,15 +91,15 @@ export default {
     return {
       form: vm.$form.createForm(vm, {
         mapPropsToFields: vm.mapPropsToFields,
-        onValuesChange: autoUpdateFileds(vm, 'record')
+        onValuesChange: autoUpdateFileds(vm, 'record'),
       }),
       // 下层数据
       record: {},
       formLayout: 'horizontal',
-      confirmLoading: false
+      confirmLoading: false,
     };
   },
-  computed : {
+  computed: {
     formItemLayout () {
       const { formLayout } = this;
       return formLayout === 'horizontal'
@@ -109,7 +109,7 @@ export default {
   methods: {
     // 验证密码相同
     valiRepeatPassword (rule, confirmPd, callback) {
-      const newPd = this.record.newPd;
+      const {newPd} = this.record;
       if (!confirmPd) {
         callback(new Error(this.$t('confirmPd.required_message')));
       } else if (confirmPd !== newPd) {
@@ -118,14 +118,14 @@ export default {
       callback();
     },
     handleOk () {
-      this.form.validateFields(err => {
+      this.form.validateFields((err) => {
         if (!err) {
           this.confirmLoading = true;
-          const oldpd = this.oldpd;
-          const confirmPd = this.record.confirmPd;
-          $.put('/sys/user/password', { password: oldpd, newPassword:confirmPd }).then(() => {
+          const {oldpd} = this;
+          const {confirmPd} = this.record;
+          $.put('/sys/user/password', { password: oldpd, newPassword: confirmPd }).then(() => {
             this.$message.success(this.$t('force_change_pd_success'));
-          }).catch(serverError => {
+          }).catch((serverError) => {
             if (serverError) {
               this.$message.error(this.$t(serverError));
             } else {
@@ -140,8 +140,8 @@ export default {
     },
     close () {
       this.$emit('update:visible', false);
-    }
-  }
+    },
+  },
 };
 </script>
 

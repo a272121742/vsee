@@ -42,7 +42,7 @@
 import { omit, prop, uniqWith } from 'ramda';
 import { debounce, isArray } from 'lodash';
 import { renameKey } from '@util/datahelper.js';
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 const key2value = renameKey('key', 'value');
 // const value2key = renameKey('value', 'key');
@@ -57,7 +57,7 @@ function transformQuery (query) {
   const transQuery = {};
   for (const i in query) {
     const value = query[i];
-    if (typeof(value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
+    if (typeof (value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
       delete transQuery[i];
     } else {
       transQuery[i] = value;
@@ -70,12 +70,12 @@ export default {
   props: {
     value: {
       type: [Number, String, Array],
-      default: undefined
+      default: undefined,
     },
     // 是否关闭搜索
     closeSearch: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * 形式为：
@@ -87,30 +87,30 @@ export default {
      */
     query: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     /**
      * 是否缓存
      */
     cache: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * 是否延时，即在点击之后加载，默认不延时
      */
     delay: {
       type: Boolean,
-      default: true
+      default: true,
     },
     url: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     transform: {
       type: Function,
-      default: id => id
-    }
+      default: id => id,
+    },
   },
   data () {
     return {
@@ -172,7 +172,7 @@ export default {
      */
     input () {
       return this.$el.querySelector('input');
-    }
+    },
   },
   watch: {
     /**
@@ -200,23 +200,22 @@ export default {
               this.rending = false;
             } else {
               const config = {};
-              const valueKey = this.valueKey;
+              const {valueKey} = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
-              this.fetch(config).then(list => {
+              this.fetch(config).then((list) => {
                 this.labelValue = list.filter(item => ~value.indexOf(item.value)).map(item => ({ key: item.value, label: item.label }));
                 this.options.unshift(...list);
                 this.options = uniqOption(this.options);
               }).finally(() => {
                 this.rending = false;
               });
-              
             }
-          }else {
+          } else {
             this.labelValue = {
               value,
-              label: void 0
+              label: void 0,
             };
             this.rending = true;
             // 从options中查找label
@@ -228,12 +227,12 @@ export default {
             } else {
             // 否则从网络获取
               const config = {};
-              const valueKey = this.valueKey;
+              const {valueKey} = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
-              this.fetch(config).then(list => {
-                this.labelValue = list.find(item => item.value=== value);
+              this.fetch(config).then((list) => {
+                this.labelValue = list.find(item => item.value === value);
               }).finally(() => {
                 this.rending = false;
               });
@@ -242,8 +241,8 @@ export default {
         } else {
           this.labelValue = value;
         }
-      }
-    }
+      },
+    },
   },
   created () {
     this.init();
@@ -274,9 +273,9 @@ export default {
     init () {
       const { url, delay } = this;
       // 非延时，或回显时，立刻获取数据;
-      url && !delay && this.fetch({}).then(list => {
+      url && !delay && this.fetch({}).then((list) => {
         const selectValue = this.isMultiple ? (this.labelValue || []) : [];
-        const options = uniqOption([ ...selectValue.map(key2value), ...list ]);
+        const options = uniqOption([...selectValue.map(key2value), ...list]);
         this.options = options;
       });
     },
@@ -289,7 +288,7 @@ export default {
       if (visible && (!this.options.length || (this.labelValue && this.options.length <= this.labelValue.length) || !this.cache)) {
         this.options = [];
         this.fetching = true;
-        this.fetch({}).then(list => {
+        this.fetch({}).then((list) => {
           this.options = list;
         }).finally(() => {
           this.fetching = false;
@@ -307,7 +306,7 @@ export default {
           config[this.wordKey] = word;
         }
         this.fetching = true;
-        this.fetch(config).then(list => {
+        this.fetch(config).then((list) => {
           this.options = list;
         }).finally(() => {
           this.fetching = false;
@@ -326,7 +325,7 @@ export default {
         if (config) {
           url && $.get(url, { ...query, ...config }).then((res = []) => {
             const list = transform(res);
-            resolve([ ...selectValue.map(key2value), ...list ]);
+            resolve([...selectValue.map(key2value), ...list]);
           }).catch(() => {
             resolve([...selectValue.map(key2value)]);
           });
@@ -349,15 +348,13 @@ export default {
         } else {
           this.$emit('change', void 0, VNode);
         }
-      } else {
-        if (labelValue) {
+      } else if (labelValue) {
           this.$emit('change', labelValue.key, VNode);
         } else {
           this.$emit('change', void 0, VNode);
         }
-      }
-    }
-  }
+    },
+  },
 };
 </script>
 

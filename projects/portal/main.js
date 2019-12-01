@@ -10,8 +10,6 @@ import { router } from '@lib/auto-router.js';
 // 加载本地store
 // 加载本地化文件
 import i18n from '@lib/auto-i18n.js';
-import moment from 'moment';
-
 // 添加进度条
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -39,7 +37,7 @@ if (store.state.allowLogin) {
     // 是否跳转到登陆界面
     const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
     // 是否已经登陆
-    const isLogin = store.state.isLogin;
+    const {isLogin} = store.state;
     // 已经通过登陆时，如果进入的不是登陆，直接放行
     if (isLogin && !toLogin) {
       if (to.path === '/') {
@@ -50,7 +48,7 @@ if (store.state.allowLogin) {
     // 已经通过登陆时，如果进入的是登陆，跳转到主页
     if (isLogin && toLogin) {
       next({
-        path: '/'
+        path: '/',
       });
     }
     // 如果进入的不是登陆界面，且未登陆过
@@ -58,8 +56,8 @@ if (store.state.allowLogin) {
       next({
         name: 'Login',
         query: {
-          redirect: to.fullPath
-        }
+          redirect: to.fullPath,
+        },
       });
     }
     // 登陆过但不是登陆界面就直接放行，或者没登陆但进入的是登陆界面直接放行
@@ -92,7 +90,7 @@ new Vue({
   mounted () {
     // 消息全局配置
     this.$message.config({
-      top: '80px'
+      top: '80px',
     });
     window.addEventListener('scroll', debounce(() => {
       document.querySelectorAll('input:focus').forEach(item => item.blur());
@@ -107,5 +105,5 @@ new Vue({
         </a-locale-provider>
       </div>
     );
-  }
+  },
 });

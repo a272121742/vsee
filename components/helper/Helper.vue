@@ -26,13 +26,13 @@
           path="@comp/helper/LoginForm.vue"
         />
       </a-row>
-      <!-- <a-row>
+      <a-row>
         是否代理
         <a-switch
+          :default-checked="!$store.state.isMock"
           @change="onProxyChange"
-          default-checked
         />
-      </a-row> -->
+      </a-row>
       <a-row>
         刷新页面：
         <a-button-group>
@@ -59,12 +59,12 @@
 </template>
 
 <script>
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 
 export default {
   components: {
-    AsyncComponent: () => import('@comp/AsyncComponent')
+    AsyncComponent: () => import('@comp/AsyncComponent'),
   },
   data () {
     const vm = this;
@@ -72,7 +72,7 @@ export default {
       buildDate: process.env,
       top: 80,
       visible: false,
-      isLogin: vm.$store.state.isLogin
+      isLogin: vm.$store.state.isLogin,
     };
   },
   computed: {
@@ -81,7 +81,7 @@ export default {
       const uuid = this.$store.getters.getUUID();
       const time = Date.now();
       return `/auth/captcha?uuid=${uuid}&_t=${time}`;
-    }
+    },
   },
   methods: {
     // 显示
@@ -111,7 +111,7 @@ export default {
         captcha,
         password: 'admin',
         username: 'admin',
-        uuid
+        uuid,
       }).then(() => {
         this.isLogin = true;
       }).catch(() => {
@@ -122,8 +122,8 @@ export default {
     },
     onProxyChange (checked) {
       this.$store.commit('mock', !checked);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -12,7 +12,7 @@
       :form="form"
     >
       <!-- 原密码 -->
-      <a-form-item 
+      <a-form-item
         :label="$t('old_password.label')"
         self-update
       >
@@ -29,7 +29,7 @@
         />
       </a-form-item>
       <!-- 新密码 -->
-      <a-form-item 
+      <a-form-item
         :label="$t('new_password.label')"
         self-update
       >
@@ -46,7 +46,7 @@
         />
       </a-form-item>
       <!-- 确认密码 -->
-      <a-form-item 
+      <a-form-item
         :label="$t('repeat_password.label')"
         self-update
       >
@@ -69,15 +69,15 @@
 
 <script>
 import { mapPropsToFields, autoUpdateFileds, validator } from '@util/formhelper.js';
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 export default {
   mixins: [validator],
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data () {
     const vm = this;
@@ -85,11 +85,11 @@ export default {
     return {
       form: vm.$form.createForm(vm, {
         mapPropsToFields: vm.mapPropsToFields,
-        onValuesChange: autoUpdateFileds(vm, 'record')
+        onValuesChange: autoUpdateFileds(vm, 'record'),
       }),
       // 下层数据
       record: {},
-      confirmLoading: false
+      confirmLoading: false,
     };
   },
   created () {
@@ -98,7 +98,7 @@ export default {
   methods: {
     // 验证密码相同
     valiRepeatPassword (rule, repeatPassword, callback) {
-      const newPassword = this.record.newPassword;
+      const {newPassword} = this.record;
       if (!repeatPassword) {
         callback(new Error(this.$t('repeat_password.required_message')));
       } else if (repeatPassword !== newPassword) {
@@ -107,7 +107,7 @@ export default {
       callback();
     },
     handleOk () {
-      this.form.validateFields(err => {
+      this.form.validateFields((err) => {
         if (!err) {
           this.confirmLoading = true;
           const { password, newPassword } = this.record;
@@ -115,7 +115,7 @@ export default {
             this.$message.info(this.$t('changePassword.success'));
             this.close();
             this.$store.dispatch('logout');
-          }).catch(errcode => {
+          }).catch((errcode) => {
             if (errcode) {
               this.$message.error(this.$t(errcode));
             } else {
@@ -132,7 +132,7 @@ export default {
     },
     close () {
       this.$emit('update:visible', false);
-    }
-  }
+    },
+  },
 };
 </script>

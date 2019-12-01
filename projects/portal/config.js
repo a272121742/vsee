@@ -4,18 +4,18 @@ export const LANGUAGE_KEY = 'language';
 export const LANGUAGE_DEFAULT = 'zh-CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
 export const OTHER_GET_PARAMS = {
-  _t: Date.now()
+  _t: Date.now(),
 };
 
 // 授权API
 export const AUTH_API = {
   login: ['/auth/login', { appCode: 'ADMIN' }],
-  logout: ['/auth/logout', {}]
+  logout: ['/auth/logout', {}],
 };
 export const GLOBAL_API = {
   user: ['/sys/user/info', { appCode: 'ISSUE' }],
   menus: ['/sys/menu/nav', { appCode: 'ADMIN' }],
-  permissions: ['/sys/menu/permissions', { appCode: 'ISSUE' }]
+  permissions: ['/sys/menu/permissions', { appCode: 'ISSUE' }],
 };
 
 /**
@@ -48,6 +48,6 @@ export const autoRequires = {
   // 数据缓存模块
   store: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/store\/index\.js$/),
   // 国际化模块
-  i18n: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/locales\/[A-Za-z]+\.json$/)
+  i18n: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/locales\/[A-Za-z]+\.json$/),
   // directives: require.context('@dir', true, /^\.\/v-[A-Za-z-]*\.js$/)
 };

@@ -36,7 +36,7 @@
 
 <script>
 import { find } from 'ramda';
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 // function hasProp (instance, selfProp) {
 //   const $options = instance.$options || {};
@@ -47,7 +47,7 @@ function transformQuery (query) {
   const transQuery = {};
   for (const i in query) {
     const value = query[i];
-    if (typeof(value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
+    if (typeof (value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
       delete transQuery[i];
     } else {
       transQuery[i] = value;
@@ -61,12 +61,12 @@ export default {
     // 下拉列表的值，或单对象，或数组，该属性由`v-decorator`控制
     value: {
       type: [Number, String, Array],
-      default: undefined
+      default: undefined,
     },
     // 是否关闭搜索
     closeSearch: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * 形式为：
@@ -78,25 +78,25 @@ export default {
      */
     query: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     /**
      * 是否缓存
      */
     cache: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // 链接地址
     url: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     // 数据转换函数
     transform: {
       type: Function,
-      default: id => id
-    }
+      default: id => id,
+    },
   },
   data () {
     return {
@@ -120,7 +120,7 @@ export default {
        * 组件值加载状态，`true`表示值渲染完成
        */
       rending: false,
-      
+
     };
   },
   computed: {
@@ -143,7 +143,7 @@ export default {
      */
     input () {
       return this.$el.querySelector('input');
-    }
+    },
   },
   watch: {
     value: {
@@ -155,12 +155,12 @@ export default {
           if (!this.labelValue || !this.labelValue.label) {
             console.log('从网络获取');
             const config = {};
-            const valueKey = this.valueKey;
+            const {valueKey} = this;
             if (valueKey) {
               config[valueKey] = value;
             }
             this.rending = true;
-            this.fetch(config).then(list => {
+            this.fetch(config).then((list) => {
               this.labelValue = find(item => item.value === value, list);
             }).finally(() => {
               this.rending = false;
@@ -170,8 +170,8 @@ export default {
           console.log('不回显');
           this.labelValue = value;
         }
-      }
-    }
+      },
+    },
   },
   created () {
     this.init();
@@ -196,7 +196,7 @@ export default {
       this.fetching = true;
       const { url } = this;
       // 非延时，或回显时，立刻获取数据;
-      url && this.fetch({}).then(list => {
+      url && this.fetch({}).then((list) => {
         this.options = list;
       }).finally(() => {
         this.fetching = false;
@@ -207,15 +207,14 @@ export default {
       if (labelValue === void 0 || labelValue === null) {
         this.$emit('change', void 0, void 0);
       } else {
-        this.$emit('change', labelValue.key || labelValue.value,  extra.triggerNode.label);
+        this.$emit('change', labelValue.key || labelValue.value, extra.triggerNode.label);
       }
-      
     },
     filterTreeNode (input = '', treeNode) {
       const label = treeNode.componentOptions.propsData.label || '';
       return ~label.toLowerCase().indexOf(input.toLowerCase());
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,5 +1,5 @@
-import $ from '@lib/ajax.js';
+import $ from '@http';
 
 export default {
-  getTodoPage: (params) => $.get('/sys/todo/page', params)
+  getTodoPage: params => $.get('/sys/todo/page', params),
 };

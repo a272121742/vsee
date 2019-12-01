@@ -90,8 +90,8 @@
 </template>
 
 <script>
-import $ from '@lib/ajax.js';
 import { clone } from 'ramda';
+import $ from '@http';
 
 export default {
   props: {
@@ -100,7 +100,7 @@ export default {
      */
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     /**
      * 传入的列配置项
@@ -108,35 +108,35 @@ export default {
     columns: {
       type: Array,
       required: true,
-      default: () => []
+      default: () => [],
     },
     /**
      * 国际化转换函数
      */
     transform: {
       type: Function,
-      default: txt => txt
+      default: txt => txt,
     },
     /**
      * 国际化路径
      */
     localePath: {
       type: String,
-      default: ''
+      default: '',
     },
     /**
      * 请求地址
      */
     url: {
       type: String,
-      default: ''
+      default: '',
     },
     /**
      * 映射函数
      */
     mapping: {
       type: Function,
-      required: true
+      required: true,
     },
     /**
      * 传入给服务端的唯一标识
@@ -144,8 +144,8 @@ export default {
     id: {
       type: String,
       require: true,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
@@ -161,7 +161,7 @@ export default {
       /**
        * 禁用提交
        */
-      disableCommit: false
+      disableCommit: false,
     };
   },
   computed: {
@@ -176,12 +176,12 @@ export default {
      */
     modified () {
       return (this.tc, JSON.stringify(this.columnList) !== JSON.stringify(this.cache));
-    }
+    },
   },
   created () {
     // 获取数据，如果无后台，将得到`undefined`
-    this.fetch().then(cols => {
-      this.columns.forEach(col => {
+    this.fetch().then((cols) => {
+      this.columns.forEach((col) => {
         col.invisible = !!col.invisible;
       });
       this.cache = cols || clone(this.columns);
@@ -196,7 +196,7 @@ export default {
     fetch () {
       return new Promise((resolve) => {
         if (this.url && process.env.NODE_ENV === 'production') {
-          $.get(this.url, { listCode: this.id }).then(res => {
+          $.get(this.url, { listCode: this.id }).then((res) => {
             resolve(JSON.parse(res.expression));
           }).catch(() => {
             resolve();
@@ -263,8 +263,8 @@ export default {
           });
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
