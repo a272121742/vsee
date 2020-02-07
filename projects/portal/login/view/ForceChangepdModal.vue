@@ -109,7 +109,7 @@ export default {
   methods: {
     // 验证密码相同
     valiRepeatPassword (rule, confirmPd, callback) {
-      const {newPd} = this.record;
+      const { newPd } = this.record;
       if (!confirmPd) {
         callback(new Error(this.$t('confirmPd.required_message')));
       } else if (confirmPd !== newPd) {
@@ -121,8 +121,8 @@ export default {
       this.form.validateFields((err) => {
         if (!err) {
           this.confirmLoading = true;
-          const {oldpd} = this;
-          const {confirmPd} = this.record;
+          const { oldpd } = this;
+          const { confirmPd } = this.record;
           $.put('/sys/user/password', { password: oldpd, newPassword: confirmPd }).then(() => {
             this.$message.success(this.$t('force_change_pd_success'));
           }).catch((serverError) => {

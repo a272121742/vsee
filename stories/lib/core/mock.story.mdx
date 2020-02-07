@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/数据模拟" />
+<Meta title="框架|核心（Core）/数据模拟（mock）" />
 
 # 数据模拟
 
@@ -73,6 +73,20 @@ Mock.get('/api/users', () => {
 ```
 
 > 注意： `mock`包含有`get/post/put/patch/delete/head/options`方法，这些方法的第二个参数是模拟服务器接受到请求参数，参数包含有**Body参数**、**Query参数**和**占位符参数**，其中**占位符参数**的位置是优先于其他参数的，而**Body参数**和**Query参数**只会出现一个。
+
+### 模拟数据集
+
+我们也为模拟批量数据做了简化处理，避免使用原生`key|count`的模拟模式，简化后的代码如下：
+
+```javascript
+import mock from '@lib/mock.js';
+const list = mock({
+  no: 'IRSYYYY@string("number", 6)',
+  title: '@ctitle',
+  createDate: '@date',
+  desc: '@cparagraph',
+}, 100); // 模拟100条数据
+```
 
 ### 数据模版
 

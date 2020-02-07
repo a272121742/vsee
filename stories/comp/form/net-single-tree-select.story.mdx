@@ -1,0 +1,62 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import NetSingleTreeSelect from '@comp/form/NetSingleTreeSelect.vue';
+
+<Meta title="组件库|Form表单/NetSingleTreeSelect网络下拉单选树（新）" />
+
+# 网络下拉单选树
+
+## 相关属性
+
+> 继承：Ant Design Vue [TreeSelect](https://www.antdv.com/components/tree-select-cn/)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： ['url', 'closeSearch', 'query', 'delay', 'cache', 'transform'] 见下方
+
+<Props of={ NetSingleTreeSelect } />
+
+## 属性说明
+
+其他属性见`SingleNetSelect`
+
+1. transform： 转换函数，接口一个服务端查询到的数据（树格式），返回要设置到组件的值（也得是树格式）。
+
+## 案例
+
+```html
+<!-- 「责任部门」下拉 -->
+<a-form-item>
+  <net-single-tree-select
+    // 数据绑定
+    v-decorator="['owerDeptLv1',{rules: [{ required: true, message: $t('search.please_select') + $t('issue_workflow.D1.resposibleDepartment') }]} ]"
+    // 转换函数，函数内容见下方
+    :transform="responseDeptTreeTransform"
+    :disabled="depDisable"
+    :delay="true"
+    :placeholder="$t('search.please_select')"
+    :query="{ nameCode: '${value}' }"
+    allow-clear
+    style="width:272px;height:32px;"
+    show-search
+    url="/masterdata/v1/workflowgroupname/tree?typeCode=RESPONSIBLE_DEPARTMENT"
+    @change="owerDeptChange"
+  />
+</a-form-item>
+<script>
+// 导入数据转换库中的两个函数用于对tree类型结构进行转换
+import { transform, treeTransform } from '@util/datahelper.js';
+export default {
+  methods: {
+    // 转换函数
+    responseDeptTreeTransform: treeTransform(transform({
+      value: 'code', 
+      label: 'name', 
+      children: 'children', 
+      selectable: (item) => !(item.children && item.children.length),
+    })),
+  }
+}
+</script>
+```

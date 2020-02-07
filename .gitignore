@@ -7,6 +7,10 @@ storybook-static
 selenium-debug.log
 package-lock.json
 
+projects/test
+projects/mxd
+projects/sys
+
 # local env files
 .env.local
 .env.*.local

@@ -1,19 +1,20 @@
-import moduleDynamicCache from '~~/module-dynamic-cache.js';
 import { defaultTo } from 'ramda';
 import { createNamespacedHelpers } from 'vuex';
+import moduleDynamicCache from '~~/module-dynamic-cache.js';
+
 const { mapActions } = createNamespacedHelpers('question');
 
 export default {
   components: {
     AdvanceSearchForm: () => import('~/question/view/AdvanceSearchForm.vue'),
-    IssueTable: () => import('~/question/view/IssueTable.vue')
+    IssueTable: () => import('~/question/view/IssueTable.vue'),
   },
   mixins: [moduleDynamicCache('question')],
   data () {
     return {
       data: [],
       loading: false,
-      total: 0
+      total: 0,
     };
   },
   computed: {
@@ -31,7 +32,7 @@ export default {
     },
     filters () {
       return this.advancePageConfig.queryData;
-    }
+    },
   },
   created () {
     this.request();
@@ -39,17 +40,17 @@ export default {
   methods: {
     ...mapActions([
       // 分页查询全部问题
-      'getIssuePage'
+      'getIssuePage',
     ]),
     request (config) {
       if (!this.loading) {
         this.loading = true;
         const {
-          page, limit, order, orderField, filters
+          page, limit, order, orderField, filters,
         } = this;
         this.getIssuePage({
-          page, limit, order, orderField, ...config, ...filters
-        }).then(res => {
+          page, limit, order, orderField, ...config, ...filters,
+        }).then((res) => {
           this.data = res.list;
           this.total = res.total;
           this.$nextTick(() => {
@@ -69,22 +70,44 @@ export default {
         queryData: filters,
         searchPageData: {
           current: 1,
-          pageSize: this.limit
-        }
+          pageSize: this.limit,
+        },
       });
       this.request();
     },
     // 查看详情
-    goToDetail (idValue) {
-      this.$router.push({
-        name: 'QuestionDetail',
-        params: {
-          id: idValue
-        },
-        query: {
-          form: this.$route.path
-        }
-      });
-    }
-  }
+    goToDetail (record) {
+      if (record.procDefKey === 'IRS1') {
+        this.$router.push({
+          name: 'QuestionDetail',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+      } else if (record.procDefKey === 'IRS2') {
+        this.$router.push({
+          name: 'QuestionDetailNew',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+      } else if (record.procDefKey === 'IRS3') {
+        this.$router.push({
+          name: 'SubQuestionDetailNew',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+      }
+    },
+  },
 };

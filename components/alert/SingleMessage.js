@@ -9,19 +9,19 @@ import SingleMessage from './SingleMessage.vue';
  */
 
 // 默认不自动关闭
-const defaultDuration =  null;
+const defaultDuration = null;
 
 let defaultTop;
 // 消息实例
 let messageInstance;
-let prefixCls = 'ant-message';
-let transitionName = 'move-up';
-let getContainer = () => document.body;
+const prefixCls = 'ant-message';
+const transitionName = 'move-up';
+const getContainer = () => document.body;
 const key = 'SINGLE_MESSAGE_KEY';
 
 /**
  * 创建单例实例
- * @param {*} callback 
+ * @param {*} callback
  */
 function getMessageInstance (callback) {
   if (messageInstance) {
@@ -33,7 +33,7 @@ function getMessageInstance (callback) {
     transitionName,
     style: { top: defaultTop }, // 覆盖原来的样式
     getContainer,
-  }, instance => {
+  }, (instance) => {
     if (messageInstance) {
       callback(messageInstance);
       return;
@@ -46,19 +46,18 @@ function getMessageInstance (callback) {
 // type NoticeType = 'info' | 'success' | 'error' | 'warning';
 
 
-
 let timer;
 let argsDefault;
 
 const api = {
   show: (args) => {
-    argsDefault = Object.assign({}, args);
+    argsDefault = { ...args };
     if (!(argsDefault.duration >= 0)) {
       argsDefault.duration = null;
     }
     if (timer) {
       clearInterval(timer);
-    } 
+    }
     function run () {
       const hide = notice(argsDefault);
       const isNumber = typeof argsDefault.duration === 'number';
@@ -68,7 +67,7 @@ const api = {
       if (isNumber && argsDefault.duration < 0) {
         if (timer) {
           clearInterval(timer);
-        } 
+        }
         if (argsDefault.type === 'loading') {
           argsDefault.close = true;
           return;
@@ -78,7 +77,6 @@ const api = {
         }
         hide();
         argsDefault.duration = null;
-        
       }
       return argsDefault.duration > 0;
     }
@@ -87,14 +85,14 @@ const api = {
   close: () => {
     if (timer) {
       clearInterval(timer);
-    } 
+    }
     if (messageInstance) {
       messageInstance.removeNotice(key);
       if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
         argsDefault.onClose();
       }
     }
-  }
+  },
 };
 
 function notice (args) {
@@ -111,7 +109,7 @@ function notice (args) {
   }[type];
   const isLoadingMode = type === 'loading';
   // 关闭回调
-  const closePromise = new Promise(resolve => {
+  const closePromise = new Promise((resolve) => {
     const callback = () => {
       if (typeof args.onClose === 'function') {
         args.onClose();
@@ -119,31 +117,29 @@ function notice (args) {
       return resolve(true);
     };
     // 获取实例
-    getMessageInstance(instance => {
+    getMessageInstance((instance) => {
       instance.notice({
         key,
         duration: null,
         style: {},
-        content: (createElement) => {
-          return createElement(SingleMessage, {
-            prefixCls,
-            type,
-            iconType,
-            isLoadingMode,
-            duration,
-            content: args.content,
-            close: (args.duration < 0 && isLoadingMode) || (!isLoadingMode && args.duration === null),
-            closeHandler: () => {
-              if (args.onClose && args.onClose instanceof Function) {
-                args.onClose();
-                if (timer) {
-                  clearInterval(timer);
-                } 
+        content: (createElement) => createElement(SingleMessage, {
+          prefixCls,
+          type,
+          iconType,
+          isLoadingMode,
+          duration,
+          content: args.content,
+          close: (args.duration < 0 && isLoadingMode) || (!isLoadingMode && args.duration === null),
+          closeHandler: () => {
+            if (args.onClose && args.onClose instanceof Function) {
+              args.onClose();
+              if (timer) {
+                clearInterval(timer);
               }
-              instance.removeNotice(key);
             }
-          });
-        },
+            instance.removeNotice(key);
+          },
+        }),
         onClose: callback,
       });
     });

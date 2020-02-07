@@ -12,7 +12,7 @@ const DATA_RANGE = {
   BEGIN_HOUR_FORMAT: `${GLOBAL_SELECT_DATE_FORMAT} HH:00:00`,
   END_HOUR_FORMAT: `${GLOBAL_SELECT_DATE_FORMAT} HH:59:59`,
   BEGIN_MINUTE_FORMAT: `${GLOBAL_SELECT_DATE_FORMAT} HH:mm:00`,
-  END_MINUTE_FORMAT: `${GLOBAL_SELECT_DATE_FORMAT} HH:mm:59`
+  END_MINUTE_FORMAT: `${GLOBAL_SELECT_DATE_FORMAT} HH:mm:59`,
 };
 
 export default {
@@ -21,7 +21,7 @@ export default {
       GLOBAL_SELECT_DATE_FORMAT,
       GLOBAL_SELECT_TIME_FORMAT,
       ACTION_LABEL_DATE_FORMAT,
-      DATA_RANGE
+      DATA_RANGE,
     };
   },
   filters: {
@@ -31,6 +31,6 @@ export default {
         return m.isValid ? m.format(GLOBAL_SELECT_DATE_FORMAT) : '-';
       }
       return '-';
-    }
-  }
+    },
+  },
 };

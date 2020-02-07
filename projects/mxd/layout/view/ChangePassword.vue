@@ -82,7 +82,7 @@ export default {
   methods: {
     // 验证密码相同
     valiRepeatPassword (rule, repeatPassword, callback) {
-      const {newPassword} = this.record;
+      const { newPassword } = this.record;
       if (!repeatPassword) {
         callback(new Error(this.$t('repeat_password.required_message')));
       } else if (repeatPassword !== newPassword) {

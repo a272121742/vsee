@@ -1,30 +1,66 @@
 <template>
-  <a-form 
+  <a-form
     :form="form"
     style="width: 200px"
   >
     <a-form-item
+      label="数据字典测试（远程搜索）"
+      self-update
+    >
+      <single-net-select
+        v-decorator="['dict1']"
+        placeholder="请选择"
+        value-by="id"
+        :label-of="item => item.name"
+        search-by="name"
+        order-field="id"
+        order="esc"
+        allow-clear
+        url="/sys/v1/dataRole/dict"
+        :query="{appCode: 'ADMIN', dictType: 'status_code'}"
+      />
+    </a-form-item>
+    <a-form-item
+      label="数据字典测试（回显示测试）"
+      self-update
+    >
+      <single-net-select
+        v-decorator="['dict2']"
+        placeholder="请选择"
+        value-by="id"
+        :label-of="item => item.name"
+        search-by="name"
+        order-field="id"
+        order="esc"
+        allow-clear
+        url="/sys/v1/dataRole/dict"
+        :query="{appCode: 'ADMIN', dictType: 'status_code'}"
+      />
+    </a-form-item>
+    <a-form-item
       label="网络下拉（本地搜索）"
       self-update
     >
-      <net-select
+      <single-net-select
         v-decorator="['a']"
         placeholder="请选择"
-        :transform="transform"
         allow-clear
         url="/masterdata/v1/part"
+        value-by="id"
+        :label-of="item => item.name"
       />
     </a-form-item>
     <a-form-item
       label="网络下拉（禁用本地搜索）"
       self-update
     >
-      <net-select
+      <single-net-select
         v-decorator="['b']"
         placeholder="请选择"
-        :transform="transform"
         allow-clear
         url="/masterdata/v1/part"
+        value-by="id"
+        :label-of="item => item.name"
         close-search
       />
     </a-form-item>
@@ -32,25 +68,30 @@
       label="网络下拉（远程搜索）"
       self-update
     >
-      <net-select
+      <single-net-select
         v-decorator="['c']"
         placeholder="请选择"
-        :transform="transform"
+        value-by="id"
+        :label-of="item => item.name"
+        search-by="name"
+        order-field="name"
+        order="desc"
         allow-clear
         url="/masterdata/v1/part"
-        :query="{name: '${search}', orderField: 'name'}"
+        :query="{appCode: 'ADMIN'}"
       />
     </a-form-item>
     <a-form-item
       label="网络下拉（数据回显）"
       self-update
     >
-      <net-select
+      <single-net-select
         v-decorator="['d']"
         placeholder="请选择"
-        :transform="transform"
         allow-clear
         url="/masterdata/v1/part"
+        value-by="id"
+        :label-of="item => item.name"
         :query="{id: '${value}', name: '${search}', orderField: 'name'}"
       />
     </a-form-item>
@@ -112,37 +153,38 @@ import { mapPropsToFields, autoUpdateFileds } from '@util/formhelper.js';
 export default {
   components: {
     NetSelect: () => import('../view/NetSelect.vue'),
-    VTextarea: () => import('@comp/form/VTextarea.vue')
+    SingleNetSelect: () => import('../view/SingleNetSelect.vue'),
+    VTextarea: () => import('@comp/form/VTextarea.vue'),
   },
   data () {
     return {
       form: null,
       record: {
 
-      }
+      },
     };
   },
   created () {
-    this.mapPropsToFields = mapPropsToFields(this, ['a', 'b', 'c', 'd', 'e', 'f'], 'record');
+    this.mapPropsToFields = mapPropsToFields(this, ['dict1', 'dict2', 'a', 'b', 'c', 'd', 'e', 'f'], 'record');
     this.form = this.$form.createForm(this, {
       mapPropsToFields: this.mapPropsToFields,
-      onValuesChange: autoUpdateFileds(this, 'record')
+      onValuesChange: autoUpdateFileds(this, 'record'),
     });
     // 已经加载的值
     // this.record.firstCausePart = '1001100000000002560';
     // this.form.updateFields();
     // 落跑值 1001100000000002314
-    // this.record.d = '1001100000000002314';
-    // this.form.updateFields();
+    this.record.dict2 = '11918289';
+    this.record.d = '1001100000000002314';
+    this.form.updateFields();
     this.record.e = [
-      '1001100000000002395',  // 初始化存在
-      '1001100000000001015',  // 初始化存在
-      '1001100000000002017',  // 初始化不存在
-      '1001100000000002479'   // 初始化不存在
+      '1001100000000002395', // 初始化存在
+      '1001100000000001015', // 初始化存在
+      '1001100000000002017', // 初始化不存在
+      '1001100000000002479', // 初始化不存在
     ];
     this.record.f = '请测试12345';
     this.form.updateFields();
-    
   },
   methods: {
     onSelect (v, o) {
@@ -152,11 +194,11 @@ export default {
       console.log('外部change', v, o);
     },
     transform (list) {
-      return list.map(item => ({ value: item.id, label: item.name }));
+      return list.map((item) => ({ value: item.id, label: item.name }));
     },
     print () {
       console.log(this.form.getFieldsValue());
-    }
-  }
+    },
+  },
 };
 </script>

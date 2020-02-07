@@ -21,8 +21,8 @@ export default {
   methods: {
     handleAjax () {
       this.fetch();
-    }
-  }
+    },
+  },
 };
 
 </script>

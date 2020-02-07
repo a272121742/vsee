@@ -5,6 +5,7 @@
       :data-source="data"
       :columns="columns"
       :pagination="false"
+      :row-class-name="setClassName"
       size="small"
       bordered
     >
@@ -15,16 +16,16 @@
 <script>
 const dataSource = [];
 
-const isObject = val => val && typeof val === 'object';
+const isObject = (val) => val && typeof val === 'object';
 function reduceTree (tree1, tree2, arr = [], bef = '') {
   const keys = Object.keys(tree1);
   keys.forEach((key) => {
     const cn = tree1[key];
     const en = tree2[key];
     const isObj = isObject(cn);
-    arr.push({ key: (bef ? bef + '.' : bef) + key, zh: isObj ? '' : cn, en: isObj ? '' : en });
+    arr.push({ key: (bef ? `${bef}.` : bef) + key, zh: isObj ? '' : cn, en: isObj ? '' : en });
     if (isObj) {
-      arr.push(...reduceTree(cn, en, [], (bef ? bef + '.' : bef) + key));
+      arr.push(...reduceTree(cn, en, [], (bef ? `${bef}.` : bef) + key));
     }
   });
   return arr;
@@ -36,18 +37,18 @@ export default {
       columns: [{
         title: '键',
         dataIndex: 'key',
-        scopedSlots: { customRender: 'key' }
+        scopedSlots: { customRender: 'key' },
       }, {
         title: '中文',
         dataIndex: 'zh',
         scopedSlots: { customRender: 'zh' },
-        width: 200
+        width: 200,
       }, {
         title: '英文',
         dataIndex: 'en',
         scopedSlots: { customRender: 'en' },
-        width: 260
-      }]
+        width: 260,
+      }],
     };
   },
   created () {
@@ -58,8 +59,17 @@ export default {
   },
   methods: {
     changeKey (e) {
-      this.$set(this, 'data', dataSource.filter(item => ~item.key.indexOf(e.target.value)));
-    }
-  }
+      this.$set(this, 'data', dataSource.filter((item) => ~item.key.indexOf(e.target.value)));
+    },
+    setClassName (record) {
+      return (!record.zh || !record.en) ? 'parent-row' : '';
+    },
+  },
 };
 </script>
+
+<style lang="less" scoped>
+  /deep/ .parent-row {
+    background-color:rgba(0, 0, 0, 0.08);
+  }
+</style>

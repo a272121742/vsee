@@ -1,0 +1,56 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/表格行选择器" />
+
+# 表格行选择器
+
+该插混入器可以很方便的为`ant-design-vue`表格添加表格行选择器，减少开发人员的配置。原版本为对象混入，现在更改为函数混入。
+
+公开对象：
+
+| 对象/属性                    | 所属Vue类型  | 可读写性      | 说明   | 说明                                                         |
+| ---------------------------- | ------------ | ------------- | ------ | ------------------------------------------------------------ |
+| rowSelection                   | data（下同） | Object        | 可读写 | 行选择器                                                     |
+| rowSelection.selectedRowKeys |              | Array<Any\>    | 可读写 | 已选择行的键集，键的指向由上层组件`table`或者`list`的`rowKey`所决定，行选择器中也有对应配置。 |
+| rowSelection.type            |              | Number        | 只读   | 行选择的模式，由`rowSelection.multipleSelect`决定                                               |
+| rowSelection.multipleSelect  |              | Number        | 只写 | 是否多选，如果为`true`，则`rowSelection.type === 'checkbox'`，反之为`'radio'`                                                        |
+| selectedRows                 |              | Array<Object\> | 可读写 | 已选择数据，此数据无法做回显，可由上层组件赋值。             |
+
+
+## 使用方法
+
+使用简单的三步曲混入此分页器（**.vue**文件中混入）：
+
+```html
+<template>
+  <!-- 1. 在视图中直接引入`rowSelection`变量 -->
+  <a-table
+    :row-selection="rowSelection"
+  >
+    <!-- ... -->
+  </a-table>
+</template>
+<script>
+// 2. 引入混入器
+import tableRowSelectionMix from '@mix/table-row-selection.js';
+// ...
+export default {
+  // 3. 混入表格行选择器
+  mixins: [ tableRowSelectionMix({ rowKey = 'id', memory = true } = {}) ],
+  // ...
+  // 4. 设置已选择行
+  created () {
+    this.rowSelection.selectedRowKeys = ['1', '2'];
+  }
+}
+</script>
+```
+
+当选择项目发生变化的时候，自动触发`selectedRowKeys`的数据变化，同样的，`selectedRows`也会自动发生变化。
+
+## 配置参数
+
+行选择器的参数为对象，对象中包含如下参数键：
+
+rowKey - 行键，必须与上层组件定义一致，否则会导致业务错误，默认值为`'id'`，除了使用字符串，也可以是一个映射函数；
+memory - 是否记录全部数据，默认值为`true`，也可以根据自己需求选择`false`，当不记录全部数据时，翻页后，前面的数据丢失；

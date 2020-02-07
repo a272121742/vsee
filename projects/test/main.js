@@ -9,7 +9,6 @@ import 'ant-design-vue/dist/antd.less';
 import { router } from '@lib/auto-router.js';
 // 加载本地store
 // 加载本地化文件
-import i18n from '@lib/auto-i18n.js';
 import { debounce } from 'lodash';
 
 // 添加进度条
@@ -17,10 +16,10 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
 import AsyncComponent from '@comp/AsyncComponent';
+import i18n from '@i18n';
 import store from '@store';
 
 import SingleMessage from './home/view/SingleMessage.js';
-
 
 
 Vue.component('async-component', AsyncComponent);
@@ -57,11 +56,11 @@ new Vue({
   mounted () {
     // 消息全局配置
     this.$message.config({
-      top: '80px'
+      top: '80px',
     });
     window.addEventListener('scroll', debounce(() => {
-      document.querySelectorAll('input:focus').forEach(item => item.blur());
-      document.querySelectorAll('.ant-select-open').forEach(item => item.click());
+      document.querySelectorAll('input:focus').forEach((item) => item.blur());
+      document.querySelectorAll('.ant-select-open').forEach((item) => item.click());
     }, 400));
   },
   render () {
@@ -72,6 +71,5 @@ new Vue({
         </a-locale-provider>
       </div>
     );
-  }
+  },
 });
-

@@ -1,0 +1,73 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/表格分页器" />
+
+# 表格分页器
+
+该插混入器可以很方便的为`ant-design-vue`表格添加分页器，减少开发人员的配置。原版本为对象混入，现在更改为函数混入。
+
+公开对象及属性：
+
+| 对象/属性                   | 所属Vue类型  | 可读写性      | 说明   | 说明                                           |
+| --------------------------- | ------------ | ------------- | ------ | ---------------------------------------------- |
+| pagination                  | data（下同） | Object        | 可读写 | 分页器                                         |
+| pagination.current          |              | Number        | 可读写 | 当前页数                                       |
+| pagination.pageSize         |              | Number        | 可读写 | 每页显示总数                                   |
+| pagination.total            |              | Number        | 可读写 | 总量                                           |
+| pagination.pagezSizeOptions |              | Array<String\> | 可读写 | 每页可显示数，例如：['10', '20', '50']         |
+| pagination.showQuickJumper  |              | Boolean       | 可读写 | 是否显示快捷跳转功能                           |
+| pagination.showSizeChanger  |              | Boolean       | 可读写 | 是否可调配每页可显示数                         |
+| pagination.showTotal        |              | Function      | 可读写 | 总数渲染函数                                   |
+| pagination.reset            |              | Function      | 只读   | 重置分页器函数                                 |
+| serverPagination            | computed     | Object        | 只读   | 服务器分页数据，通过混入分页器前的配置计算得到（如何配置见后） |
+
+## 使用方法
+
+> *特别注明，分页器不再继续使用对象混入，而是使用函数混入*
+
+使用简单的四步曲混入此分页器（**.vue**文件中混入）：
+
+```html
+<template>
+  <!-- 1. 在视图中直接引入`pagination`变量 -->
+  <a-table
+    :pagination="pagination"
+  >
+    <!-- ... -->
+  </a-table>
+</template>
+<script>
+// 2. 引入混入器
+import paginationMix from '@mix/pagination.js';
+// ...
+export default {
+  // 3. 混入分页器，传入参数，参数见后面讲解
+  mixins: [ paginationMix({ current: 'page', pageSize: 'limit' }) ],
+  // ...
+  created () {
+    this.fetch().then(res => {
+      // ...
+      // 4. 网络获取数据时，将`total`值设置在`pagination`对象上即可
+      this.pagination.total = res.total;
+      // ...
+    });
+  },
+  methods: {
+    // 5. 重置分页器数据
+    reset () {
+      this.pagination.reset();
+    }
+  }
+  // ...
+}
+</script>
+```
+
+## 配置参数
+
+分页器的参数为对象，对象中包含如下参数键：
+
+current - 当前页对应服务端的名称，默认值`'page'`；
+pageSize - 分页数对应服务端的名称，默认值`'limit'`；
+
+配置这个参数有什么好处，这是专门为服务端转换分页数据用的，例如以上默认配置，传递给服务端时，将变为`page=1&limit=10`。当分页器数据变化时，`serverPagination`会自动按照这个映射表生成对应的对象，发送分页请求时不需要再做转换，直接从这里获取即可。

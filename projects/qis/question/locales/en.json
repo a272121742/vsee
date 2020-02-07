@@ -4,10 +4,12 @@
     "additionalInfo": "Additional Info",
     "calibrationVersion": "Calibration Version",
     "details": "Issue Details",
+    "subdetails": "Sub-issue Details",
     "workflow": "Issue Workflow",
+    "subworkflow": "Sub-issue Workflow",
     "creatorSelectorCheck": "Selector for proposer review",
     "code": "Issue Number",
-    "confirmationVersion": "Confirmation Version Nr.",
+    "confirmationVersion": "Confirmation Version",
     "contact": "Proposer Cellphone",
     "createDate": "Create Date",
     "assignerName": "Task Owner",
@@ -35,12 +37,12 @@
     "irtId": "Irt ID",
     "maintenanceStation": "Maintenance Station",
     "manufactureBase": "Plant",
-    "manufactureBaseId": "Plant",
+    "plantCode": "Plant",
     "masterIssueId": "Master Issue ID",
-    "milage": "Milage",
+    "milage": "Fault Milage",
     "optCounter": "Opt Counter",
     "partId": "Part Number",
-    "preliminaryInvestigation": "Preliminary Investigation",
+    "preliminaryInvestigation": "Preliminary Investigation Situation",
     "preliminaryInvestigation_colon": "Preliminary Investigation:",
     "productDate": "Production Date",
     "projectDate": "Issue Publish Date",
@@ -50,7 +52,7 @@
     "relevanceIssuesId": "Relevance Issues ID",
     "remark": "Remark",
     "remark_colon": "Remark:",
-    "responsibleDepartmentId": "Responsible Department ID",
+    "responsibleDepartmentId": "Responsible Department",
     "proposerDepartmentId": "Proposer Department",
     "proposer": "Proposer",
     "responsibleDepartmentName": "Resp. Department",
@@ -81,7 +83,9 @@
     "smt": "Smt",
     "responsibleUserId": "Step Monitor",
     "vin_lable": "",
-    "license_lable": ""
+    "license_lable": "",
+    "overDays": "Overdays",
+    "milageVer":"Please enter an integer"
   },
   "search": {
     "find_button": "Search",
@@ -90,7 +94,7 @@
     "export_button":"Export",
     "cancel_button": "Cancel",
     "title_search": "Title",
-    "advance_search": "Multiple",
+    "advance_search": "More",
     "please_input": "Please Input ",
     "please_select": "Please Select ",
     "expand_button": "Expand",
@@ -115,7 +119,7 @@
     "draft": "Draft",
     "done": "Done",
     "published": "Published",
-    "temporary":"Temporary matter" 
+    "temporary":"Issue Pending" 
   },
   "issue_action": {
     "create": "Create",
@@ -134,8 +138,33 @@
     "reassign": "Reassign",
     "reanalysis": "Reanalysis",
     "issue_report_download": "Download Report",
-    "temporary":"Temporary",
-    "restore":"Restore"
+    "temporary":"Issue staging",
+    "restore":"Problem recovery",
+    "rollback":"Problem rollback",
+    "specialShutdown":"Special shutdown",
+    "problemFission":"Issue fission apply",
+    "problemFissionCancel": "Issue fission cancel",
+    "temporarySuccess":"Issue staging success",
+    "restoreSuccess":"Successful problem recovery",
+    "questionOpr":"Problem Action",
+    "rollbackSuccess":"Problem rollback successful",
+    "specialClose":"Special shutdown",
+    "specialCloseSucess":"Special shutdown successful",
+    "closeReason":"Special reason for closure",
+    "closeTime":"Special closing time",
+    "closer":"Special closing person",
+    "duplicateAssociation":"Duplicate association",
+    "replaceSM":"Replace sm",
+    "SMSuccess":"Replace SM successfully",
+    "duplicateQuestion":"Duplicate question",
+    "selectAssociation":"Select related issues",
+    "dpAssReasons":"Duplicate association reasons",
+    "DAQuestionList":"Duplicate Association Question List",
+    "dupAssSucess":"Duplicate association succeeded",
+    "fissionCommitSuccess":"Issue fission apply commit cussess",
+    "fissionReview":"Problem fission application under review",
+    "fissionCheck":"Please tick the sub-questions that need to be rolled back",
+    "moduleSource":"Module source details"
   },
   "issue_workflow": {
     "submitSuccess":"Submit Success",
@@ -154,11 +183,22 @@
       "ICA": "ICA",
       "need": "Yes",
       "unneed": "No",
-      "publist_condition": "Publish Condition"
+      "publist_condition": "Publish Condition",
+      "selectRollback":"Please select a fallback status",
+      "fallbackReason":"Reason for problem rollback",
+      "fallbackTime":"Problem rollback time",
+      "fallbackPerson":"Problem fallback",
+      "fallBackDetail":"Issue rollback details",
+      "personDepartment":"Containment Solution Resp. Dept",
+      "person":"Containment Solution Resp. Person",
+      "fileIca":"Attachment",
+      "icaWriter":"Designated Containment Measures Filler",
+      "containmentMeasures":"Fill in containment measures"
     },
     "D1": {
       "processName": "Find Causer",
       "confirm": "Confirm Resposible Person",
+      "changeSM":"Change problem manager",
       "needAnalysis": "Need 7 diamonds analysis",
       "resposibleDepartment": "Resp. Department",
       "cochairDepartment": "coChair Department",
@@ -212,7 +252,10 @@
       "pilotVlidate": "Pilot production validation",
       "longSolutionImplementDate": "Pln. Date for long term solution Impl.",
       "longSolutionValidationDate": "PPln. Date for long term solution Vld.",
-      "closureDate": "Planned closure date"
+      "closureDate": "Planned closure date",
+      "shortTermVin":"Short-term measures breakpoint VIN",
+      "shortTermTime":"Short-term measures breakpoint time",
+      "marketMeasures":"Market vehicle handling measures"
     },
     "D4": {
       "processName": "Implementation",
@@ -241,7 +284,9 @@
       "ois": " OIS",
       "addUpdateFile": "Add update file",
       "leaderReview":"Adding leadership review results:",
-      "vinVer":"Please enter the correct vin"
+      "vinVer":"Please enter the correct vin",
+      "lessonsLearn":"Lessons learned",
+      "problemSpread":"relevant risk check for all products"
     },
     "D6": {
       "processName": "Issue Closure",
@@ -252,7 +297,8 @@
       "closeTime":"Closing Time",
       "plusReview":"Plus review",
       "reviewLeadership":"Review Leadership",
-      "reviewTime":"Review Time"
+      "reviewTime":"Review Time",
+      "closeReason":"Duplicate close reason"
     },
     "steps": {
       "D0": "D0-Issue Definiton",
@@ -287,10 +333,18 @@
     "publishing": "The issue is publishing",
     "defining": "The issue is defining",
     "analysising": "Root cause fill in",
+    "sub_analysising": "Sub-issue Root cause fill in",
+    "sub_analysised": "Sub-issue cause analysis has ended",
     "sovling": "Solution making",
+    "sub_sovling": "Sub-issue solution making",
+    "sub_sovled": "Sub-issue solution make has ended",
     "implementing": "Implementation fill in",
+    "sub_implementing": "Implementation of sub-issue measures",
+    "sub_implementend": "Sub-issue measures have been completed",
     "feedbacking": "Feedback fill in",
-    "closing": "The issue is closing"
+    "closing": "The issue is closing",
+    "wait_main_closing": "Waiting for main issue to close",
+    "closed_with_main_issue": "Sub-issue closed with main issue"
   },
   "colon": ":",
   "question_mark": "?",
@@ -311,6 +365,31 @@
     "creatorName": "Task Owner",
     "createDate": "Creator Date",
     "content": "Remark"
+  },
+  "duplicateTable":{
+    "correlationType":"Types",
+    "code":"Issue Number",
+    "title":"Issue Title",
+    "projectPhase":"Project Phase",
+    "status":"Status",
+    "assignerName":"Task Owner",
+    "responsibleDepartmentName":"Resp. Department",
+    "responsibleUserName":"Resp. person",
+    "statusCode":"Current step"
+  },
+  "fissionTable":{
+    "correlationType":"Types",
+    "code":"Subproblem",
+    "title":"Issue Title",
+    "projectPhase":"Project Phase",
+    "reasonStatus":"Fallback state",
+    "assignerName":"Task Owner",
+    "responsibleDepartmentName":"Resp. Department",
+    "responsibleUserName":"Resp. person",
+    "statusCode":"Current step",
+    "reasonRegression":"Reason for fallback",
+    "fissionBackTitle": "Problem fission",
+    "minStatus":"（The slowest resolution of the main problem to the child problem）"
   },
   "fileUpdateTable":{
     "fileName": "File Name",
@@ -351,5 +430,22 @@
     "batch_import": "Batch Import",
     "upload_file": "File Upload",
     "import_prompt": " (Not Import More Than 300 Rows)"
+  },
+  "fissionApplication":{
+    "proFissApplication":"Problem fission application",
+    "proFissApplicationLimit":"（ 2 ≤ Fission number ≤ 5 ）",
+    "fissionReasons":"Fission reasons",
+    "subquestion1":"Sub-question one",
+    "subquestion2":"Sub-question two",
+    "subquestion3":"Sub-question three",
+    "subquestion4":"Sub-question four",
+    "subquestion5":"Sub-question five",
+    "subquestion":["Sub-question one","Sub-question two","Sub-question three","Sub-question four","Sub-question five"],
+    "fissonDetailButton":"Problem fission information",
+    "fissionSuccess":"Problem fission success",
+    "fissEditSuccess":"Problem fission modified successfully",
+    "fissionTitle":"Fission problem",
+    "fissionInfo":"Problem fission information",
+    "selectCheck":"Please select the sub-question to be rolled back"
   } 
 }

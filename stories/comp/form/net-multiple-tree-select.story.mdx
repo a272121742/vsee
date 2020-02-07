@@ -1,0 +1,26 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import NetMultipleTreeSelect from '@comp/form/NetMultipleTreeSelect.vue';
+
+<Meta title="组件库|Form表单/NetMultipleTreeSelect网络下拉多选树（新）" />
+
+# 网络下拉多选树
+
+## 相关属性
+
+> 继承：Ant Design Vue [TreeSelect](https://www.antdv.com/components/tree-select-cn/)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： ['url', 'closeSearch', 'query', 'delay', 'cache', 'transform'] 见下方
+
+<Props of={ NetMultipleTreeSelect } />
+
+## 属性说明
+
+其他属性见`SingleNetSelect`
+
+1. transform： 转换函数，接口一个服务端查询到的数据（树格式），返回要设置到组件的值（也得是树格式）。
+
+使用方式同它的单选模式组件`NetSingleTreeSelect`。

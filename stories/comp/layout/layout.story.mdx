@@ -1,0 +1,31 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="组件库|Layout布局/Layout布局" />
+
+# Layout布局
+
+现在，各种页面的布局非常的多。为了方便开发者使用在信息化管理系统中，`vsee`框架中内置了一套通用的布局风格。
+
+## Portal风格
+
+<Preview withToolbar>
+<Story name="portal类型" height="360px">
+{{
+  template: `
+    <async-component path="/views/PortalLayout.vue"/>
+  `
+}}
+</Story>
+</Preview>
+
+## Mis风格
+
+<Preview withToolbar>
+<Story name="mis类型" height="360px">
+{{
+  template: `
+    <async-component path="/views/MisLayout.vue"/>
+  `
+}}
+</Story>
+</Preview>

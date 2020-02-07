@@ -1,7 +1,101 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/前端数据库" />
+<Meta title="框架|核心（Core）/前端数据库（cdb）" />
 
 # 前度数据库
 
-可以用于进行前端数据存储
+前端使用模拟数据之后，如果对数据要进行增删改的操作，使用原生的`JavaScript`操作比较繁琐。对于做过全栈开发的朋友来说，使用`NoSQL`操作是相当高兴的事情。因此，我们在框架中编写了一个很小的前端数据库操作库。所使用的引擎经过筛选，选择了`lokidb`，[相关的文档可以点击这里学习](https://github.com/techfort/LokiJS/wiki)。
+
+当然，为了今后能够使之更加强大，例如可以进行异步操作，以及可以持久化（连接`WebSQL`、`IndexedDB`、`LocalStorage`）到前端，以做离线应用等。我们也勘查了一些不错的前端数据：
+
+1. [rxdb](https://pubkey.github.io/rxdb/)
+2. [nedb](https://github.com/louischatriot/nedb)
+3. [minimongo](https://github.com/mWater/minimongo)
+4. [pouchdb](https://github.com/pouchdb/pouchdb)
+5. [lokidb](https://github.com/techfort/LokiJS/wiki)
+
+## 使用方法
+
+```javascript
+import cdb from '@lib/cdb.js';
+```
+
+## 方法
+
+### 链表
+
+```javascript
+/**
+ * 通过`link`方法链接数据表
+ * 1. 如果已经存在则返回该表，反之构建该表；
+ * 2. 第二个参数可以向表中写入初始值；
+ */
+const db = cdb.link('tableName', []);
+```
+
+`cdb`不再有其他方法了，可以通过返回的`db`对象进行`增删改查(CRUD)`操作。
+
+### 新增
+
+```javascript
+const datas = [{name: 'a'}, {name: 'b'}];
+/**
+ * 插入数据
+ * 1. 插入的数据可以是个单体数据
+ * 2. 插入的数据也可是是一个数据集合
+ * 3. 方法返回新增成功的数据，如果插入的是多个，则返回集合，否则返回单体
+ */
+const dbDatas = db.insert(datas);
+```
+
+### 删除
+
+```javascript
+/**
+ * 删除数据
+ * 1. 可以根据id进行删除
+ * 2. 也可以根据query进行删除，类似mongodb
+ * 3. 删除成功后返回已经删除的数据或者数据集合
+ */
+const dbDatas = db.remove(query);
+```
+
+### 修改
+
+```javascript
+/**
+ * 修改数据
+ * 1. id - 要修改数据的id，必须；
+ * 2. newData - 修改后的数据
+ * 3. replaced - 是否替换，默认值`false`
+ * 4. 修改成功后返回修改成功后的数据
+ */
+const dbData = db.update(id, newData, replaced);
+```
+
+`replaced`参数的作用是用来区分类似`put`和`patch`，默认是不进行替换操作，除非你知道这样做的后果。如果设置为`true`，那么数据库中的该文档对象，会替换成新值，这意味着没有传的键，都会被删除掉。
+
+### 查询
+
+我们可以根据id查询，或者根据`query`进行查询：
+
+```javascript
+/**
+ * 查询数据
+ * 根据数据的id进行查询
+ */
+const dbData = db.findById(id);
+
+/**
+ * 查询数据
+ * 根据数据查询条件进行查询，类似mongdb查询
+ */
+const dbDatas = db.find(query);
+```
+
+## 未来
+
+- [ ] 异步数据库
+- [ ] 持久化数据库
+- [ ] 完全的`mongodb`查询引擎
+

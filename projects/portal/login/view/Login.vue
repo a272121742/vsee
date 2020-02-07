@@ -12,17 +12,10 @@
             <div class="ant-drawer-body">
               <div>
                 <div class="logo">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    height="100%" 
-                    width="100%"
-                  >
-                    <image 
-                      xlink:href="/static/logo.svg" 
-                      height="100%" 
-                      width="100%" 
-                    />
-                  </svg>
+                  <v-icon
+                    class="logo"
+                    type="iconlogo"
+                  ></v-icon>
                 </div>
                 <div class="radio-group">
                   <language-radio class="language-radio"></language-radio>
@@ -57,8 +50,8 @@
 export default {
   components: {
     LanguageRadio: () => import('@comp/i18n/LanguageRadio'),
-    LoginForm: () => import('./Form.vue')
-  }
+    LoginForm: () => import('./Form.vue'),
+  },
 };
 </script>
 
@@ -73,7 +66,6 @@ export default {
     background-repeat:no-repeat;
     background-size: 100% 100%;
     -webkit-font-smoothing: antialiased;
-
     /deep/ .ant-drawer-content {
       background: rgba(255, 255, 255, 0.66);
       // min-height: 520px;
@@ -86,8 +78,6 @@ export default {
   /deep/ .ant-radio-button-wrapper-checked {
     box-shadow: -1px 0 0 0 #ccc;
   }
-  .ant-drawer .ant-drawer-content {
-  }
   .ant-drawer-content {
     border-radius: 8px;
   }
@@ -96,6 +86,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .title {
+    margin-top: 72px;
   }
   .logo {
       display: inline-block;
@@ -117,7 +110,7 @@ export default {
       }
   }
   .language-radio {
-      line-height: 1;
+      line-height: 2.5;
       display: inline;
       /deep/ .ant-radio-group{
         display: inline;
@@ -148,12 +141,16 @@ export default {
   }
 
   @media screen and(max-width: 1366px) {
+    .login_wrapper {
+      /deep/ .ant-drawer-body {
+          padding: 1.7% 1.7% 0px 1.7%;
+        }
+    }
     .ant-drawer-right .ant-drawer-content-wrapper {
-      padding-bottom:0px;
+      padding-bottom: 20px;
     }
     .title {
       margin-bottom: 4px;
-      margin-top: 72px;
       font-size: 32px;
     }
     .subtitle {
@@ -164,7 +161,6 @@ export default {
   @media screen and(min-width: 1536px) {
     .title {
       margin-bottom: 4px;
-      margin-top: 72px;
       font-size: 32px;
     }
     .subtitle {
@@ -193,7 +189,7 @@ export default {
     }
     .title {
       margin-bottom: 4px;
-      margin-top: 72px;
+      margin-top: 115.2px;
       font-size: 32px;
     }
     .subtitle {
@@ -202,7 +198,7 @@ export default {
     }
     .login-form {
       height:430px;
-      margin: auto 72px;
+      // margin: auto 72px;
       /deep/ .ant-input {
         height: 56px;
       }
@@ -215,7 +211,6 @@ export default {
       overflow: hidden;
       /deep/ div {
         padding-left: 130px;
-        
       }
     }
   }

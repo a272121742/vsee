@@ -1,6 +1,101 @@
 <template>
   <div id="components-form-demo-advanced-search">
-    <div style="z-index:5001;">
+    <div style="z-index:6001;">
+      <!-- 问题回退 -->
+      <a-modal
+        :title="$t('issue_action.rollbackTitle')"
+        :visible="visibleRollback"
+        :mask-closable="false"
+        style="top:200px;!important"
+        width="600px"
+        @ok="AnalysisOk"
+        @cancel="AnalysisCancel"
+      >
+        <a-form
+          :form="AnalysisForm"
+        >
+          <!-- 请选择回退状态 -->
+          <a-row>
+            <v-input
+              v-decorator="[
+                'id',
+              ]"
+              :placeholder="$t('search.please_input')"
+              allow-clear
+              style="width:272px;height:32px;"
+            />
+            <net-select
+              v-decorator="[
+                'champion',
+                {rules:[{required:true, message:$t('search.please_select') }]}
+              ]"
+              :placeholder="$t('search.please_select')"
+              :disabled="!redistributionForm.owerDeptLv1"
+              url="/masterdata/v1/workflowgroupmember"
+              :query="{workflowGroupNameCode: redistributionForm.owerDeptLv1}"
+              :cache="false"
+              :transform="userOption"
+              :allow-clear="true"
+              style="width:272px;height:32px;"
+              show-search
+              delay
+              @change="(value) => worlkChampionOrProposer(value, 'champion')"
+            >
+            </net-select>
+          </a-row>
+          <a-row>
+            <a-col :span="22">
+              <!-- 实际情况 -->
+              <a-form-item
+                :label="$t('issue_workflow.D1.actual')"
+                self-update
+              >
+                <v-textarea
+                  v-decorator="[
+                    'actualSituation',
+                    {rules: [{ required: true, message: $t('search.please_input')}]}
+                  ]"
+                  :placeholder="$t('search.please_input')"
+                  style="width:340px;"
+                  :limit="1000"
+                  allow-clear
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row>
+            <a-col :span="22">
+              <!-- 附件 -->
+              <a-form-item>
+                <!-- 七钻分析 -->
+                <template #label>
+                  {{ $t('issue_workflow.attachment') }}
+                </template>
+                <a-upload
+                  :headers="headers"
+                  :multiple="true"
+                  :file-list="recordAnalysis.file"
+                  :before-upload="beforeUpload"
+                  :remove="file => removeFile(dataFile)(file)"
+                  :action="getUploadUrl('/issue/v1/file/upload?recType=10021005')"
+                  name="file"
+                  @preview="download"
+                  @change="info => changeFileList(dataFile, recordAnalysis.file)(info)"
+                >
+                  <a-button icon="upload">
+                    <!-- 「上传文件」文本 -->
+                    {{ $t('issue_action.upload') }}
+                  </a-button>
+                  <span class="form-item-label-desc">
+                    {{ $t('issue_workflow.attachment_limit') }}
+                  </span>
+                </a-upload>
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
+      </a-modal>
+      <!-- 再分配 -->
       <a-modal
         slot="title"
         :visible="visibleRes"
@@ -84,7 +179,7 @@
         </a-form>
       </a-modal>
     </div>
-    <div style="z-index:5001;">
+    <div style="z-index:6001;">
       <a-modal
         slot="title"
         :visible="visibleReject"
@@ -138,7 +233,7 @@
       >
         <a-row v-show="false">
           <a-col :span="22">
-            <a-form-item 
+            <a-form-item
               :label="`id`"
               self-update
             >
@@ -157,7 +252,7 @@
         <a-row>
           <a-col :span="22">
             <!-- 标准要求 -->
-            <a-form-item 
+            <a-form-item
               :label="$t('issue_workflow.D1.standard')"
               self-update
             >
@@ -177,7 +272,7 @@
         <a-row>
           <a-col :span="22">
             <!-- 实际情况 -->
-            <a-form-item 
+            <a-form-item
               :label="$t('issue_workflow.D1.actual')"
               self-update
             >
@@ -197,7 +292,7 @@
         <a-row>
           <a-col :span="22">
             <!-- 结论 -->
-            <a-form-item 
+            <a-form-item
               :label="$t('issue_workflow.D1.conclusion')"
               self-update
             >
@@ -361,6 +456,7 @@
       :title="fileModalTitle"
       :visible="visibleUpdate"
       :mask-closable="false"
+      :z-index="6001"
       style="top:200px!important;"
       class="fileModal"
       width="600px"
@@ -432,7 +528,7 @@
           <a-row v-if="updateContentFlag">
             <a-col :span="22">
               <!-- 更新内容 -->
-              <a-form-item 
+              <a-form-item
                 :label="$t('issue_workflow.D5.updateContent')"
                 self-update
               >
@@ -487,14 +583,14 @@
         style="margin-bottom:-10px;"
       >
         <a-form
-          :form="updateData"
+          :form="updateDataForm"
           class="ant-advanced-search-form"
         >
           <a-row v-show="false">
             <a-col :span="20">
               <a-form-item :label="`id`">
-                <p v-if="updateData.id">
-                  {{ updateData.id }}
+                <p v-if="updateDataForm.id">
+                  {{ updateDataForm.id }}
                 </p>
               </a-form-item>
             </a-col>
@@ -504,7 +600,7 @@
             <a-col :span="20">
               <!-- 文件名称 -->
               <a-form-item :label="$t('issue_workflow.D5.fileName')">
-                <p>{{ updateData.fileName }}</p>
+                <p>{{ updateDataForm.fileName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
@@ -515,7 +611,7 @@
                 :label="$t('issue_workflow.D5.updated')"
                 style="margin-top:0px;margin-bottom:0;"
               >
-                <p>{{ updateData.isUpdaeName }}</p>
+                <p>{{ updateDataForm.isUpdaeName }}</p>
               </a-form-item>
             </a-col>
           </a-row>
@@ -523,7 +619,7 @@
             <a-col :span="20">
               <!-- 更新内容 -->
               <a-form-item :label="$t('issue_workflow.D5.updateContent')">
-                <p>{{ updateData.updateContent }}</p>
+                <p>{{ updateDataForm.updateContent }}</p>
               </a-form-item>
             </a-col>
           </a-row>
@@ -544,10 +640,13 @@
                   >
                     <div class="ant-upload-list-item-info">
                       <span>
-                        <a-icon type="paper-clip" />
+                        <a-icon
+                          type="paper-clip"
+                          style="top: 3px; left: 0;"
+                        />
                         <span
                           :title="file.originalFilename"
-                          style="height: 28px;"
+                          style="height: 28px;margin-left:12px;"
                           class="ant-upload-list-item-name"
                         >
                           <a
@@ -585,7 +684,6 @@
       <div class="top-buttons">
         <div class="backButton">
           <a-button
-            v-if="pagePermission.button_back_3"
             slot="tabBarExtraContent"
             class="backBtn"
             @click="goBack"
@@ -616,7 +714,7 @@
             {{ $t('issue_action.reanalysis') }}
           </a-button>
           <a-button
-            v-if="pagePermission.button_submit_3"
+            v-if="pagePermission.button_submit_3&&isStagedFlag!=='1'"
             ref="commitButton"
             :loading="submitLoading"
             bind="both"
@@ -630,7 +728,7 @@
           <a-modal
             :visible="visibleSubmit"
             :title="$t('confirm.title')"
-            :z-index="5001"
+            :z-index="6001"
             style="top:200px!important;"
             @ok="submitOk"
             @cancel="submitCancel"
@@ -638,7 +736,7 @@
             <p>{{ $t('confirm.content') }}</p>
           </a-modal>
           <prevent-button
-            v-if="pagePermission.button_commit_3"
+            v-if="pagePermission.button_commit_3&&isStagedFlag!=='1'"
             ref="saveButton"
             bind="both"
             style="marginLeft: 8px"
@@ -648,25 +746,72 @@
             <!-- 保存 -->
             {{ $t('issue_action.save') }}
           </prevent-button>
+          <!-- 问题暂存 -->
+          <!-- <a-dropdown-button
+            v-if="pagePermission.button_staged_3&&isStagedFlag!=='1'"
+            style="marginLeft: 8px"
+            @click="temporary('1')"
+          >
+            {{ $t('issue_action.temporary') }}
+            <a-menu slot="overlay">
+              <a-menu-item
+                key="1"
+                @click="rollback()"
+              >
+                {{ $t('issue_action.rollback') }}
+              </a-menu-item>
+              <a-menu-item key="2">
+                {{ $t('issue_action.specialShutdown') }}
+              </a-menu-item>
+              <a-menu-item key="3">
+                {{ $t('issue_action.problemFission') }}
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown-button>
+          -->
+          <!-- 恢复 -->
+          <!-- <a-dropdown-button
+            v-if="pagePermission.button_resume_3&&isStagedFlag!=='0'"
+            style="marginLeft: 8px"
+            @click="temporary('0')"
+          >
+            {{ $t('issue_action.restore') }}
+            <a-menu slot="overlay">
+              <a-menu-item
+                key="1"
+                @click="rollback()"
+              >
+                {{ $t('issue_action.rollback') }}
+              </a-menu-item>
+              <a-menu-item key="2">
+                {{ $t('issue_action.specialShutdown') }}
+              </a-menu-item>
+              <a-menu-item key="3">
+                {{ $t('issue_action.problemFission') }}
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown-button> -->
           <!-- 暂存 -->
           <prevent-button
-            v-if="pagePermission.button_staged_3"
+            v-if="pagePermission.button_staged_3&&isStagedFlag!=='1'"
             ref="saveButton"
             bind="both"
             style="marginLeft: 8px"
             class="saveBtn"
+            @click="temporary('1')"
           >
             <!-- 暂存 -->
             {{ $t('issue_action.temporary') }}
           </prevent-button>
           <!-- 恢复 -->
           <prevent-button
-            v-if="pagePermission.button_resume_3"
+            v-if="pagePermission.button_resume_3&&isStagedFlag==='1'"
             ref="saveButton"
             bind="both"
             style="marginLeft: 8px"
             type="primary"
             class="submitBtn"
+            @click="temporary('0')"
           >
             <!-- 恢复 -->
             {{ $t('issue_action.restore') }}
@@ -674,7 +819,7 @@
           <!-- 删除按钮 -->
           <a-button
             v-if="delBtn"
-            :z-index="5001"
+            :z-index="6001"
             style="marginLeft: 8px"
             class="cancelBtn"
             @click="handleDelete"
@@ -686,7 +831,7 @@
           <a-modal
             :visible="visibleDelete"
             :title="$t('delete.title')"
-            :z-index="5001"
+            :z-index="6001"
             style="top:200px!important;"
             @ok="deleteOk"
             @cancel="deleteCancel"
@@ -736,23 +881,28 @@
                   <!-- 基本信息 -->
                   {{ $t('issue.basicInfo') }}
                 </div>
-                <div class="pageTitle clearfix">
+                <!-- 问题标题 -->
+                <div
+                  class="pageTitle clearfix"
+                  style="margin-left: -32px; width: calc(100% + 64px);"
+                >
                   <!-- 标准要求 -->
-                  <span style="float:left;margin-left:16px;">{{ $t('issue.title') + $t('colon') }}</span>
-                  <span 
-                    class="carTitle" 
+                  <span style="float: left; margin-left: 32px;">{{ $t('issue.title') + $t('colon') }}</span>
+                  <span
+                    class="carTitle"
+                    style="width: unset;"
                     :title="detailList.title"
                   >
                     {{ detailList.title }}
                   </span>
-                  <span style="float:right;margin-right:50px;">{{ $t('issue.code') + $t('colon') }} {{ detailList.code }}</span>
+                  <span style="float:right;margin-right:126px;">{{ $t('issue.code') + $t('colon') }} {{ detailList.code }}</span>
                 </div>
 
                 <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「车型名称」 -->
                     <a-form-item :label="$t('issue.vehicleModelName')">
-                      <p 
+                      <p
                         v-if="detailList.vehicleModelName"
                         :title="detailList.vehicleModelName"
                       >
@@ -763,7 +913,7 @@
                   <a-col :span="6">
                     <!-- 「所属系统」 -->
                     <a-form-item :label="$t('issue.faultTreeIds1')">
-                      <p 
+                      <p
                         v-if="detailList.faultTreeIds1Name"
                         :title="detailList.vehicleModelName"
                       >
@@ -774,7 +924,7 @@
                   <a-col :span="6">
                     <!-- 「所属功能」 -->
                     <a-form-item :label="$t('issue.faultTreeIds2')">
-                      <p 
+                      <p
                         v-if="detailList.faultTreeIds2Name"
                         :title="detailList.faultTreeIds2Name"
                       >
@@ -1067,7 +1217,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row 
+                <a-row
                   :gutter="24"
                   style="margin-right:272px; "
                 >
@@ -1124,13 +1274,13 @@
                         v-if="detailList.firstCausePartName"
                         :title="detailList.firstCausePartName"
                       >
-                        {{ detailList.firstCausePartName }}
+                        {{ detailList.partName }}  {{ detailList.firstCausePartName }}
                       </p>
                     </a-form-item>
                   </a-col>
-                  <a-col :span="6">
-                    <!-- 「零件号」 -->
-                    <a-form-item :label="$t('issue.partId')">
+                  <!-- <a-col :span="6"> -->
+                  <!-- 「零件号」 -->
+                  <!-- <a-form-item :label="$t('issue.partId')">
                       <p
                         v-if="detailList.partName"
                         :title="detailList.partName"
@@ -1138,7 +1288,7 @@
                         {{ detailList.partName }}
                       </p>
                     </a-form-item>
-                  </a-col>
+                  </a-col> -->
 
                   <a-col :span="6">
                     <!-- 「供应商名称」 -->
@@ -1151,8 +1301,6 @@
                       </p>
                     </a-form-item>
                   </a-col>
-                </a-row>
-                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「软件版本号」 -->
                     <a-form-item :label="$t('issue.softwareVersion')">
@@ -1164,6 +1312,8 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                </a-row>
+                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「标定版本号」 -->
                     <a-form-item :label="$t('issue.calibrationVersion')">
@@ -1197,8 +1347,6 @@
                       </p>
                     </a-form-item>
                   </a-col>
-                </a-row>
-                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「维修网点」 -->
                     <a-form-item :label="$t('issue.maintenanceStation')">
@@ -1210,6 +1358,8 @@
                       </p>
                     </a-form-item>
                   </a-col>
+                </a-row>
+                <a-row :gutter="24">
                   <a-col :span="6">
                     <!-- 「故障里程」 -->
                     <a-form-item :label="$t('issue.milage')">
@@ -1221,8 +1371,6 @@
                       </p>
                     </a-form-item>
                   </a-col>
-                </a-row>
-                <a-row>
                   <a-col :span="6">
                     <!-- 「生产时间」 -->
                     <a-form-item :label="$t('issue.productDate')">
@@ -1235,7 +1383,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row 
+                <a-row
                   :gutter="24"
                 >
                   <a-col :span="24">
@@ -1253,7 +1401,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row 
+                <a-row
                   :gutter="24"
                 >
                   <a-col :span="24">
@@ -1271,7 +1419,7 @@
                     </a-form-item>
                   </a-col>
                 </a-row>
-                <a-row 
+                <a-row
                   :gutter="24"
                 >
                   <a-col :span="24">
@@ -1318,7 +1466,7 @@
           </template>
           <div class="ant-advanced-search-form">
             <div class="Dcontent1 D1back">
-              <div v-if="pagePermission.A_0_0_2_3"> 
+              <div v-if="pagePermission.A_0_0_2_3">
                 <div class="examine">
                   <div class="Dtitle examineTitle">
                     <!-- 审核 -->
@@ -1353,7 +1501,7 @@
                   </a-row>
                   <a-row v-if="record.isPass==='1'">
                     <a-col :span="21">
-                      <a-form-item 
+                      <a-form-item
                         :label="$t('issue.remark')"
                         self-update
                       >
@@ -1389,7 +1537,7 @@
                   </a-form-item>
                 </div>
               </div>
-              <div 
+              <div
                 v-if="pagePermission.A_0_0_1_2&&(!pagePermission.A_0_0_2_3)"
                 class="examineResult"
               >
@@ -1403,11 +1551,9 @@
                   </a-col>
                 </a-row>
               </div>
-            </div> 
+            </div>
           </div>
         </a-card>
-
-
 
 
         <!--问题管理工作流-->
@@ -1419,7 +1565,7 @@
           <template #title>
             {{ $t('issue.workflow') }}
           </template>
-          <template 
+          <template
             v-if="statusCode.statusNewCode>100300"
             #extra
           >
@@ -1564,7 +1710,7 @@
                   <a-row>
                     <a-col :span="21">
                       <!-- 理由 -->
-                      <a-form-item 
+                      <a-form-item
                         :label="$t('issue_workflow.D0.reason')"
                         self-update
                       >
@@ -1600,7 +1746,7 @@
                   <a-row v-if="conActionFlag">
                     <a-col :span="21">
                       <!-- 围堵措施 -->
-                      <a-form-item 
+                      <a-form-item
                         :label="$t('issue_workflow.D0.ICA')"
                         self-update
                       >
@@ -1693,7 +1839,7 @@
                       </a-form-item>
                     </a-col>
                   </a-row>
-                </div> 
+                </div>
                 <a-row v-if="problemDefinitionData.isProject==='1'">
                   <a-col :span="21">
                     <!-- 附件  -->
@@ -1845,7 +1991,7 @@
                             :transform="userOption"
                             allow-clear
                             style="width:272px;height:32px;"
-                            @change="(value) => worlkChampionOrProposer(value, 'champion')" 
+                            @change="(value) => worlkChampionOrProposer(value, 'champion')"
                           >
                           </net-select>
                         </a-form-item>
@@ -1887,7 +2033,7 @@
                             :transform="userCochairOption"
                             allow-clear
                             style="width:272px;height:32px;"
-                            @change="(value) => workflowRoleChange(value, 'coChair')" 
+                            @change="(value) => workflowRoleChange(value, 'coChair')"
                           >
                           </net-select>
                         </a-form-item>
@@ -1954,7 +2100,7 @@
                                 :transform="userOption"
                                 allow-clear
                                 style="width:272px;height:32px;"
-                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')"
                               >
                               </net-select>
                             </a-form-item>
@@ -1976,7 +2122,7 @@
                                 :transform="userOption"
                                 allow-clear
                                 style="width:272px;height:32px;"
-                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')"
                               >
                               </net-select>
                             </a-form-item>
@@ -1998,7 +2144,7 @@
                                 :transform="userOption"
                                 allow-clear
                                 style="width:272px;height:32px;"
-                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')" 
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner1')"
                               >
                               </net-select>
                             </a-form-item>
@@ -2020,7 +2166,7 @@
                                 :transform="userOption"
                                 allow-clear
                                 style="width:272px;height:32px;"
-                                @change="(value) => workflowRoleChange(value, 'diamondOwner4')" 
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner4')"
                               >
                               </net-select>
                             </a-form-item>
@@ -2042,7 +2188,7 @@
                                 :transform="userOption"
                                 allow-clear
                                 style="width:272px;height:32px;"
-                                @change="(value) => workflowRoleChange(value, 'diamondOwner5')" 
+                                @change="(value) => workflowRoleChange(value, 'diamondOwner5')"
                               >
                               </net-select>
                             </a-form-item>
@@ -2144,11 +2290,11 @@
 
                   <div class="analysisTitle">
                     <!-- 7钻分析 -->
-                    <span v-if="statusCode.maxDiamonds==3">{{ $t('issue_workflow.D1.1-3stDiamond') + $t('analysis') }}</span>
-                    <span v-if="statusCode.maxDiamonds==4">{{ $t('issue_workflow.D1.4thDiamond') + $t('analysis') }}</span>
-                    <span v-if="statusCode.maxDiamonds==5">{{ $t('issue_workflow.D1.5thDiamond') + $t('analysis') }}</span>
-                    <span v-if="statusCode.maxDiamonds==6">{{ $t('issue_workflow.D1.6thDiamond') + $t('analysis') }}</span>
-                    <span v-if="statusCode.maxDiamonds==7">{{ $t('issue_workflow.D1.7thDiamond') + $t('analysis') }}</span>
+                    <span v-if="statusCode.maxDiamonds==2">{{ $t('issue_workflow.D1.1-3stDiamond') + $t('analysis') }}</span>
+                    <span v-if="statusCode.maxDiamonds==3">{{ $t('issue_workflow.D1.4thDiamond') + $t('analysis') }}</span>
+                    <span v-if="statusCode.maxDiamonds==4">{{ $t('issue_workflow.D1.5thDiamond') + $t('analysis') }}</span>
+                    <span v-if="statusCode.maxDiamonds==5">{{ $t('issue_workflow.D1.6thDiamond') + $t('analysis') }}</span>
+                    <span v-if="statusCode.maxDiamonds==6">{{ $t('issue_workflow.D1.7thDiamond') + $t('analysis') }}</span>
                   </div>
                   <div class="analysisStep">
                     <ul>
@@ -2206,7 +2352,7 @@
                     <div
                       v-if="pagePermission.A1_5_2||pagePermission.A1_8_2||pagePermission.A1_11_2||pagePermission.A1_14_2||pagePermission.A1_17_2||pagePermission.A2_3_2"
                     >
-                      <a-row>
+                      <a-row class="item-title">
                         <!-- 审核结果： -->
                         <span>{{ $t('issue_workflow.approval_result') + $t('colon') }}</span>
                       </a-row>
@@ -2229,7 +2375,7 @@
                     >
                       <!-- 6钻分析 -->
                       <a-row>
-                        <a-form-item>
+                        <a-form-item class="item-title">
                           <span v-if="statusCode.maxDiamonds==2">{{ $t('issue_workflow.D1.1-3stDiamond') + $t('analysising') }}</span>
                           <span v-if="statusCode.maxDiamonds==3">{{ $t('issue_workflow.D1.4thDiamond') + $t('analysising') }}</span>
                           <span v-if="statusCode.maxDiamonds==4">{{ $t('issue_workflow.D1.5thDiamond') + $t('analysising') }}</span>
@@ -2362,7 +2508,7 @@
                                   :transform="userOption"
                                   allow-clear
                                   style="width:272px;height:32px;"
-                                  @change="(value) => worlkChampionOrProposer(value, 'champion')" 
+                                  @change="(value) => worlkChampionOrProposer(value, 'champion')"
                                 >
                                 </net-select>
                               </a-form-item>
@@ -2400,7 +2546,7 @@
                       <a-row v-if="record.verifySeven==='0'">
                         <a-col :span="21">
                           <!-- 不通过原因 -->
-                          <a-form-item 
+                          <a-form-item
                             :label="$t('issue_workflow.rejectReason2') + $t('colon')"
                             self-update
                           >
@@ -2417,7 +2563,7 @@
                       <a-row v-if="record.verifySeven==='1'">
                         <a-col :span="21">
                           <!-- 备注 -->
-                          <a-form-item 
+                          <a-form-item
                             :label="$t('issue_workflow.remark')"
                             self-update
                           >
@@ -2447,7 +2593,7 @@
               >
                 <span></span>
               </div>
-              <div 
+              <div
                 class="Dtitle"
               >
                 <!-- 提出人验证 -->
@@ -2539,7 +2685,7 @@
                 </a-row>
               </div>
               <div v-if="!NeedFlage">
-                <div 
+                <div
                   class="Dtitle examineTitle"
                 >
                   <!-- 提出人验证 -->
@@ -2623,7 +2769,7 @@
                   <span></span>
                 </div>
                 <div
-                  v-if="pagePermission.A2_3_2"
+                  v-if="pagePermission.A2_3_2 && statusCode.statusNewCode>=300300"
                   class="examineResult"
                 >
                   <!-- 审核结果 -->
@@ -2639,7 +2785,7 @@
                 </div>
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D2.cause')"
                       self-update
                     >
@@ -2778,7 +2924,7 @@
                     <a-row v-if="record.isPass==='0'">
                       <a-col :span="21">
                         <!-- 不通过原因 -->
-                        <a-form-item 
+                        <a-form-item
                           :label="$t('issue_workflow.rejectReason2')"
                           self-update
                         >
@@ -2795,7 +2941,7 @@
                     <a-row v-if="record.isPass==='1'">
                       <a-col :span="21">
                         <!-- 备注 -->
-                        <a-form-item 
+                        <a-form-item
                           :label="$t('issue.remark')"
                           self-update
                         >
@@ -2818,7 +2964,7 @@
               class="Dcontent D3content"
             >
               <div
-                v-if="pagePermission.A3_3_2"
+                v-if="pagePermission.A3_3_2 && statusCode.statusNewCode>=400300"
                 class="examineResult"
                 style="left:530px;"
               >
@@ -2845,7 +2991,7 @@
                 <!-- 短期措施 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D3.shortSolution')"
                       self-update
                     >
@@ -2864,7 +3010,7 @@
                 <!-- 长期措施 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D3.longSolution')"
                       self-update
                     >
@@ -3160,7 +3306,7 @@
               class="Dcontent D4content"
             >
               <div
-                v-if="pagePermission.A4_3_2"
+                v-if="pagePermission.A4_3_2 && statusCode.statusNewCode>=500300"
                 class="examineResult"
               >
                 <div
@@ -3187,7 +3333,7 @@
                 <!-- 短期效果 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D4.shortEffect')"
                       self-update
                     >
@@ -3222,7 +3368,7 @@
                 <!-- 长期措施实施描述 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D4.longTermEffect')"
                       self-update
                     >
@@ -3468,7 +3614,7 @@
                 <!-- 效果验证 -->
                 <a-row>
                   <a-col :span="21">
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.D5.effectValidation')"
                       self-update
                     >
@@ -3790,11 +3936,11 @@
                     </div>
                   </a-form-item>
                 </a-row>
-                
+
                 <div
                   v-if="parseInt(statusCode.statusNewCode, 10) >600600||stepCurrent<5"
                 >
-                  <div 
+                  <div
                     class="Dtitle examineTitle"
                     style="padding-bottom:24px;"
                   >
@@ -4107,7 +4253,7 @@
                 <a-row v-if="record.isPass==='1'">
                   <a-col :span="21">
                     <!-- 备注 -->
-                    <a-form-item 
+                    <a-form-item
                       :label="$t('issue_workflow.remark')"
                       self-update
                     >
@@ -4209,7 +4355,7 @@
                   </a-tooltip>
                 </template>
               </a-table-column>
-            </template> 
+            </template>
           </a-table>
         </div>
         <!-- </a-collapse-panel>
@@ -4218,237 +4364,238 @@
     </div>
   </div>
 </template>
+
 <script>
 import {
   autoUpdateFileds,
-  createFormFields
+  createFormFields,
 } from '@util/formhelper.js';
 import {
-  createNamespacedHelpers
+  createNamespacedHelpers,
 } from 'vuex';
 import moment from 'moment';
-import { clearObserver , transform, treeTransform } from '@util/datahelper.js';
+import { clearObserver, transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
 import { disableScroll, enableScroll } from '~~/scroll.js';
 
 const {
-  mapActions
+  mapActions,
 } = createNamespacedHelpers('question');
 const columns = [{
   title: '序号',
   dataIndex: 'no',
   scopedSlots: {
-    customRender: 'no'
-  }
+    customRender: 'no',
+  },
 }, {
   title: '附件名称',
   dataIndex: 'name',
   scopedSlots: {
-    customRender: 'name'
-  }
+    customRender: 'name',
+  },
 }, {
   title: '上传时间',
   dataIndex: 'uploadTime',
   scopedSlots: {
-    customRender: 'uploadTime'
-  }
+    customRender: 'uploadTime',
+  },
 }, {
   title: '上传人',
   dataIndex: 'uploadUser',
   scopedSlots: {
-    customRender: 'uploadUser'
-  }
+    customRender: 'uploadUser',
+  },
 }, {
   title: '操作',
   dataIndex: 'operation',
   scopedSlots: {
-    customRender: 'operation'
+    customRender: 'operation',
   },
-  width: 80
+  width: 80,
 }];
 const columnsRecord = [{
   dataIndex: 'operation',
   scopedSlots: {
-    customRender: 'operation'
+    customRender: 'operation',
   },
-  width: 250
+  width: 250,
 }, {
   dataIndex: 'node',
   scopedSlots: {
-    customRender: 'node'
+    customRender: 'node',
   },
-  width: 150
+  width: 150,
 },
 {
   dataIndex: 'creatorName',
   scopedSlots: {
-    customRender: 'creatorName'
+    customRender: 'creatorName',
   },
-  width: 250
+  width: 250,
 },
 {
   dataIndex: 'createDate',
   scopedSlots: {
-    customRender: 'createDate'
+    customRender: 'createDate',
   },
-  width: 250
+  width: 250,
 },
 {
   dataIndex: 'content',
   scopedSlots: {
-    customRender: 'content'
+    customRender: 'content',
   },
-  width: 250
-}
+  width: 250,
+},
 ];
 const columnsAnalysis = [{
   title: '责任人',
   dataIndex: 'championName',
   align: 'center',
   scopedSlots: {
-    customRender: 'championName'
-  }
+    customRender: 'championName',
+  },
 }, {
   title: '标准要求',
   dataIndex: 'standard',
   align: 'center',
   scopedSlots: {
-    customRender: 'standard'
-  }
+    customRender: 'standard',
+  },
 }, {
   title: '实际情况',
   dataIndex: 'actualSituation',
   align: 'center',
   scopedSlots: {
-    customRender: 'actualSituation'
-  }
+    customRender: 'actualSituation',
+  },
 },
 {
   title: '结论',
   dataIndex: 'conclusion',
   align: 'center',
   scopedSlots: {
-    customRender: 'conclusion'
-  }
+    customRender: 'conclusion',
+  },
 },
 {
   title: '附件',
   dataIndex: 'files',
   align: 'center',
   scopedSlots: {
-    customRender: 'files'
-  }
+    customRender: 'files',
+  },
 },
 {
   title: '操作',
   dataIndex: 'operation',
   scopedSlots: {
-    customRender: 'operation'
+    customRender: 'operation',
   },
-  width: 80
-}
+  width: 80,
+},
 ];
 
 const analysisHistory = [{
-  title:'七钻分析',
+  title: '七钻分析',
   dataIndex: 'sevenmonds',
-  align:'left',
+  align: 'left',
   scopedSlots: {
-    customRender: 'sevenmonds'
+    customRender: 'sevenmonds',
   },
-  width: 160
-},{
-  
+  width: 160,
+}, {
+
   title: '责任人',
   dataIndex: 'championName',
   align: 'left',
   scopedSlots: {
-    customRender: 'championName'
-  }
+    customRender: 'championName',
+  },
 }, {
   title: '标准要求',
   dataIndex: 'standard',
   align: 'left',
   scopedSlots: {
-    customRender: 'standard'
-  }
+    customRender: 'standard',
+  },
 }, {
   title: '实际情况',
   dataIndex: 'actualSituation',
   align: 'left',
   scopedSlots: {
-    customRender: 'actualSituation'
-  }
+    customRender: 'actualSituation',
+  },
 },
 {
   title: '结论',
   dataIndex: 'conclusion',
   align: 'left',
   scopedSlots: {
-    customRender: 'conclusion'
-  }
+    customRender: 'conclusion',
+  },
 },
 {
   title: '附件',
   dataIndex: 'files',
   align: 'left',
   scopedSlots: {
-    customRender: 'files'
+    customRender: 'files',
   },
-  width: 80
+  width: 80,
 },
 {
   title: '操作',
   dataIndex: 'operation',
   scopedSlots: {
-    customRender: 'operation'
+    customRender: 'operation',
   },
-  width: 80
-}
+  width: 80,
+},
 ];
 
 const columnsUpdate = [{
-  title:'文件名称',
+  title: '文件名称',
   dataIndex: 'fileName',
   align: 'left',
   scopedSlots: {
-    customRender: 'fileName'
-  }
+    customRender: 'fileName',
+  },
 }, {
   title: '是否更新',
   dataIndex: 'isUpdaeName',
   align: 'center',
   scopedSlots: {
-    customRender: 'isUpdaeName'
-  }
+    customRender: 'isUpdaeName',
+  },
 },
 {
-  title:'更新内容',
+  title: '更新内容',
   dataIndex: 'updateContent',
   align: 'center',
   scopedSlots: {
-    customRender: 'updateContent'
-  }
+    customRender: 'updateContent',
+  },
 },
 {
-  title:'附件',
+  title: '附件',
   dataIndex: 'files',
   align: 'center',
   width: 100,
   scopedSlots: {
-    customRender: 'files'
-  }
+    customRender: 'files',
+  },
 },
 {
-  title:'操作',
+  title: '操作',
   dataIndex: 'operation',
   align: 'left',
   scopedSlots: {
-    customRender: 'operation'
+    customRender: 'operation',
   },
-  width: 170
-}
+  width: 170,
+},
 ];
 export default {
   name: 'QuestionDetail',
@@ -4458,14 +4605,14 @@ export default {
     NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
-    PreventButton: () => import('@comp/button/PreventButton.vue')
+    PreventButton: () => import('@comp/button/PreventButton.vue'),
   },
   mixins: [attachmentMix, timeFormatMix],
   props: {
     id: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     const vm = this;
@@ -4483,12 +4630,15 @@ export default {
         button_submit_1: false,
         button_submit_3: false,
         button_redistribution_1: false,
-        button_redistribution_3: false
+        button_redistribution_3: false,
       },
+      updateDataForm: null,
+      visibleRollback: false, // 状态回退弹框
       visibleSubmit: false, // 提交弹框是否显示标识
       submitLoading: false, // 提交按钮loading
-      analysisModal:'find', // 7钻分析表格点击操作显示弹框标识
+      analysisModal: 'find', // 7钻分析表格点击操作显示弹框标识
       SuppelyIcon: 'down',
+      isStagedFlag: '', // 暂存标识
       routerFlag: true,
       validInput: true,
       // 流程状态
@@ -4496,14 +4646,14 @@ export default {
         statusMaxCode: 0,
         statusNewCode: 0,
         issueClosed: false,
-        maxDiamonds: 0
+        maxDiamonds: 0,
       },
       // 七钻分析责任人表格总数据
-      AnalysisTotal:[],
+      AnalysisTotal: [],
       // SM SC
       sysUser: {
         coChair: '',
-        monitor: ''
+        monitor: '',
       },
       stepId: '', // 每一步id
       userId: vm.$store.getters.getUser().id,
@@ -4519,7 +4669,7 @@ export default {
       updateEditFlag: false, // 编辑弹框
       updateFindFlag: false, // 查看弹框
       visibleDelete: false, // 删除确认弹框
-      visibleDeleteUpdate:false, // 涉及文件更新删除弹框
+      visibleDeleteUpdate: false, // 涉及文件更新删除弹框
       RejectTrue: true,
       delBtn: false,
       analysisId: '',
@@ -4548,7 +4698,7 @@ export default {
       analysisHistory,
       AnalysisTitle: '1钻-过程是否正确',
       data: [],
-      paramUpdate:[], // 涉及文件更新删除参数
+      paramUpdate: [], // 涉及文件更新删除参数
       analysisData: [], // 7钻分析表格
       updateData: [], // 文件更新表格
       DetailForm: {}, // 7钻查看表格
@@ -4588,33 +4738,33 @@ export default {
       examineReason: '', // 审核理由
       satisfy: [{
         label: vm.$t('issue_workflow.yes'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.no'),
-        value: '0'
+        value: '0',
       }],
       contActionOption: [{
         label: vm.$t('issue_workflow.D0.need'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.D0.unneed'),
-        value: '0'
+        value: '0',
       }],
       ReviewRadio: [{
         label: '已审阅',
-        value: 1
+        value: 1,
       }],
       labelCol: {
         // xs: { span: 24 },
         sm: {
-          span: 8
-        }
+          span: 8,
+        },
       },
       wrapperCol: {
         // xs: { span: 24 },
         sm: {
-          span: 16
-        }
+          span: 16,
+        },
       },
       workflowRolesList: [],
       workflowRoles: {
@@ -4631,8 +4781,8 @@ export default {
         diamondOwner4: '',
         diamondOwner5: '',
         diamondOwner6: '',
-        diamondOwner7: ''
-       
+        diamondOwner7: '',
+
       },
       id1: '', // 措施判定id
       id2: '', // 措施实施id
@@ -4658,54 +4808,54 @@ export default {
       radioDefault: 'Yes',
       determineRadio: [{
         label: vm.$t('issue_workflow.D1.confirm'),
-        value: '0'
+        value: '0',
       }, {
         label: vm.$t('issue_workflow.D1.needAnalysis'),
-        value: '1'
+        value: '1',
       }],
       verifyRadio: [{
         label: vm.$t('issue_workflow.pass'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.reject'),
-        value: '0'
+        value: '0',
       }],
       endSevenRadio: [{
         label: vm.$t('issue_workflow.yes'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.no'),
-        value: '0'
+        value: '0',
       }],
       // D5
       updateRadio: [{
         label: vm.$t('issue_workflow.yes'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.no'),
-        value: '0'
+        value: '0',
       }],
       // D6
       recurrencePreventionRadio: [{
         label: vm.$t('issue_workflow.pass'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.reject'),
-        value: '0'
+        value: '0',
       }],
       optionRadio: [{
         label: vm.$t('issue_workflow.yes'),
-        value: '1'
+        value: '1',
       }, {
         label: vm.$t('issue_workflow.no'),
-        value: '0'
+        value: '0',
       }],
       isCloseRadio: [{
         label: '同意关闭',
-        value: '1'
+        value: '1',
       }, {
         label: '不同意关闭',
-        value: '0'
+        value: '0',
       }],
       // 数据模板
       record: {
@@ -4718,8 +4868,8 @@ export default {
         // D1
         owerDeptLv1: '', // 责任部门
         champion: void 0, // 责任人
-        cochairDepartment: '',//cochia部门
-        cochair: void 0, //cochia
+        cochairDepartment: '', // cochia部门
+        cochair: void 0, // cochia
         type: '0', // 判定
         verifySeven: '1', // 7钻审核
         sevenFailReason: '', // 不通过原因
@@ -4763,13 +4913,13 @@ export default {
         signRemark: '',
         isClose: '0',
         reason: '',
-        notes:'', // 审核通过的备注
+        notes: '', // 审核通过的备注
       },
       // 再分配
       redistributionForm: {
         owerDeptLv1: '',
         champion: '',
-        rediStributionMessage: ''
+        rediStributionMessage: '',
       },
       // 7钻分析弹框数据绑定
       recordAnalysis: {
@@ -4777,7 +4927,7 @@ export default {
         standard: '',
         actualSituation: '',
         conclusion: '',
-        file: []
+        file: [],
       },
       updateFiles: [],
       // 涉及文件更新
@@ -4787,12 +4937,12 @@ export default {
         isUpdae: '1',
         isUpdateName: '',
         updateContent: '',
-        files: []
+        files: [],
       },
       // 驳回
       rejectRecord: {
-        commentReject: ''
-      }
+        commentReject: '',
+      },
     };
   },
   computed: {
@@ -4806,17 +4956,17 @@ export default {
         grade,
         projectPhase,
         manufactureBaseId,
-        description
+        description,
       } = this.detailList;
       return !!(vehicleModelId && faultTreeIds1 && faultTreeIds2 && faultTreeIds3 && source
         && grade && projectPhase && manufactureBaseId && description);
-    }
+    },
   },
   watch: {
     id: {
       handler: 'init',
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   activated () {
     this.init();
@@ -4867,21 +5017,22 @@ export default {
       'addActIdMembership',
       'getUserByPositionCode',
       'getUserByworkflowPositionCode',
-      'getActIdMembership'
+      'getActIdMembership',
+      'temporarySave', // 暂存
     ]),
     mapPropsToFieldsForm () {
       return createFormFields(this, [
         'isProject', 'comment', 'isNeedIca', 'icaDescriptionD1', 'icaDescription',
         'dissatisfaction', 'Remarks', 'planTime', 'pcaPlanTime',
-        'owerDeptLv1', 'champion','cochairDepartment','cochair', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5',
+        'owerDeptLv1', 'champion', 'cochairDepartment', 'cochair', 'type', 'diamondOwner1', 'diamondOwner4', 'diamondOwner5',
         'diamondOwner6', 'isPass', 'rootCauseDescription',
         'diamondOwner7', 'rootcause', 'D2file', 'pcaDescription',
         'pcaDescriptionTime', 'pcaExecTime', 'pcaValidPlanTime', 'estimatedClosureTime',
         'fileList', 'smallBatchValidation', 'isSign', 'signLeaderId', 'Review', 'signRemark',
         'icaExecDescription', 'icaExecTime', 'pcaExecDescription',
         'description', 'proposerVerification', 'breakpointVin', 'breakpointDate',
-        'recurrencePrevention', 'isClose','endSeven','verifySeven',
-        'reason','notes'
+        'recurrencePrevention', 'isClose', 'endSeven', 'verifySeven',
+        'reason', 'notes',
       ], 'record');
     },
     /**
@@ -4892,9 +5043,30 @@ export default {
       delete newCol.title;
       return newCol;
     },
+    // 暂存
+    temporary (param) {
+      const data = {
+        id: this.id,
+        isStaged: param,
+      };
+      this.temporarySave(data).then(() => {
+        // 暂存
+        if (param === '1') {
+          this.$message.success(this.$t('issue_action.temporarySuccess'));
+          this.$router.push({
+            path: this.$route.query.form || '/',
+          });
+        } else if (param === '0') {
+          this.$message.success(this.$t('issue_action.restoreSuccess'));
+          this.$router.push({
+            path: this.$route.query.form || '/',
+          });
+        }
+      });
+    },
     resMapPropsToFields () {
       return createFormFields(this, [
-        'owerDeptLv1', 'champion'
+        'owerDeptLv1', 'champion',
       ], 'redistributionForm');
     },
     SuppelyOpen () {
@@ -4906,6 +5078,10 @@ export default {
         this.DetailSuppely = true;
       }
     },
+    // 问题回退
+    rollback () {
+      this.visibleRollback = true;
+    },
     // 禁用提报的日期之前的日期
     disabledDate (current) {
       const dateTime = moment(this.detailList.createDate.split(' ')[0]);
@@ -4913,24 +5089,24 @@ export default {
     },
     // 长期措施实施计划日期禁用
     disabledDate1 (current) {
-      const dateTime =moment().subtract(1, 'days');
+      const dateTime = moment().subtract(1, 'days');
       return current < dateTime;
     },
     // 长期措施验证计划日期禁用
     disabledDate2 (current) {
       let dateTime;
-      if(this.record.pcaPlanTime){
-        dateTime= moment(this.record.pcaPlanTime);
+      if (this.record.pcaPlanTime) {
+        dateTime = moment(this.record.pcaPlanTime);
       }
       return current < dateTime;
     },
     // 计划关闭日期禁用
     disabledDate3 (current) {
       let dateTime;
-      if(this.record.pcaValidPlanTime){
+      if (this.record.pcaValidPlanTime) {
         dateTime = moment(this.record.pcaValidPlanTime);
       }
-     
+
       return current < dateTime;
     },
     filterOption (input, option) {
@@ -4939,9 +5115,9 @@ export default {
     },
     // vin限制
     vinVer (rule, value, callback) {
-      var myreg = /^[A-Z0-9]{8,17}$/;
+      const myreg = /^[A-Z0-9]{8,17}$/;
       if (value && !myreg.test(value)) {
-        callback(new Error( this.$t('issue_workflow.D5.vinVer')));
+        callback(new Error(this.$t('issue_workflow.D5.vinVer')));
       } else {
         callback();
       }
@@ -4957,10 +5133,10 @@ export default {
       this.record.champion = void 0;
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
-    cochairDeptChange (){
+    cochairDeptChange () {
       this.formDcontent.cochair = 'void 0';
       this.record.cochair = void 0;
-      //将coChair置为空
+      // 将coChair置为空
       this.workflowRoleChange(void 0, 'coChair');
       this.formDcontent.updateFields(this.mapPropsToFieldsForm());
     },
@@ -4971,36 +5147,36 @@ export default {
     },
     mapUpdate () {
       return createFormFields(this, [
-        'id', 'fileName', 'isUpdaeName', 'isUpdae', 'updateContent', 'files'
+        'id', 'fileName', 'isUpdaeName', 'isUpdae', 'updateContent', 'files',
       ], 'recordUpdate');
     },
     init () {
       this.formDcontent = this.$form.createForm(this, {
         mapPropsToFields: this.mapPropsToFieldsForm,
-        onValuesChange: autoUpdateFileds(this, 'record')
+        onValuesChange: autoUpdateFileds(this, 'record'),
       });
       this.rediStribution = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, ['owerDeptLv1', 'champion'],
           'redistributionForm'),
-        onValuesChange: autoUpdateFileds(this, 'redistributionForm')
+        onValuesChange: autoUpdateFileds(this, 'redistributionForm'),
       });
       this.AnalysisForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'id', 'standard', 'actualSituation', 'conclusion', 'file'
+          'id', 'standard', 'actualSituation', 'conclusion', 'file',
         ], 'recordAnalysis'),
-        onValuesChange: autoUpdateFileds(this, 'recordAnalysis')
+        onValuesChange: autoUpdateFileds(this, 'recordAnalysis'),
       });
       this.updateForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'id', 'fileName', 'isUpdateName', 'isUpdae', 'updateContent', 'files'
+          'id', 'fileName', 'isUpdateName', 'isUpdae', 'updateContent', 'files',
         ], 'recordUpdate'),
-        onValuesChange: autoUpdateFileds(this, 'recordUpdate')
+        onValuesChange: autoUpdateFileds(this, 'recordUpdate'),
       });
       this.rejectForm = this.$form.createForm(this, {
         mapPropsToFields: () => createFormFields(this, [
-          'commentReject'
+          'commentReject',
         ], 'rejectRecord'),
-        onValuesChange: autoUpdateFileds(this, 'rejectRecord')
+        onValuesChange: autoUpdateFileds(this, 'rejectRecord'),
       });
       this.request();
     },
@@ -5023,20 +5199,20 @@ export default {
     // 是否结束7钻
     sevenRadioChange (e) {
       if (e.target.value === '1') {
-        if(this.record.owerDeptLv1===''||this.record.owerDeptLv1===null){
+        if (this.record.owerDeptLv1 === '' || this.record.owerDeptLv1 === null) {
           this.record.owerDeptLv1 = this.detailList.responsibleDepartmentId;
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
-      } 
+      }
     },
     // 7钻分析是否审核通过
     verifySevenChange (e) {
       if (e.target.value === '1') {
-        if(this.record.owerDeptLv1===''||this.record.owerDeptLv1===null){
+        if (this.record.owerDeptLv1 === '' || this.record.owerDeptLv1 === null) {
           this.record.owerDeptLv1 = this.detailList.responsibleDepartmentId;
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
-      } 
+      }
     },
     // 是否更新
     updateRadioChange (e) {
@@ -5057,16 +5233,15 @@ export default {
     },
     rejectSubmit () {
       this.rejectForm.validateFields((err) => {
-        if(!err) {
+        if (!err) {
           enableScroll();
           this.visibleReject = false;
           this.isCheckError = '1';
           const data = this.formDcontent.getFieldsValue();
           let resComment = this.rejectForm.getFieldsValue().commentReject;
-          if(resComment){
-            resComment = 'SM再分析-' + resComment;
-          } 
-          else {
+          if (resComment) {
+            resComment = `SM再分析-${resComment}`;
+          } else {
             resComment = 'SM再分析';
           }
           const transData = {
@@ -5092,18 +5267,20 @@ export default {
               isCheckError: this.isCheckError, // 验证不通过(需要回到七钻前)
               isLeaderSign: this.record.isSign, // 领导加签
               isItem: data.isProject, // 是否立项
-              isWD: data.isNeedIca // 是否围堵
-            }
+              isWD: data.isNeedIca, // 是否围堵
+            },
           };
-          for(let item in this.workflowRoles) {
-            transData.variables[item]=this.workflowRoles[item];
+          /* TODO: 不安全操作，请查阅文档修正 */
+          for (const item in this.workflowRoles) {
+            transData.variables[item] = this.workflowRoles[item];
           }
-          //保存任务角色
-          for(let item in this.workflowRoles) {
-		        this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+          // 保存任务角色 /* TODO: 不安全操作，请查阅文档修正*/
+          for (const item in this.workflowRoles) {
+            this.workflowRolesList.push({
+              groupId: item, userId: this.workflowRoles[item], procInstId: this.wkprocessInstanceId, procDefKey: this.procDefKey, businessKey: this.id,
+            });
           }
-          this.addActIdMembership(this.workflowRolesList).then(result => {
-           
+          this.addActIdMembership(this.workflowRolesList).then(() => {
             this.workFlowSubmit(transData).then(() => {
             // taskId从工作流中读取改为从详情读取  2019/09/23 16：40
             // if (res.taskId) {
@@ -5115,7 +5292,6 @@ export default {
             });
           });
         }
-
       });
     },
     CancelReject () {
@@ -5127,7 +5303,7 @@ export default {
       this.visibleDeleteUpdate = false;
       this.paramUpdate.delFlag = 1;
       this.editFile(this.paramUpdate).then(() => {
-        this.updateFile(this.id).then(res => {
+        this.updateFile(this.id).then((res) => {
           this.updateData = res;
         });
       });
@@ -5138,7 +5314,7 @@ export default {
     },
     goBack () {
       this.$router.push({
-        path: this.$route.query.form || '/'
+        path: this.$route.query.form || '/',
       });
     },
     // 是否驳回选择
@@ -5152,7 +5328,7 @@ export default {
     selectOptionSingn (input) {
       const optionArray = [{
         value: input.id,
-        label: input.realName
+        label: input.realName,
       }];
       // input.forEach((item) => {
       //   optionArray.push({
@@ -5169,48 +5345,54 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.USERID,
-          label: item.USERNAMEZH
+          label: item.USERNAMEZH,
         });
       });
 
       return optionArray;
     },
-    //工作流部门筛选框
-    deptTreeTransform: treeTransform(transform({ value: 'ID', label: 'NAME', children: 'children', selectable: item => !(item.children && item.children.length) })),
-    responseDeptTreeTransform: treeTransform(transform({ value: 'code', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
-    demondUserTreeTransform: treeTransform(transform({ value: 'id', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    // 工作流部门筛选框
+    deptTreeTransform: treeTransform(transform({
+      value: 'ID', label: 'NAME', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
+    responseDeptTreeTransform: treeTransform(transform({
+      value: 'code', label: 'name', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
+    demondUserTreeTransform: treeTransform(transform({
+      value: 'id', label: 'name', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
 
     selectOption (input) {
       const optionArray = [];
       input.forEach((item) => {
         optionArray.push({
           value: item.code,
-          label: item.name
+          label: item.name,
         });
       });
       return optionArray;
     },
-    //用户下拉框
+    // 用户下拉框
     userOption (input) {
       const optionArray = [];
 
       input.forEach((item) => {
         optionArray.push({
           value: item.userId,
-          label: item.realName
+          label: item.realName,
         });
       });
 
       return optionArray;
     },
-    //cochair选择器
+    // cochair选择器
     userCochairOption (input) {
       const optionArray = [];
 
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.realName
+          label: item.realName,
         });
       });
 
@@ -5219,47 +5401,40 @@ export default {
     // 再分配责任人选择，不能选择本人
     selectUser (input) {
       const optionArray = [];
-      const id = this.$store.getters.getUser().id;
+      const { id } = this.$store.getters.getUser();
       input.forEach((item) => {
-        if(item.userId !== id){
+        if (item.userId !== id) {
           optionArray.push({
             value: item.userId,
-            label: item.username
+            label: item.username,
           });
         }
-      
       });
       return optionArray;
     },
     showAnalysis (param) {
       disableScroll();
-      let index = param.index;
+      const { index } = param;
       // 编辑
-      if(index === 0){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.1stDiamond') + ': ' + this.$t('issue_workflow.D1.rightProcess');
+      if (index === 0) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.1stDiamond')}: ${this.$t('issue_workflow.D1.rightProcess')}`;
+      } else if (index === 1) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.2ndDiamond')}: ${this.$t('issue_workflow.D1.rightTools')}`;
+      } else if (index === 2) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.3rdDiamond')}: ${this.$t('issue_workflow.D1.rightMaterials')}`;
+      } else if (index === 3) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.4thDiamond')}: ${this.$t('issue_workflow.D1.specification')}`;
+      } else if (index === 4) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.5thDiamond')}: ${this.$t('issue_workflow.D1.processChange')}`;
+      } else if (index === 5) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.6thDiamond')}: ${this.$t('issue_workflow.D1.partChange')}`;
+      } else if (index === 6) {
+        this.AnalysisTitle = `${this.$t('issue_workflow.D1.7thDiamond')}: ${this.$t('issue_workflow.D1.complex')}`;
       }
-      else if(index === 1){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.2ndDiamond') + ': ' + this.$t('issue_workflow.D1.rightTools');
-      }
-      else if(index === 2){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.3rdDiamond') + ': ' + this.$t('issue_workflow.D1.rightMaterials');
-      }
-      else if(index === 3){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.4thDiamond') + ': ' + this.$t('issue_workflow.D1.specification');
-      }
-      else if(index === 4){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.5thDiamond') + ': ' + this.$t('issue_workflow.D1.processChange');
-      }
-      else if(index === 5){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.6thDiamond') + ': ' + this.$t('issue_workflow.D1.partChange');
-      }
-      else if(index === 6){
-        this.AnalysisTitle= this.$t('issue_workflow.D1.7thDiamond') + ': ' + this.$t('issue_workflow.D1.complex');
-      }
-      if(param.operation === this.$t(`fileUpdateTable.edit`)){
+      if (param.operation === this.$t(`fileUpdateTable.edit`)) {
         this.visibleAnalysis = true;
-       
-       
+
+
         // this.DetailForm = param;
         /* if (index === 2) {
             this.AnalysisTitle ='2钻-工具是否正确'
@@ -5283,61 +5458,54 @@ export default {
 
         this.AnalysisForm = this.$form.createForm(this, {
 
-          mapPropsToFields: () => {
-            return {
-              id: this.$form.createFormField({
-                value: param.id
-              }),
-              standard: this.$form.createFormField({
-                value: param.standard
-              }),
-              actualSituation: this.$form.createFormField({
-                value: param.actualSituation
-              }),
-              conclusion: this.$form.createFormField({
-                value: param.conclusion
-              }),
-              files: this.$form.createFormField({
-                value: param.files
-              })
-            };
-          }
+          mapPropsToFields: () => ({
+            id: this.$form.createFormField({
+              value: param.id,
+            }),
+            standard: this.$form.createFormField({
+              value: param.standard,
+            }),
+            actualSituation: this.$form.createFormField({
+              value: param.actualSituation,
+            }),
+            conclusion: this.$form.createFormField({
+              value: param.conclusion,
+            }),
+            files: this.$form.createFormField({
+              value: param.files,
+            }),
+          }),
         });
-        this.recordAnalysis.file = param.files.map(file => {
-          if(file.response){
+        this.recordAnalysis.file = param.files.map((file) => {
+          if (file.response) {
             return {
               id: file.response.data.id,
               uid: file.response.data.id,
               name: file.response.data.originalFilename,
               url: file.response.data.path,
               size: file.response.data.size,
-              status: 'done'
+              status: 'done',
             };
-          }
-          else if(file.originalFilename){
+          } if (file.originalFilename) {
             return {
               id: file.id,
               uid: file.id,
               name: file.originalFilename,
               url: file.path,
               size: file.size,
-              status: 'done'
+              status: 'done',
             };
           }
-          else{
-            return {
-              id: file.id,
-              uid: file.id,
-              name: file.name,
-              url: file.url,
-              size: file.size,
-              status: 'done'
-            };
-          }
+          return {
+            id: file.id,
+            uid: file.id,
+            name: file.name,
+            url: file.url,
+            size: file.size,
+            status: 'done',
+          };
         });
-
-      }
-      else if(param.operation === this.$t(`fileUpdateTable.view`)){
+      } else if (param.operation === this.$t(`fileUpdateTable.view`)) {
         console.log('查看', param);
         this.visibleDetail = true;
         // this.DetailForm = param;
@@ -5365,8 +5533,8 @@ export default {
          * ANTD里的form对象（通过this.$form.createForm），它记录的是映射关系（mapPortytypes）以及更新策略（OnValueChange， onFiledsChange）
          * 映射是指的从record对象到formUI之间建立的唯一对应关系
          * <A-FORM></A-FORM>才是真正的formUI
-         * 
-         * 
+         *
+         *
          */
         /**
          * this.a = newA;
@@ -5374,16 +5542,14 @@ export default {
          */
 
         Object.assign(this.DetailForm, param);
-        this.DetailForm.files = param.files.map(file => {
-          return {
-            id: file.id,
-            uid: file.id,
-            name: file.originalFilename,
-            url: file.path,
-            size: file.size,
-            status: 'done'
-          };
-        });
+        this.DetailForm.files = param.files.map((file) => ({
+          id: file.id,
+          uid: file.id,
+          name: file.originalFilename,
+          url: file.path,
+          size: file.size,
+          status: 'done',
+        }));
       }
       console.log(this.analysisData);
     },
@@ -5401,16 +5567,14 @@ export default {
         } else if (param.isUpdae === '1') {
           this.updateContentFlag = true;
         }
-        this.updateFiles = param.files.map(file => {
-          return {
-            id: file.id,
-            uid: file.id,
-            name: file.originalFilename,
-            url: file.path,
-            size: file.size,
-            status: 'done'
-          };
-        });
+        this.updateFiles = param.files.map((file) => ({
+          id: file.id,
+          uid: file.id,
+          name: file.originalFilename,
+          url: file.path,
+          size: file.size,
+          status: 'done',
+        }));
         if (param.delFlag === '0') {
           this.fileNameFlag = false;
           this.fileModalTitle = param.fileName;
@@ -5434,7 +5598,7 @@ export default {
       this.visibleUpdate = true;
       this.updateFindFlag = true;
       this.updateEditFlag = false;
-      this.updateData = param;
+      this.updateDataForm = param;
       this.updateFiles = param.files;
       this.fileModalTitle = param.fileName;
     },
@@ -5476,9 +5640,8 @@ export default {
               item.files = this.recordAnalysis.file;
             }
           });
-          let analysisData2 = this.analysisData;
+          const analysisData2 = this.analysisData;
           this.AnalysisTotal.push(analysisData2);
-         
         }
       });
     },
@@ -5502,19 +5665,19 @@ export default {
           if (this.fileNameFlag === true) {
             const data = {
               ...this.recordUpdate,
-              ...this.updateForm.getFieldsValue()
+              ...this.updateForm.getFieldsValue(),
             };
             data.issueId = this.id;
             data.delFlag = 2;
             if (!data.id) {
               this.addFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
+                this.updateFile(this.id).then((res) => {
                   this.updateData = res;
                 });
               });
             } else {
               this.editFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
+                this.updateFile(this.id).then((res) => {
                   this.updateData = res;
                 });
               });
@@ -5522,20 +5685,20 @@ export default {
           } else {
             const data = {
               ...this.recordUpdate,
-              ...this.updateForm.getFieldsValue()
+              ...this.updateForm.getFieldsValue(),
             };
             data.issueId = this.id;
             data.fileName = this.fileModalTitle;
             data.delFlag = 0;
             if (!data.id) {
               this.addFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
+                this.updateFile(this.id).then((res) => {
                   this.updateData = res;
                 });
               });
             } else {
               this.editFile(data).then(() => {
-                this.updateFile(this.id).then(res => {
+                this.updateFile(this.id).then((res) => {
                   this.updateData = res;
                 });
               });
@@ -5548,7 +5711,7 @@ export default {
       enableScroll();
       this.visibleUpdate = false;
       this.updateForm.resetFields();
-      this.updateFile(this.id).then(res => {
+      this.updateFile(this.id).then((res) => {
         this.updateData = res;
       });
     },
@@ -5567,8 +5730,10 @@ export default {
     },
     request () {
       // 查看问题详情
-      const editDetail = this.eidtQuestion(this.id).then(res => {
-        if(this.record.owerDeptLv1===''||this.record.owerDeptLv1===null){
+      const editDetail = this.eidtQuestion(this.id).then((res) => {
+        // 暂存按钮和恢复按钮显示
+        this.isStagedFlag = res.isStaged;
+        if (this.record.owerDeptLv1 === '' || this.record.owerDeptLv1 === null) {
           this.record.owerDeptLv1 = res.responsibleDepartmentId;
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
@@ -5578,13 +5743,13 @@ export default {
         if (res.taskId) {
           this.taskId = res.taskId;
         }
-        if ((this.detailList.status === '100300'||this.detailList.status === '100108') && res.creator === this.$store.getters.getUser().id) {
+        if ((this.detailList.status === '100300' || this.detailList.status === '100108') && res.creator === this.$store.getters.getUser().id) {
           this.delBtn = true;
           this.optCounter = res.optCounter;
-        }        
+        }
         return this.detailList;
       });
-      const statusCode2 = this.getStatusCode(this.id).then(res => {
+      const statusCode2 = this.getStatusCode(this.id).then((res) => {
         if (res) {
           this.statusCode.statusMaxCode = res.statusMaxCode;
           this.statusCode.statusNewCode = res.statusNewCode;
@@ -5596,10 +5761,10 @@ export default {
         }
         return res.taskIdOld !== undefined ? res.taskIdOld : '';
       });
-      const pagePermissionArea = this.getIssueAutomousRegion(this.id).then(res => {
+      const pagePermissionArea = this.getIssueAutomousRegion(this.id).then((res) => {
         this.pagePermission = {};
         const vm = this;
-        res.forEach(item => {
+        res.forEach((item) => {
           vm.pagePermission[item.DETAIL_REGION] = true;
         });
         return vm.pagePermission;
@@ -5609,22 +5774,27 @@ export default {
         if (res[1].A2_1_3) {
           // this.depDisable = true;
           this.redistributionForm.owerDeptLv1 = res[0].responsibleDepartmentId;
-          //当问题分类为tir和bir时不限制
-          if(this.detailList.source=='tir'||this.detailList.source=='bir'||this.detailList.source=='ctir'||this.detailList.source=='pir'||this.detailList.source=='dir'||this.detailList.source=='fir(pe)'||this.detailList.source=='icr'){
+          // 当问题分类为tir和bir时不限制
+          if (this.detailList.source === 'tir' || this.detailList.source === 'bir' || this.detailList.source === 'ctir' || this.detailList.source === 'pir' || this.detailList.source === 'dir' || this.detailList.source === 'fir(pe)' || this.detailList.source === 'icr') {
             this.depDisable = true;
           }
           this.rediStribution.updateFields(this.resMapPropsToFields());
         } else {
           this.depDisable = false;
         }
-        //加载当前工作流角色人员
+        // 加载当前工作流角色人员
         const transData = {
           procInstId: this.wkprocessInstanceId,
           procDefKey: this.procDefKey,
-          businessKey: this.id
+          businessKey: this.id,
         };
-        this.getActIdMembership(transData).then(ress => {
-          this.workflowRoles = ress;
+        this.getActIdMembership(transData).then((ress) => {
+          if (ress && Object.keys(ress).length > 0) {
+            /* TODO: 不安全操作，请查阅文档修正 */
+            for (const item in ress) {
+              this.workflowRoles[item] = ress[item];
+            }
+          }
         });
       });
       Promise.all([editDetail, statusCode2]).then((res1) => {
@@ -5632,10 +5802,10 @@ export default {
         const paramExamine = {
           businessKey: this.id,
           processInstanceId: this.processInstanceId,
-          taskDefList: taskDefListArray
+          taskDefList: taskDefListArray,
         };
         if (taskDefListArray) {
-          this.examineDetail(paramExamine).then(res => {
+          this.examineDetail(paramExamine).then((res) => {
             if (res && res.MESSAGE) {
               this.examineReason = res.MESSAGE;
             }
@@ -5645,7 +5815,7 @@ export default {
       // this.getFilePage().then(res => {
       //   this.dataFile = res.list;
       // });
-      this.getRecord(this.id).then(res => {
+      this.getRecord(this.id).then((res) => {
         this.dataRecord = res;
       });
     },
@@ -5655,7 +5825,7 @@ export default {
      */
     getQuestionStepAll (id) {
       // 问题定义
-      this.stepCurrent === 0 && this.problemDefinition(id).then(res => {
+      this.stepCurrent === 0 && this.problemDefinition(id).then((res) => {
         this.problemDefinitionData = res || {};
         if (res) {
           this.d0FileList = (res.files || []).map(this.file2client);
@@ -5680,7 +5850,7 @@ export default {
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       // 责任判定
-      this.stepCurrent === 1 && this.issueDefinition(id).then(res => {
+      this.stepCurrent === 1 && this.issueDefinition(id).then((res) => {
         this.issueDefinitionData = res || {};
         if (res) {
           this.d1FileList = (res.files || []).map(this.file2client);
@@ -5690,8 +5860,8 @@ export default {
         }
         if (res.type) {
           this.record.type = res.type;
-          this.NeedFlage = res.type == '1'?false:true;
-          if(res.type === '1'){
+          this.NeedFlage = res.type !== '1';
+          if (res.type === '1') {
             this.record.diamondOwner1 = res.sevenDiamondsVos[0].champion;
             this.record.diamondOwner4 = res.sevenDiamondsVos[3].champion;
             this.record.diamondOwner5 = res.sevenDiamondsVos[4].champion;
@@ -5708,63 +5878,62 @@ export default {
         this.record.champion = res.champion || void 0;
         this.record.cochair = res.cochair || void 0;
         this.record.cochairDepartment = res.cochairDepartment;
-        
+
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         (this.issueDefinitionData.sevenDiamondsVos || []).forEach((item) => {
           item.operation = this.$t(`fileUpdateTable.view`);
           this.analysisModal = 'find';
         });
         const status = Number(this.detailList.status);
-        const pagePermission = this.pagePermission;
-        //如果为七钻
-        if(pagePermission.A1_1_2&&(status>=300100||status==200105)){
+        const { pagePermission } = this;
+        // 如果为七钻
+        if (pagePermission.A1_1_2 && (status >= 300100 || status === 200105)) {
           for (let i = 0; i < 7; i++) {
             if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-              if(i==0){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.1stDiamond') + ': ' + this.$t('issue_workflow.D1.rightProcess');
+              if (i === 0) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.1stDiamond')}: ${this.$t('issue_workflow.D1.rightProcess')}`;
               }
-              if(i==1){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.2ndDiamond') + ': ' + this.$t('issue_workflow.D1.rightTools');
+              if (i === 1) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.2ndDiamond')}: ${this.$t('issue_workflow.D1.rightTools')}`;
               }
-              if(i==2){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.3rdDiamond') + ': ' + this.$t('issue_workflow.D1.rightMaterials');
+              if (i === 2) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.3rdDiamond')}: ${this.$t('issue_workflow.D1.rightMaterials')}`;
               }
-              if(i==3){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.4thDiamond') + ': ' + this.$t('issue_workflow.D1.specification');
+              if (i === 3) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.4thDiamond')}: ${this.$t('issue_workflow.D1.specification')}`;
               }
-              if(i==4){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.5thDiamond') + ': ' + this.$t('issue_workflow.D1.processChange');
+              if (i === 4) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.5thDiamond')}: ${this.$t('issue_workflow.D1.processChange')}`;
               }
-              if(i==5){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.6thDiamond') + ': ' + this.$t('issue_workflow.D1.partChange');
+              if (i === 5) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.6thDiamond')}: ${this.$t('issue_workflow.D1.partChange')}`;
               }
-              if(i==6){
-                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.7thDiamond') + ': ' + this.$t('issue_workflow.D1.complex');
+              if (i === 6) {
+                this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.7thDiamond')}: ${this.$t('issue_workflow.D1.complex')}`;
               }
               this.issueDefinitionData.sevenDiamondsVos[i].index = i;
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i]);
             }
           }
-        }else{
+        } else {
           if (status >= 200200 && status < 200500) {
           // eslint-disable-next-line no-plusplus
-          
+
             for (let i = 0; i < 3; i++) {
-              if( pagePermission.A1_3_3 ){
+              if (pagePermission.A1_3_3) {
                 //  编辑
                 this.issueDefinitionData.sevenDiamondsVos[i].operation = this.$t(`fileUpdateTable.edit`);
                 this.analysisModal = 'edit';
               }
-              this.statusCode.maxDiamonds =i;
+              this.statusCode.maxDiamonds = i;
               this.issueDefinitionData.sevenDiamondsVos[i].index = i;
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i]);
-            
             }
           }
           if (status >= 200500 && status < 200800) {
-          // eslint-disable-next-line no-plusplus       
+          // eslint-disable-next-line no-plusplus
             for (let i = 0; i < 4; i++) {
-              this.issueDefinitionData.sevenDiamondsVos[i].index = i;       
+              this.issueDefinitionData.sevenDiamondsVos[i].index = i;
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i]);
               this.statusCode.maxDiamonds = i;
               if (pagePermission.A1_6_3) {
@@ -5772,7 +5941,6 @@ export default {
                 this.issueDefinitionData.sevenDiamondsVos[3].operation = this.$t(`fileUpdateTable.edit`);
                 this.analysisModal = 'edit';
               }
-            
             }
           }
           if (status >= 200800 && status < 201100) {
@@ -5781,12 +5949,11 @@ export default {
               this.issueDefinitionData.sevenDiamondsVos[i].index = i;
               this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i]);
               this.statusCode.maxDiamonds = i;
-              if(pagePermission.A1_9_3){
+              if (pagePermission.A1_9_3) {
                 // 编辑
                 this.issueDefinitionData.sevenDiamondsVos[4].operation = this.$t(`fileUpdateTable.edit`);
                 this.analysisModal = 'edit';
               }
-            
             }
           }
           if (status >= 201100 && status < 201400) {
@@ -5816,21 +5983,17 @@ export default {
             }
             if (status === 201500) {
               this.record.endSeven = '1';
-              
-              if(this.record.owerDeptLv1===''||this.record.owerDeptLv1===null){
+
+              if (this.record.owerDeptLv1 === '' || this.record.owerDeptLv1 === null) {
                 this.record.owerDeptLv1 = this.detailList.responsibleDepartmentId;
               }
               this.formDcontent.updateFields(this.mapPropsToFieldsForm());
             }
           }
         }
-        
-            
-       
-        
       });
       // 原因分析
-      this.stepCurrent === 2 && this.rootCause(id).then(res => {
+      this.stepCurrent === 2 && this.rootCause(id).then((res) => {
         this.d2FileList = (res.files || []).map(this.file2client);
         this.record.fileList = res.files || [];
         this.rootCauseData = res || {};
@@ -5841,11 +6004,11 @@ export default {
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
-      this.updateFile(this.id).then(res => {
+      this.updateFile(this.id).then((res) => {
         this.updateData = res;
       });
       // 措施制定
-      this.stepCurrent === 3 && this.MeasureDetail(this.id).then(res => {
+      this.stepCurrent === 3 && this.MeasureDetail(this.id).then((res) => {
         this.d3FileList = (res.files || []).map(this.file2client);
         this.record.fileList = res.files || [];
         this.stepMeasures = res;
@@ -5876,7 +6039,7 @@ export default {
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
       // 措施实施
-      this.stepCurrent === 4 && this.ImplementationDetail(this.id).then(res => {
+      this.stepCurrent === 4 && this.ImplementationDetail(this.id).then((res) => {
         console.log(res);
         this.icaId = res.icaId;
         this.d4FileList = (res.files || []).map(this.file2client);
@@ -5899,11 +6062,11 @@ export default {
         }
         this.formDcontent.updateFields(this.mapPropsToFieldsForm());
       });
-      this.updateFile(this.id).then(res => {
+      this.updateFile(this.id).then((res) => {
         this.updateData = res;
       });
       // 效果验证
-      this.stepCurrent === 5 && this.effectDetail(this.id).then(res => {
+      this.stepCurrent === 5 && this.effectDetail(this.id).then((res) => {
         this.d5FileList = (res.files || []).map(this.file2client);
         this.record.fileList = res.files || [];
         this.stepEffect = res;
@@ -5920,7 +6083,7 @@ export default {
         this.updateForm.updateFields(this.mapUpdate());
       });
       // 问题关闭
-      this.stepCurrent === 6 && this.closeDetail(this.id).then(res => {
+      this.stepCurrent === 6 && this.closeDetail(this.id).then((res) => {
         if (res) {
           this.d6FileList = (res.files || []).map(this.file2client);
           this.record.fileList = res.files || [];
@@ -5939,7 +6102,7 @@ export default {
           this.formDcontent.updateFields(this.mapPropsToFieldsForm());
         }
       });
-      this.analysisDetail(this.id).then(res => {
+      this.analysisDetail(this.id).then((res) => {
         if (res) {
           this.analysisId = res.id;
           this.optCounterD2 = res.optCounter;
@@ -5970,7 +6133,7 @@ export default {
     determineChange (e) {
       if (e.target.value === '1') {
         this.NeedFlage = false;
-        this.workflowRoleChange( void 0, 'coChair');
+        this.workflowRoleChange(void 0, 'coChair');
       } else if (e.target.value === '0') {
         this.NeedFlage = true;
       }
@@ -6021,7 +6184,7 @@ export default {
             }
             if (res.type) {
               this.record.type = res.type;
-              this.NeedFlage = res.type == '1'?false:true;
+              this.NeedFlage = res.type !== '1';
             }
             this.record.owerDeptLv1 = res.owerDeptLv1;
             this.record.champion = res.champion;
@@ -6032,37 +6195,34 @@ export default {
             });
             // const status = Number(this.detailList.status);
             // const pagePermission = this.pagePermission;
-            for (let i in this.issueDefinitionData.sevenDiamondsVos) {
+            /* TODO: 不安全操作，请查阅文档修正 */
+            for (let i = 0; i < 7; i += +1) {
               if (this.issueDefinitionData.sevenDiamondsVos[i].standard) {
-                if(i==0){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.1stDiamond') + ': ' + this.$t('issue_workflow.D1.rightProcess');
+                if (i === 0) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.1stDiamond')}: ${this.$t('issue_workflow.D1.rightProcess')}`;
                 }
-                if(i==1){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.2ndDiamond') + ': ' + this.$t('issue_workflow.D1.rightTools');
+                if (i === 1) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.2ndDiamond')}: ${this.$t('issue_workflow.D1.rightTools')}`;
                 }
-                if(i==2){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.3rdDiamond') + ': ' + this.$t('issue_workflow.D1.rightMaterials');
+                if (i === 2) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.3rdDiamond')}: ${this.$t('issue_workflow.D1.rightMaterials')}`;
                 }
-                if(i==3){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.4thDiamond') + ': ' + this.$t('issue_workflow.D1.specification');
+                if (i === 3) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.4thDiamond')}: ${this.$t('issue_workflow.D1.specification')}`;
                 }
-                if(i==4){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.5thDiamond') + ': ' + this.$t('issue_workflow.D1.processChange');
+                if (i === 4) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.5thDiamond')}: ${this.$t('issue_workflow.D1.processChange')}`;
                 }
-                if(i==5){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.6thDiamond') + ': ' + this.$t('issue_workflow.D1.partChange');
+                if (i === 5) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.6thDiamond')}: ${this.$t('issue_workflow.D1.partChange')}`;
                 }
-                if(i==6){
-                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = this.$t('issue_workflow.D1.7thDiamond') + ': ' + this.$t('issue_workflow.D1.complex');
+                if (i === 6) {
+                  this.issueDefinitionData.sevenDiamondsVos[i].sevenmonds = `${this.$t('issue_workflow.D1.7thDiamond')}: ${this.$t('issue_workflow.D1.complex')}`;
                 }
-                this.issueDefinitionData.sevenDiamondsVos[i].index =i;
+                this.issueDefinitionData.sevenDiamondsVos[i].index = i;
                 this.analysisData.push(this.issueDefinitionData.sevenDiamondsVos[i]);
               }
             }
-            
-            
-            
-           
           });
         } else if (param === 2) {
           this.rootCause(this.id).then((res = {}) => {
@@ -6079,32 +6239,32 @@ export default {
             this.formDcontent.updateFields(this.mapPropsToFieldsForm());
           });
         } else if (param === 3) {
-          this.MeasureDetail(this.id).then(res => {
+          this.MeasureDetail(this.id).then((res) => {
             this.stepMeasures = res;
             this.d3FileList = (res.files || []).map(this.file2client);
           });
         } else if (param === 4) {
-          this.ImplementationDetail(this.id).then(res => {
+          this.ImplementationDetail(this.id).then((res) => {
             this.stepImplementation = res;
             this.d4FileList = (res.files || []).map(this.file2client);
           });
         } else if (param === 5) {
-          this.effectDetail(this.id).then(res => {
+          this.effectDetail(this.id).then((res) => {
             this.stepEffect = res;
             this.d5FileList = (res.files || []).map(this.file2client);
           });
-          this.updateFile(this.id).then(res => {
+          this.updateFile(this.id).then((res) => {
             this.updateData = res;
           });
         } else if (param === 6) {
-          this.closeDetail(this.id).then(res => {
+          this.closeDetail(this.id).then((res) => {
             this.d6FileList = (res.files || []).map(this.file2client);
             this.stepClose = res;
           });
         }
       } else if (this.backCurrent === 6 && this.stepCurrent === 6) {
         this.backFlag = false;
-        this.closeDetail(this.id).then(res => {
+        this.closeDetail(this.id).then((res) => {
           this.stepClose = res;
         });
       } else {
@@ -6140,15 +6300,15 @@ export default {
           const param = {
             taskId: this.detailList.taskId,
             variable: {
-              champion: data.champion
-            }
+              champion: data.champion,
+            },
           };
           this.redistributionFun(param).then(() => {
             const championUpate = {
               issueId: this.id,
               userId: data.champion,
               responsibleDepartmentId: data.owerDeptLv1,
-              message: data.rediStributionMessage
+              message: data.rediStributionMessage,
             };
             // 修改后台角色人员信息
             this.handelActRoles();
@@ -6158,7 +6318,7 @@ export default {
             });
             this.visibleRes = false;
             this.$router.push({
-              path: this.$route.query.form || '/'
+              path: this.$route.query.form || '/',
             });
           });
         }
@@ -6194,13 +6354,13 @@ export default {
     handleDeleteFunction () {
       const vm = this;
       vm.delFlag = 1;
-      const param = { id:vm.id , optCounter:vm.optCounter , delFlag:vm.delFlag };
+      const param = { id: vm.id, optCounter: vm.optCounter, delFlag: vm.delFlag };
       // eslint-disable-next-line no-unused-vars
-      vm.delIssue(param).then( res => {
+      vm.delIssue(param).then((res) => {
         this.$message.success(this.$t('delete.success'));
         this.goBack();
       // eslint-disable-next-line no-unused-vars
-      }).catch(err => {
+      }).catch((err) => {
         this.$message.error(this.$t('delete.failure'));
         this.goBack();
       });
@@ -6208,14 +6368,14 @@ export default {
     // 点击提交
     handleSubmit () {
       const vm = this;
-      const commitButton = vm.$refs.commitButton;
+      const { commitButton } = vm.$refs;
       if (!vm.allowCommit) {
         vm.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
         return;
       }
-      if(this.backCurrent!=this.stepCurrent){
+      if (this.backCurrent !== this.stepCurrent) {
         this.goto(this.stepCurrent);
-      }else {
+      } else {
         this.formDcontent.validateFields((err) => {
           if (!err) {
             disableScroll();
@@ -6229,13 +6389,13 @@ export default {
     },
     // 提交调用接口函数
     handleSubmitFunction () {
-      const commitButton = this.$refs.commitButton;
+      const { commitButton } = this.$refs;
       const vm = this;
       // if (!vm.allowCommit) {
       //   vm.$message.warning('该问题保存信息不全，请在编辑页面中提交').then(commitButton.reset);
       //   return;
       // }
-    
+
       this.formDcontent.validateFields((err) => {
         if (!err) {
           this.routerFlag = false;
@@ -6245,15 +6405,15 @@ export default {
             data.endSeven = '1';
           }
           // console.log(this.record);
-          //备注
-          if(parseInt(this
-            .statusCode.statusNewCode, 10) === 100200){
+          // 备注
+          if (parseInt(this
+            .statusCode.statusNewCode, 10) === 100200) {
             this.record.isPass = data.isProject;
           }
-          if(data.verifySeven){
+          if (data.verifySeven) {
             this.record.isPass = data.verifySeven;
           }
-          const commentVal = this.record.isPass==='0'? this.record.comment : this.record.notes;
+          const commentVal = this.record.isPass === '0' ? this.record.comment : this.record.notes;
           const transData = {
             businessKey: this.id, // 问题id
             businessTitle: data.title, // 问题title
@@ -6278,15 +6438,18 @@ export default {
               isLeaderSign: this.record.isSign, // 领导加签
               isItem: data.isProject, // 是否立项
               isWD: data.isNeedIca, // 是否围堵
-            }
+            },
           };
-          //保存任务角色
-          for(let item in this.workflowRoles) {
-            transData.variables[item]=this.workflowRoles[item];
-            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+          // 保存任务角色 /* TODO: 不安全操作，请查阅文档修正*/
+          for (const item in this.workflowRoles) {
+            transData.variables[item] = this.workflowRoles[item];
+            this.workflowRolesList.push({
+              groupId: item, userId: this.workflowRoles[item], procInstId: this.wkprocessInstanceId, procDefKey: this.procDefKey, businessKey: this.id,
+            });
           }
-          this.addActIdMembership(this.workflowRolesList).then(addResult => {
-            for(let item in addResult) {
+          this.addActIdMembership(this.workflowRolesList).then((addResult) => {
+            /* TODO: 不安全操作，请查阅文档修正 */
+            for (const item in addResult) {
               transData.variables[item] = addResult[item];
             }
             vm.workFlowSubmit(transData).then(() => {
@@ -6297,18 +6460,17 @@ export default {
               vm.$message.success(vm.$t('issue_workflow.submitSuccess'));
               // 如果当前步骤为D0并且选择立项那么页面不跳转
               if ((this.record.isProject === '1' && this.stepCurrent === 0 && parseInt(this
-                .statusCode.statusNewCode, 10) == 100200) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
-              //commitButton.reset();
+                .statusCode.statusNewCode, 10) === 100200) || (this.record.isPass === '1' && this.stepCurrent === 5 && (this.statusCode.statusNewCode === '600900' || this.statusCode.statusNewCode === '600905'))) {
+              // commitButton.reset();
               // this.init();
                 this.$store.dispatch('refresh');
               } else {
                 this.$router.push({
-                  path: this.$route.query.form || '/'
+                  path: this.$route.query.form || '/',
                 });
               }
             }).finally(commitButton.reset);
           });
-          
         } else {
           commitButton.reset();
           this.routerFlag = true;
@@ -6316,10 +6478,10 @@ export default {
       });
     },
     handleSave (status) {
-      if(status == 1){
+      if (status === 1) {
         this.handelActRoles();
       }
-      const saveButton = this.$refs.saveButton;
+      const { saveButton } = this.$refs;
       const data = this.formDcontent.getFieldsValue();
       // eslint-disable-next-line no-underscore-dangle
       const _this = this;
@@ -6327,24 +6489,24 @@ export default {
       if (this.statusCode.statusNewCode === '100100') {
         saveButton.reset();
         this.$router.push({
-          path: this.$route.query.form || '/'
+          path: this.$route.query.form || '/',
         });
       }
       // 判断当前步骤
-      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode, 10) > 100100&&this.pagePermission.A0_1_3) {
+      if (this.stepCurrent === 0 && parseInt(this.statusCode.statusNewCode, 10) > 100100 && this.pagePermission.A0_1_3) {
         if (this.d0FileList && this.d0FileList.length) {
           data.files = this.d0FileList;
         }
         data.optCounter = this.optCounterD0;
         data.icaDescription = this.record.icaDescriptionD1;
         data.id = this.idDef;
-        this.problemDefinitionAdd(data).then(res => {
+        this.problemDefinitionAdd(data).then((res) => {
           this.problemDefinitionData = res;
           this.optCounterD0 = res.optCounter;
           saveButton.reset();
           if (this.routerFlag) {
             this.$router.push({
-              path: this.$route.query.form || '/'
+              path: this.$route.query.form || '/',
             });
           }
         });
@@ -6359,105 +6521,105 @@ export default {
           data.id = this.idRes;
           _this.analysisData = _this.analysisData || [];
           let optCoustValid = false;
-          if(this.issueDefinitionData.sevenDiamondsVos){
-            optCoustValid = true;            
+          if (this.issueDefinitionData.sevenDiamondsVos) {
+            optCoustValid = true;
           }
-          if (!_this.analysisData.length||this.statusCode.statusNewCode === '200105') {
+          if (!_this.analysisData.length || this.statusCode.statusNewCode === '200105') {
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS01',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[0].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[0].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[0].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[0].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS02',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[1].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[1].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[1].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[1].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner1,
                 type: 'DIAMONDS03',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[2].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[2].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[2].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[2].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner4,
                 type: 'DIAMONDS04',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[3].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[3].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[3].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[3].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner5,
                 type: 'DIAMONDS05',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[4].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[4].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[4].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[4].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner6,
                 type: 'DIAMONDS06',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[5].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[5].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[5].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[5].id : null,
               });
             }
             if (!this.NeedFlage) {
               _this.analysisData.push({
                 champion: this.record.diamondOwner7,
                 type: 'DIAMONDS07',
-                optCounter: optCoustValid?this.issueDefinitionData.sevenDiamondsVos[6].optCounter:null,
-                id:optCoustValid?this.issueDefinitionData.sevenDiamondsVos[6].id:null
+                optCounter: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[6].optCounter : null,
+                id: optCoustValid ? this.issueDefinitionData.sevenDiamondsVos[6].id : null,
               });
             }
           }
           _this.analysisData.forEach((item) => {
-            this.AnalysisTotal.forEach((item2)=>{
-              if(item.id === item2.id) {
-                item.files=item2.files;
+            this.AnalysisTotal.forEach((item2) => {
+              if (item.id === item2.id) {
+                item.files = item2.files;
               }
             });
           });
           data.sevenDiamondsVos = _this.analysisData;
           data.optCounter = this.optCounterD1;
-          if(!data.type){
+          if (!data.type) {
             data.type = this.record.type;
           }
           this.saveSevenDiamonds({
-            sevenDiamondsVOS:data.sevenDiamondsVos
+            sevenDiamondsVOS: data.sevenDiamondsVos,
           });
-          this.issueDefinitionAdd(data).then(res => {
+          this.issueDefinitionAdd(data).then((res) => {
             this.optCounterD1 = res.optCounter;
             saveButton.reset();
             if (this.routerFlag) {
               this.$router.push({
-                path: this.$route.query.form || '/'
+                path: this.$route.query.form || '/',
               });
             }
           });
         }
       });
-      if (this.stepCurrent === 2&&this.pagePermission.A2_1_3) {
+      if (this.stepCurrent === 2 && this.pagePermission.A2_1_3) {
         data.id = this.idReason;
         data.optCounter = this.optCounterD2;
         if (this.d2FileList && this.d2FileList.length) {
           data.files = this.d2FileList;
         }
-        this.analysisSave(data).then(res => {
+        this.analysisSave(data).then((res) => {
           this.optCounterD2 = res.optCounter;
           saveButton.reset();
           if (this.routerFlag) {
             this.$router.push({
-              path: this.$route.query.form || '/'
+              path: this.$route.query.form || '/',
             });
           }
         });
@@ -6487,12 +6649,12 @@ export default {
       if (data.breakpointDate) {
         data.breakpointDate = data.breakpointDate.format('YYYY-MM-DD HH:mm:ss');
       }
-      //措施实施表单回写
-      if (this.stepCurrent === 3&&this.pagePermission.A3_1_3 ) {
+      // 措施实施表单回写
+      if (this.stepCurrent === 3 && this.pagePermission.A3_1_3) {
         if (this.d3FileList && this.d3FileList.length) {
           data.files = this.d3FileList;
         }
-        //措施实施表单回写
+        // 措施实施表单回写
         data.icaExecDescription = this.stepMeasures.icaExecDescription;
         data.icaExecTime = this.stepMeasures.icaExecTime;
         data.pcaExecDescription = this.stepMeasures.pcaExecDescription;
@@ -6507,7 +6669,7 @@ export default {
         data.issueId = this.id;
         data.id = this.id1;
         this.MeasureDecisionSave(data).then(() => {
-          this.MeasureDetail(this.id).then(res => {
+          this.MeasureDetail(this.id).then((res) => {
             this.stepMeasures = res;
             this.optCounterD3 = res.optCounter;
             this.icaOptCounter = res.icaOptCounter;
@@ -6515,23 +6677,23 @@ export default {
             saveButton.reset();
             if (this.routerFlag) {
               this.$router.push({
-                path: this.$route.query.form || '/'
+                path: this.$route.query.form || '/',
               });
             }
           });
         });
-      } else if (this.stepCurrent === 4&&this.pagePermission.A4_1_3) {
+      } else if (this.stepCurrent === 4 && this.pagePermission.A4_1_3) {
         if (this.d4FileList && this.d4FileList.length) {
           data.files = this.d4FileList;
         }
-        //措施指定表单回写
+        // 措施指定表单回写
         data.icaDescription = this.stepImplementation.icaDescription;
         data.pcaDescription = this.stepImplementation.pcaDescription;
         data.pcaPlanTime = this.stepImplementation.pcaPlanTime;
         data.pcaValidPlanTime = this.stepImplementation.pcaValidPlanTime;
         data.smallBatchValidation = this.stepImplementation.smallBatchValidation;
         data.estimatedClosureTime = this.stepImplementation.estimatedClosureTime;
-        //措施实施表单
+        // 措施实施表单
         data.id = this.id2;
         data.optCounter = this.optCounterD4;
         data.icaOptCounter = this.icaOptCounter;
@@ -6541,7 +6703,7 @@ export default {
         data.issueId = this.id;
         data.pcaExecDescription = this.record.pcaExecDescription;
         this.MeasureDecisionSave(data).then(() => {
-          this.ImplementationDetail(this.id).then(res => {
+          this.ImplementationDetail(this.id).then((res) => {
             this.stepImplementation = res;
             this.optCounterD4 = res.optCounter;
             this.icaOptCounter = res.icaOptCounter;
@@ -6550,39 +6712,39 @@ export default {
           saveButton.reset();
           if (this.routerFlag) {
             this.$router.push({
-              path: this.$route.query.form || '/'
+              path: this.$route.query.form || '/',
             });
           }
         });
-      } else if (this.stepCurrent === 5&&(this.pagePermission.A5_1_3||this.pagePermission.A5_4_3)) {
+      } else if (this.stepCurrent === 5 && (this.pagePermission.A5_1_3 || this.pagePermission.A5_4_3)) {
         if (this.d5FileList && this.d5FileList.length) {
           data.files = this.d5FileList;
         }
-        //当为提出人填写时给效果验证填写表单赋值
-        if(this.pagePermission.A5_4_3){
+        // 当为提出人填写时给效果验证填写表单赋值
+        if (this.pagePermission.A5_4_3) {
           data.description = this.stepEffect.description;
           data.breakpointVin = this.stepEffect.breakpointVin;
           data.breakpointDate = this.stepEffect.breakpointDate;
         }
-        if(this.pagePermission.A5_1_3){
-          data.proposerVerification =this.stepEffect.proposerVerification;
+        if (this.pagePermission.A5_1_3) {
+          data.proposerVerification = this.stepEffect.proposerVerification;
         }
         data.id = this.idEffct;
         data.optCounter = this.optCounterD5;
         this.effectSave(data).then(() => {
-          this.effectDetail(this.id).then(res => {
+          this.effectDetail(this.id).then((res) => {
             this.stepEffect = res;
             this.optCounterD5 = res.optCounter;
             this.idEffct = res.id;
             saveButton.reset();
             if (this.routerFlag) {
               this.$router.push({
-                path: this.$route.query.form || '/'
+                path: this.$route.query.form || '/',
               });
             }
           });
         });
-      } else if (this.stepCurrent === 6&&(this.pagePermission.A6_1_3||this.pagePermission.A6_2_3)) {
+      } else if (this.stepCurrent === 6 && (this.pagePermission.A6_1_3 || this.pagePermission.A6_2_3)) {
         if (this.d6FileList && this.d6FileList.length) {
           data.files = this.d6FileList;
         }
@@ -6592,25 +6754,24 @@ export default {
         if (data.signRemark === null || data.signRemark === '') {
           data.signRemark = ' ';
         }
-        if(this.pagePermission.A6_2_3){
+        if (this.pagePermission.A6_2_3) {
           data.signLeaderId = this.stepClose.signLeaderId;
           data.creatorName = this.stepClose.creatorName;
           data.stepClose = this.stepClose.createDate;
           data.recurrencePrevention = this.stepClose.recurrencePrevention;
-
         }
-        if(this.pagePermission.A6_1_3){
+        if (this.pagePermission.A6_1_3) {
           data.signRemark = this.stepClose.signRemark;
         }
         this.closeSave(data).then(() => {
-          this.closeDetail(this.id).then(res => {
+          this.closeDetail(this.id).then((res) => {
             this.stepClose = res;
             this.optCounterD6 = res.optCounter;
             this.idClose = res.id;
             saveButton.reset();
             if (this.routerFlag) {
               this.$router.push({
-                path: this.$route.query.form || '/'
+                path: this.$route.query.form || '/',
               });
             }
           });
@@ -6622,7 +6783,7 @@ export default {
     },
     handleReset () {
       this.$router.push({
-        path: this.$route.query.form || '/'
+        path: this.$route.query.form || '/',
       });
     },
 
@@ -6633,16 +6794,16 @@ export default {
     editDetail () {
       this.editFlag = true;
       const name = 'edit';
-      const id = this.id;
+      const { id } = this;
       this.$router.push({
         name: 'QuestionCreate',
         params: {
           name,
-          id
+          id,
         },
         query: {
-          form: this.$route.path
-        }
+          form: this.$route.path,
+        },
       });
     },
     // 是否满足立项条件切换
@@ -6662,81 +6823,71 @@ export default {
     },
     // 单页报告下载
     issueReportDownload () {
-      this.issueExportTemplate({id: this.id}).then(res => {
-        const url = res.url || '';
-        const name = res.name || '';
-        const a = document.createElement('a');
-        a.setAttribute('href', url);
-        a.setAttribute('download', name);
-        // a.click在火狐下无法被触发，必须通过这种方式下载
-        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-        a.remove();
-      });
+      this.issueExportTemplate({ id: this.id }).then();
     },
-    //保存工作流角色人物
-    handelActRoles (){
-      for(let item in this.workflowRoles) {
-		    this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:this.wkprocessInstanceId,procDefKey:this.procDefKey,businessKey:this.id});
+    // 保存工作流角色人物 /* TODO: 不安全操作，请查阅文档修正*/
+    handelActRoles () {
+      for (const item in this.workflowRoles) {
+        this.workflowRolesList.push({
+          groupId: item, userId: this.workflowRoles[item], procInstId: this.wkprocessInstanceId, procDefKey: this.procDefKey, businessKey: this.id,
+        });
       }
       this.addActIdMembership(this.workflowRolesList).then(() => {
 
       });
     },
-    //更换工作流角色人员
-    workflowRoleChange (value ,role){
+    // 更换工作流角色人员
+    workflowRoleChange (value, role) {
       this.workflowRoles[role] = value;
     },
-    //更新责任人或者提出人科长或者部长
-    worlkChampionOrProposer (value ,role){
+    // 更新责任人或者提出人科长或者部长
+    worlkChampionOrProposer (value, role) {
       this.workflowRoles[role] = value;
-      if(role=='advanceUser'){
-        if(value){
-          this.getUserByPositionCodeFunction(value,'sectorManager','advanceSelector');
-        }else{
+      if (role === 'advanceUser') {
+        if (value) {
+          this.getUserByPositionCodeFunction(value, 'sectorManager', 'advanceSelector');
+        } else {
           this.workflowRoles.advanceSelector = '';
         }
-        
-      }else if(role=='champion'){
-        if(value){
-          this.getUserByworkFlowPositionCodeFunction(value,'sectorManager','sectorManager');
-          this.getUserByworkFlowPositionCodeFunction(value,'director','director');
-        }else{
+      } else if (role === 'champion') {
+        if (value) {
+          this.getUserByworkFlowPositionCodeFunction(value, 'sectorManager', 'sectorManager');
+          this.getUserByworkFlowPositionCodeFunction(value, 'director', 'director');
+        } else {
           this.workflowRoles.sectorManager = '';
           this.workflowRoles.director = '';
         }
       }
     },
-    //获取对应人科长或者部长信息
-    getUserByPositionCodeFunction (value,positionCode,role){
+    // 获取对应人科长或者部长信息
+    getUserByPositionCodeFunction (value, positionCode, role) {
       const parmas = {
         userId: value,
-        positionCode: positionCode
+        positionCode,
       };
-      this.getUserByPositionCode(parmas).then(res => {
-        if(res[0]){
+      this.getUserByPositionCode(parmas).then((res) => {
+        if (res[0]) {
           this.workflowRoles[role] = res[0].id;
-        }else{
+        } else {
           this.workflowRoles[role] = void 0;
         }
-       
       });
     },
-    //获取工作流对应人科长或者部长信息
-    getUserByworkFlowPositionCodeFunction (value,positionCode,role){
+    // 获取工作流对应人科长或者部长信息
+    getUserByworkFlowPositionCodeFunction (value, positionCode, role) {
       const parmas = {
         userId: value,
-        positionCode: positionCode
+        positionCode,
       };
-      this.getUserByworkflowPositionCode(parmas).then(res => {
-        if(res[0]){
+      this.getUserByworkflowPositionCode(parmas).then((res) => {
+        if (res[0]) {
           this.workflowRoles[role] = res[0].id;
-        }else{
+        } else {
           this.workflowRoles[role] = void 0;
         }
-        
       });
     },
-  }
+  },
 };
 </script>
 
@@ -6770,14 +6921,14 @@ export default {
     font-size: 12px;
   }
   .spantable span{
-    display:block; 
+    display:block;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
     width:100px;
   }
   .spantable {
-    width:100px;   
+    width:100px;
   }
   .D5back /deep/ .ant-table-thead > tr > th{
      padding: 16px 12px !important;
@@ -6791,44 +6942,44 @@ export default {
    .D5content /deep/ .ant-table-tbody > tr > td{
      padding: 16px 12px !important;
    }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(2) span { 
-    
+  // /deep/ .ant-table-tbody > tr > td:nth-child(2) span {
+
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(2) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(2) {
   //  width:100px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(3) span { 
-  //   display:block; 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(3) span {
+  //   display:block;
   //   text-overflow: ellipsis;
-  //   white-space: nowrap; 
+  //   white-space: nowrap;
   //   overflow: hidden;
   //   width:147px;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(3) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(3) {
   //  width:100px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(4) span { 
-  //   // display:block; 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(4) span {
+  //   // display:block;
   //   // text-overflow: ellipsis;
-  //   // white-space: nowrap; 
+  //   // white-space: nowrap;
   //   // overflow: hidden;
   //   // width:70px;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(4) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(4) {
   // //  width:100px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
-  //   // display:block; 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span {
+  //   // display:block;
   //   // text-overflow: ellipsis;
-  //   // white-space: nowrap; 
+  //   // white-space: nowrap;
   //   // overflow: hidden;
   //   // width:226px;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) {
   //  width:100px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
@@ -6841,6 +6992,11 @@ export default {
       /deep/ .ant-form-item-control-wrapper p {
         color: rgba(0, 0, 0, 0.65);
       }
+ }
+ .D1content {
+   .item-title span{
+     font-weight: bold;
+   }
  }
 
   /deep/ .ant-advanced-search-form{
@@ -6906,6 +7062,8 @@ export default {
         padding: 0 32px;
       }
       .pageTitle {
+        display: inline-block;
+        text-align: vertical;
         padding-left: 0;
         margin: 0;
         .carTitle {
@@ -6913,7 +7071,6 @@ export default {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          display: inline-block;
           line-height: 40px;
           height: 40px;
         }
@@ -7051,7 +7208,7 @@ export default {
         color: rgba(0, 0, 0, 0.45);
         font-weight: 400;
       }
-      // 
+      //
     }
 
     .fileNumber {
@@ -7395,6 +7552,7 @@ export default {
   .analysisList {
     .analysisTitle {
       margin-left: 40px;
+      font-weight: bold;
 
       span {
         font-size: 16px;
@@ -7477,6 +7635,7 @@ export default {
 
   .analysisTable {
     float: left;
+    width: 798px;
     border: 1px solid rgba(0, 0, 0, 0.09);
     border-radius: 4px;
     margin-left: 65px;
@@ -7821,46 +7980,45 @@ export default {
         border-bottom: 1px solid #e8e8e8;
         transition: background 0.3s ease;
       }
-      /deep/ .ant-table-tbody > tr > td { 
+      /deep/ .ant-table-tbody > tr > td {
         max-width: 250px;
-      }   
+      }
     }
 
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
-  //   display:block; 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span {
+  //   display:block;
   //   text-overflow: ellipsis;
-  //   white-space: nowrap; 
+  //   white-space: nowrap;
   //   overflow: hidden;
   //   width:70px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) {
   //  width:100px;
   //     // float:right;margin-left:-5px;width:200px;word-break: break-all;
   // }
-   
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::before { 
+
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::before {
   //     float:left;width:5px;content:'';height:40px;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::after { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5)::after {
   //   float:right;content:'...';height:20px;line-height:20px;
-	// 	width:30px;margin-left:-30px;/*更改宽度和边距，移动省略号位置*/
-	// 	position:relative;left:100%;top:-20px;
-	// 	padding-right:5px;background:#999;
+  //  width:30px;margin-left:-30px;/*更改宽度和边距，移动省略号位置*/
+  //  position:relative;left:100%;top:-20px;
+  //  padding-right:5px;background:#999;
   // }
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) { 
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) {
   //     height:40px;line-height:20px;overflow: hidden;width:200px;background:#999;
   // }
-  
-  
-  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span { 
+
+
+  // /deep/ .ant-table-tbody > tr > td:nth-child(5) span {
   //   overflow : hidden;
   //   text-overflow: ellipsis;
   //   display: -webkit-box;
   //   -webkit-line-clamp: 3;
   //   -webkit-box-orient: vertical;
-   
+
   // }
 
 </style>
-

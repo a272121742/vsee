@@ -99,13 +99,13 @@ const list = mock({
   // 49. string VIN号
   vinNo: 'VIN-@string("number", 2)',
   // 50. string 工况信息
-  workConditionInfo: '@csentence'
+  workConditionInfo: '@csentence',
 }, 54);
 
 const db = cdb.link('issue', list);
 
 mock.get('/issue/v1/issue/page', ({
-  page = 1, limit = 10
+  page = 1, limit = 10,
 }) => {
   const datas = db.find();
   const begin = limit * (page - 1);
@@ -113,24 +113,20 @@ mock.get('/issue/v1/issue/page', ({
   return mock.result({
     data: {
       list: datas.slice(begin, end),
-      total: datas.length
-    }
+      total: datas.length,
+    },
   });
 });
 
-mock.get('/masterdata/v1/vehiclemodel', () => {
-  return mock.result({
-    data: [{
-      id: 1,
-      name: '车型1'
-    }, {
-      id: 2,
-      name: '车型2'
-    }]
-  });
-});
-mock.get('/issue/v1/faultcategory', () => {
-  return mock.result({
-    data: []
-  });
-});
+mock.get('/masterdata/v1/vehiclemodel', () => mock.result({
+  data: [{
+    id: 1,
+    name: '车型1',
+  }, {
+    id: 2,
+    name: '车型2',
+  }],
+}));
+mock.get('/issue/v1/faultcategory', () => mock.result({
+  data: [],
+}));

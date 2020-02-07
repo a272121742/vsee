@@ -23,7 +23,7 @@
         <a
           v-permission="'issue:record:detail'"
           href="javascript:;"
-          @click="goToDetail(record.id)"
+          @click="goToDetail(record)"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -39,7 +39,7 @@ import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
 export default {
   name: 'IssueList',
-  mixins: [issueTableMix, moduleDynamicCache('question')]
+  mixins: [issueTableMix, moduleDynamicCache('question')],
 };
 </script>
 <style lang="less" scoped>

@@ -29,11 +29,11 @@ export default {
     donePageData: { current: 1, pageSize: 10 },
     // 分页/排序信息（已发）
     publishedOrderData: {},
-    publishedPageData: { current: 1, pageSize: 10 }
+    publishedPageData: { current: 1, pageSize: 10 },
     // advanceSearchFormRecord: {},
     // searchFormAdvanced: false
   },
   getters,
   actions,
-  mutations
+  mutations,
 };

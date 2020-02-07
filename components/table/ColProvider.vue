@@ -115,7 +115,7 @@ export default {
      */
     transform: {
       type: Function,
-      default: txt => txt,
+      default: (txt) => txt,
     },
     /**
      * 国际化路径
@@ -169,7 +169,7 @@ export default {
      * 已选中数目
      */
     checked () {
-      return (this.tc, this.columnList.filter(col => !col.invisible).length);
+      return (this.tc, this.columnList.filter((col) => !col.invisible).length);
     },
     /**
      * 是否修改过

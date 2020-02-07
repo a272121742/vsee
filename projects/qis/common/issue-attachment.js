@@ -1,3 +1,4 @@
+import download from '@http/download.js';
 import { tap } from 'ramda';
 /**
  * 上传文件包含：
@@ -70,17 +71,17 @@ export default {
        */
       headers: {
         authorization: 'authorization-text',
-        token: $store.state.token
-      }
+        token: $store.state.token,
+      },
     };
   },
   filters: {
-    file2client
+    file2client,
   },
   methods: {
     file2client,
     file2server,
-    
+
     /**
      * 获取下载链接
      * @param {*} url - 下载地址（相对）
@@ -88,11 +89,20 @@ export default {
      */
     getDownloadURL (url, name) {
       // 获取下载地址前缀，下载地址前缀根据不同环境会不同
+      // const preUrl = this.$store.getters.getUrl();
+      // const encodePath = window.encodeURIComponent(url);
+      // const encodeFileName = window.encodeURIComponent(name);
+      const { token } = this.headers;
+      // return window.decodeURI(`${preUrl}/oss/ossFile/download?path=${encodePath}&originalFilename=${encodeFileName}&token=${token}`);
+      // 获取下载地址前缀，下载地址前缀根据不同环境会不同
       const preUrl = this.$store.getters.getUrl();
+      // if (~preUrl.indexOf('http://')) {
+      //   preUrl = preUrl.slice(24);
+      // }
       const encodePath = window.encodeURIComponent(url);
       const encodeFileName = window.encodeURIComponent(name);
-      const token = this.headers.token;
-      return window.decodeURI(`${preUrl}/oss/ossFile/download?path=${encodePath}&originalFilename=${encodeFileName}&token=${token}`);
+      console.log('下载地址为: ', preUrl);
+      return `${preUrl}/oss/ossFile/download?path=${encodePath}&originalFilename=${encodeFileName}&token=${token}`;
     },
     /**
      * 下载文件
@@ -100,12 +110,14 @@ export default {
      */
     download (file) {
       if (file.status === 'done') {
-        const a = document.createElement('a');
-        a.setAttribute('href', this.getDownloadURL(file.url || file.response.data.path, file.name));
-        a.setAttribute('download', file.name);
-        // a.click在火狐下无法被触发，必须通过这种方式下载
-        a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-        a.remove();
+        import('@http').then((res) => {
+          const $ = res.default;
+          $.get('/oss/ossFile/download', {
+            path: file.url,
+            originalFilename: file.name,
+          }, { responseType: 'blob' });
+        });
+        // download(this.getDownloadURL(file.url || file.response.data.path, file.name), file.name);
       }
       return false;
     },
@@ -114,7 +126,7 @@ export default {
       const downloadFlag = file.size > 0 && file.size <= 52428800;
       if (!downloadFlag) {
         file.response = {
-          code: file.size ? 100001001 : 100001002
+          code: file.size ? 100001001 : 100001002,
         };
       }
       return downloadFlag;
@@ -124,13 +136,13 @@ export default {
      * @param {*} records 保存的数据文件（服务端文件）
      * @param {*} previews 预览文件（客户端文件）
      */
-    changeFileList (records = [], previews = []) { 
+    changeFileList (records = [], previews = []) {
       const vm = this;
       return function changeHandler (info) {
         // 处理预览显示
-        previews.splice(0, previews.length, ...info.fileList.map(tap(file => {
+        previews.splice(0, previews.length, ...info.fileList.map(tap((file) => {
           if (file.error) {
-            file.response = file.error.status ? vm.$t(`SERVER.ERROR.${file.error.status}`) : file.error.message;
+            file.response = file.error.status ? vm.$t(`request.${file.error.status}`) : file.error.message;
           }
           if (file.response) {
             if (!file.response.code && file.response.data) {
@@ -138,8 +150,8 @@ export default {
               file.id = file.response.data.id;
             } else {
               file.status = 'error';
-              const code = file.response.code;
-              file.response = code ? vm.$t(`SERVER.ERROR.${code}`) : file.response;
+              const { code } = file.response;
+              file.response = code ? vm.$t(`request.${code}`) : file.response;
             }
           }
         })));
@@ -159,7 +171,7 @@ export default {
      */
     removeFile (records) {
       return function removeHandler (file) {
-        const index = records.findIndex(item => item.id === file.id);
+        const index = records.findIndex((item) => item.id === file.id);
         if (index !== -1) {
           records.splice(index, 1);
         }
@@ -171,16 +183,7 @@ export default {
      * @param {*} file
      */
     downloadFromStatic (fileName) {
-      const a = document.createElement('a');
-      a.setAttribute('href', '/static/' + fileName);
-      a.setAttribute('download', fileName);
-      // a.click在火狐下无法被触发，必须通过这种方式下载
-      a.dispatchEvent(new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      }));
-      a.remove();
+      download(`/static/${fileName}`);
     },
-  }
+  },
 };

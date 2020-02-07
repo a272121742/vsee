@@ -78,19 +78,19 @@ export default {
   name: 'Header',
   components: {
     Banner: () => import('@comp/head/Banner.vue'),
-    ChangePassword: () => import('./ChangePassword.vue')
+    ChangePassword: () => import('./ChangePassword.vue'),
   },
   data () {
     return {
       menuMap: {
         '/home/home': 'Home',
         '/question/list': 'List',
-        '/question/search': 'Search'
+        '/question/search': 'Search',
       },
       form: null,
       visible: false,
       record: {},
-      showChangePassword: false
+      showChangePassword: false,
       // menus: [{
       //   url: '/',
       //   key: 'Home'
@@ -106,15 +106,13 @@ export default {
   computed: {
     menus () {
       const { menuMap } = this;
-      return this.$store.state.menus.map(menu => {
-        return {
-          url: menu.url,
-          key: menuMap[menu.url]
-        };
-      });
+      return this.$store.state.menus.map((menu) => ({
+        url: menu.url,
+        key: menuMap[menu.url],
+      }));
     },
     defaultActiveMenu () {
-      const name = this.$route.name;
+      const { name } = this.$route;
       switch (name) {
       case 'QuestionCreate':
       case 'QuestionDetail':
@@ -126,13 +124,13 @@ export default {
     },
     user () {
       return this.$store.state.userInfo;
-    }
+    },
   },
   watch: {
     // 【策略】监听
     data (data) {
       this.load(clearObserver(data));
-    }
+    },
   },
   created () {
     const vm = this;
@@ -141,7 +139,7 @@ export default {
     // 【策略】投影
     vm.form = vm.$form.createForm(vm, {
       mapPropsToFields: vm.mapPropsToFields,
-      onValuesChange: autoUpdateFileds(vm, 'record')
+      onValuesChange: autoUpdateFileds(vm, 'record'),
     });
   },
   methods: {
@@ -152,7 +150,7 @@ export default {
       this.showChangePassword = true;
     },
     jump (path) {
-      const resolved = this.$router.resolve(path).resolved;
+      const { resolved } = this.$router.resolve(path);
       if (resolved.name === '404') {
         this.$message.warning('前端未配置的路由');
       } else {
@@ -168,8 +166,8 @@ export default {
       this.$store.dispatch('logout');
       // TODO: 做好多应用重定向
       // window.location.href = '/';
-    }
-  }
+    },
+  },
 };
 </script>
 

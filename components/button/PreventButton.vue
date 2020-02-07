@@ -1,13 +1,3 @@
-<i18n>
-  {
-    "en": {
-      "message": "Blocked twice commit, Please try it later!"
-    },
-    "zh": {
-      "message": "已阻止二次提交，请稍后再试！"
-    }
-  }
-</i18n>
 <template>
   <a-button
     v-bind="$attrs"
@@ -34,6 +24,6 @@
 import untwice from '@mix/untwice.js';
 
 export default {
-  mixins: [untwice]
+  mixins: [untwice],
 };
 </script>

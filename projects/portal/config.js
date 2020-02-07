@@ -4,7 +4,7 @@ export const LANGUAGE_KEY = 'language';
 export const LANGUAGE_DEFAULT = 'zh-CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
 export const OTHER_GET_PARAMS = {
-  _t: Date.now(),
+  // _t: Date.now(),
 };
 
 // 授权API
@@ -15,7 +15,7 @@ export const AUTH_API = {
 export const GLOBAL_API = {
   user: ['/sys/user/info', { appCode: 'ISSUE' }],
   menus: ['/sys/menu/nav', { appCode: 'ADMIN' }],
-  permissions: ['/sys/menu/permissions', { appCode: 'ISSUE' }],
+  permissions: ['/sys/menu/permissions', { appCode: 'ADMIN' }],
 };
 
 /**

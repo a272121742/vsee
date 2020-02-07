@@ -99,9 +99,9 @@
         <a @click="forgetPdClick">{{ $t('forgetPd') }}</a>
       </div>
     </a-form-item>
-    <force-changepd 
+    <force-changepd
       v-if="showChangePassword"
-      :visible.sync="showChangePassword" 
+      :visible.sync="showChangePassword"
       :oldpd="record.password"
     >
     </force-changepd>
@@ -126,7 +126,7 @@ export default {
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
     ForceChangepd: () => import('./ForceChangepdModal.vue'),
     ForgetPd: () => import('./ForgetPdModal.vue'),
-    Password: () => import('@comp/form/Password.vue')
+    Password: () => import('@comp/form/Password.vue'),
   },
   data () {
     return {
@@ -141,22 +141,23 @@ export default {
         username: null,
         password: null,
         // captcha: null,
-        uuid: getUUID()
+        uuid: getUUID(),
       },
       /**
        * 是否记住密码
        */
       remember: false,
       showChangePassword: false,
-      showForgetPd: false
+      showForgetPd: false,
     };
   },
   created () {
+    console.log(this.$i18n.messages);
     this.recovery();
     const { mapPropsToFields, onValuesChange } = this;
     this.form = this.$form.createForm(this, {
       mapPropsToFields,
-      onValuesChange
+      onValuesChange,
     });
   },
   methods: {
@@ -178,27 +179,25 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, loginInfo) => {
         if (!err) {
-          this.$store.dispatch('login', loginInfo).then(res => {
+          this.$store.dispatch('login', loginInfo).then((res) => {
             // 强制修改密码状态
             if (res.isNeedUpps === 1) {
               this.showChangePassword = true;
-            } else {
-              if (res.token) {
-                this.$store.commit('setLoginStatus', res.token);
-                const goPage = this.$route.query.redirect || '/';
-                if (this.$router.matcher.match(goPage).name === '404') {
-                  this.$router.push({ path: '/' });
-                } else {
-                  this.$router.push({ path: goPage });
-                }
-                if (this.remember) {
-                  this.$store.commit('cacheLoginInfo', loginInfo);
-                } else {
-                  this.$store.commit('cleanLoginInfo', loginInfo);
-                }
+            } else if (res.token) {
+              this.$store.commit('setLoginStatus', res.token);
+              const goPage = this.$route.query.redirect || '/';
+              if (this.$router.matcher.match(goPage).name === '404') {
+                this.$router.push({ path: '/' });
+              } else {
+                this.$router.push({ path: goPage });
+              }
+              if (this.remember) {
+                this.$store.commit('cacheLoginInfo', loginInfo);
+              } else {
+                this.$store.commit('cleanLoginInfo', loginInfo);
               }
             }
-          }).catch(errCode => {
+          }).catch((errCode) => {
             errCode && this.$message.error(this.$t(errCode));
             this.record.captcha = null;
             this.form.updateFields(this.mapPropsToFields());
@@ -233,8 +232,8 @@ export default {
     },
     forgetPdClick () {
       this.showForgetPd = true;
-    }
-  }
+    },
+  },
 };
 </script>
 

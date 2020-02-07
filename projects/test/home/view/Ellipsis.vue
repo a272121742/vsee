@@ -70,81 +70,81 @@ export default {
   filters: {
     trimEnter (data) {
       return data ? data.replace(/[\r\n]/g, '') : '';
-    }
+    },
   },
   props: {
     /* 文字内容 */
     content: {
       type: String,
-      default: ''
+      default: '',
     },
     /* 展示几行文字 */
     line: {
       type: Number,
-      default: 1
+      default: 1,
     },
     /* 点击更多时候是否触发展开操作 */
     triggerMore: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /* 是否显示更多按钮 */
     hasMore: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /* 是否是html内容 */
     isHtml: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /* 更多按钮宽度 */
     revealWidth: {
       type: Number,
-      default: 70
+      default: 70,
     },
     /* 更多按钮文案 */
     revealText: {
       type: String,
-      default: '【全部】'
+      default: '【全部】',
     },
     /* 收起按钮文案 */
     foldText: {
       type: String,
-      default: '收起'
-    }
+      default: '收起',
+    },
   },
   data () {
     return {
-      showAll: false,// 是否展示所有内容
-      fontSize: 14,// 默认字号14px
-      lineHeight: 22// 默认行高22
+      showAll: false, // 是否展示所有内容
+      fontSize: 14, // 默认字号14px
+      lineHeight: 22, // 默认行高22
     };
   },
   computed: {
     maxHeight () {
-      return this.lineHeight * this.line + 'px';
-    }
+      return `${this.lineHeight * this.line }px`;
+    },
   },
   watch: {
     content () {
       this.showAll = false;
-    }
+    },
   },
   mounted () {
     this.$nextTick(() => {
-      let txtEle = this.$refs.txtContent;
+      const txtEle = this.$refs.txtContent;
       if (txtEle.currentStyle) {
         this.fontSize = Number(txtEle.currentStyle.fontSize.replace('px', ''));
         this.lineHeight = Number(
-          txtEle.currentStyle.lineHeight.replace('px', '')
+          txtEle.currentStyle.lineHeight.replace('px', ''),
         );
       } else {
         this.fontSize = Number(
-          getComputedStyle(txtEle).fontSize.replace('px', '')
+          getComputedStyle(txtEle).fontSize.replace('px', ''),
         );
         this.lineHeight = Number(
-          getComputedStyle(txtEle).lineHeight.replace('px', '')
+          getComputedStyle(txtEle).lineHeight.replace('px', ''),
         );
       }
       // console.log(this.maxHeight);
@@ -159,7 +159,7 @@ export default {
       this.$emit('reveal');
       if (this.triggerMore) {
         this.showAll = true;
-        this.lineHeight = 9999; //增加行高上限，以展示完整内容
+        this.lineHeight = 9999; // 增加行高上限，以展示完整内容
       }
     },
     /* 收起 */
@@ -167,8 +167,8 @@ export default {
       this.$emit('fold');
       this.showAll = false;
       this.lineHeight = 22;
-    }
-  }
+    },
+  },
 };
 </script>
 

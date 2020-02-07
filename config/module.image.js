@@ -1,4 +1,4 @@
-module.exports = config => {
+module.exports = (config) => {
   // TODO: 除去图片之外的可能要用url-loader进行压缩了
   config.module
     .rule('images')
@@ -6,7 +6,7 @@ module.exports = config => {
     .use('image-webpack-loader')
     .loader('image-webpack-loader')
     .options({
-      bypassOnDebug: true
+      bypassOnDebug: true,
     })
     .end();
 };

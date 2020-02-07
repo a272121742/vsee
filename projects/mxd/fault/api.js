@@ -1,5 +1,5 @@
-import ajax from '@lib/ajax.js';
+import ajax from '@http';
 
 export default {
-  getPfsCategoryTree: () => ajax.get('/masterdata/v1/pfscategory/tree')
+  getPfsCategoryTree: () => ajax.get('/masterdata/v1/pfscategory/tree'),
 };

@@ -7,8 +7,8 @@
     width="438px"
   >
     <template slot="footer">
-      <a-button 
-        type="primary" 
+      <a-button
+        type="primary"
         html-type="submit"
         @click="handleOk"
       >
@@ -17,8 +17,8 @@
     </template>
     <a-form>
       <a-form-item>
-        <a-icon 
-          type="exclamation-circle" 
+        <a-icon
+          type="exclamation-circle"
           style="color:#FABE00;"
         >
         </a-icon>
@@ -36,8 +36,8 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
     handleOk () {
@@ -45,8 +45,8 @@ export default {
     },
     close () {
       this.$emit('update:visible', false);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

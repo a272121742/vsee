@@ -1,14 +1,18 @@
 <template>
   <div class="container">
     <a-row
-      class="row1 shadown-block-normal"
+      :gutter="16"
+      class="row1 "
     >
-      <a-card class="banner-card">
-        <img
-          slot="cover"
-          src="/static/question/issue_banner.png"
-        />
-      </a-card>
+      <a-col :span="6">
+        <published-doughnut-block></published-doughnut-block>
+      </a-col>
+      <a-col :span="6">
+        <champion-doughnut-block></champion-doughnut-block>
+      </a-col>
+      <a-col :span="12">
+        <overday-issue-block></overday-issue-block>
+      </a-col>
     </a-row>
     <a-row
       class="row2 shadown-block-normal"
@@ -22,8 +26,11 @@
 export default {
   name: 'Home',
   components: {
-    HomeBlock: () => import('~/question/view/HomeBlock.vue')
-  }
+    PublishedDoughnutBlock: () => import('../view/PublishedDoughnutBlock.vue'),
+    ChampionDoughnutBlock: () => import('../view/ChampionDoughnutBlock.vue'),
+    OverdayIssueBlock: () => import('../view/OverdayIssueBlock.vue'),
+    HomeBlock: () => import('~/question/view/HomeBlock.vue'),
+  },
 };
 </script>
 
@@ -39,16 +46,17 @@ export default {
   .container {
     background-color: transparent!important;
     .row1 {
+      background-color: transparent!important;
       margin: 16px 0;
+      .ant-card {
+        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .12)!important;
+      }
       .banner-card {
         border-radius: 4px;
         border-radius: 4px;
         img {
           width: 1200px;
           height: 220px;
-          // object-fit: cover;
-          // width:100%;
-          // height:100%;
           background-size: cover;
           background-repeat:no-repeat;
         }

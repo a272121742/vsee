@@ -1,9 +1,10 @@
 const isProd = process.env.NODE_ENV === 'production';
 const unzip = !!process.env.npm_config_unzip;
 
-module.exports = config => {
-  isProd && !unzip &&
-    config.optimization.minimizer('terser').tap(args => {
+module.exports = (config) => {
+  isProd && !unzip
+    && config.optimization.runtimeChunk({ name: 'manifest' }).minimizer('terser').tap((args) => {
+      console.log('\n压缩代码中...');
       Object.assign(args[0].terserOptions.compress, {
         // 警告：true保留警告，false不保留
         warnings: false,
@@ -14,7 +15,7 @@ module.exports = config => {
         // 提取出出现多次但是没有定义成变量去引用的静态值
         reduce_vars: true,
         // 删除以下api
-        pure_funcs: ['console.log']
+        pure_funcs: ['console.log'],
       });
 
       return args;

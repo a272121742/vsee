@@ -48,20 +48,21 @@ function zhSubString (t = '', length = 0) {
   const text = t || '';
   let len = 0;
   let limit = 0;
-  for (const c of text) {
+  for (let i = 0; i < text.length; i += 1) {
+    const c = text[i];
     const charCode = c.charCodeAt(0);
-    if (charCode >= 0 && charCode <= 128) {  
-      len++;
+    if (charCode >= 0 && charCode <= 128) {
+      len += 1;
     } else {
       len += 2;
     }
     if (len > length) {
       break;
     } else if (len === length) {
-      limit++;
+      limit += 1;
       break;
     } else {
-      limit++;
+      limit += 1;
     }
   }
   return text.substr(0, limit || void 0);
@@ -74,35 +75,35 @@ export default {
      */
     value: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     /**
      * 长度限制
      */
     limit: {
       type: Number,
-      default: 0
+      default: 0,
     },
     /**
      * 是否启用中文模式（中文模式下一个中文字符长度为2）
      */
     zh: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * 是否支持清除
      */
     allowClear: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * 外部辅助（文字长度显示和清除按钮会在外部）
      */
     helperOut: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   data () {
@@ -131,12 +132,12 @@ export default {
      */
     input () {
       return this.$el.querySelector('textarea');
-    }
+    },
   },
   watch: {
     value (value) {
       this.text = value;
-    }
+    },
   },
   methods: {
     handleChange (e) {
@@ -152,7 +153,7 @@ export default {
       }
       this.$emit('change', changedValue);
     },
-  }
+  },
 };
 </script>
 <style lang="less" scoped>

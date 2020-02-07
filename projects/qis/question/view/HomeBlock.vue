@@ -58,7 +58,7 @@
         <!-- 搜索按钮 -->
         {{ $t('search.search_button') }}
       </a-button>
-      
+
       <a-button
         v-if="showTemplateDownload"
         v-permission="'issue:home:draft:temp_download'"
@@ -114,7 +114,7 @@ import attachmentMix from '~~/issue-attachment.js';
 
 export default {
   name: 'HomeBlock',
-  mixins: [issueTab, attachmentMix]
+  mixins: [issueTab, attachmentMix],
 };
 
 </script>
@@ -126,7 +126,7 @@ export default {
     border-radius: 4px;
     border-radius: 4px;
   }
- /deep/ .ant-form-item {
+  /deep/ .ant-form-item {
     display: flex;
   }
   /deep/ .ant-form-item-label {

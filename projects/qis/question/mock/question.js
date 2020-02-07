@@ -47,7 +47,7 @@ const list = mock({
   creatorName: '创建人',
   // createDate: '2019-08-20', // 重复了
   workConditionInfo: '工况信息',
-  preliminaryInvestigation: '初步排查情况'
+  preliminaryInvestigation: '初步排查情况',
 }, 30);
 
 const db = cdb.link('question', list);
@@ -68,18 +68,16 @@ mock.get('/question/page', (parameter) => {
   return mock.result({
     data: {
       list: datas.slice(start, end),
-      total: totalCount
-    }
+      total: totalCount,
+    },
   });
 }, { timeout: 0 });
 /**
  * 编辑问题
  */
-mock.get('/issue/v1/issue/:id', (id) => {
-  return mock.result({
-    data: db.findById(id)
-  });
-}, { timeout: 0 });
+mock.get('/issue/v1/issue/:id', (id) => mock.result({
+  data: db.findById(id),
+}), { timeout: 0 });
 // /**
 //  * 获取单个
 //  */
@@ -87,44 +85,34 @@ mock.get('/issue/v1/issue/:id', (id) => {
 /**
  * 新增
  */
-mock.post('/activiti/running/completeTask', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/activiti/running/completeTask', (data) => mock.result({
+  data: db.insert(data),
+}));
 /**
  * 问题创建保存至草稿
  */
-mock.post('/issue/v1/issue', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/issue', (data) => mock.result({
+  data: db.insert(data),
+}));
 /**
  * 问题提交至工作流
  */
-mock.post('/activiti/running/completeTask', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/activiti/running/completeTask', (data) => mock.result({
+  data: db.insert(data),
+}));
 /**
  * 问题修改保存至草稿
  */
-mock.put('/issue/v1/issue', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.put('/issue/v1/issue', (data) => mock.result({
+  data: db.insert(data),
+}));
 
 /**
  * 再分配问题
  */
-mock.post('/question/redis', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/question/redis', (data) => mock.result({
+  data: db.insert(data),
+}));
 // /**
 //  * 修改
 //  */

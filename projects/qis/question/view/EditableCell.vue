@@ -32,18 +32,18 @@ export default {
   props: {
     text: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
       value: this.text,
-      editable: false
+      editable: false,
     };
   },
   methods: {
     handleChange (e) {
-      const value = e.target.value;
+      const { value } = e.target;
       this.value = value;
     },
     check () {
@@ -52,7 +52,7 @@ export default {
     },
     edit () {
       this.editable = true;
-    }
-  }
+    },
+  },
 };
 </script>

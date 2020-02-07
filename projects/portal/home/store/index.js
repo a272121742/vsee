@@ -1,5 +1,6 @@
 
 import api from '../api.js';
+import announcementApi from '~/announcement/api.js';
 
 export default {
   state: {
@@ -11,8 +12,11 @@ export default {
 
   },
   actions: {
+    getAnnouncementPage (store, params) {
+      return announcementApi.getAnnouncementPage(params);
+    },
     getTodoPage (store, params = {}) {
       return api.getTodoPage(params);
-    }
-  }
+    },
+  },
 };

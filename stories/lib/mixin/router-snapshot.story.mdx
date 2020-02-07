@@ -4,4 +4,58 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 # 路由快照
 
-可以用于进行表单数据缓存
+表单在填写过程中，如果遇**bug**导致页面流程无法执行，开发人员可能会刷新页面。但如果遇到工单字段较多的情况下，会使得页面信息丢失。同样，测试人员在遇到问题后，只能将问题截图发给开发人员调试，在缺乏上下文的情况下，会导致调试难度增加。因此，我们设计出路由快照，通过绑定表单值，将表单数据加密写入到`url`上，即使页面刷新，数据也不会丢失。
+
+## 使用方法
+
+```html
+<template>
+  <a-form>
+    <!-- ... -->
+  </a-form>
+</template>
+<script>
+// 1. 引入路由快照
+import routerSnapshotMix from '@mix/router-snapshot.js';
+// ...
+export default {
+  // 2. 混入路由快照
+  mixins: [ routerSnapshotMix({ key: '_', ext: 'routeshot', path: ''}) ],
+  // 3. 监听的属性列表
+  routeshot: ['a', 'b']
+}
+</script>
+```
+
+## 引入方式
+
+路由快照有两种引入方式，**组件混入式**和**路由混入式**，但我们建议不是处理大量工单的系统中使用组件混入式，即只针对特定组件页面加载此混入器。上面的案例中使用的就是**组件混入式**，下面给出**路由混入式**的案例：
+
+```javascript
+import Vue from 'vue';
+import { RouterSnapshot } from '@mix/router-snapshot.js';
+Vue.use(RouterSnapshot, { key: '_', ext: 'routeshot', path: ''});
+```
+
+使用**路由混入式**后，所有的组件都将在`created`时对路由和绑定字段进行监听，并实时同步。
+
+## 参数
+
+- key - String类型，路由上的键名，默认值为`_`，序列化后会成为`_=abcdef`的形式。
+- ext - String类型，本地组件的配置键名，默认值为`routeshot`，如果更名为其他，则配置的键名也要同步修改。
+- path - String类型，监听的表单组件路径，即`formRecord`，默值为空字符串，即监听当前组件的所有值。
+
+## 配置参数
+
+当`routerSnapshotMix`构造函数或`RouterSnapshot`配置参数中设置了`ext`的值，那么组件中的配置信息的键名也要修改。组件的配置信息都是这样写的：
+
+```javascript
+export default {
+  routeshot: ['a', 'b']
+}
+```
+
+`routeshot`的名字是由`ext`决定的，其值为一个数组，表示需要监听的字段列表。如果配合`path`参数，例如`path`参数值为`formRecord`，则表示监听`formRecord`上的`a`、`b`字段，并将值写到浏览器中的`_`参数（query）中。
+
+
+

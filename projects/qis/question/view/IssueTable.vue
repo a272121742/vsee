@@ -67,40 +67,40 @@ export default {
      */
     data: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * 总数，从上层组件获取，上层组件通过服务端获取
      */
     total: {
       type: Number,
-      default: 0
+      default: 0,
     },
     /**
      * 当前页
      */
     page: {
       type: Number,
-      default: 1
+      default: 1,
     },
     /**
      * 分页数量
      */
     pageSize: {
       type: Number,
-      default: 10
+      default: 10,
     },
     /**
      * 列更新地址
      */
     colUpdateUrl: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
@@ -118,7 +118,7 @@ export default {
     // },
     columns () {
       const orderData = this.advancePageConfig.searchOrderData;
-      return issueColumns.map(col => {
+      return issueColumns.map((col) => {
         const newCol = clearObserver(col);
         if (newCol.dataIndex === orderData.field) {
           newCol.sortOrder = orderData.order;
@@ -127,7 +127,7 @@ export default {
         }
         return newCol;
       });
-    }
+    },
   },
   methods: {
     /**
@@ -155,8 +155,8 @@ export default {
         return [totalText, pageCount, pageText].join(' ');
       }
       return '';
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -6,7 +6,7 @@ const list = mock({
   'progress|1': ['D0', 'D1', 'D2', 'D3'],
   user: '@string',
   operateTime: Date.now(),
-  'remark|1': ['通过', '未通过']
+  'remark|1': ['通过', '未通过'],
 }, 30);
 
 const db = cdb.link('operationRecord', list);
@@ -25,7 +25,7 @@ mock.get('/question/action/page', (parameter) => {
   return mock.result({
     data: {
       list: datas.slice(start, end),
-      total: totalCount
-    }
+      total: totalCount,
+    },
   });
 }, { timeout: 0 });

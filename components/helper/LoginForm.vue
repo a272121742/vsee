@@ -100,82 +100,77 @@ import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 
 const mailback = '@bjev.com.cn';
 const accounts = [
-  'suwei1' + mailback,
-  'fanjiangnan' + mailback,
-  'zhanghaitao' + mailback,
-  'liangchao' + mailback,
-  'youtao' + mailback,
-  'zhaojiaqi' + mailback,
-  'jiayanmin'+ mailback,
-  'gufeng'+ mailback,
-  'lihongbin'+ mailback,
-  'zhaojia'+ mailback,
-  'wangxueying'+ mailback,
-  'raomiaotao'+ mailback,
-  'wangchunjie'+ mailback,
-  'baijie'+ mailback,
-  'zhangliquan'+ mailback,
-  'tianxiongwei'+ mailback,
-  'zhangpeng'+ mailback,
-  'chaihonggen'+ mailback,
-  'houjun'+ mailback,
-  'tianyuli'+ mailback,
-  'liujie1'+ mailback,
-  'chenguoqi'+ mailback,
-  'wangtao'+ mailback,
-  'liyuan'+ mailback,
-  'liulizhi'+ mailback,
-  'sunshuailong'+ mailback,
-  'duxiangzheng'+ mailback,
-  'lixifu'+ mailback,
-  'zhangshouyuan'+ mailback,
-  'shendawei'+ mailback,
-  'xuehongwei'+ mailback,
-  'renxianfei'+ mailback,
-  'liyongfei'+ mailback,
-  'qiaozenan'+ mailback,
-  'hanzhiqiang'+ mailback,
-  'liuyundong'+ mailback,
-  'liyunduan'+ mailback,
-  'duheng'+ mailback,
-  'luolinlan'+ mailback,
-  'shijunbo'+ mailback,
-  'yanliguo'+ mailback,
-  'sunwentao'+ mailback,
-  'tangdianju'+ mailback,
-  'chenwenwu'+ mailback,
-  'zhangyule'+ mailback,
-  'zhangyouhuan'+ mailback,
-  'wangjianfeng'+ mailback,
-  'yutao1'+ mailback,
-  'lihuihui'+ mailback,
-  'songzhixue'+ mailback,
-  'zhoujinling'+ mailback,
+  `suwei1${mailback}`,
+  `fanjiangnan${mailback}`,
+  `zhanghaitao${mailback}`,
+  `liangchao${mailback}`,
+  `youtao${mailback}`,
+  `zhaojiaqi${mailback}`,
+  `jiayanmin${mailback}`,
+  `gufeng${mailback}`,
+  `lihongbin${mailback}`,
+  `zhaojia${mailback}`,
+  `wangxueying${mailback}`,
+  `raomiaotao${mailback}`,
+  `wangchunjie${mailback}`,
+  `baijie${mailback}`,
+  `zhangliquan${mailback}`,
+  `tianxiongwei${mailback}`,
+  `zhangpeng${mailback}`,
+  `chaihonggen${mailback}`,
+  `houjun${mailback}`,
+  `tianyuli${mailback}`,
+  `liujie1${mailback}`,
+  `chenguoqi${mailback}`,
+  `wangtao${mailback}`,
+  `liyuan${mailback}`,
+  `liulizhi${mailback}`,
+  `sunshuailong${mailback}`,
+  `duxiangzheng${mailback}`,
+  `lixifu${mailback}`,
+  `zhangshouyuan${mailback}`,
+  `shendawei${mailback}`,
+  `xuehongwei${mailback}`,
+  `renxianfei${mailback}`,
+  `liyongfei${mailback}`,
+  `qiaozenan${mailback}`,
+  `hanzhiqiang${mailback}`,
+  `liuyundong${mailback}`,
+  `liyunduan${mailback}`,
+  `duheng${mailback}`,
+  `luolinlan${mailback}`,
+  `shijunbo${mailback}`,
+  `yanliguo${mailback}`,
+  `sunwentao${mailback}`,
+  `tangdianju${mailback}`,
+  `chenwenwu${mailback}`,
+  `zhangyule${mailback}`,
+  `zhangyouhuan${mailback}`,
+  `wangjianfeng${mailback}`,
+  `yutao1${mailback}`,
+  `lihuihui${mailback}`,
+  `songzhixue${mailback}`,
+  `zhoujinling${mailback}`,
   'yangsuoyu@baicvbu.com',
-  'zhengyunfei'+ mailback,
-  'tangxiangdong'+ mailback,
-  'xutengda'+ mailback,
-  'mapengcheng'+ mailback,
-  'lixinghua'+ mailback,
-  'marubin'+ mailback,
-  'luodengyuan'+ mailback,
-  'jiwei01'+ mailback,
-  'jiujiajie'+ mailback,
-  'wangpeiyu@bjev.com.cn',
-  'yuguixia@bjev.com.cn',
-  'yidihua@bjev.com.cn',
-  'liuweihong@bjev.com.cn',
-  'wangjinkui@bjev.com.cn',
-  'liyanfang@bjev.com.cn',
-  'markcobbett@bjev.com.cn'
+  `zhengyunfei${mailback}`,
+  `tangxiangdong${mailback}`,
+  `xutengda${mailback}`,
+  `mapengcheng${mailback}`,
+  `lixinghua${mailback}`,
+  `marubin${mailback}`,
+  `luodengyuan${mailback}`,
+  `jiwei01${mailback}`,
+  `jiujiajie${mailback}`,
+  `mengxiangtao01${mailback}`,
+  `shenjincheng@baicvbu.com`,
 ];
 export default {
   components: {
     // VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
-    Password: () => import('@comp/form/Password.vue')
+    Password: () => import('@comp/form/Password.vue'),
   },
-  
+
   data () {
     return {
       /**
@@ -189,32 +184,36 @@ export default {
         username: null,
         password: 'bjev2019',
         // captcha: null,
-        uuid: getUUID()
+        uuid: getUUID(),
       },
-      
-      accounts: accounts,
+
+      accounts,
     };
   },
   created () {
     const { mapPropsToFields, onValuesChange } = this;
     this.form = this.$form.createForm(this, {
       mapPropsToFields,
-      onValuesChange
+      onValuesChange,
     });
   },
   methods: {
     /**
      * 提交数据
      */
-    handleSubmit () {
+    handleSubmit (e) {
       this.form.validateFields((err, loginInfo) => {
-        this.$store.dispatch('logout');
+        const userInfo = (typeof e === 'string') ? { ...loginInfo, username: e } : loginInfo;
+        // this.$store.dispatch('logout');
+        if (this.$store.state.isMock) {
+          this.$store.commit('setToken', 'abc');
+        }
         if (!err) {
-          this.$store.dispatch('login', loginInfo).then(res => {
+          this.$store.dispatch('login', userInfo).then((res) => {
             if (res.token) {
               this.$store.commit('setLoginStatus', res.token);
             }
-          }).catch(errCode => {
+          }).catch((errCode) => {
             errCode && this.$message.error(this.$t(errCode));
           }).finally(() => {
             this.$store.dispatch('reload');
@@ -224,7 +223,7 @@ export default {
       });
     },
     handleSearch (value) {
-      this.accounts = accounts.filter(item => ~item.indexOf(value));
+      this.accounts = accounts.filter((item) => ~item.indexOf(value));
     },
     /**
      * 验证码更新
@@ -244,7 +243,7 @@ export default {
     onValuesChange (props, values) {
       return autoUpdateFileds(this, 'record')(props, values);
     },
-  }
+  },
 };
 </script>
 

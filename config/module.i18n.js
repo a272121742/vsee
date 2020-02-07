@@ -1,4 +1,4 @@
-module.exports = config => {
+module.exports = (config) => {
   // 配置国际化
   config.module
     .rule('i18n')

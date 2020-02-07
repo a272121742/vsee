@@ -1,3 +1,5 @@
 > 1%
-Firefox >= 50
+firefox >= 50
 not ie <= 8
+chrome >= 40
+safari >= 10

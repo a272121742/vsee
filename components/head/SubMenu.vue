@@ -23,8 +23,8 @@ export default {
   props: {
     menuInfo: {
       type: Object,
-      default: () => ({})
-    }
-  }
+      default: () => ({}),
+    },
+  },
 };
 </script>

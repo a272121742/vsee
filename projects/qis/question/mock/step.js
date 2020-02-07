@@ -50,7 +50,7 @@ const d = mock({
     isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     // 文件名称
     id: '2',
@@ -58,7 +58,7 @@ const d = mock({
     isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     // 文件名称
     id: '3',
@@ -66,7 +66,7 @@ const d = mock({
     isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     // 文件名称
     id: '4',
@@ -74,7 +74,7 @@ const d = mock({
     isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     id: '5',
     // 文件名称
@@ -82,7 +82,7 @@ const d = mock({
     isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     id: '6',
     // 文件名称
@@ -90,7 +90,7 @@ const d = mock({
     isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     id: '7',
     // 文件名称
@@ -98,7 +98,7 @@ const d = mock({
     isUpdae: '0',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }, {
     id: '8',
     // 文件名称
@@ -106,151 +106,115 @@ const d = mock({
     isUpdae: '1',
     updateContent: '更新内容',
     updateoperation: '编辑',
-    updatefile: ['d5.word', 'd5.png']
+    updatefile: ['d5.word', 'd5.png'],
   }],
   // D6
   'recurrencePrevention|1': ['是', '否'],
   'isClose |1': ['同意关闭', '不同意关闭'],
-  reason: '何莎不同意关闭'
+  reason: '何莎不同意关闭',
 });
 
 const db = cdb.link('step', d);
 
-mock.get('/getAll/mock', (id) => {
-  return mock.result({
-    data: db.findById(id)
-  });
-}, {
-  timeout: 0
+mock.get('/getAll/mock', (id) => mock.result({
+  data: db.findById(id),
+}), {
+  timeout: 0,
 });
 
 /**
  *
  */
-mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => {
-  return mock.result({
-    data: db.findById(id)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/problemDefinition?issue_id=', (id) => mock.result({
+  data: db.findById(id),
+}), {
+  timeout: 0,
 });
 // 措施判定保存
-mock.post('/issue/v1/workflow/actionDraft', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/actionDraft', (data) => mock.result({
+  data: db.insert(data),
+}));
 // 措施判定详情
-mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => {
-  return mock.result({
-    data: db.findById(issueId)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/actionDraft?type=0&issueId=', (issueId) => mock.result({
+  data: db.findById(issueId),
+}), {
+  timeout: 0,
 });
 // 措施实施详情
-mock.get('/issue/v1/workflow/actionDraft?type=1&issueId=', (issueId) => {
-  return mock.result({
-    data: db.findById(issueId)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/actionDraft?type=1&issueId=', (issueId) => mock.result({
+  data: db.findById(issueId),
+}), {
+  timeout: 0,
 });
 // 文件更新
-mock.get('/issue/v1/workflow/fileUpdatesList?issueId=', (issueId) => {
-  return mock.result({
-    data: db.findById(issueId)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/fileUpdatesList?issueId=', (issueId) => mock.result({
+  data: db.findById(issueId),
+}), {
+  timeout: 0,
 });
 
 // 文件首次创建
-mock.post('/issue/v1/workflow/fileUpdatesList', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/fileUpdatesList', (data) => mock.result({
+  data: db.insert(data),
+}));
 // 文件添加
-mock.post('/issue/v1/workflow/fileUpdates', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/fileUpdates', (data) => mock.result({
+  data: db.insert(data),
+}));
 
 // 文件编辑
-mock.put('/issue/v1/workflow/fileUpdates', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
-mock.get('/issue/v1/workflow/issueDefinition?issue_id=', (id) => {
-  return mock.result({
-    data: db.findById(id)
+mock.put('/issue/v1/workflow/fileUpdates', (data) => mock.result({
+  data: db.insert(data),
+}));
+mock.get('/issue/v1/workflow/issueDefinition?issue_id=', (id) => mock.result({
+  data: db.findById(id),
 
-  });
-}, {
-  timeout: 0
+}), {
+  timeout: 0,
 });
 // 效果验证保存
-mock.post('/issue/v1/workflow/validation', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/validation', (data) => mock.result({
+  data: db.insert(data),
+}));
 
 // 效果验证详情
-mock.get('/issue/v1/workflow/validation?issueId=', (issueId) => {
-  return mock.result({
-    data: db.findById(issueId)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/validation?issueId=', (issueId) => mock.result({
+  data: db.findById(issueId),
+}), {
+  timeout: 0,
 });
 
 // 问题关闭保存
-mock.post('/issue/v1/workflow/issueClose', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/issueClose', (data) => mock.result({
+  data: db.insert(data),
+}));
 
 // 问题关闭查询
-mock.get('/issue/v1/workflow/issueClose?issueId=', (issueId) => {
-  return mock.result({
-    data: db.findById(issueId)
-  });
-}, {
-  timeout: 0
+mock.get('/issue/v1/workflow/issueClose?issueId=', (issueId) => mock.result({
+  data: db.findById(issueId),
+}), {
+  timeout: 0,
 });
 // 原因分析保存
-mock.post('/issue/v1/workflow/rootCause', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/issue/v1/workflow/rootCause', (data) => mock.result({
+  data: db.insert(data),
+}));
 // 原因分析查询
-mock.get('/issue/v1/workflow/rootCause?issue_id=', (id) => {
-  return mock.result({
-    data: db.findById(id)
-  });
-});
+mock.get('/issue/v1/workflow/rootCause?issue_id=', (id) => mock.result({
+  data: db.findById(id),
+}));
 // 用户信息
 mock.get('/issue/v1/workflow/getSysUser', (data) => {
   debugger;
   return mock.result({
-    data: db.find(data)
+    data: db.find(data),
   });
 });
 // 审核提交至工作流
-mock.post('/activiti/comment/nodeComment', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/activiti/comment/nodeComment', (data) => mock.result({
+  data: db.insert(data),
+}));
 // 再分配责任人
-mock.post('/activiti/running/reAssignTask', (data) => {
-  return mock.result({
-    data: db.insert(data)
-  });
-});
+mock.post('/activiti/running/reAssignTask', (data) => mock.result({
+  data: db.insert(data),
+}));

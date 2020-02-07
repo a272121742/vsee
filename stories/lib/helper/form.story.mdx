@@ -48,7 +48,7 @@ import { mapPropsToFields, autoUpdateFileds, validator } from '@util/formhelper.
 | $v.idcard(msg)                                    | 类型验证（身份证）                                           | 100%   |
 | $v.phone(msg)                                     | 类型验证（手机）                                             | 100%   |
 | $v.mobile(msg)                                    | 类型验证（固话）                                             | 100%   |
-| $v.remote(msg)                                    | 远程验证                                                     | 50%   |
+| $v.remote(url, params, callback)                                    | 远程验证                                                     | 50%   |
 | $v.vin(msg)                                       | 业务验证（VIN码）                                            | 0%   |
 
 
@@ -730,9 +730,11 @@ $v.includeDByte(message)
 
 > 配置方法： remote
 >
-> 配置参数： url（String类型）, query（Object类型）
+> 配置参数： url（String类型）, query（Object类型）, callback(Function类型)
 >
 > 注入变量： {{value}}
+
+回调函数`callback`中包含异步验证返回的服务器数据信息，由于发送请的服务已经封装，如果验证失败，或者检测出服务端返回信息中有包含预定义的错误块，都会抛出在字段的验证块中，这里的`callback`只在`success`时出现。因此，`remote`方法是不包含前端的`msg`参数，错误信息都是服务端返回的。
 
 <Preview withToolbar>
 <Story name="异步验证">

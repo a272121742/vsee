@@ -1,0 +1,123 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/设计原则" />
+
+# 设计原则
+
+在[官方教程](https://cn.vuejs.org/v2/guide/mixins.html)中有详细提到**混入器**的使用，但是经过实践之后，仍然发现混入器的写法是需要规范化设计的，理由是：
+
+1. 混入器的属性是容易被修改或删除的，违背**开闭原则**；
+2. 使用`computed`会导致性能下降，大量的对函数进行重构；
+3. 如果混入器返回的是一个对象，则不便与开发者进行个性化的配置；
+
+因此，可以使用如下方式优化混入器，并定义为混入器编写时所需遵循的规范和设计原则：
+
+1. 混入器必须是一个函数，可以通过配置的方式导出不同对象；
+2. 混入器应尽可能不要使用`computed`属性返回相关数据，尤其是内部定义了函数和复杂运算的；
+3. 混入器应尽可能使用`Object`的`defineProperty`、`defineProperties`和`freeze`，使其属性可开闭，以保证开发人员安全使用；
+
+一个可行的设计模式：
+
+```javascript
+// 1. 构建共享参数
+const propertiesConfig = {
+  writable: false,
+  configrable: false,
+  enumerable: true,
+};
+// 2. 导出混入器函数
+export defaults ({ arg1 = 'arg1', arg2 = 'arg2'} = {}) => {
+  // 3. 构建内部私有对象，以及可写属性
+  const obj = {
+    name: 'object'
+  };
+  // 4. 构建对象属性可访问权限
+  Object.defineProperties(rowSelection, {
+    length: {
+      get () {}
+    },
+    value: {
+      value: {},
+      ...propertiesConfig
+    },
+    // ... 其他更多属性
+  });
+  // 5. 返回混入对象
+  return {
+    // 6. 返回`data`函数
+    data () {
+      // 7. 返回混入器关键信息
+      return { obj };
+    }
+  }
+};
+```
+
+一个可用的样本（表格分页器）:
+
+```javascript
+const propertiesConfig = {
+  writable: false,
+  configrable: false,
+  enumerable: true,
+};
+const pageSizeOptions = ['10', '20', '50'];
+const showQuickJumper = true;
+const showSizeChanger = true;
+const _current = 1;
+const _pageSize = 10;
+const total = 0;
+
+function showTotal (totals) {
+  return [this.$t('page.total'), totals, this.$t('page.article')].join('');
+}
+
+export default ({ current = 'page', pageSize = 'limit' } = {}) => {
+  const pagination = {
+    current: _current,
+    pageSize: _pageSize,
+    total,
+    showTotal,
+    showQuickJumper,
+    showSizeChanger,
+    pageSizeOptions,
+  };
+  return {
+    data () {
+      const change = (page, size) => {
+        this.pagination.current = page;
+        this.pagination.pageSize = size;
+        if (this.rowSelection) {
+          this.selectedRows = [];
+          this.rowSelection.selectedRowKeys = [];
+        }
+      };
+      Object.defineProperties(pagination, {
+        onChange: {
+          value: change,
+          ...propertiesConfig,
+        },
+        onShowSizeChange: {
+          value: change,
+          ...propertiesConfig,
+        },
+        reset: {
+          value: () => change(_current, _pageSize),
+          ...propertiesConfig,
+        },
+      });
+      return {
+        pagination,
+      };
+    },
+    computed: {
+      serverPagination () {
+        const serverPagination = {};
+        serverPagination[current] = this.pagination.current || _current;
+        serverPagination[pageSize] = this.pagination.pageSize || _pageSize;
+        return serverPagination;
+      },
+    },
+  };
+};
+```

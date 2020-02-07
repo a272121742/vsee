@@ -1,6 +1,6 @@
 const needGzip = !!process.env.npm_config_gzip;
 
-module.exports = config => {
+module.exports = (config) => {
   if (needGzip) {
     config
       .plugin('gzip')
@@ -10,9 +10,9 @@ module.exports = config => {
         // algorithm: 'brotliCompress',
         test: /\.(js|css|svg|woff|otf|ttf|json|png)$/,
         compressionOptions: { level: 9 },
-        threshold: 0,
+        threshold: 10240,
         minRatio: 1,
-        deleteOriginalAssets: true// 删除原文件
+        deleteOriginalAssets: true, // 删除原文件
       }])
       .end();
   }

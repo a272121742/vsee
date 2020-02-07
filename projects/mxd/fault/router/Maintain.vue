@@ -32,11 +32,11 @@ export default {
   components: {
     FaultTree: () => import('../view/FaultTree.vue'),
     NodeDetail: () => import('../view/NodeDetail.vue'),
-    FaultTable: () => import('../view/FaultTable.vue')
-  }
+    FaultTable: () => import('../view/FaultTable.vue'),
+  },
 };
 </script>
 
 <style lang="less" scoped>
-  
+
 </style>

@@ -45,14 +45,14 @@ import $ from '@http';
 // }
 function transformQuery (query) {
   const transQuery = {};
-  for (const i in query) {
-    const value = query[i];
+  Object.keys(query).forEach((key) => {
+    const value = query[key];
     if (typeof (value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
-      delete transQuery[i];
+      delete transQuery[key];
     } else {
-      transQuery[i] = value;
+      transQuery[key] = value;
     }
-  }
+  });
   return transQuery;
 }
 
@@ -61,7 +61,7 @@ export default {
     // 下拉列表的值，或单对象，或数组，该属性由`v-decorator`控制
     value: {
       type: [Number, String, Array],
-      default: undefined,
+      default: void 0,
     },
     // 是否关闭搜索
     closeSearch: {
@@ -90,12 +90,12 @@ export default {
     // 链接地址
     url: {
       type: String,
-      default: undefined,
+      default: '',
     },
     // 数据转换函数
     transform: {
       type: Function,
-      default: id => id,
+      default: (id) => id,
     },
   },
   data () {
@@ -153,21 +153,19 @@ export default {
         if (value !== void 0 && value !== null) {
           // 通过网络回显
           if (!this.labelValue || !this.labelValue.label) {
-            console.log('从网络获取');
             const config = {};
-            const {valueKey} = this;
+            const { valueKey } = this;
             if (valueKey) {
               config[valueKey] = value;
             }
             this.rending = true;
             this.fetch(config).then((list) => {
-              this.labelValue = find(item => item.value === value, list);
+              this.labelValue = find((item) => item.value === value, list);
             }).finally(() => {
               this.rending = false;
             });
           }
         } else {
-          console.log('不回显');
           this.labelValue = value;
         }
       },

@@ -4,7 +4,9 @@
     "additionalInfo": "补充信息",
     "calibrationVersion": "标定版本号",
     "details": "问题详情",
+    "subdetails": "子问题详情",
     "workflow": "问题流程",
+    "subworkflow": "子问题流程",
     "creatorSelectorCheck": "提出人科长审核",
     "code": "问题编号",
     "confirmationVersion": "配置字版本号",
@@ -35,7 +37,7 @@
     "irtId": "问题管理小组ID",
     "maintenanceStation": "维修网点",
     "manufactureBase": "生产基地",
-    "manufactureBaseId": "生产基地",
+    "plantCode": "生产基地",
     "masterIssueId": "主问题ID",
     "milage": "故障里程",
     "optCounter": "操作次数",
@@ -76,7 +78,9 @@
     "smt": "模块",
     "responsibleUserId": "问题管理负责人",
     "vin_lable": "(批量VIN可填写备注或上传附件)",
-    "license_lable": "(VIN和车号选填一项)"
+    "license_lable": "(VIN和车号选填一项)",
+    "overDays": "超期天数",
+    "milageVer":"请输入整数"
   },
   "search": {
     "find_button": "查询",
@@ -128,8 +132,33 @@
     "reassign": "再分配",
     "reanalysis": "再分析",
     "issue_report_download": "下载单页报告",
-    "temporary":"暂存",
-    "restore":"恢复"
+    "temporary":"问题暂存",
+    "restore":"问题恢复",
+    "rollback":"问题回退",
+    "specialShutdown":"特殊关闭",
+    "problemFission":"裂变申请",
+    "problemFissionCancel":"取消裂变",
+    "temporarySuccess":"问题暂存成功",
+    "restoreSuccess":"问题恢复成功",
+    "questionOpr":"问题操作",
+    "rollbackSuccess":"问题回退成功",
+    "specialClose":"特殊关闭",
+    "specialCloseSucess":"特殊关闭成功",
+    "closeReason":"特殊关闭理由",
+    "closeTime":"特殊关闭时间",
+    "closer":"特殊关闭人",
+    "duplicateAssociation":"重复关联",
+    "replaceSM":"更换SM",
+    "SMSuccess":"更换SM成功",
+    "duplicateQuestion":"重复问题",
+    "selectAssociation":"选择被关联问题",
+    "dpAssReasons":"重复关联理由",
+    "DAQuestionList":"重复关联问题列表",
+    "dupAssSucess":"重复关联成功",
+    "fissionCommitSuccess":"裂变申请提交成功",
+    "fissionReview":"问题裂变申请审核中",
+    "fissionCheck":"请勾选需要回退的子问题",
+    "moduleSource":"问题来源详情"
   },
   "issue_workflow": {
     "submitSuccess":"提交成功",
@@ -148,11 +177,22 @@
       "ICA": "围堵措施",
       "need": "需要",
       "unneed": "不需要",
-      "publist_condition": "立项条件"
+      "publist_condition": "立项条件",
+      "selectRollback":"请选择回退状态",
+      "fallbackReason":"问题回退理由",
+      "fallbackTime":"问题回退时间",
+      "fallbackPerson":"问题回退人",
+      "fallBackDetail":"问题回退详情",
+      "personDepartment":"填写人部门",
+      "person":"填写人",
+      "fileIca":"围堵措施附件",
+      "icaWriter":"指定围堵措施填写人",
+      "containmentMeasures":"遏制措施填写"
     },
     "D1": {
       "processName": "责任判定",
       "confirm": "直接判定",
+      "changeSM":"更换问题管理人",
       "needAnalysis": "需要7钻分析",
       "resposibleDepartment": "责任部门",
       "cochairDepartment": "问题管理参与人部门",
@@ -205,7 +245,10 @@
       "pilotVlidate": "小批量验证",
       "longSolutionImplementDate": "长期措施实施计划日期",
       "longSolutionValidationDate": "长期措施验证计划日期",
-      "closureDate": "计划关闭日期"
+      "closureDate": "计划关闭日期",
+      "shortTermVin":"短期措施断点VIN",
+      "shortTermTime":"短期措施断点时间",
+      "marketMeasures":"市场车辆处理措施"
     },
     "D4": {
       "processName": "措施实施",
@@ -235,7 +278,9 @@
       "ois": "操作指导书",
       "addUpdateFile": "添加更新文件",
       "leaderReview":"加签领导审阅结果:",
-      "vinVer":"请输入正确的vin"
+      "vinVer":"请输入正确的vin",
+      "lessonsLearn":"经验教训",
+      "problemSpread":"横展"
     },
     "D6": {
       "processName": "问题关闭",
@@ -246,7 +291,8 @@
       "closeTime":"关闭时间",
       "plusReview":"加签审阅",
       "reviewLeadership":"审阅领导",
-      "reviewTime":"审阅时间"
+      "reviewTime":"审阅时间",
+      "closeReason":"重复关联关闭理由"
     },
     "steps": {
       "D0": "D0-问题定义",
@@ -281,10 +327,18 @@
     "publishing": "该问题正在立项中",
     "defining": "该问题正在责任判定中",
     "analysising": "问题原因正在分析填写中",
+    "sub_analysising": "子问题原因分析填写中",
+    "sub_analysised": "子问题原因分析已结束",
     "sovling": "问题措施正在制定中",
+    "sub_sovling": "子问题措施制定中",
+    "sub_sovled": "子问题措施制定已结束",
     "implementing": "该问题措施实施填写中",
+    "sub_implementing": "子问题措施实施填写中",
+    "sub_implementend": "子问题措施实施填写已结束",
     "feedbacking": "该问题效果验证内容填写中",
-    "closing": "该问题关闭中"
+    "closing": "该问题关闭中",
+    "wait_main_closing": "等待主问题关闭中",
+    "closed_with_main_issue": "子问题已跟随主问题关闭"
   },
   "colon": "：",
   "question_mark": "?",
@@ -305,6 +359,31 @@
     "creatorName": "操作人",
     "createDate": "操作时间",
     "content": "备注"
+  },
+  "duplicateTable":{
+    "correlationType":"类型",
+    "code":"问题编号",
+    "title":"问题标题",
+    "projectPhase":"问题阶段",
+    "status":"解决进度",
+    "assignerName":"当前处理人",
+    "responsibleDepartmentName":"责任部门",
+    "responsibleUserName":"问题责任人",
+    "statusCode":"当前步骤"
+  },
+  "fissionTable":{
+    "correlationType":"类型",
+    "code":"子问题",
+    "title":"问题标题",
+    "projectPhase":"问题阶段",
+    "reasonStatus":"回退状态",
+    "assignerName":"当前处理人",
+    "responsibleDepartmentName":"责任部门",
+    "responsibleUserName":"问题责任人",
+    "statusCode":"当前步骤",
+    "reasonRegression":"回退理由",
+    "fissionBackTitle": "问题裂变",
+    "minStatus":"（主问题回退到子问题最慢的解决进度）"
   },
   "fileUpdateTable":{
     "fileName": "文件名称",
@@ -345,5 +424,22 @@
     "batch_import": "批量导入",
     "upload_file": "上传文件",
     "import_prompt": "（导入行数不要超过300）"
+  },
+  "fissionApplication":{
+    "proFissApplication":"问题裂变申请",
+    "proFissApplicationLimit":"（ 2 ≤ 裂变条数 ≤ 5 ）",
+    "fissionReasons":"裂变理由",
+    "subquestion1":"子问题1",
+    "subquestion2":"子问题2",
+    "subquestion3":"子问题3",
+    "subquestion4":"子问题4",
+    "subquestion5":"子问题5",
+    "subquestion":["子问题1","子问题2","子问题3","子问题4","子问题5"],
+    "fissonDetailButton":"问题裂变信息",
+    "fissionSuccess":"问题裂变成功",
+    "fissEditSuccess":"问题修改成功",
+    "fissionTitle":"裂变问题",
+    "fissionInfo":"问题裂变信息",
+    "selectCheck":"请选择需要回退的子问题"
   }
 }

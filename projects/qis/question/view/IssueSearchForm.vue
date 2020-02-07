@@ -136,25 +136,25 @@ export default {
   components: {
     VInput: () => import('@comp/form/VInput.vue'),
     NetSelect: () => import('@comp/form/NetSelect.vue'),
-    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue')
+    NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
   },
   mixins: [moduleDynamicCache('question')],
   data () {
     return {
       form: null,
-      record: {}
+      record: {},
     };
   },
   computed: {
     showForm () {
       return this.advancePageConfig.showForm;
-    }
+    },
   },
   created () {
     this.record = this.advancePageConfig.searchData;
     this.form = this.$form.createForm(this, {
       mapPropsToFields: this.mapPropsToFields,
-      onValuesChange: autoUpdateFileds(this, 'record')
+      onValuesChange: autoUpdateFileds(this, 'record'),
     });
   },
   methods: {
@@ -163,7 +163,7 @@ export default {
      */
     mapPropsToFields () {
       return createFormFields(this, [
-        'code', 'vehicleModelId', 'grade', 'source'
+        'code', 'vehicleModelId', 'grade', 'source',
       ], 'record');
     },
     /**
@@ -172,7 +172,7 @@ export default {
     submitSearch () {
       this.cache = clone(this.record);
       this.changeAdvancePageConfig({
-        searchData: this.cache
+        searchData: this.cache,
       });
       this.$emit('change', this.record);
     },
@@ -202,12 +202,17 @@ export default {
     transformField: transform1,
     transformGrade: transform2,
     transformSource: transform2,
-    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
-  }
+    vehicleModelTreeTransform: treeTransform(transform({
+      value: 'id', label: 'psNameZh', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
+  },
 };
 </script>
 
 <style lang="less" scoped>
+  /deep/ .ant-form-item {
+    display: flex!important;
+  }
   .advance-action {
     margin-left: 8px;
   }

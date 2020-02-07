@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown 
+  <a-dropdown
     :trigger="['contextmenu']"
     :visible="showContextMenu"
   >
@@ -62,9 +62,15 @@ export default {
               id: '2',
               cdb: 'b',
               children: [
-                { title: '0-0-0-0', key: '0-0-0-0', id: '3', cdb: 'c' },
-                { title: '0-0-0-1', key: '0-0-0-1', id: '4', cdb: 'd' },
-                { title: '0-0-0-2', key: '0-0-0-2', id: '5', cdb: 'e' },
+                {
+                  title: '0-0-0-0', key: '0-0-0-0', id: '3', cdb: 'c',
+                },
+                {
+                  title: '0-0-0-1', key: '0-0-0-1', id: '4', cdb: 'd',
+                },
+                {
+                  title: '0-0-0-2', key: '0-0-0-2', id: '5', cdb: 'e',
+                },
               ],
             },
             {
@@ -95,7 +101,7 @@ export default {
           title: '0-2',
           key: '0-2',
         },
-      ]
+      ],
     };
   },
   created () {
@@ -109,7 +115,7 @@ export default {
   methods: {
     ...mapActions(['getPfsCategoryTree']),
     fetch () {
-      this.getPfsCategoryTree().then(res => {
+      this.getPfsCategoryTree().then((res) => {
         console.log(res);
         console.log(treeTransform((item) => ({ ...item, title: item.name, key: item.id }), res));
         this.treeData = treeTransform((item) => ({ ...item, title: item.name, key: item.id }), res);
@@ -123,13 +129,13 @@ export default {
       this.showContextMenu = true;
       console.log('treeRightClick', node.$options.propsData);
       const dataRef = node.$options.propsData.dataRef || {};
-      const id = dataRef.id;
+      const { id } = dataRef;
       this.allow1 = !!id;
       this.allow2 = !!id;
       this.allow3 = !dataRef.children;
-    }
+    },
 
-  }
+  },
 
 };
 </script>
@@ -140,5 +146,5 @@ export default {
       height: 100%;
     }
   }
-  
+
 </style>

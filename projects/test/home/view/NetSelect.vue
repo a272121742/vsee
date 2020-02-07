@@ -1,41 +1,39 @@
 <template>
-  <div>
-    <a-select
-      v-bind="exclude(['options', 'label-in-value'], $attrs)"
-      label-in-value
-      :value="labelValue"
-      :default-active-first-option="false"
-      :options="options"
-      :show-search="!closeSearch"
-      :filter-option="$attrs['filter-option'] || filterOption"
-      :disabled="$attrs.disabled || rending"
-      :max-tag-count="$attrs['max-tag-count'] || 0"
-      :get-popup-container="el => el.parentNode"
-      v-on="exclude(['change'], $listeners)"
-      @dropdownVisibleChange="dropdownVisibleChange"
-      @search="onTextChange"
-      @change="onChange"
-    >
-      <template #suffixIcon>
-        <a-icon :type="suffixType" />
-      </template>
-      <template #notFoundContent>
-        <a-spin
-          v-if="fetching"
-          size="small"
-        >
-          <a-icon
-            slot="indicator"
-            type="loading"
-            spin
-          />
-        </a-spin>
-        <a-empty
-          v-else
+  <a-select
+    v-bind="exclude(['options', 'label-in-value'], $attrs)"
+    label-in-value
+    :value="labelValue"
+    :default-active-first-option="false"
+    :options="options"
+    :show-search="!closeSearch"
+    :filter-option="$attrs['filter-option'] || filterOption"
+    :disabled="$attrs.disabled || rending"
+    :max-tag-count="$attrs['max-tag-count'] || 0"
+    :get-popup-container="el => el.parentNode"
+    v-on="exclude(['change'], $listeners)"
+    @dropdownVisibleChange="dropdownVisibleChange"
+    @search="onTextChange"
+    @change="onChange"
+  >
+    <template #suffixIcon>
+      <a-icon :type="suffixType" />
+    </template>
+    <template #notFoundContent>
+      <a-spin
+        v-if="fetching"
+        size="small"
+      >
+        <a-icon
+          slot="indicator"
+          type="loading"
+          spin
         />
-      </template>
-    </a-select>
-  </div>
+      </a-spin>
+      <a-empty
+        v-else
+      />
+    </template>
+  </a-select>
 </template>
 
 <script>
@@ -109,7 +107,7 @@ export default {
     },
     transform: {
       type: Function,
-      default: id => id,
+      default: (id) => id,
     },
   },
   data () {
@@ -194,18 +192,18 @@ export default {
           if (isArray(value)) {
             // this.labelValue = value.map(item => ({ value: item, label: void 0 }));
             this.rending = true;
-            const labelValue = this.options.filter(opt => ~value.indexOf(opt.value)).map(item => ({ key: item.value, label: item.label }));
+            const labelValue = this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ key: item.value, label: item.label }));
             if (labelValue && labelValue.length) {
               this.labelValue = labelValue;
               this.rending = false;
             } else {
               const config = {};
-              const {valueKey} = this;
+              const { valueKey } = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
               this.fetch(config).then((list) => {
-                this.labelValue = list.filter(item => ~value.indexOf(item.value)).map(item => ({ key: item.value, label: item.label }));
+                this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.label }));
                 this.options.unshift(...list);
                 this.options = uniqOption(this.options);
               }).finally(() => {
@@ -219,7 +217,7 @@ export default {
             };
             this.rending = true;
             // 从options中查找label
-            const labelValue = this.options.find(item => item.value === value);
+            const labelValue = this.options.find((item) => item.value === value);
             // 如果存在，则表示已经加载过，
             if (labelValue) {
               this.labelValue = labelValue;
@@ -227,19 +225,19 @@ export default {
             } else {
             // 否则从网络获取
               const config = {};
-              const {valueKey} = this;
+              const { valueKey } = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
               this.fetch(config).then((list) => {
-                this.labelValue = list.find(item => item.value === value);
+                this.labelValue = list.find((item) => item.value === value);
               }).finally(() => {
                 this.rending = false;
               });
             }
           }
         } else {
-          this.labelValue = value;
+          this.labelValue = void 0;
         }
       },
     },
@@ -349,10 +347,10 @@ export default {
           this.$emit('change', void 0, VNode);
         }
       } else if (labelValue) {
-          this.$emit('change', labelValue.key, VNode);
-        } else {
-          this.$emit('change', void 0, VNode);
-        }
+        this.$emit('change', labelValue.key, VNode);
+      } else {
+        this.$emit('change', void 0, VNode);
+      }
     },
   },
 };

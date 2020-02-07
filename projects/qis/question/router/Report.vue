@@ -1,18 +1,20 @@
 <template>
-  <iframe
-    v-if="path"
-    name="frameOther"
-    :src="path"
-    width="100%"
-    :height="height"
-    frameborder="0"
-    scrolling="false"
-    @load="changeFrameHeight"
-  ></iframe>
-  <a-empty
-    v-else
-    style="margin-top: 128px;"
-  ></a-empty>
+  <div>
+    <iframe
+      v-if="path"
+      name="frameOther"
+      :src="path"
+      width="100%"
+      :height="height"
+      frameborder="0"
+      scrolling="false"
+      @load="changeFrameHeight"
+    ></iframe>
+    <a-empty
+      v-else
+      style="margin-top: 128px;"
+    ></a-empty>
+  </div>
 </template>
 <script>
 import { debounce } from 'lodash';
@@ -21,7 +23,7 @@ export default {
   data () {
     return {
       path: '',
-      height: 100
+      height: 100,
     };
   },
   created () {
@@ -36,9 +38,7 @@ export default {
   methods: {
     changeFrameHeight () {
       this.height = document.documentElement.clientHeight - 64;
-    }
-  }
+    },
+  },
 };
 </script>
-
-

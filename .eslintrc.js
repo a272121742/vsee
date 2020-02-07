@@ -41,7 +41,11 @@ module.exports = {
     'vue/html-self-closing': 0,
     'import/no-unresolved': [2, { ignore: ['^~', '^@'] }],
     'no-control-regex': 0,
-    'no-case-declarations': 0
+    'no-case-declarations': 0,
+    'no-underscore-dangle': [0, { "enforceInMethodNames": true }],
+    'prefer-destructuring': ['error', {'object': true, 'array': false}],
+    'no-template-curly-in-string': 0,
+    // 'eslint-disable-next-line':  [0, { "allowForLoopAfterthoughts": true }],
   },
   parserOptions: {
     parser: "babel-eslint"

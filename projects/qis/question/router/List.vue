@@ -127,7 +127,7 @@ import attachmentMix from '~~/issue-attachment.js';
 
 export default {
   name: 'QuestionList',
-  mixins: [issueTab, attachmentMix]
+  mixins: [issueTab, attachmentMix],
 };
 
 </script>

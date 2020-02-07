@@ -44,7 +44,7 @@
         <a
           v-permission="'issue:record:detail'"
           href="javascript:;"
-          @click="goToDetail(record.id)"
+          @click="goToDetail(record)"
         >
           <!-- 详情链接 -->
           {{ $t('issue_action.detail') }}
@@ -75,14 +75,14 @@ export default {
      */
     colUpdateUrl: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
       total: 0,
       data: [],
-      loading: false
+      loading: false,
     };
   },
 
@@ -101,7 +101,7 @@ export default {
     },
     columns () {
       const orderData = this.advancePageConfig.publishedOrderData;
-      return issuePublishedColumns.map(col => {
+      return issuePublishedColumns.map((col) => {
         const newCol = clearObserver(col);
         if (newCol.dataIndex === orderData.field) {
           newCol.sortOrder = orderData.order;
@@ -110,7 +110,7 @@ export default {
         }
         return newCol;
       });
-    }
+    },
     // // 计算「更新列配置」的api
     // url () {
     //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
@@ -126,7 +126,7 @@ export default {
   methods: {
     ...mapActions({
       // 分页查询待发列表
-      getData: 'getIssuePublishedPage'
+      getData: 'getIssuePublishedPage',
     }),
     /**
      * 当列配置更新时，重新映射
@@ -161,11 +161,11 @@ export default {
       if (!this.loading) {
         this.loading = true;
         const {
-          page, limit, order, orderField
+          page, limit, order, orderField,
         } = this;
         this.getData({
-          page, limit, order, orderField, ...config
-        }).then(res => {
+          page, limit, order, orderField, ...config,
+        }).then((res) => {
           this.$set(this, 'data', res.list);
           this.total = res.total;
           this.$nextTick(() => {
@@ -192,17 +192,42 @@ export default {
     // },
     // 查看详情
     goToDetail (record) {
-      this.$router.push({
-        name: 'QuestionDetail',
-        params: {
-          id: record
-        },
-        query: {
-          form: this.$route.path
-        }
-      });
-    }
-  }
+      if (record.procDefKey === 'IRS1') {
+        this.$router.push({
+          name: 'QuestionDetail',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+        this.$store.dispatch('refresh');
+      } else if (record.procDefKey === 'IRS2') {
+        this.$router.push({
+          name: 'QuestionDetailNew',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+        this.$store.dispatch('refresh');
+      } else if (record.procDefKey === 'IRS3') {
+        this.$router.push({
+          name: 'SubQuestionDetailNew',
+          params: {
+            id: record.id,
+          },
+          query: {
+            form: this.$route.path,
+          },
+        });
+        this.$store.dispatch('refresh');
+      }
+    },
+  },
 };
 </script>
 

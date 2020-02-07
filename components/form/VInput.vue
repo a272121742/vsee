@@ -42,33 +42,36 @@ export default {
   props: {
     value: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     /**
      * 是否允许自动清除
      */
     allowClear: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data () {
     const value = this.value || '';
     return {
-      text: value
+      text: value,
     };
   },
   watch: {
     value (value) {
       this.text = value;
-    }
+    },
+  },
+  created () {
+    console.error('"v-input"已经弃用，请所有开发者迅速更换为"ant-design"原生"a-input"组件');
   },
   methods: {
     clear () {
       this.$emit('change', { target: { value: null } });
       this.text = null;
-    }
-  }
+    },
+  },
 };
 </script>
 

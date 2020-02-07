@@ -55,6 +55,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
+// import download from '@http/download.js';
 import attachmentMix from '~~/issue-attachment.js';
 import moduleDynamicCache from '~~/module-dynamic-cache.js';
 
@@ -64,8 +65,8 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data () {
     return {
@@ -75,38 +76,41 @@ export default {
       okButtonProps: {
         props: {
           disabled: true,
-          loading: false
-        }
-      }
+          loading: false,
+        },
+      },
     };
   },
   watch: {
     file (value) {
       this.okButtonProps.props.disabled = !value;
-    }
+    },
   },
   methods: {
     ...mapActions([
       'getTemplateDownload',
-      'issueImport'
+      'issueImport',
     ]),
     removeFile () {
       this.fileList = [];
       return false;
     },
     templateDownload () {
-      this.getTemplateDownload({rec_type: 20021001}).then((res = {}) => {
+      this.getTemplateDownload({ rec_type: 20021001 }).then((res = {}) => {
         const url = res.path;
         const name = res.originalFilename;
         if (!url || !name) {
           this.$message.show({ content: this.$t('file_download.failure'), type: 'error', duration: 3 });
         } else {
-          const a = document.createElement('a');
-          a.setAttribute('href', this.getDownloadURL(url, name));
-          a.setAttribute('download', name);
-          // a.click在火狐下无法被触发，必须通过这种方式下载
-          a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-          a.remove();
+          this.$message.loading(this.$t('status.downloading'), 3);
+          // download(this.getDownloadURL(url, name), name, true);
+          import('@http').then((res2) => {
+            const $ = res2.default;
+            $.get('/oss/ossFile/download', {
+              path: url,
+              originalFilename: name,
+            }, { responseType: 'blob' });
+          });
         }
       });
     },
@@ -127,14 +131,14 @@ export default {
       formData.append('file', this.file);
       this.okButtonProps.props.loading = true;
       this.issueImport(formData).then(() => {
-        this.$message.show({content: this.$t('file_upload.success'), duration: 3});
+        this.$message.show({ content: this.$t('file_upload.success'), duration: 3 });
         this.close();
         this.changeAdvancePageConfig({
           _t: new Date(),
           selectTabKey: '0',
-          draftPageData: { current: 1, pageSize: 10 }
+          draftPageData: { current: 1, pageSize: 10 },
         });
-      }).catch(err => {
+      }).catch((err) => {
         this.$message.show({ content: this.$t(err || 'file_upload.failure'), type: 'error', duration: 3 });
       }).finally(() => {
         this.okButtonProps.props.loading = false;
@@ -142,8 +146,8 @@ export default {
     },
     cancel () {
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>
 

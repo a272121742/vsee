@@ -35,7 +35,7 @@
             :z-index="5001"
             style="top:200px!important;"
             @ok="submitOk"
-            @cancel="submitCancel"         
+            @cancel="submitCancel"
           >
             <p>{{ $t('confirm.content') }}</p>
           </a-modal>
@@ -87,6 +87,17 @@
         :title="questionTitle"
         class="cardTitle"
       >
+        <template #extra>
+          <!-- 问题来源按钮 -->
+          <a-button
+            v-if="record.moduleSource"
+            class="editBtn"
+            @click="moduleSourceDetail"
+          >
+            <!-- 问题来源按钮 -->
+            {{ $t('issue_action.moduleSource') }}
+          </a-button>
+        </template>
         <a-form
           ref="form"
           :form="form"
@@ -435,7 +446,7 @@
                           :cache="false"
                           allow-clear
                           url="/sys/user/useList/getUsersByDeptPid"
-                          @change="(value) => worlkChampionOrProposer(value, 'advanceUser')" 
+                          @change="(value) => worlkChampionOrProposer(value, 'advanceUser')"
                         >
                         </net-select>
                       </a-form-item>
@@ -492,7 +503,7 @@
                       <!-- 「license」输入 -->
                       <a-form-item
                         self-update
-                      > 
+                      >
                         <template #label>
                           {{ $t('issue.license') }}
                           <span class="form-item-label-desc">{{ $t('issue.license_lable') }}</span>
@@ -586,7 +597,7 @@
                         'firstCausePart',
                       ]"
                       :placeholder="$t('search.please_select')"
-                      :transform="selectOption"
+                      :transform="selectOptionPart"
                       allow-clear
                       :query="{id: '${value}', name: '${search}' , orderField: 'name'}"
                       :cache="false"
@@ -594,9 +605,9 @@
                     ></net-select>
                   </a-form-item>
                 </a-col>
-                <a-col :span="6">
-                  <!-- 「零件号」下拉 -->
-                  <a-form-item :label="$t('issue.partId')">
+                <!-- <a-col :span="6"> -->
+                <!-- 「零件号」下拉 -->
+                <!-- <a-form-item :label="$t('issue.partId')">
                     <net-select
                       v-decorator="[
                         'firstCausePart',
@@ -609,7 +620,7 @@
                       url="/masterdata/v1/part"
                     ></net-select>
                   </a-form-item>
-                </a-col>
+                </a-col> -->
                 <a-col :span="6">
                   <!-- 「供应商名称」下拉 -->
                   <a-form-item
@@ -644,8 +655,6 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「试验类型」下拉-->
                   <a-form-item
@@ -663,6 +672,25 @@
                     ></net-select>
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
+                <!-- <a-col :span="6"> -->
+                <!-- 「试验类型」下拉-->
+                <!-- <a-form-item
+                    :label="$t('issue.testType')"
+                    self-update
+                  >
+                    <net-select
+                      v-decorator="[
+                        'testType',
+                      ]"
+                      :placeholder="$t('search.please_select')"
+                      :transform="selectOptiondict"
+                      allow-clear
+                      url="/sys/dict?dictType=issue_test_type"
+                    ></net-select>
+                  </a-form-item>
+                </a-col> -->
                 <a-col :span="6">
                   <!-- 「故障里程」输入 -->
                   <a-form-item
@@ -671,7 +699,8 @@
                   >
                     <v-input
                       v-decorator="[
-                        'milage'
+                        'milage',
+                        {rules: [{validator: milageVer}]}
                       ]"
                       :placeholder="$t('search.please_input')"
                       allow-clear
@@ -708,8 +737,6 @@
                     />
                   </a-form-item>
                 </a-col>
-              </a-row>
-              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「标定版本号」输入 -->
                   <a-form-item
@@ -725,6 +752,8 @@
                     />
                   </a-form-item>
                 </a-col>
+              </a-row>
+              <a-row :gutter="24">
                 <a-col :span="6">
                   <!-- 「硬件版本号」输入 -->
                   <a-form-item
@@ -816,22 +845,21 @@
 <script>
 import {
   createFormFields,
-  autoUpdateFileds
+  autoUpdateFileds,
 } from '@util/formhelper.js';
 
 import {
-  createNamespacedHelpers
+  createNamespacedHelpers,
 } from 'vuex';
 import moment from 'moment';
 import { transform, treeTransform } from '@util/datahelper.js';
 import timeFormatMix from '~~/time-format.js';
 import attachmentMix from '~~/issue-attachment.js';
-import { toggleForbidScrollThrough , disableScroll, enableScroll } from '~~/scroll.js';
+import { toggleForbidScrollThrough, disableScroll, enableScroll } from '~~/scroll.js';
 
-import { GLOBAL_API } from '~/config.js';
 
 const {
-  mapActions
+  mapActions,
 } = createNamespacedHelpers('question');
 
 export default {
@@ -841,29 +869,29 @@ export default {
     NetSingleTreeSelect: () => import('@comp/form/NetSingleTreeSelect.vue'),
     VInput: () => import('@comp/form/VInput.vue'),
     VTextarea: () => import('@comp/form/VTextarea.vue'),
-    PreventButton: () => import('@comp/button/PreventButton.vue')
+    PreventButton: () => import('@comp/button/PreventButton.vue'),
   },
   mixins: [attachmentMix, timeFormatMix],
   props: {
     name: {
       type: String,
-      default: ''
+      default: '',
     },
     id: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     const {
-      $store
+      $store,
     } = this;
     return {
       // 必填开关
       valiRequire: true,
       validVinOrlicense: true,
-      //VIN和车牌号选填
-      
+      // VIN和车牌号选填
+
       // 上传地址
       uploadUrl: $store.getters.getUrl('/issue/v1/file/upload?recType=10021003'),
       businessKey: null,
@@ -898,22 +926,22 @@ export default {
       advanceUserDisabled: false,
       sourceDisabled: false,
       resdeptDisabled: false,
-      smt:'',         //模块
-      responsibleUserId: '', //问题管理负责人
-      advanceDeptId: '',   //提出人部门
-      advanceUserId: '',   //提出人
-      procDefKey: 'IRS1',
+      smt: '', // 模块
+      responsibleUserId: '', // 问题管理负责人
+      advanceDeptId: '', // 提出人部门
+      advanceUserId: '', // 提出人
+      procDefKey: 'IRS2',
       labelCol: {
         // xs: { span: 24 },
         sm: {
-          span: 8
-        }
+          span: 8,
+        },
       },
       wrapperCol: {
         // xs: { span: 24 },
         sm: {
-          span: 16
-        }
+          span: 16,
+        },
       },
       workflowRolesList: [],
       workflowRoles: {
@@ -930,8 +958,8 @@ export default {
         diamondOwner4: '',
         diamondOwner5: '',
         diamondOwner6: '',
-        diamondOwner7: ''
-       
+        diamondOwner7: '',
+        icaWriter: '', // 围堵措施填写人
       },
       // 数据模板
       record: {
@@ -950,10 +978,10 @@ export default {
         description: '', // 问题描述
         file: '', // 文件上传
         contact: '', // 问题相关人员联系方式
-        smt:'',         //模块
-        responsibleUserId: '', //问题管理负责人
-        advanceDeptId: '',   //提出人部门
-        advanceUserId: '',   //提出人
+        smt: '', // 模块
+        responsibleUserId: '', // 问题管理负责人
+        advanceDeptId: '', // 提出人部门
+        advanceUserId: '', // 提出人
         /**
            * 补充信息
            */
@@ -972,20 +1000,20 @@ export default {
         milage: '',
         remark: '',
         workConditionInfo: '', // 工况信息
-        processInstanceId: ''//实例ID
-      }
+        processInstanceId: '', // 实例ID
+      },
     };
   },
   computed: {
     isEdit () {
       return this.name !== 'create';
-    }
+    },
   },
   watch: {
     id: {
       handler: 'init',
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   activated () {
     this.init();
@@ -1000,14 +1028,16 @@ export default {
       'eidtQuestion',
       'eidtQuestionAdd',
       'addActIdMembership',
+      'addActIdMembershipToAct',
       'getUserByPositionCode',
       'getUserByworkflowPositionCode',
       'getActIdMembership',
       'saveQuestion',
       'editSaveQuestion',
       'workFlowSubmit',
+      'workFlowSubmitNew',
       'getSysUser',
-      'delIssue'
+      'delIssue',
     ]),
     // 初始化
     init () {
@@ -1015,29 +1045,32 @@ export default {
       vm.$set(vm, 'record', { fileList: [] });
       vm.form = vm.$form.createForm(vm, {
         mapPropsToFields: vm.mapPropsToFields,
-        onValuesChange: autoUpdateFileds(vm, 'record')
+        onValuesChange: autoUpdateFileds(vm, 'record'),
       });
       vm.form.resetFields();
       if (vm.name === 'create') {
         vm.questionTitle = vm.$t('issue_action.create');
         vm.submitBtn = true;
         vm.actiive = 'saveBtn';
-        //初始化工作流角色
+        // 初始化工作流角色
         vm.record.advanceDeptId = this.$store.getters.getUser().deptId;
-        console.log(vm.record.advanceDeptId,99001122);
-        vm.eidtQuestionAdd(vm.record.advanceDeptId).then( res => {
+        console.log(vm.record.advanceDeptId, 99001122);
+        vm.eidtQuestionAdd(vm.record.advanceDeptId).then((res) => {
           vm.record.advanceDeptId = res;
           vm.form.updateFields(vm.mapPropsToFields());
         });
         vm.record.advanceUserId = this.$store.getters.getUser().id;
-        this.worlkChampionOrProposer(this.$store.getters.getUser().id,'advanceUser');
+        this.worlkChampionOrProposer(this.$store.getters.getUser().id, 'advanceUser');
         vm.form.updateFields(vm.mapPropsToFields());
       } else if (vm.name === 'edit') {
         vm.questionTitle = vm.$t('issue_action.edit_issue');
         vm.submitBtn = false;
         vm.actiive = 'activeClass';
 
-        vm.eidtQuestion(vm.id).then(res => {
+        vm.eidtQuestion(vm.id).then((res) => {
+          if (res.procDefKey) {
+            this.procDefKey = res.procDefKey;
+          }
           vm.record = res;
           this.validVinOrlicense = !res.vinNo && !res.license;
           vm.statusCode = res.status;
@@ -1045,13 +1078,11 @@ export default {
           if (vm.statusCode === '100100') {
             vm.delBtn = true;
             vm.submitBtn = true;
-          } 
-          else if (status>=100105 && status != 100300 && status != 100108) {
+          } else if (status >= 100105 && status != 100300 && status != 100108) {
             vm.advanceUserDisabled = true;
-            vm.sourceDisabled = status >= 100200?true:false;
-            vm.resdeptDisabled = status < 300100?false:true;
-          } 
-          else {
+            vm.sourceDisabled = status >= 100200;
+            vm.resdeptDisabled = !(status < 300100);
+          } else {
             vm.submitBtn = false;
           }
           // 附件
@@ -1085,23 +1116,42 @@ export default {
           vm.carTitle = vm.record.vehicleModelName; // 车型标题
           vm.faultTreeIds2Title = vm.record.faultTreeIds2Name; // 功能标题，
           vm.codeTitle = vm.record.faultTreeIds3Name; // 故障代码标题
-          
-          //初始化工作流角色人员
+
+          // 初始化工作流角色人员
           const transData = {
             procDefKey: this.procDefKey,
-            businessKey: vm.id
+            businessKey: vm.id,
           };
-          vm.getActIdMembership(transData).then(ress => {
-            vm.workflowRoles = ress;
+          vm.getActIdMembership(transData).then((ress) => {
+            if (ress && Object.keys(ress).length > 0) {
+              for (const item in ress) {
+                vm.workflowRoles[item] = ress[item];
+              }
+            }
+            if (res.creator) {
+              this.workflowRoleChange(res.creator, 'createUser');
+            }
+            if (res.advanceUserId) {
+              this.worlkChampionOrProposer(res.advanceUserId, 'advanceUser');
+            }
           });
         });
       }
     },
     // 验证VIN
     vinVer (rule, value, callback) {
-      var myreg = /^[A-Z0-9]{8,17}$/;
+      const myreg = /^[A-Z0-9]{8,17}$/;
       if (value && !myreg.test(value)) {
         callback(new Error(this.$t('issue_workflow.D5.vinVer')));
+      } else {
+        callback();
+      }
+    },
+    // 验证故障里程
+    milageVer (rule, value, callback) {
+      const myreg = /^\+?[1-9][0-9]*$/;
+      if (value && !myreg.test(value)) {
+        callback(new Error(this.$t('issue.milageVer')));
       } else {
         callback();
       }
@@ -1122,7 +1172,7 @@ export default {
     },
     // 验证手机号
     phoneVer (rule, value, callback) {
-      var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      const myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
       if (value && !myreg.test(value)) {
         callback(new Error(this.$t('issue.phoneVer')));
       } else {
@@ -1135,24 +1185,23 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.code,
-          label: item.name
+          label: item.name,
         });
       });
 
       return optionArray;
     },
     handleSource (value) {
-      this.record.responsibleUserId= void 0;
+      this.record.responsibleUserId = void 0;
       this.sourceName = value;
       this.form.updateFields(this.mapPropsToFields());
     },
     handleResponsibleUserId () {
-      this.record.responsibleUserId= void 0;
+      this.record.responsibleUserId = void 0;
       this.form.updateFields(this.mapPropsToFields());
     },
-    
+
     handleDelete () {
-      disableScroll();
       toggleForbidScrollThrough(true);
       this.visibleDelete = true;
     },
@@ -1172,7 +1221,7 @@ export default {
     handleDeleteFunction () {
       const vm = this;
       vm.delFlag = 1;
-      const param = { id:vm.id , optCounter:vm.optCounter , delFlag:vm.delFlag };
+      const param = { id: vm.id, optCounter: vm.optCounter, delFlag: vm.delFlag };
       vm.delIssue(param).then(() => {
         this.$message.success(this.$t('delete.success'));
         this.goBack();
@@ -1207,16 +1256,33 @@ export default {
     /**
      * 车型数据转换
      */
-    vehicleModelTreeTransform: treeTransform(transform({ value: 'id', label: 'psNameZh', children: 'children', selectable: item => !(item.children && item.children.length) })),
-    deptTreeTransform: treeTransform(transform({ value: 'ID', label: 'NAME', children: 'children', selectable: item => !(item.children && item.children.length) })),
-    responseDeptTreeTransform: treeTransform(transform({ value: 'code', label: 'name', children: 'children', selectable: item => !(item.children && item.children.length) })),
+    vehicleModelTreeTransform: treeTransform(transform({
+      value: 'id', label: 'psNameZh', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
+    deptTreeTransform: treeTransform(transform({
+      value: 'ID', label: 'NAME', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
+    responseDeptTreeTransform: treeTransform(transform({
+      value: 'code', label: 'name', children: 'children', selectable: (item) => !(item.children && item.children.length),
+    })),
     // 下拉转换函数
     selectOption (input) {
       const optionArray = [];
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.name
+          label: item.name,
+        });
+      });
+      return optionArray;
+    },
+    // 祸首件下拉转换函数
+    selectOptionPart (input) {
+      const optionArray = [];
+      input.forEach((item) => {
+        optionArray.push({
+          value: item.id,
+          label: `${item.code} ${item.name}`,
         });
       });
       return optionArray;
@@ -1226,7 +1292,7 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.psNameZh
+          label: item.psNameZh,
         });
       });
       return optionArray;
@@ -1236,7 +1302,7 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.faultNameZh
+          label: item.faultNameZh,
         });
       });
       return optionArray;
@@ -1248,20 +1314,20 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.code
+          label: item.code,
         });
       });
 
       return optionArray;
     },
-    //用户下拉框
+    // 用户下拉框
     userOption (input) {
       const optionArray = [];
 
       input.forEach((item) => {
         optionArray.push({
           value: item.id,
-          label: item.realName
+          label: item.realName,
         });
       });
 
@@ -1274,7 +1340,7 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.USERID,
-          label: item.USERNAMEZH
+          label: item.USERNAMEZH,
         });
       });
 
@@ -1291,7 +1357,7 @@ export default {
         // });
         optionArray.push({
           value: item.dictValue,
-          label: item.dictName
+          label: item.dictName,
         });
       });
       return optionArray;
@@ -1301,7 +1367,7 @@ export default {
       input.forEach((item) => {
         optionArray.push({
           value: item.dictValue,
-          label: item.dictName
+          label: item.dictName,
         });
       });
       return optionArray;
@@ -1318,13 +1384,13 @@ export default {
     goBack () {
       this.form.resetFields();
       this.$router.push({
-        path: this.$route.query.form || '/'
+        path: this.$route.query.form || '/',
       });
     },
     // 车型选择
     vehicleModelIdChange (value, label) {
       this.carTitle = label;
-      this.record.responsibleUserId='';
+      this.record.responsibleUserId = '';
       this.form.updateFields(this.mapPropsToFields());
     },
     // 所属功能选择
@@ -1359,14 +1425,14 @@ export default {
     submitCancel () {
       toggleForbidScrollThrough(false);
       this.visibleSubmit = false;
-      const commitButton = this.$refs.commitButton;
+      const { commitButton } = this.$refs;
       commitButton.reset();
     },
     //  提交弹框点击确定
     submitOk () {
       toggleForbidScrollThrough(false);
       this.visibleSubmit = false;
-      const commitButton = this.$refs.commitButton;
+      const { commitButton } = this.$refs;
       const hide = this.$message.loading(this.$t('issue_workflow.submitIng'), 0);
       const data = this.form.getFieldsValue();
       if (data.milage === undefined) {
@@ -1378,12 +1444,14 @@ export default {
       const title2 = this.faultTreeIds2Title || '';
       const title3 = this.codeTitle || '';
 
-      const fault2 = title2 ? '-' + title2 : '';
-      const fault3 = title3 ? '-' + title3 : '';
+      const fault2 = title2 ? `-${title2}` : '';
+      const fault3 = title3 ? `-${title3}` : '';
       const title = this.carTitle + fault2 + fault3;
-
+      data.procDefKey = this.procDefKey;
       data.title = title;
       this.businessTitle = title;
+      // 表单提交增加comment 2019/12/6
+      data.comment = '';
       // 日期格式化
       if (data.failureDate) {
         const failureDate = data.failureDate.format('YYYY-MM-DD HH:mm:ss');
@@ -1394,7 +1462,7 @@ export default {
         data.productDate = productDate;
       }
 
-      const id = this.$store.getters.getUser().id;
+      const { id } = this.$store.getters.getUser();
       const vm = this;
       // const param1 = {
       //   issueSource: data.source,
@@ -1417,106 +1485,152 @@ export default {
       if (this.businessKey) {
         data.id = this.id;
         data.optCounter = this.optCounter;
-        //Promise.all([cocharFunction, monitorFunction]).then((result) => {
-        this.editSaveQuestion(data).then(res => {
+        // Promise.all([cocharFunction, monitorFunction]).then((result) => {
+        this.editSaveQuestion(data).then((res) => {
           this.businessKey = res.id;
-          this.optCounter = res.optCounter;       
+          this.optCounter = res.optCounter;
           const param = {
             businessKey: this.businessKey,
             businessTitle: this.businessTitle,
-            processDefinitionKey: 'IRS1',
+            processDefinitionKey: this.procDefKey,
+            operationCode: '001',
             subSys: 'irs',
             taskId: null,
             userId: id,
+            advanceSelectorSkip: '1',
+            comment: '',
             variables: {
               issc: '0',
               businessKey: this.businessKey,
-              assigner: vm.monitor
-            }
+              assigner: vm.monitor,
+              comment: '',
+            },
           };
-            //保存任务角色
-          for(let item in this.workflowRoles) {
-            param.variables[item]=this.workflowRoles[item];
-            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+            // 保存任务角色
+          for (const item in this.workflowRoles) {
+            param.variables[item] = this.workflowRoles[item];
+            this.workflowRolesList.push({
+              groupId: item, userId: this.workflowRoles[item], procInstId: res.processInstanceId, procDefKey: this.procDefKey, businessKey: res.id,
+            });
           }
-          this.addActIdMembership(this.workflowRolesList).then(roleResult => {
-            for(let item in roleResult) {
-              param.variables[item] = roleResult[item];
-            }
-            this.workFlowSubmit(param).then(res2 => {
-              if (res2) {
-                setTimeout(() => {
-                  hide();
-                  this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
-                    commitButton.reset();
-                    this.$router.push({
-                      path: this.$route.query.form || '/'
-                    });
-                  });
-                }, 200);
+          this.addActIdMembershipToAct(this.workflowRolesList).then(() => {
+            this.addActIdMembership(this.workflowRolesList).then((roleResult) => {
+              for (const item in roleResult) {
+                param.variables[item] = roleResult[item];
+              }
+              if (param.processDefinitionKey !== 'IRS2') {
+                this.workFlowSubmit(param).then((res2) => {
+                  if (res2) {
+                    setTimeout(() => {
+                      hide();
+                      this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                        commitButton.reset();
+                        this.$router.push({
+                          path: this.$route.query.form || '/',
+                        });
+                      });
+                    }, 200);
+                  }
+                });
+              } else {
+                this.workFlowSubmitNew(param).then((res2) => {
+                  if (res2) {
+                    setTimeout(() => {
+                      hide();
+                      this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                        commitButton.reset();
+                        this.$router.push({
+                          path: this.$route.query.form || '/',
+                        });
+                      });
+                    }, 200);
+                  }
+                });
               }
             });
           });
-            
         });
         // });
       } else {
         data.id = this.id;
         data.optCounter = this.optCounter;
-        //Promise.all([cocharFunction, monitorFunction]).then((result) => {
-        this.saveQuestion(data).then(res => {
-          this.workflowRoleChange(this.$store.getters.getUser().id,'createUser');
+        // Promise.all([cocharFunction, monitorFunction]).then((result) => {
+        this.saveQuestion(data).then((res) => {
+          this.workflowRoleChange(this.$store.getters.getUser().id, 'createUser');
           this.businessKey = res.id;
           const param = {
             businessKey: this.businessKey,
             businessTitle: this.businessTitle,
-            processDefinitionKey: 'IRS1',
+            processDefinitionKey: this.procDefKey,
             subSys: 'irs',
             taskId: null,
             userId: id,
+            comment: '',
+            operationCode: '001',
             variables: {
+              comment: '',
               // coChair: result[0],
               // monitor: result[1],
               issc: '0',
+              advanceSelectorSkip: '1',
               businessKey: this.businessKey,
-              assigner: vm.monitor
-            }
+              assigner: vm.monitor,
+            },
           };
-            //保存任务角色
-          for(let item in this.workflowRoles) {
-            param.variables[item]=this.workflowRoles[item];
-            this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+            // 保存任务角色
+          for (const item in this.workflowRoles) {
+            param.variables[item] = this.workflowRoles[item];
+            this.workflowRolesList.push({
+              groupId: item, userId: this.workflowRoles[item], procInstId: res.processInstanceId, procDefKey: this.procDefKey, businessKey: res.id,
+            });
           }
-          this.addActIdMembership(this.workflowRolesList).then(roleResult => {
-            for(let item in roleResult) {
+          this.addActIdMembershipToAct(this.workflowRolesList).then();
+          this.addActIdMembership(this.workflowRolesList).then((roleResult) => {
+            for (const item in roleResult) {
               param.variables[item] = roleResult[item];
             }
-            this.workFlowSubmit(param).then(res2 => {
-              if (res2) {
-                setTimeout(() => {
-                  hide();
-                  this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
-                    commitButton.reset();
-                    this.$router.push({
-                      path: this.$route.query.form || '/'
+            if (param.processDefinitionKey !== 'IRS2') {
+              this.workFlowSubmit(param).then((res2) => {
+                if (res2) {
+                  setTimeout(() => {
+                    hide();
+                    this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                      commitButton.reset();
+                      this.$router.push({
+                        path: this.$route.query.form || '/',
+                      });
                     });
-                  });
-                }, 200);
-              }
-            });
+                  }, 200);
+                }
+              });
+            } else {
+              this.workFlowSubmitNew(param).then((res2) => {
+                if (res2) {
+                  setTimeout(() => {
+                    hide();
+                    this.$message.success(this.$t('issue_workflow.submitSuccess'), 1).then(() => {
+                      commitButton.reset();
+                      this.$router.push({
+                        path: this.$route.query.form || '/',
+                      });
+                    });
+                  }, 200);
+                }
+              });
+            }
           });
-            
         });
         // });
       }
-      setTimeout(() => { hide();
+      setTimeout(() => {
+        hide();
       }, 200);
     },
     // 提交接口调用函数
     handleSubmit () {
       this.valiRequire = true;
       this.validVinOrlicense = !this.record.vinNo && !this.record.license;
-      const commitButton = this.$refs.commitButton;
+      const { commitButton } = this.$refs;
       this.form.validateFields((err) => {
         if (!err) {
           this.visibleSubmit = true;
@@ -1529,7 +1643,7 @@ export default {
     },
     handleSave () {
       this.valiRequire = false;
-      const saveButton = this.$refs.saveButton;
+      const { saveButton } = this.$refs;
       // this.$nextTick(() => {
       //   saveButton.reset();
       //   this.form.validateFields(Object.keys(this.form.getFieldsValue()), { force: true }, () => {});
@@ -1537,6 +1651,8 @@ export default {
       // 正在保存中...
       const hide = this.$message.loading(this.$t('issue_workflow.saveIng'), 0);
       const data = this.form.getFieldsValue();
+      // 表单提交增加comment 2019/12/6
+      data.comment = '';
       data.fileList = this.record.fileList;
       if (data.milage === undefined) {
         data.milage = '';
@@ -1546,8 +1662,8 @@ export default {
       const title2 = this.faultTreeIds2Title || '';
       const title3 = this.codeTitle || '';
 
-      const fault2 = title2 ? '-' + title2 : '';
-      const fault3 = title3 ? '-' + title3 : '';
+      const fault2 = title2 ? `-${title2}` : '';
+      const fault3 = title3 ? `-${title3}` : '';
       const title = this.carTitle + fault2 + fault3;
 
       data.title = title;
@@ -1560,11 +1676,13 @@ export default {
         const productDate = data.productDate.format('YYYY-MM-DD HH:mm:ss');
         data.productDate = productDate;
       }
+      // 将问题保存成IRS2
+      data.procDefKey = this.procDefKey;
       if (this.name === 'create') {
         if (this.businessKey) {
           data.id = this.id;
           data.optCounter = this.optCounter;
-          this.editSaveQuestion(data).then(res => {
+          this.editSaveQuestion(data).then((res) => {
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
             this.handelActRoles(res);
@@ -1573,30 +1691,30 @@ export default {
               this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
-                  path: this.$route.query.form || '/'
+                  path: this.$route.query.form || '/',
                 });
               });
             }, 100);
           });
         } else {
-          this.saveQuestion(data).then(res => {
+          this.saveQuestion(data).then((res) => {
             this.businessKey = res.id;
-            //工作流角色创建人
-            this.workflowRoleChange(this.$store.getters.getUser().id,'createUser');
+            // 工作流角色创建人
+            this.workflowRoleChange(this.$store.getters.getUser().id, 'createUser');
             this.handelActRoles(res);
             setTimeout(() => {
               hide();
               this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
-                  path: this.$route.query.form || '/'
+                  path: this.$route.query.form || '/',
                 });
               });
             }, 100);
           });
         }
       } else if (this.name === 'edit') {
-        for (var i in data) {
+        for (const i in data) {
           if (data[i] === void 0) {
             data[i] = null;
           }
@@ -1609,7 +1727,7 @@ export default {
           this.valiRequire = true;
           this.form.validateFields((err) => {
             if (!err) {
-              this.editSaveQuestion(data).then(res => {
+              this.editSaveQuestion(data).then((res) => {
                 this.businessKey = res.id;
                 this.optCounter = res.optCounter;
                 this.handelActRoles(res);
@@ -1618,7 +1736,7 @@ export default {
                   this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                     saveButton.reset();
                     this.$router.push({
-                      path: this.$route.query.form || '/'
+                      path: this.$route.query.form || '/',
                     });
                   });
                 }, 100);
@@ -1631,7 +1749,7 @@ export default {
             }
           });
         } else {
-          this.editSaveQuestion(data).then(res => {
+          this.editSaveQuestion(data).then((res) => {
             this.handelActRoles(res);
             this.businessKey = res.id;
             this.optCounter = res.optCounter;
@@ -1640,80 +1758,85 @@ export default {
               this.$message.success(this.$t('issue_workflow.saveSuccess'), 1).then(() => {
                 saveButton.reset();
                 this.$router.push({
-                  path: this.$route.query.form || '/'
+                  path: this.$route.query.form || '/',
                 });
               });
             }, 100);
           });
         }
       }
-      setTimeout(() => { hide();}, 100);
+      setTimeout(() => { hide(); }, 100);
     },
-    //保存工作流角色人物
-    handelActRoles (res){
-      for(let item in this.workflowRoles) {
-		      this.workflowRolesList.push({groupId:item,userId:this.workflowRoles[item],procInstId:res.processInstanceId,procDefKey:this.procDefKey,businessKey:res.id});
+    // 保存工作流角色人物
+    handelActRoles (res) {
+      for (const item in this.workflowRoles) {
+        this.workflowRolesList.push({
+          groupId: item, userId: this.workflowRoles[item], procInstId: res.processInstanceId, procDefKey: this.procDefKey, businessKey: res.id,
+        });
       }
-      this.addActIdMembership(this.workflowRolesList).then(result => {
+      this.addActIdMembershipToAct(this.workflowRolesList).then();
+      this.addActIdMembership(this.workflowRolesList).then((result) => {
 
       });
     },
-    //更换工作流角色人员
-    workflowRoleChange (value ,role){
+    // 更换工作流角色人员
+    workflowRoleChange (value, role) {
       this.workflowRoles[role] = value;
     },
-    //更新责任人或者提出人科长或者部长
-    worlkChampionOrProposer (value ,role){
+    // 更新责任人或者提出人科长或者部长
+    worlkChampionOrProposer (value, role) {
       this.workflowRoles[role] = value;
-      if(role=='advanceUser'){
-        if(value){
-          this.getUserByPositionCodeFunction(value,'sectorManager','advanceSelector');
-        }else{
+      if (role == 'advanceUser') {
+        if (value) {
+          this.getUserByPositionCodeFunction(value, 'sectorManager', 'advanceSelector');
+        } else {
           this.workflowRoles.advanceSelector = '';
         }
-        
-      }else if(role=='champion'){
-        if(value){
-          this.getUserByworkFlowPositionCodeFunction(value,'sectorManager','sectorManager');
-          this.getUserByworkFlowPositionCodeFunction(value,'director','director');
-        }else{
+      } else if (role == 'champion') {
+        if (value) {
+          this.getUserByworkFlowPositionCodeFunction(value, 'sectorManager', 'sectorManager');
+          this.getUserByworkFlowPositionCodeFunction(value, 'director', 'director');
+        } else {
           this.workflowRoles.sectorManager = '';
           this.workflowRoles.director = '';
         }
       }
     },
-    //获取对应人科长或者部长信息
-    getUserByPositionCodeFunction (value,positionCode,role){
+    // 获取对应人科长或者部长信息
+    getUserByPositionCodeFunction (value, positionCode, role) {
       const parmas = {
         userId: value,
-        positionCode: positionCode
+        positionCode,
       };
-      this.getUserByPositionCode(parmas).then(res => {
-        if(res[0]){
+      this.getUserByPositionCode(parmas).then((res) => {
+        if (res[0]) {
           this.workflowRoles[role] = res[0].id;
-        }else{
+        } else {
           this.workflowRoles[role] = void 0;
         }
-       
       });
     },
 
-    //获取工作流对应人科长或者部长信息
-    getUserByworkFlowPositionCodeFunction (value,positionCode,role){
+    // 获取工作流对应人科长或者部长信息
+    getUserByworkFlowPositionCodeFunction (value, positionCode, role) {
       const parmas = {
         userId: value,
-        positionCode: positionCode
+        positionCode,
       };
-      this.getUserByworkflowPositionCode(parmas).then(res => {
-        if(res[0]){
+      this.getUserByworkflowPositionCode(parmas).then((res) => {
+        if (res[0]) {
           this.workflowRoles[role] = res[0].id;
-        }else{
+        } else {
           this.workflowRoles[role] = void 0;
         }
-        
       });
     },
-    
+    // 查看来源模块详情
+    moduleSourceDetail () {
+      if (this.record.moduleSource === 'ASQ') {
+        window.open(`/aqs/issue/definition-list/report/${this.record.moduleSourceId}`);
+      }
+    },
 
     handleSearch (e) {
       e.preventDefault();
@@ -1723,7 +1846,7 @@ export default {
     },
     handleReset () {
       this.$router.push({
-        path: this.$route.query.form || '/'
+        path: this.$route.query.form || '/',
       });
     },
     // VIN 车号 输入后改变验证规则，实现动态验证
@@ -1733,7 +1856,6 @@ export default {
       this.$nextTick(() => {
         this.form.validateFields(['license'], { force: true });
       });
-      
     },
     changeLicenseRequired (e) {
       console.log(e.target.value, this.record.vinNo);
@@ -1741,7 +1863,6 @@ export default {
       this.$nextTick(() => {
         this.form.validateFields(['vinNo'], { force: true });
       });
-      
     },
     toggle () {
       this.expand = !this.expand;
@@ -1753,15 +1874,15 @@ export default {
       return createFormFields(this, [
         'faultTreeIds1', 'faultTreeIds2', 'faultTreeIds3', 'grade', 'source', 'vehicleModelId',
         'projectPhase',
-        'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'advanceUserId','responsibleUserId','smt',
-        'advanceDeptId','description', 'file',
+        'manufactureBaseId', 'failureDate', 'frequency', 'responsibleDepartmentId', 'advanceUserId', 'responsibleUserId', 'smt',
+        'advanceDeptId', 'description', 'file',
         'contact', 'testType',
         'firstCausePart', 'partId', 'supplierId', 'softwareVersion', 'calibrationVersion',
-        'hardwareVersion', 'confirmationVersion', 'vinNo','license', 'productDate', 'maintenanceStation', 'milage',
-        'remark', 'workConditionInfo', 'preliminaryInvestigation'
+        'hardwareVersion', 'confirmationVersion', 'vinNo', 'license', 'productDate', 'maintenanceStation', 'milage',
+        'remark', 'workConditionInfo', 'preliminaryInvestigation',
       ], 'record');
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -1877,6 +1998,17 @@ export default {
       line-height: 22px;
       background: #FFFFFF;
       border: 1px solid #D9D9D9;
+      border-radius: 4px;
+      border-radius: 4px;
+    }
+    .editBtn {
+      margin-left: 10px;
+      font-size: 14px;
+      color: #0097e0;
+      text-align: left;
+      line-height: 22px;
+      background: #ffffff;
+      border: 1px solid #0097e0;
       border-radius: 4px;
       border-radius: 4px;
     }

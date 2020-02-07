@@ -5,13 +5,13 @@ export default (moduleName = 'question') => {
   return {
     computed: {
       ...mapState({
-        advancePageConfig: state => state
-      })
+        advancePageConfig: (state) => state,
+      }),
     },
     methods: {
       ...mapMutations({
-        changeAdvancePageConfig: 'setState'
-      })
-    }
+        changeAdvancePageConfig: 'setState',
+      }),
+    },
   };
 };

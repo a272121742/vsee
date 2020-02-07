@@ -1,7 +1,170 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/网络请求" />
+<Meta title="框架|核心（Core）/网络请求（http）" />
 
 # 网络请求
 
-可以用于进行网络请求
+我们将所有的资源请求都封装成一个`@http`模块，这是一个对`axios`的封装。
+
+## 请求规范
+
+请求方式完全参考`RESTFUL`的设计思路。其中，请求头的会附带如下字段：
+
+```javascript
+token: '',                    // token信息
+Authorization: '',            // 授权信息
+'Accept-Language': 'zh-CN',   // 语言环境
+/* 缓存策略 */
+'Cache-Control': 'no-cache,no-store,must-revalidate,max-age=0,no-siteapp,post-check=0,pre-check=0',
+Pragma: 'no-cache',
+```
+
+## 响应规范
+
+见下方【错误处理】，响应的数据结构一定包含`code`和`data`，如果`code`不为`0`，则还应该包含错误信息`msg`。对于登录接口来说，`token`信息都是放在`data`中的，前端在捕获到登录接口之后会自动识别`token`，并将`token`设置到今后请求的请求头中。
+
+## 引入方式
+
+我们为`http`模块统一了引入入口，使用如下代码引入：
+
+```javascript
+import $ from '@http';
+```
+
+这里我们使用`$`来定义引入的对象，让人感觉是对`jQuery`的致敬与怀旧。接着我们就可以直接使用`$`来按照`RESTFUL`风格请求接口了。
+
+## 请求接口
+
+我们按照`RESTFUL`风格对`axios`进行了相关的封装，结合类似`jQuery`的使用方式，封装出如下的API：
+
+```javascript
+const $ = {
+  /**
+   * 使用`GET`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  get (url, params, config) {},
+  /**
+   * 使用`DELETE`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  delete (url, params, config) {},
+  /**
+   * 使用`HEAD`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  head (url, params, config) {},
+  /**
+   * 使用`POST`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} data - `body`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  post (url, data, config) {},
+  /**
+   * 使用`PUT`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} data - `body`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  put (url, data, config) {},
+  /**
+   * 使用`PATCH`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} data - `body`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  patch (url, data, config) {},
+  /**
+   * 使用`OPTIONS`方式提交数据请求
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  options (url, params, config) {},
+  /**
+   * 使用`axios`自定义方式请求数据
+   * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
+   */ 
+  request (config) {},
+  /**
+   * 使用`jsonp`方式请求数据
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {*} callback - 非同源资源请求的回调函数名称，默认值`callback`
+   */ 
+  jsonp (url, params, callback = 'callback') {},
+}
+```
+
+## 代理模式
+
+`@http`模块有两种数据请求模式，一种是正常请求模式，一种是代理模式。代理模式都是使用在`mock`场景下的。如下两种场景会使用代理模式：
+
+```bash
+npm run dev --project=idm               // 开发环境下启用代理模式来请求模拟数据
+npm run build:sit --project=idm --test  // 生产环境下启用代理模式来请求模拟数据
+```
+
+代理模式下，请求接口会被`mock`模块拦截，也就是被所有模块下的`mock`文件下的`js`文件对应的模拟请求所拦截，不会发起真正的请求，而直接响应模拟的数据。
+
+## 错误处理
+
+客户端向服务端发起请求，通常会有三种响应结果：
+
+1. 客户端或网络异常，客户端请求未达服务端，会生成一个前端的`HTTPResponse`；
+2. 客户端抵达服务端，但服务端未正常使用服务处理，返回服务器返回的`HTTPResponse`；
+3. 服务端正常接受并处理业务，但有业务问题，返回服务器返回的`HTTPResponse`；
+
+前两者中，错误信息是包装在`HTTPRequest.status`中的，对于第三种，业务错误信息则是包装在`HTTPResponse.body`中的，而根据业务需求，响应体的格式为：
+
+```json
+{
+  "code": 0,  // 如果不为0，则为业务错误，错误信息查看`msg`
+  "data": {}, // 如果成功则返回业务数据
+  "msg": '',  // 如果不成功，则返回业务错误信息 
+}
+```
+
+因此，我们统一对`HTTPResponse`的响应错误进行了处理：
+
+1. 请求成功 - 表示服务端正确返回且不包含业务错误，则将业务数据传递给上层组件；
+2. 请求失败 - 服务端未正确返回，或返回响应体中包含错误信息，则自动识别错误状态码，传递给上层组件；
+
+传递的错误状态码都是编码格式，包含有`HTTP Status`的`200`、`404`、`500`，也包含有业务状态码的`100004`(用户名密码错误)、`100010`(用户账号已过期)。如果服务端返回数据中不包含`msg`字段，则直接上报错误状态码，然后由开发人员做前端国际化或者处理，否则，会自动弹出信息提示。
+
+> 注意，响应结构体中的`code`是必传的，否则前端都会当做是一种错误来捕获，且错误信息是**未定义**。
+
+## 数据处理
+
+我们对请求成功的数据，也做了进一步处理：
+
+1. 如果响应数据为`Blob`，自动实现下载，并返回文件名；
+2. 如果响应数据为二进制，则返回二进制数据供前端展现（例如服务端验证码）；
+3. 如果响应数据中`code`为`401`，则在生产环境下直接跳转到登录页；
+4. 如果响应数据为合法数据，则直接传递给上层组件；否则异常处理；
+
+## 其他
+
+我们还为`axios`添加了一些额外的校验和功能：
+
+1. 代理模式下，会自动添加日志模块。由于代理模式下`http`请求是无法正常发出，只能被拦截，因此控制台上是无法查阅到对应的请求信息，只能通过日志模块来查看；
+2. 如果包含登录模块，则登录模块的会被拦截请求数据，并将`token`信息注入到今后的所有资源请求中；
+3. 请求前检测`token`，如果没有，则退出系统并跳转到登录模块；
+
+## feature
+
+- [ ] 文件下载（静态下载、外域资源下载以及下载兼容性解决，考虑使用`FileSaver.js`）
+- [ ] 请求重连（已完成未配置）
+- [ ] 公开更多配置
+
+
+
+
+

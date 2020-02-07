@@ -43,17 +43,17 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data () {
     return {
       formItemLayout: {
         labelCol: { span: 3 },
         wrapperCol: { span: 21 },
-      }
+      },
     };
-  }
+  },
 };
 </script>
 
@@ -72,5 +72,5 @@ export default {
       margin-right: 8px;
     }
   }
- 
+
 </style>

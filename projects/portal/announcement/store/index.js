@@ -7,8 +7,8 @@ export default {
     b: 2,
     filter: {
       c: 3,
-      d: 4
-    }
+      d: 4,
+    },
   },
   getters: {
 
@@ -22,6 +22,6 @@ export default {
     },
     getAnnouncement (store, id) {
       return api.getAnnouncement(id);
-    }
-  }
+    },
+  },
 };

@@ -53,14 +53,14 @@ function hasProp (instance, selfProp) {
 }
 function transformQuery (query) {
   const transQuery = {};
-  for (const i in query) {
-    const value = query[i];
+  Object.keys(query).forEach((key) => {
+    const value = query[key];
     if (typeof (value) === 'string' && (~value.indexOf('${search}') || ~value.indexOf('${value}'))) {
-      delete transQuery[i];
+      delete transQuery[key];
     } else {
-      transQuery[i] = value;
+      transQuery[key] = value;
     }
-  }
+  });
   return transQuery;
 }
 
@@ -107,7 +107,7 @@ export default {
     },
     transform: {
       type: Function,
-      default: id => id,
+      default: (id) => id,
     },
   },
   data () {
@@ -192,18 +192,18 @@ export default {
           if (isArray(value)) {
             // this.labelValue = value.map(item => ({ value: item, label: void 0 }));
             this.rending = true;
-            const labelValue = this.options.filter(opt => ~value.indexOf(opt.value)).map(item => ({ key: item.value, label: item.label }));
+            const labelValue = this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ key: item.value, label: item.label }));
             if (labelValue && labelValue.length) {
               this.labelValue = labelValue;
               this.rending = false;
             } else {
               const config = {};
-              const {valueKey} = this;
+              const { valueKey } = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
               this.fetch(config).then((list) => {
-                this.labelValue = list.filter(item => ~value.indexOf(item.value)).map(item => ({ key: item.value, label: item.label }));
+                this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.label }));
                 this.options.unshift(...list);
                 this.options = uniqOption(this.options);
               }).finally(() => {
@@ -217,7 +217,7 @@ export default {
             };
             this.rending = true;
             // 从options中查找label
-            const labelValue = this.options.find(item => item.value === value);
+            const labelValue = this.options.find((item) => item.value === value);
             // 如果存在，则表示已经加载过，
             if (labelValue) {
               this.labelValue = labelValue;
@@ -225,12 +225,12 @@ export default {
             } else {
             // 否则从网络获取
               const config = {};
-              const {valueKey} = this;
+              const { valueKey } = this;
               if (valueKey) {
                 config[valueKey] = value;
               }
               this.fetch(config).then((list) => {
-                this.labelValue = list.find(item => item.value === value);
+                this.labelValue = list.find((item) => item.value === value);
               }).finally(() => {
                 this.rending = false;
               });
@@ -347,10 +347,10 @@ export default {
           this.$emit('change', void 0, VNode);
         }
       } else if (labelValue) {
-          this.$emit('change', labelValue.key, VNode);
-        } else {
-          this.$emit('change', void 0, VNode);
-        }
+        this.$emit('change', labelValue.key, VNode);
+      } else {
+        this.$emit('change', void 0, VNode);
+      }
     },
   },
 };

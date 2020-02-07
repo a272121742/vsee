@@ -75,14 +75,14 @@ export default {
      */
     colUpdateUrl: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
       total: 0,
       data: [],
-      loading: false
+      loading: false,
     };
   },
   computed: {
@@ -100,7 +100,7 @@ export default {
     },
     columns () {
       const orderData = this.advancePageConfig.draftOrderData;
-      return issueDraftColumns.map(col => {
+      return issueDraftColumns.map((col) => {
         const newCol = clearObserver(col);
         if (newCol.dataIndex === orderData.field) {
           newCol.sortOrder = orderData.order;
@@ -109,7 +109,7 @@ export default {
         }
         return newCol;
       });
-    }
+    },
     // // 计算「更新列配置」的api
     // url () {
     //   return this.colUpdateUrl && this.colUpdateUrl.split(/\?\w+=/)[0];
@@ -120,9 +120,9 @@ export default {
     // }
   },
   watch: {
-    '$store.state.question._t' () {
+    '$store.state.question._t': function () {
       this.request({}, true);
-    }
+    },
   },
   created () {
     this.request({}, true);
@@ -130,7 +130,7 @@ export default {
   methods: {
     ...mapActions({
       // 分页查询待发列表
-      getData: 'getIssueDraftPage'
+      getData: 'getIssueDraftPage',
     }),
     /**
      * 当列配置更新时，重新映射
@@ -165,11 +165,11 @@ export default {
       if (!this.loading) {
         this.loading = true;
         const {
-          page, limit, order, orderField
+          page, limit, order, orderField,
         } = this;
         this.getData({
-          page, limit, order, orderField, ...config
-        }).then(res => {
+          page, limit, order, orderField, ...config,
+        }).then((res) => {
           this.$set(this, 'data', res.list);
           this.total = res.total;
           init && this.$emit('update:total', res.total);
@@ -201,14 +201,15 @@ export default {
         name: 'QuestionCreate',
         params: {
           name: 'edit',
-          id: record
+          id: record,
         },
         query: {
-          form: this.$route.path
-        }
+          form: this.$route.path,
+        },
       });
-    }
-  }
+      this.$store.dispatch('refresh');
+    },
+  },
 };
 </script>
 

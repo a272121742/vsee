@@ -1,10 +1,10 @@
 <template>
-  <a-tooltip 
+  <a-tooltip
     v-bind="tooltip ? (tooltip === true ? {} : tooltip) : {}"
     class="ellipsis-wrap"
   >
     <template
-      v-if="tooltip" 
+      v-if="tooltip"
       #title
     >
       <slot
@@ -26,30 +26,29 @@ export default {
   filters: {
     limit (text = '', len = 0) {
       if (len) {
-        return text.substr(0, len) + '...';
-      } else {
-        return text;
+        return `${text.substr(0, len)}...`;
       }
-    }, 
+      return text;
+    },
   },
   props: {
     length: {
       type: Number,
-      default: 0
+      default: 0,
     },
     tooltip: {
       type: [Object, Boolean],
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   computed: {
     text () {
-      return this.$slots.default.map(vNode => vNode.text).join('');
-    }
+      return this.$slots.default.map((vNode) => vNode.text).join('');
+    },
   },
   created () {
     console.log(this.tooltip);
-  }
+  },
 };
 </script>
 

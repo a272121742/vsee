@@ -72,6 +72,18 @@ export default {
     return api.workFlowSubmit(data);
   },
   /**
+   * 问题提交至工作流（新版）
+   */
+  workFlowSubmitNew (store, data) {
+    return api.workFlowSubmitNew(data);
+  },
+  /**
+   * 自由跳转
+   */
+  moveto (store, data) {
+    return api.moveto(data);
+  },
+  /**
    * 工作流中的审核
    */
   examineDetail (store, data) {
@@ -242,8 +254,8 @@ export default {
   },
   /**
    * 模版下载
-   * @param {*} store 
-   * @param {*} param 
+   * @param {*} store
+   * @param {*} param
    */
   getTemplateDownload (store, param) {
     return api.getTemplateDownload(param);
@@ -270,19 +282,88 @@ export default {
     return api.addActIdMembership(data);
   },
   /**
+   * 保存工作流角色对应用户关系到act
+   */
+  addActIdMembershipToAct (store, data) {
+    return api.addActIdMembershipToAct(data);
+  },
+  /**
    * 获取对应人科长或者部长信息
-   * @param {*} store 
-   * @param {*} data 
+   * @param {*} store
+   * @param {*} data
    */
   getUserByPositionCode (store, data) {
     return api.getUserByPositionCode(data);
   },
   /**
    * 获取工作流对应人科长或者部长信息
-   * @param {*} store 
-   * @param {*} data 
+   * @param {*} store
+   * @param {*} data
    */
   getUserByworkflowPositionCode (store, data) {
     return api.getUserByworkflowPositionCode(data);
+  },
+  // 暂存
+  temporarySave (store, data) {
+    return api.temporarySave(data);
+  },
+  // 问题回退详情
+  rollbackDetail (store, data) {
+    return api.rollbackDetail(data);
+  },
+  // 回退或关闭
+  backOrClose (store, data) {
+    return api.backOrClose(data);
+  },
+  // 特殊关闭工作流
+  speCloseWorkFlow (store, data) {
+    return api.speCloseWorkFlow(data);
+  },
+  // 获取关联问题详情
+  getAssociated (store, issueId) {
+    return api.getAssociated(issueId);
+  },
+  // 重复问题保存
+  duplicateSave (store, data) {
+    return api.duplicateSave(data);
+  },
+  // 被关联问题详情
+  relatedDetail (store, issueId) {
+    return api.relatedDetail(issueId);
+  },
+  // 重复关联表格
+  associatedTable (store, data) {
+    return api.associatedTable(data);
+  },
+  // 查询问题裂变信息
+  fissionDetail (store, issueId) {
+    return api.fissionDetail(issueId);
+  },
+  // 问题裂变保存
+  fissionSave (store, data) {
+    return api.fissionSave(data);
+  },
+  // 问题裂变删除
+  fissionDelete (store, param) {
+    return api.fissionDelete(param);
+  },
+  // 问题裂变修改
+  fissionEdit (store, data) {
+    return api.fissionEdit(data);
+  },
+  // 主问题问题裂变修改
+  issueIsPission (store, data) {
+    return api.issueIsPission(data);
+  },
+  // 子问题保存
+  childSave (store, data) {
+    return api.childSave(data);
+  },
+  // 处理主问题状态跳转
+  handleMainIssue (store, masterIssueId) {
+    return api.handleMainIssue(masterIssueId);
+  },
+  replaceSMSave (store, data) {
+    return api.replaceSMSave(data);
   },
 };

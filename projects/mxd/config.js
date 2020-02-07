@@ -1,17 +1,19 @@
 export const TOKEN_KEY = 'login_token';
+export const TOKEN_AUTOSET = true;
 export const LANGUAGE_KEY = 'language';
 export const LANGUAGE_DEFAULT = 'zh_CN';
 export const LOGIN_CACHE_KEY = 'cache_login_info';
+export const OTHER_GET_PARAMS = {};
 
 // 授权API
 export const AUTH_API = {
   login: ['/auth/login', { appCode: 'ADMIN' }],
-  logout: ['/auth/logout', {}]
+  logout: ['/auth/logout', {}],
 };
 export const GLOBAL_API = {
   user: ['/sys/user/info', { appCode: 'MASTERDATA' }],
   menus: ['/sys/menu/nav', { appCode: 'MASTERDATA' }],
-  permissions: ['/sys/menu/permissions', { appCode: 'MASTERDATA' }]
+  permissions: ['/sys/menu/permissions', { appCode: 'MASTERDATA' }],
 };
 
 /**
@@ -44,6 +46,6 @@ export const autoRequires = {
   // 数据缓存模块
   store: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/store\/index\.js$/),
   // 国际化模块
-  i18n: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/locales\/[A-Za-z]+\.json$/)
+  i18n: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/locales\/[A-Za-z]+\.json$/),
   // directives: require.context('@dir', true, /^\.\/v-[A-Za-z-]*\.js$/)
 };

@@ -11,7 +11,7 @@
 <script>
 export default {
   components: {
-    Ellipsis: () => import('@comp/view/Ellipsis')
+    // Ellipsis: () => import('@comp/view/Ellipsis')
   },
   data () {
     return {

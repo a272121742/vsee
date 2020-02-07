@@ -27,7 +27,7 @@ export default {
   methods: {
     refresh () {
       this.$store.dispatch('refresh');
-    }
-  }
+    },
+  },
 };
 </script>

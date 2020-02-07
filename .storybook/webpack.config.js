@@ -1,6 +1,7 @@
 
 const path = require('path');
-const resolve = dir => path.join(__dirname, '../', dir);
+const cwd = process.cwd();
+const resolve = (dir) => path.join(cwd, dir);
 
 module.exports = async ({ config }) => {
   // config.module.rules[1] = {
@@ -44,6 +45,10 @@ module.exports = async ({ config }) => {
   
   config.resolve.alias['@comp'] = resolve('components');
   config.resolve.alias['@lib'] = resolve('lib');
+  config.resolve.alias['@http'] = resolve('lib/http');
+  config.resolve.alias['@store'] = resolve('lib/store');
+  config.resolve.alias['@i18n'] = resolve('lib/i18n');
+  config.resolve.alias['@router'] = resolve('lib/router');
   config.resolve.alias['@util'] = resolve('lib/utils');
   config.resolve.alias['@mix'] = resolve('lib/mixins');
   config.resolve.alias['@dir'] = resolve('lib/directives');

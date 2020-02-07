@@ -29,27 +29,27 @@ const list = mock({
   // 15. string 修改时间
   updateDate: '@datetime',
   // 16. integer 修改人
-  updater: '@pick([1, 2, 3])'
+  updater: '@pick([1, 2, 3])',
 }, 34);
 
 
 const db = cdb.link('announcement', list);
 
-mock.get('/sys/announcement/page', ({ query = {}, page = 1, limit = 10 }) => {
+mock.get('/issue/v1/announcement/page', ({ query = {}, page = 1, limit = 10 }) => {
   const datas = db.find(query);
   const begin = limit * (page - 1);
   const end = begin + limit;
   return mock.result({
     data: {
       list: datas.slice(begin, end),
-      total: datas.length
-    }
+      total: datas.length,
+    },
   });
 });
 
 mock.get('/sys/announcement/:id', (id) => {
   const data = db.findById(id);
   return mock.result({
-    data
+    data,
   });
 });

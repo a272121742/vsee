@@ -1,0 +1,55 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import MultipleNetSelect from '@comp/form/MultipleNetSelect.vue';
+
+<Meta title="组件库|Form表单/MultipleNetSelect网络下拉多选框（新）" />
+
+网络下拉多选框
+
+## 组件说明
+
+按照`mojo`平台所定义的规范，要求实现一套基于领域化模型所试用的数据加载组件，必须包含如下字段：
+
+```javascript
+const domain = {
+  page,           // 查询页，默认`1`
+  limit,          // 分页数，默认`10`
+  order,          // 排序方式，`'asc'`或者`'desc'`，默认`'asc'`
+  orderField,     // 排序字段，默认`''`
+  id,             // id回显查询，单选模式，默认`undefined`
+  ids,            // id回显查询，多选模式，默认`[]`
+  code,           // code回显查询，单选模式，默认`undefined`
+  cds,            // code回显查询，多选模式，默认`[]`
+  name,           // name查询，单选模式，默认`''`
+  q,              // 额外查询条件，用于区分领域模型的相关业务字段
+}
+```
+
+因此此次封装的组件是基于之前的`NetSelect`，当相比又优化了很多功能。
+
+## 相关属性
+
+> 继承：Ant Design Vue [Select](https://www.antdv.com/components/select-cn/)
+
+> 混入：[]
+
+> 排除属性： ['options', 'label-in-value']
+
+> 拓展属性： ['url', 'labelOf', 'valueBy', 'searchBy', 'orderField', 'order', 'closeSearch', 'query', 'delay', 'cache'] 见下方
+
+<Props of={ MultipleNetSelect } />
+
+## 属性说明
+
+相关案例和`net-select`非常相似，这里只对属性做简单的说明：
+
+1. url: 请求接口的地址，可以完全不带参数`/api/getData`，也可以带参数`/api/getData?name=a`；与`query`参数的区别是，`query`里的参数会被封装成为`q`发送给服务端，但这里的不会。
+2. labelOf：返回数据中，显示字段的名称，可以是字段，也可以是函数。例如我希望渲染查询到的数据的`name`，可以设置为`label-of="name"`，或者我希望它是一个组合，就变成`:label-of="(data) => data.no + '_' + data.name"`，这样，显示值将由编号和名称组成。
+3. valueBy：返回数据中，显示字段的值，用于传递给服务端，必须是字符串；
+4. searchBy：按照哪个字段进行查询，必须是字符串；
+5. orderField：排序字段；
+6. order：排序方式；
+7. closeSearch：是否强制关闭搜索，为`true`关闭，关闭后变为`commobox`模式，只能下拉不能输入；
+8. query：额外的查询参数，该查询参数会写入到领域模型`q`中去，要与`url`带的参数所区分。
+9. delay：延迟策略，即点击后才加载数据；
+10. cache: 缓存策略，即加载的数据会被缓存下来；
+

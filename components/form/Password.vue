@@ -50,21 +50,21 @@ export default {
      */
     value: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     /**
      * 是否允许自动清除
      */
     allowClear: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data () {
     const value = this.value || '';
     return {
       text: value,
-      type: 'password'
+      type: 'password',
     };
   },
   beforeCreate () {
@@ -84,8 +84,8 @@ export default {
      */
     changeInvisible () {
       this.type = this.type ? '' : 'password';
-    }
-  }
+    },
+  },
 };
 </script>
 

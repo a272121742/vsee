@@ -12,34 +12,29 @@
           :title="$t('title.appEntry')"
           class="shadown-block-normal module-card"
         >
-          <a-row style="display: flex; flex-wrap: wrap;">
-            <a-col
+          <a-row style="display: flex; flex-wrap: wrap; height: 312px;">
+            <template
               v-for="(m, index) in modules"
-              :key="index"
-              :span="6"
-              class="module-center"
             >
-              <template
-                v-if="index < 5 || isAdmin"
+              <a-col
+                v-if="m.visible !== false"
+                :key="index"
+                :span="6"
+                class="module-center"
               >
                 <div
                   class="module-wrapper"
                   @click.stop.prevent="jumpToModule(m.path)"
                 >
                   <div class="module-container">
-                    <svg
-                      class="icon"
-                      aria-hidden="true"
-                    >
-                      <use :xlink:href="m.icon"></use>
-                    </svg>
+                    <v-icon :type="m.icon"></v-icon>
                   </div>
                   <div class="module-link">
                     {{ $t(`portal_link.${m.name}`) }}
                   </div>
                 </div>
-              </template>
-            </a-col>
+              </a-col>
+            </template>
           </a-row>
         </a-card>
       </a-col>
@@ -56,51 +51,95 @@
 export default {
   components: {
     Announcement: () => import('../view/Announcement.vue'),
-    Todo: () => import('../view/Todo.vue')
+    Todo: () => import('../view/Todo.vue'),
   },
-  data () {
-    return {
-      modules: [{
+  // data () {
+  //   const { menus, userInfo } = this.$store.state;
+  //   return {
+  //     modules: [{
+  //       name: 'issue',
+  //       path: '/qis',
+  //       icon: 'iconzlwt_twoTone',
+  //       visible: menus.some((item) => item.appCode === 'ISSUE'),
+  //     }, {
+  //       name: 'bigdata',
+  //       path: '/',
+  //       icon: 'icondsj_twoTone',
+  //     }, {
+  //       name: 'traceability',
+  //       path: '/',
+  //       icon: 'iconxxzs_twoTone',
+  //     }, {
+  //       name: 'aftersales',
+  //       path: '/aqs',
+  //       icon: 'iconshzl_twoTone',
+  //       visible: menus.some((item) => item.appCode === 'AQS'),
+  //     }, {
+  //       name: 'manufacturing',
+  //       path: '/',
+  //       icon: 'icongczs_twoTone',
+  //     }, {
+  //       name: 'zhushuju',
+  //       path: '/master',
+  //       icon: 'iconzsj_twoTone',
+  //       visible: menus.some((item) => item.appCode === 'MASTER'),
+  //     }, {
+  //       name: 'system',
+  //       path: '/sys',
+  //       icon: 'iconxtsz_twoTone',
+  //       visible: userInfo.superAdmin === 1 || menus.some((item) => item.appCode === 'ADMIN'),
+  //     }],
+  //   };
+  // },
+  computed: {
+    isAdmin () {
+      return this.$store.state.userInfo.superAdmin === 1 || this.$store.state.menus.some((item) => item.appCode === 'ADMIN');
+    },
+    isAqs () {
+      return this.$store.state.menus.some((item) => item.appCode === 'AQS');
+    },
+    modules () {
+      const { menus, userInfo } = this.$store.state;
+      return [{
         name: 'issue',
         path: '/qis',
-        icon: '#iconportal_icon_zhiliang_default'
+        icon: 'iconzlwt_twoTone',
+        visible: userInfo.superAdmin === 1 || menus.some((item) => item.appCode === 'ISSUE'),
       }, {
         name: 'bigdata',
         path: '/',
-        icon: '#iconportal_icon_dashuju_default'
+        icon: 'icondsj_twoTone',
       }, {
         name: 'traceability',
         path: '/',
-        icon: '#iconportal_icon_zhuisu_default'
+        icon: 'iconxxzs_twoTone',
       }, {
         name: 'aftersales',
-        path: '/',
-        icon: '#iconportal_icon_shouhou_default'
+        path: '/aqs',
+        icon: 'iconshzl_twoTone',
+        visible: userInfo.superAdmin === 1 || menus.some((item) => item.appCode === 'AQS'),
       }, {
         name: 'manufacturing',
         path: '/',
-        icon: '#iconportal_icon_guocehng_default'
+        icon: 'icongczs_twoTone',
       }, {
         name: 'zhushuju',
         path: '/master',
-        icon: '#iconportal_icon_zhushuju_default'
+        icon: 'iconzsj_twoTone',
+        visible: userInfo.superAdmin === 1 || menus.some((item) => item.appCode === 'MASTERDATA'),
       }, {
         name: 'system',
         path: '/sys',
-        icon: '#iconportal_icon_xitong_default'
-      }]
-    };
-  },
-  computed: {
-    isAdmin () {
-      return this.$store.state.userInfo.superAdmin === 1 || this.$store.state.menus.some(item => item.appCode === 'ADMIN');
-    }
+        icon: 'iconxtsz_twoTone',
+        visible: userInfo.superAdmin === 1 || menus.some((item) => item.appCode === 'ADMIN'),
+      }];
+    },
   },
   methods: {
     jumpToModule (url) {
       window.location.href = url;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -122,13 +161,14 @@ export default {
     }
   }
   .module-center {
+    height: 156px;
     text-align: center;
     .module-wrapper {
       display: inline-block;
       &:hover {
         cursor: pointer;
         .module-container {
-          box-shadow: 0 15px 24px rgba(0, 0, 0, 0.22), 0 19px 76px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.12);
         }
       }
       .module-container {
@@ -142,7 +182,7 @@ export default {
         border: 1px solid #e8e8e8;
         border-color: rgba(0, 0, 0, 0);
         transition: box-shadow 1s ease;
-        box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.12);
         .icon {
           font-size: 48px;
         }
@@ -150,7 +190,6 @@ export default {
       .module-link {
         display: inline-block;
         margin-top: 10px;
-        margin-bottom: 28px;
         text-align: center;
         font-size: 12px;
         color: rgba(0,0,0,0.65);

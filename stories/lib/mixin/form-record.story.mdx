@@ -1,0 +1,65 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/表单记录器" />
+
+# 表单记录器
+
+该插混入器可以很方便的为`ant-design-vue`表单添加数据记录，减少开发人员的配置。
+
+表单记录器是一个函数，他能为当前表单自动生成可用的表单`form`和记录数据`record`，但这需要你额外但增加两个参数。
+
+表单记录器参数：
+
+- formName - 一个表单的名称，这个名称是你用来配置到`<a-form :form="form"></a-form>`中的变量名称，该变量会直接挂到`data`数据中，你可以直接使用`this[formName]`很方便的得到他。需要注意的是，`form`永远和`record`一一对应，你成功配置了`formName`，也就会自动生成名为`${formName}Record`的数据`record`。
+- fields - 绑定的数据字段集合。如果配置为`void 0`类型，则表示绑定`record`下的所有字段。
+
+例如，你使用`mixins: [formRecordMix('issueForm', ['code', 'name'])]`混入了这个表单记录器，那么你可以使用如下的公开对象：
+
+- issueForm(只读) - 表单；
+- issueFormRecord(可读写) - 表单数据记录
+
+## 使用方法
+
+下面我们看一个完整的案例（**.vue**文件中混入）：
+
+```html
+<template>
+  <!-- 1. 在视图中直接引入`form`变量 -->
+  <a-form
+    :form="form"
+  >
+    <!-- ... -->
+  </a-form>
+</template>
+<script>
+// 2. 引入混入器
+import formRecordMix from '@mix/form-record.js';
+// ...
+export default {
+  // 3. 混入分页器，生成名为`form`和`formRecord`两个数据，默认绑定`formRecord`所有字段
+  mixins: [ formRecordMix('form') ],
+  // ...
+  created () {
+    this.fetch().then(res => {
+      // ...
+      // 4. 初始化表单值，或者不这么做也可以
+      this.formRecord = { ...res };
+      // ...
+    });
+  },
+  // ...
+}
+</script>
+```
+
+> 注意：
+>
+> 1. 你可以在自己的组件中通过`data`函数初始化`formRecord`，填写需要初始化的数据信息，用于显示默认值；也可以在`mounted`之前给`formRecord`赋上初始值用于回显。
+> 2. `formRecordMix('form')`生成的`formRecord`不具备双向绑定，除非你像上一条说的在`data`函数中提前定义；或者传递`fields`参数，即可实现双向绑定，例如：`formRecordMix('form', ['a', 'b'])`会双向绑定`formRecord`中的`a`和`b`字段。
+
+## 额外方法
+
+另外，我们为这里的`form`额外增加了两个方法：
+
+- form.reset - 将表单记录重置为最初始状态，这个方法有别于`ant-design-vue`所提供的`resetFields`，他是一个更新的方法，当你使用`vsee`框架时，应该只用`reset`方法即可，这会给你节省更多的时间。
+- form.clear - 真正的将表单数据全部清空的方法，所有数据都会变为`void 0`，注意不是`null`值，因为`void 0`是表单可识别的初始值。在面对提交数据时，需要注意`void 0`是不会被提交的。

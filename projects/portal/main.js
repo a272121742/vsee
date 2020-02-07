@@ -9,7 +9,7 @@ import 'ant-design-vue/dist/antd.less';
 import { router } from '@lib/auto-router.js';
 // 加载本地store
 // 加载本地化文件
-import i18n from '@lib/auto-i18n.js';
+
 // 添加进度条
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -18,13 +18,16 @@ import 'nprogress/nprogress.css';
 import '~~/global.less';
 
 import AsyncComponent from '@comp/AsyncComponent';
+import VIcon from '@comp/general/VIcon.vue';
 import { debounce } from 'lodash';
 
 import VueLazyload from 'vue-lazyload';
+import i18n from '@i18n';
 import store from '@store';
 
 Vue.use(VueLazyload);
 Vue.component('async-component', AsyncComponent);
+Vue.component('v-icon', VIcon);
 
 // 加载权限控制
 // import('@dir/v-permission.js');
@@ -35,9 +38,9 @@ if (store.state.allowLogin) {
   router.beforeEach((to, from, next) => {
     NProgress.start(); // 开始进度条
     // 是否跳转到登陆界面
-    const toLogin = to.matched.some(r => r.path.toLowerCase() === '/login');
+    const toLogin = to.matched.some((r) => r.path.toLowerCase() === '/login');
     // 是否已经登陆
-    const {isLogin} = store.state;
+    const { isLogin } = store.state;
     // 已经通过登陆时，如果进入的不是登陆，直接放行
     if (isLogin && !toLogin) {
       if (to.path === '/') {
@@ -93,8 +96,8 @@ new Vue({
       top: '80px',
     });
     window.addEventListener('scroll', debounce(() => {
-      document.querySelectorAll('input:focus').forEach(item => item.blur());
-      document.querySelectorAll('.ant-select-open').forEach(item => item.click());
+      document.querySelectorAll('input:focus').forEach((item) => item.blur());
+      document.querySelectorAll('.ant-select-open').forEach((item) => item.click());
     }, 400));
   },
   render () {

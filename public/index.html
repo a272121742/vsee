@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta content="origin" name="referrer">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="msapplication-config" content="ieconfig.xml">
+    <meta name="google" value="notranslate">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Charset" content="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate,no-siteapp">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="icon" href="/static/favicon.ico">
+    <% for (var i in htmlWebpackPlugin.options.css) { %>
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.css[i] %>" />
+    <% } %>
+    <% for (var i in htmlWebpackPlugin.options.js) { %>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.options.js[i] %>"></script>
+    <% } %>
+    <script src="/static/icon/logo.js"></script>
     <script src="/static/icon/iconfont.js"></script>
     <title>BJEV</title>
     <style>
@@ -18,7 +35,7 @@
       /* 字体 */
       @font-face {
         font-family: "SYHT";
-        src: url('/static/font/SourceHanSansCN-Regular.otf');/*普通 */
+        src: url('/static/font/SourceHanSansCN-Regular.ttf');/*普通 */
         font-weight: normal;
         font-style: normal;
       }

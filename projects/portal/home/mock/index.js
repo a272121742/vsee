@@ -29,7 +29,7 @@ const list = mock({
   // 15. string 修改时间
   updateDate: '@datetime',
   // 16. integer 修改人
-  updater: '@pick([1, 2, 3])'
+  updater: '@pick([1, 2, 3])',
 }, 34);
 
 const db = cdb.link('todo', list);
@@ -41,7 +41,7 @@ mock.get('/sys/todo/page', ({ query = {}, page = 1, limit = 10 }) => {
   return mock.result({
     data: {
       list: datas.slice(begin, end),
-      total: datas.length
-    }
+      total: datas.length,
+    },
   });
 });

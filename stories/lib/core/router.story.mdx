@@ -1,7 +1,262 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/自动路由" />
+<Meta title="框架|核心（Core）/自动路由（router）" />
 
 # 自动路由
 
-可以用于进行自动路由
+`vsee`结合其自身的模块化划分特性，对路由进行了特殊处理。所有的路由都是写在模块下的`router`文件夹下的。无需配置即可实现自动路由，但我们仍要了解系统中已经分配好的几种路由方式和映射模式
+
+## 路由映射
+
+给出几个模块文件夹的列表清单：
+
+```bash
+- dashboard   // 仪表盘模块
+  - router
+    - index.vue   // 生成路由地址为：/dashboard
+- report      // 报表模块
+  - router
+    - index.path.vue  // 生成路由地址为：/report/:path?
+- order        // 工单模块
+  - router
+    - list.vue    // 工单列表，生成路由地址为：/order/list
+    - ~detail.id.vue  // 工单详情，生成路由地址为：/order/detail/:id?
+- issue        // 问题模块
+  - router
+    - definition-list.vue  // 问题定义列表，生成路由地址为：/issue/definition-list
+    - definition-list
+      - ~create-batch.vue   // 创建批量问题，生成路由地址为：/issue/definition-list/create-batch
+      - ~create-single.vue  // 创建单个问题，生成路由地址为：/issue/definition-list/create-single
+      - ~detail.id.vue     // 问题详情，生成路由地址为：/issue/definition-list/detail/:id?
+```
+
+路由名称必须使用`kebab-case`(短横杆命名法)，这是处理路由地址的关键命名。
+
+> 注意： 之前的版本中使用了`Pascal`(帕斯卡命名法)，虽然内部会自动做处理，但这样的方式还是比较消耗性能。日常项目中应该遵循此类规范，统一同时截流开支。
+
+上面的例子中展示了路由定义与路由文件的映射关系，即**模块名+文件名**的模式。同时，也为我们展示了几种常见的特征路由。
+
+## 特征路由
+
+文件中定义的路由按照其命名方式以及服务端配置的路由规则，其最终生成的路由会有一些变化，并且使用的时候也会有不同的作用，我们称这些路由为**特征路由**。**并且经过长时间的适配，所有特征路由已经可以混合使用**
+
+### 普通路由
+
+普通的文件自动转换成普通的路由，这是`vsee`最开始使用的路由，也是最常见的路由，例如：
+
+```bash
+/order/router/list.vue  => /order/list
+```
+
+后续的很多高级路由，都是基于普通路由进行演化的。普通路由不仅可以生成路由，同样还会生成二级菜单。
+
+### 进阶路由
+
+如果不希望生成二级路由，可以将路由模块的名字命名为`index`，例如：
+
+```bash
+/dashboard/router/index.vue  => /dashboard
+```
+
+现在的路由只包含模块名称了，不再包含二级部分。但注意，我们生成的路由都是二级的，只是这个路由不会生成二级菜单，会保持一个一级菜单。
+
+是否会保持一级路由，还取决于项目中的配置。我们应对的菜单场景中，有的一级菜单是可以点的，有的一级菜单是不可以点击的。详细的见`config.js`配置。
+
+### 报表路由
+
+报表路由不需要再在项目中新建文件了，而是在服务端配置的。当配置的路由`url`是`http`开头的，都会被认为是挂载外部的报表，会自动引入内部的`iframe`组件生成报表页面。
+
+例如，服务端配置两张报表：
+
+```javascript
+[{
+  id: 1000,
+  name: '报表路由',
+  url: 'report',
+  children: [{
+    id: 1001,
+    name: '百度链接'
+    url: 'https%3A%2F%2Fwww.baidu.com',
+  }, {
+    id: 1002,
+    name: 'QQ链接'
+    url: 'https%3A%2F%2Fwww.qq.com',
+  }]
+}]
+```
+
+> 注意，实际应用中，报表路由的地址必须使用`encodeURIComponent`处理，如果你要存储的`url`值为`https://www.baidu.com`，那么必须存储处理过后的`https%3A%2F%2Fwww.baidu.com`，这些都是服务端需要配合，或者运营人员配合的。
+
+那么，报表菜单上就会多出两个子菜单，分别对应两个外部报表，报表都是使用`iframe`嵌套。
+
+如果你的报表需要鉴权怎么办？前提是所嵌入的报表支持`iframe`方式的授权。然后在报表的链接地址前面拼接一下，用`/`隔开。假设上面的百度链接需要鉴权，鉴权地址是`https://baidu.com/auth?name=admin&pwd=admin`，那么可以按照如下配置：
+
+```javascript
+[{
+  id: 1000,
+  name: '报表路由',
+  url: 'report',
+  children: [{
+    id: 1001,
+    name: '百度链接'
+    url: 'https%3A%2F%2Fbaidu.com%2Fauth%3Fname%3Dadmin%26pwd%3Dadmin/https%3A%2F%2Fwww.baidu.com',
+  }, {
+    id: 1002,
+    name: 'QQ链接'
+    url: 'https%3A%2F%2Fwww.qq.com',
+  }]
+}]
+```
+
+当内置的`iframe`检测到两个链接地址的时候，会用第一个做授权，授权成功后再转到第二个报表链接上。
+
+### 参数路由
+
+对于详情页、编辑页，需要向路由传递参数`id`，此时可是使用参数路由，例如：
+
+```bash
+/order/router/detail.id.vue  => /order/detail/:id?
+```
+
+跳转这个链接的时候，将`id`数据写入，例如`/order/detail/123`，那么在`Detail.id.vue`页面中就可以使用`this.id`，但是你仍然要定义`id`，即使用`props`来定义即可：
+
+```javascript
+export default {
+  props: {
+    id: {
+      type: String,
+      default: '',
+    }
+  }
+}
+```
+
+### 隐藏路由
+
+路由名称前面添加了波浪号`~`的，都是隐藏路由。隐藏路由不会生成菜单，但是可以在路由地址中访问。通常，参数路由会和隐藏路由配合使用，也可以单独使用。例如：
+
+```bash
+/issue/router/definition-list/~detail.id.vue    => /issue/definition-list/detail/:id?
+/issue/router/definition-list/~createBatch.vue  => /issue/definition-list/create-batch
+```
+
+> **隐藏路由**相对其他路由是为了隐藏菜单使用的，我们页面上的菜单是根据路由自动生成的，但有时并不希望路由挂载到菜单上，但仍要对访问路径进行授权，因此可以使用**隐藏路由**。
+
+## 路由寻址
+
+前端定义的文件夹结构会自动生成客户端路由，服务端路由配置完成之后会匹配客户端路由。服务端在配置之后，会按如下规则进行寻址匹配：
+
+1. 如果是根目录，会尝试按照**链接地址+/index**的方式寻址；
+2. 如果不是根目录，会完全按照链接地址进行全匹配寻址；
+3. 如果服务端路由不配置名称或链接，则自动转换为**进阶路由**，**报表路由**除外；
+4. 如果服务端路由父子同名，则自路由自动进阶为父路由；
+5. 隐藏路由寻址的时候不用加上`~`，这些查询过程是自动完成的，`~`只是作为前端的一种可视化标记；
+6. 如果父路由最终检测可用子路由数为0，则尝试寻址`index`文件，如果寻不到则不会被加载；
+
+## 服务端配置
+
+由于做了服务端鉴权，因此客户端的路由实际上是由服务端配置的，根据上面的实例，服务端存储存储的菜单大致为：
+
+```javascript
+[{
+  id: '1000',
+  name: '仪表盘',
+  url: '/dashboard',
+}, {
+  id: '2000',
+  name: '报表',
+  url: '/report',
+  children: [{
+    id: '2001',
+    name: '百度报表',
+    url: 'https%3A%2F%2Fwww.baidu.com',
+  }, {
+    id: '2002',
+    name: 'QQ简报',
+    url: 'https%3A%2F%2Fwww.qq.com',
+  }]
+}, {
+  id: '3000',
+  name: '售后工单',
+  url: '/order',
+  children: [{
+    id: '3001',
+    name: '工单列表',
+    url: '/list'
+  }, {
+    id: '3002',
+    name: '工单详情',
+    url: '/detail/:id?'
+  }]
+}, {
+  id: '4000',
+  name: '问题管理',
+  url: '/issue',
+  children: [{
+    id: '4001',
+    name: '问题清单',
+    url: '/definition-list',
+  }, {
+    id: '4002',
+    name: '创建单车报告',
+    url: '/definition-list/create-single',
+  }, {
+    id: '4003',
+    name: '创建批量报告',
+    url: '/definition-list/create-batch',
+  }, {
+    id: '4004',
+    name: '问题详情',
+    url: '/definition-list/detail/:id?',
+  }]
+}]
+```
+
+> 注意：
+> 1. 我们不建议更不支持使用多级路由，虽然拓展性会非常好，但是算法复杂。所以，我们到二级路由就适可而止了，你应该合理到规划自己的模块，别让模块嵌套太深。对于可重用的模块可以使用组件化提供的方案，而非使用路由。
+> 2. `id/name/url`是三个必须的字段，其他的字段可以根据自己的业务情况拟定。
+> 3. 对于全部是报表路由的模块，可以不用定义任何本地文件夹，避免维护量增加。
+
+## 系统路由
+
+内置了系统路由，这个是可拔插的，只要你有对应的`result`模块和`login`模块。系统路由的映射关系是：
+
+```bash
+/login/view/Login.vue  => /login
+/result/view/403.vue   => /403
+/result/view/404.vue   => /404
+/result/view/500.vue   => /500
+```
+
+## 路由加载
+
+前端路由的加载都是通过服务端获取的菜单数据形成的，因此你必须通过服务端获取路由，现在我们暂时不支持客户端路由，但今后或许会加入进去。前端获取菜单的方式是在项目的`config.js`文件夹中配置：
+
+```javascript
+export const GLOBAL_API = {
+  menus: ['/sys/menu/nav', { /* 请求参数 */ }],
+}
+```
+
+除了请求地址`/sys/menu/nav`和请求参数可以修改，其他的都是固定的。配置完成后，内置的`store`模块可是直接调用`fetchMenus`来获取服务端菜单，例如：
+
+```javascript
+import store from '@store';
+
+store.dispatch('fetchMenus').then((res) => {
+  // `res`就是菜单列表，服务端已经提前转换成了`tree`结构，以供前端直接使用
+});
+```
+
+但是此时拿到服务端数据之后，仍然无法生成客户端路由，我们必须将`res`数据处理之后提供给数据模块。至于为什么要处理，一方面是避免服务端没有填写关键信息导致路由匹配虽然匹配上，但是无法链接访问，另一方面是面临一些业务上的处理，可以在真正生成前端路由之前来处理掉。例如：
+
+```javascript
+store.dispatch('fetchMenus').then((res) => {
+  // 1. 过滤掉不符合业务的数据信息，`treeFilter`是一个过滤树的工具函数
+  const serverMenus = treeFilter((menu) => menu.appCode === 'AQS' && !!menu.url, res);
+  // 2. 提交完成后的服务端菜单信息
+  store.commit('setServerMenus', serverMenus);
+});
+```
+
+经过第二步之后，服务端数据真正写入到前端数据层，并且触发路由进行动态拼接。拼接之后的路由写入到了数据层的`routers`变量中，系统会根据最终生成的`routers`去生成路由、渲染菜单、跟踪导航、绘制面包屑等。

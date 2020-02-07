@@ -34,7 +34,7 @@ export default {
       loading: false,
       total: 0,
       size: 0,
-      status: 'active',
+      status: 'active'
     };
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
     },
     percent () {
       return (this.size && this.total) ? (this.size / this.total * 100) : 0;
-    },
+    }
   },
   created () {
     console.log(this.$attrs);
@@ -87,7 +87,7 @@ export default {
               if (iframeDoc.readyState == 'complete' || iframeDoc.readyState == 'interactive') {
                 clearInterval(timer);
                 document.body.removeChild(iframe);
-                
+                return;
               }
             }, 400);
           }
@@ -126,8 +126,8 @@ export default {
           if (vm.total === 0) {
             vm.total = vm.size * 2;
           }
-        },
-      }).then((res) => {
+        }
+      }).then(res => {
         this.total = 100;
         this.size = 100;
         this.status = 'success';
@@ -135,7 +135,7 @@ export default {
           this.downloading = false;
           this.loading = false;
         }, 1000);
-      }).catch((err) => {
+      }).catch(err => {
         this.status = 'exception';
         setTimeout(() => {
           this.downloading = false;
@@ -145,8 +145,8 @@ export default {
     },
     useXhr () {
 
-    },
-  },
+    }
+  }
 };
 </script>
 

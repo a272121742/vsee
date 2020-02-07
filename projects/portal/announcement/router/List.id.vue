@@ -21,6 +21,7 @@
                 :href="item.href"
                 @click.self.prevent="loadAnnouncement(item.id)"
               >
+                <v-icon type="iconsxy_filled"></v-icon>
                 {{ item.title }}
               </a>
             </a-list-item-meta>
@@ -49,15 +50,15 @@ export default {
   props: {
     id: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data () {
     return {
       data: [],
       total: 0,
       selected: 0,
-      announcement: {}
+      announcement: {},
     };
   },
   watch: {
@@ -65,8 +66,8 @@ export default {
       handler (id) {
         id && this.loadAnnouncement(id);
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   created () {
     this.request();
@@ -75,8 +76,8 @@ export default {
     ...mapActions(['getAnnouncementPage', 'getAnnouncement']),
     request () {
       this.getAnnouncementPage({
-        limit: 7, page: 1, isPublic: 1, isPublish: 1, publish: moment().format('YYYY-MM-DD HH:mm:ss')
-      }).then(res => {
+        limit: 7, page: 1, isPublic: 1, isPublish: 1, publish: moment().format('YYYY-MM-DD HH:mm:ss'),
+      }).then((res) => {
         this.data = res.list;
         this.total = res.total;
         if (!this.id && this.total) {
@@ -85,21 +86,21 @@ export default {
       });
     },
     loadAnnouncement (id) {
-      this.getAnnouncement(id).then(res => {
+      this.getAnnouncement(id).then((res) => {
         this.$el.querySelector('.announcement-content').innerHTML = res.content;
         this.announcement = res;
       });
     },
     format (str) {
       return moment(str).format('YYYY-MM-DD');
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
   .panel-card {
     height: calc(100% - 200px);
-    margin: 16px 0;
+    margin-top: 16px!important;
     background-color: #FFFFFF;
     padding: 32px 24px;
     border: 1px solid #e8e8e8;
@@ -121,12 +122,6 @@ export default {
         white-space:nowrap;
         overflow:hidden;
         text-overflow:ellipsis;
-        a:before {
-          content: '•';
-          font-size: 6px;
-          margin-right: 4px;
-          color: #40a9ff;
-        }
       }
       .ant-list-item-content {
         color: rgba(0, 0, 0, 0.25);

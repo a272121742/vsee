@@ -1,11 +1,13 @@
 <template>
-  <div class="ant-list-item-meta-content">
-    <h1 :class="{'ant-list-item-meta-title': true, 'ant-list-item-meta-title-center': !desc}">
+  <div class="header-banner">
+    <div
+      :class="{'ant-notification-notice-message': true, 'ant-notification-notice-message-center': !desc}"
+    >
       {{ title }}
-    </h1>
+    </div>
     <div
       v-if="desc"
-      class="ant-list-item-meta-description"
+      class="ant-notification-notice-description"
     >
       {{ desc }}
     </div>
@@ -17,42 +19,36 @@ export default {
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     desc: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 };
 </script>
 
 <style lang="less" scoped>
-  .ant-list-item-meta-content {
-    margin: 16px;
-    .ant-list-item-meta-title {
-      display: flex;
-      justify-content: left;
-      align-items: center;
-      font-size: 16px;
-      line-height: 16px;
-      color: #0097E0;
-      margin: 0 0 4px 0;
-    }
-    .ant-list-item-meta-title-center {
-      font-size: 16px;
-      line-height: 32px;
-      margin: 0;
-    }
-    .ant-list-item-meta-description {
-      font-weight: bold;
-      display: flex;
-      justify-content: left;
-      align-items: center;
-      font-size: 12px;
-      line-height: 12px;
-      color: #0097E0;
-    }
+  .header-banner {
+    padding: 16px;
   }
-
+  .ant-notification-notice-message {
+    display: block;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: bold;
+    color: #0097E0;
+    margin: 0 0 4px 0;
+  }
+  .ant-notification-notice-message-center {
+    line-height: 32px;
+    margin: 0;
+  }
+  .ant-notification-notice-description {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 1;
+    color: #0097E0;
+  }
 </style>

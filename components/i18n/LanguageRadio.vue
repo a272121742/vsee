@@ -23,14 +23,14 @@ export default {
   computed: {
     value () {
       return this.$store.state.local;
-    }
+    },
   },
   methods: {
     updateLanguage (e) {
       const locale = this.locale[e.target.value];
       this.changeLanguage({ key: locale.lang }, { name: locale.name });
-    }
-  }
+    },
+  },
 };
 </script>
 
