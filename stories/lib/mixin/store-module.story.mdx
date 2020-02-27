@@ -1,0 +1,57 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/数据模块混入器" />
+
+# 数据模块混入器
+
+该混入器可以很方便的为`vuex`引入模块数据。
+
+该混入器是一个函数，参数是一个大对象，分别有四个属性：`name`、`state`、`getter`、`mutation`、`action`。
+
+- name - 模块名称，同`Vuex`api中的[createnamespacedhelpers](https://vuex.vuejs.org/zh/api/#createnamespacedhelpers)。默认`''`，会直接引入到`store root`中。
+- state - 状态映射配置，同`Vuex`api中的[mapState](https://vuex.vuejs.org/zh/api/#mapstate)。默认`{}`。
+- getter - 拾取器配置，同`Vuex`api中的[mapGetters](https://vuex.vuejs.org/zh/api/#mapgetters)。默认`{}`。
+- mutation - 拾取器配置，同`Vuex`api中的[mapMutations](https://vuex.vuejs.org/zh/api/#mapmutations)。默认`{}`。
+- action - 拾取器配置，同`Vuex`api中的[mapActions](https://vuex.vuejs.org/zh/api/#mapactions)。默认`{}`。
+
+
+## 使用方法
+
+下面我们看一个完整的案例（**.vue**文件中混入）：
+
+```html
+<template>
+  <!-- 视图 -->
+</template>
+<script>
+// 1. 引入混入器
+import storeModuleMix from '@mix/store-module.js';
+// ...
+export default {
+  // 2. 混入
+  mixins: [
+    storeModuleMix({
+      name: 'issue',
+      action: ['getReporterData'],
+    }),
+  ],
+  // ...
+  created () {
+    // 3. 使用混入后的方法
+    this.getReporterData().then();
+  },
+  // ...
+}
+</script>
+```
+
+该混入器只是将原来的混入风格做了调整，方便在一个配置中去配置。
+
+## 注意事项
+
+我们按照官方的建议配置，模块的这些属性会以如下格式存储在`vue组件`中：
+
+- computed: `state`(对应`mapState`)、`getter`(对应`mapGetters`);
+- methods: `mutation`(对应`mapMutations`)、`action`(对应`mapActions`);
+
+之所以将`state`和`getter`映射到`computed`属性中，是防治直接对属性进行修改，这与`Vuex`的模式相违背，也将引入程序错误。

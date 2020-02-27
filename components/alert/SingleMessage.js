@@ -62,7 +62,7 @@ const api = {
       const hide = notice(argsDefault);
       const isNumber = typeof argsDefault.duration === 'number';
       if (isNumber) {
-        argsDefault.duration--;
+        argsDefault.duration -= 1;
       }
       if (isNumber && argsDefault.duration < 0) {
         if (timer) {
@@ -78,6 +78,7 @@ const api = {
         hide();
         argsDefault.duration = null;
       }
+      // eslint-disable-next-line consistent-return
       return argsDefault.duration > 0;
     }
     timer = run() && setInterval(run, 1000);

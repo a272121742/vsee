@@ -21,17 +21,8 @@
     <% for (var i in htmlWebpackPlugin.options.js) { %>
     <script type="text/javascript" src="<%= htmlWebpackPlugin.options.js[i] %>"></script>
     <% } %>
-    <script src="/static/icon/logo.js"></script>
-    <script src="/static/icon/iconfont.js"></script>
-    <title>BJEV</title>
+    <title></title>
     <style>
-      .icon {
-        width: 1em;
-        height: 1em;
-        vertical-align: -0.15em;
-        fill: currentColor;
-        overflow: hidden;
-      }
       /* 字体 */
       @font-face {
         font-family: "SYHT";
@@ -52,9 +43,6 @@
       * {
         font-family: "SYHT", "roboto";
       }
-      /* *[class*="title"]{
-        font-weight: bold;
-      } */
       html, body, #app {
         margin: 0;
         padding: 0;
@@ -63,13 +51,6 @@
         background-color: rgba(0,0,0, 0.04);
         /* background-color: yellow; */
       }
-      .modal-open {
-        position: fixed;
-        width: 100%;
-      }
-      /* #app {
-         padding-left: calc(100vw - 100%);
-      } */
       #SplashScreen {
         contain: strict;
         width: 100%;

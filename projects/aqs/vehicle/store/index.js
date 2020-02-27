@@ -11,5 +11,9 @@ export default {
     getVehicleExportData (store, payload) {
       return api.getVehicleExportData(payload);
     },
+    // 全量
+    getVehicleAllPage (store, payload) {
+      return api.getVehicleAllPage(payload);
+    },
   },
 };

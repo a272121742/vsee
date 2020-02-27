@@ -11,6 +11,7 @@ const vin = {
   scopedSlots: {
     customRender: 'vin',
   },
+  width: 160,
 };
 // 2. 里程(km)
 const latestMileage = {
@@ -25,6 +26,7 @@ const batteryCode = {
   scopedSlots: {
     customRender: 'batteryCode',
   },
+  width: 100,
 };
 // 4. 生产基地
 const factoryName = {

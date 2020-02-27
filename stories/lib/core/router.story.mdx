@@ -137,7 +137,7 @@ export default {
 
 ```bash
 /issue/router/definition-list/~detail.id.vue    => /issue/definition-list/detail/:id?
-/issue/router/definition-list/~createBatch.vue  => /issue/definition-list/create-batch
+/issue/router/definition-list/~create-batch.vue  => /issue/definition-list/create-batch
 ```
 
 > **隐藏路由**相对其他路由是为了隐藏菜单使用的，我们页面上的菜单是根据路由自动生成的，但有时并不希望路由挂载到菜单上，但仍要对访问路径进行授权，因此可以使用**隐藏路由**。
@@ -213,6 +213,7 @@ export default {
 ```
 
 > 注意：
+>
 > 1. 我们不建议更不支持使用多级路由，虽然拓展性会非常好，但是算法复杂。所以，我们到二级路由就适可而止了，你应该合理到规划自己的模块，别让模块嵌套太深。对于可重用的模块可以使用组件化提供的方案，而非使用路由。
 > 2. `id/name/url`是三个必须的字段，其他的字段可以根据自己的业务情况拟定。
 > 3. 对于全部是报表路由的模块，可以不用定义任何本地文件夹，避免维护量增加。

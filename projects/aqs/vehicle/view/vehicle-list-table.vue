@@ -30,44 +30,68 @@
 </template>
 
 <script>
-import { omit } from 'ramda';
-import { createNamespacedHelpers } from 'vuex';
+import storeModuleMix from '@mix/store-module.js';
 import paginationMix from '@mix/pagination.js';
 import { vehicleListColumns } from '~~/model/vehicle.js';
 
-const { mapActions } = createNamespacedHelpers('vehicle');
-const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
 
 export default {
-  mixins: [paginationMix()],
+  mixins: [
+    paginationMix(),
+    storeModuleMix({
+      name: 'vehicle',
+      action: ['getVehiclePage', 'getVehicleAllPage'],
+    }),
+  ],
   data () {
     return {
       columns: vehicleListColumns,
       list: [],
       total: 0,
       loading: false,
+      pagination: {
+        pageSizeOptions: ['10', '20', '50', '100'],
+      },
     };
   },
   watch: {
     '$store.state.vehicle.vehicleSearchList': function (value) {
+      Object.assign(this.$route.query, { asqIssueRptId: '' });
+      window.history.pushState(null, null, window.location.href.split('?')[0]);
       this.pagination.current = 1;
-      this.fetch(omitSearchFields(value));
+      this.fetch(value);
     },
   },
   created () {
+    // 批量
+    if (this.$route.query.vin !== undefined) {
+      Object.assign(this.$route.query, { asqIssueRptId: '' });
+      this.pagination.pageSize = 100;
+      this.serverPagination.limit = 100;
+      this.pagination.showSizeChanger = false;
+    }
     const { vin } = this.$route.query;
     const vinSearch = vin ? { vin } : void 0;
     this.fetch(vinSearch);
   },
   methods: {
-    ...mapActions(['getVehiclePage']),
     fetch (vin) {
       this.loading = true;
-      this.getVehiclePage({ ...vin, ...this.serverPagination }).then(this.load).finally(this.reset);
+      if (Object.keys(this.$route.query).length !== 0 && this.$route.query.asqIssueRptId !== '') {
+        this.getVehicleAllPage({ asqIssueRptId: this.$route.query.asqIssueRptId, ...this.serverPagination }).then(this.load).finally(this.reset);
+      } else {
+        this.getVehiclePage({ ...vin, ...this.serverPagination }).then(this.load).finally(this.reset);
+      }
     },
     load (res) {
-      this.list = res.list;
-      this.pagination.total = res.total;
+      if (Object.keys(this.$route.query).length !== 0 && this.$route.query.asqIssueRptId !== '') {
+        console.log('工单', res);
+        this.list = res.list;
+        this.pagination.total = res.total;
+      } else {
+        this.list = res.list;
+        this.pagination.total = res.total;
+      }
     },
     reset () {
       this.loading = false;

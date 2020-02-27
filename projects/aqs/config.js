@@ -40,15 +40,34 @@ export const homeComp = void 0;
  * iframe组件
  */
 export const iframeComp = () => import('~/layout/view/iframe.vue');
-/**
- * 自动引入的模块
- */
-export const autoRequires = {
-  // 路由模块
-  router: require.context('~', true, /^\.(\/[A-Za-z][A-Za-z0-9_]*)+\/router\/[A-z0-9- ./]+\.vue$/),
-  // 数据缓存模块
-  store: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/store\/index\.js$/),
-  // 国际化模块
-  i18n: require.context('~', true, /^\.\/[A-Za-z][A-Za-z0-9_]*\/locales\/[A-Za-z]+\.json$/),
-  // directives: require.context('@dir', true, /^\.\/v-[A-Za-z-]*\.js$/)
+
+export default {
+  MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
+  // TODO: 准备要加的配置
+  LANGUAGE_DEFAULT: 'zh-CN', // 语言默认值
+  LANGUAGE_KEY: 'language', // 语言存储cookie的key
+  LANGUAGE_RESET: false, // 语言是否每次启动都重置
+  TOKEN_KEY: 'login_token', // 令牌存储cookie的key
+  TOKEN_CUSTSET: false, // 令牌是否由开发者自行处理
+  LOGIN_CACHE_KEY: 'cache_login_info', // 登录缓存信息的key
+  OTHER_GET_PARAMS: {}, // get 请求附带的其他参数
+  // 用于授权使用的接口
+  AUTH_LOGIN_API: {
+    URL: '/auth/login',
+    PARAMS: {},
+  },
+  AUTH_LOGOUT_API: {
+    URL: '/auth/logout',
+    PARAMS: {},
+  },
+  // 其他顶层API集合
+  GLOBAL_API_LIST: {},
+  EXCLUDE_MODULES: [], // 排除不加载的模块
+
+  CONTENT: void 0, // 内容组件
+  LAYOUT: void 0, // 布局组件
+  HOME: void 0, // 首页组件
+  IFRAME: void 0, // IFRAME组件
+  // 全局配置文件地址
+  GLOBAL_CONFIG: '/static/config.js',
 };

@@ -14,7 +14,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 | pagination.current          |              | Number        | 可读写 | 当前页数                                       |
 | pagination.pageSize         |              | Number        | 可读写 | 每页显示总数                                   |
 | pagination.total            |              | Number        | 可读写 | 总量                                           |
-| pagination.pagezSizeOptions |              | Array<String\> | 可读写 | 每页可显示数，例如：['10', '20', '50']         |
+| pagination.pageSizeOptions |              | Array<String\> | 可读写 | 每页可显示数，例如：['10', '20', '50']         |
 | pagination.showQuickJumper  |              | Boolean       | 可读写 | 是否显示快捷跳转功能                           |
 | pagination.showSizeChanger  |              | Boolean       | 可读写 | 是否可调配每页可显示数                         |
 | pagination.showTotal        |              | Function      | 可读写 | 总数渲染函数                                   |
@@ -67,7 +67,7 @@ export default {
 
 分页器的参数为对象，对象中包含如下参数键：
 
-current - 当前页对应服务端的名称，默认值`'page'`；
-pageSize - 分页数对应服务端的名称，默认值`'limit'`；
+1. current - 当前页对应服务端的名称，默认值`'page'`；
+2. pageSize - 分页数对应服务端的名称，默认值`'limit'`；
 
 配置这个参数有什么好处，这是专门为服务端转换分页数据用的，例如以上默认配置，传递给服务端时，将变为`page=1&limit=10`。当分页器数据变化时，`serverPagination`会自动按照这个映射表生成对应的对象，发送分页请求时不需要再做转换，直接从这里获取即可。

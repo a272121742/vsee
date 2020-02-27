@@ -15,7 +15,7 @@
             v-decorator="['vhclSeriesCode']"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicleseries/seriesCodeList"
-            value-by="vhclSeriesCode"
+            value-by="id"
             :label-of="(item) => item.vhclSeriesCode"
             allow-clear
             search-by="name"
@@ -156,14 +156,14 @@
 </template>
 
 <script>
+import { omit } from 'ramda';
+
+import storeModuleMix from '@mix/store-module.js';
 import formRecordMix from '@mix/form-record.js';
 import timeFormatMix from '@mix/time-format.js';
 
-import { createNamespacedHelpers } from 'vuex';
-
-const { mapActions } = createNamespacedHelpers('vehicle');
-
 const fileds = ['vhclSeriesCode', 'vhclModelCode', 'vhclModelName', 'factoryName', 'colorName', 'vin', 'prodDate', 'warrantyBeginDate'];
+const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
 
 
 export default {
@@ -172,6 +172,10 @@ export default {
     MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
   },
   mixins: [
+    storeModuleMix({
+      name: 'vehicle',
+      action: ['getVehicleExportData'],
+    }),
     formRecordMix('vehicleForm', fileds),
     timeFormatMix,
   ],
@@ -181,12 +185,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['getVehicleExportData']),
-
     vehicleSearch () {
       this.transformMomentDate(this.vehicleFormRecord, 'prodDate');
       this.transformMomentDate(this.vehicleFormRecord, 'warrantyBeginDate');
-      const vehicleSearchList = { ...this.vehicleFormRecord };
+      const vehicleSearchList = omitSearchFields({ ...this.vehicleFormRecord });
       this.$store.commit('vehicle/set', { vehicleSearchList });
     },
     /**

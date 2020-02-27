@@ -58,13 +58,14 @@ import { getUUID } from '@util/datahelper.js'; // 加载数据助理中的一个
 在`vsee`的根目录下，有一个`projects`文件夹，这里堆放的就是一个个独立的项目了。每个项目都是按照模块化的方式组成，后面会提到这块。对于开发者来说，更加应该关注的是`projects`以及里面的模块，顶层文件夹和文件都是由技术经理或者架构师负责整体把控的。每个初始化的项目都会有如下几个文件和文件夹：
 
 ```sh
-- *           // 业务模块
-- common      // 别名`~~`，主要是存放公共业务信息的地方，存放规则可自行协商
-- layout      // 布局模块，是整个项目最外层的主体
-- result      // 异常内容模块，主要显示`404`、`405`和`500`的地方，可根据情况自行添加
-- config.js   // 项目的配置文件
-- main.js     // 项目的主入口
-- theme.js    // 项目的主题配置文件
+- *               // 业务模块
+- common          // 别名`~~`，主要是存放公共业务信息的地方，存放规则可自行协商
+- layout          // 布局模块，是整个项目最外层的主体
+- result          // 异常内容模块，主要显示`404`、`405`和`500`的地方，可根据情况自行添加
+- bootstrap.js    // 项目的前置引导文件，优先于`main.js`文件加载
+- config.js       // 项目的配置文件
+- main.js         // 项目的主入口
+- theme.js        // 项目的主题配置文件
 ```
 
 上面的星号*****表示的是自定义的业务模块，和其他模块不同的是，这个业务模块是按照三层结构的方式搭建，后面讲模块的时候会提到。业务模块，也是开发人员的核心焦点，对于其他模块，在项目初期完善后，就基本可以定型不用打理了。
@@ -86,37 +87,37 @@ import { getUUID } from '@util/datahelper.js'; // 加载数据助理中的一个
 总结一下，视图层负责组装国际化内容到视图中，并提炼出路由给用户予以访问；视图层向数据层发起数据请求，由模块化的`store`代理向链路层发起网络请求，请求的数据可以直接缓存到`store`中；`api`负责发起请求，共给上层所对应的数据，`mock`负责模拟数据，用于本地开发模式或发布演示模式。其文件结构如下：
 
 ```
-- user              // 一个用户管理的模块
-  - locales         // 国际化
-    - en.json       // 英文国际化
-    - zh.json       // 中文国际化
-  - mock            // 模拟服务
-    - index.js      // 数据模拟
-  - router          // 路由
-    - Index.vue     // 将发布为`/user`的路由
-  - store           // 数据层
-    - index.js      // store结构体
-  - view            // 视图
-    - UserForm.vue  // 用户表单
-    - UserTable.vue // 用户表格
-  - api.js          // 接口目录
-- order             // 一个订单管理的模块
-  - locales         // 国际化
-    - en.json       // 英文国际化
-    - zh.json       // 中文国际化
-  - mock            // 模拟服务
-    - index.js      // 数据模拟
-  - router          // 路由
-    - List.vue      // 将发布为`/order/list`的路由
-    - OrderLine.vue // 将发布为`/order/order-line`的路由
-    - Detail        // 不公开路由
-      - Detail.id.vue // 将发布为`/order/detail/:id`的路由
-  - store           // 数据层
-    - index.js      // store结构体
-  - view            // 视图
-    - UserForm.vue  // 用户表单
-    - UserTable.vue // 用户表格
-  - api.js          // 接口目录
+- user                // 一个用户管理的模块
+  - locales           // 国际化
+    - en.json         // 英文国际化
+    - zh.json         // 中文国际化
+  - mock              // 模拟服务
+    - index.js        // 数据模拟
+  - router            // 路由
+    - index.vue       // 将发布为`/user`的路由
+  - store             // 数据层
+    - index.js        // store结构体
+  - view              // 视图
+    - user-form.vue   // 用户表单
+    - user-table.vue  // 用户表格
+  - api.js            // 接口目录
+- order               // 一个订单管理的模块
+  - locales           // 国际化
+    - en.json         // 英文国际化
+    - zh.json         // 中文国际化
+  - mock              // 模拟服务
+    - index.js        // 数据模拟
+  - router            // 路由
+    - list.vue        // 将发布为`/order/list`的路由
+    - order-line.vue  // 将发布为`/order/order-line`的路由
+    - detail          // 不公开路由
+      - detail.id.vue // 将发布为`/order/detail/:id`的路由
+  - store             // 数据层
+    - index.js        // store结构体
+  - view              // 视图
+    - user-form.vue   // 用户表单
+    - user-table.vue  // 用户表格
+  - api.js            // 接口目录
 ```
 
 当熟悉了这三层结构六个子模块，也就掌握了整个`vsee`的核心。有关每个核心的功能以及如何编码，将会在框架`core`中详细介绍其功能和写法。现在只是稍作了解，并且有如下几点要注意：

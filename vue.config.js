@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
+const uselib = !!process.env.npm_config_uselib;
+
 const cwd = process.cwd();
 const resolve = (...dir) => path.join(cwd, ...dir);
 const configs = Object.values(require('require-all')({
-  dirname: resolve('config'),
+  dirname: resolve(uselib ? 'node_modules/vsee/config' : 'config'),
 }));
 
 const isProd = process.env.NODE_ENV === 'production';

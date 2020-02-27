@@ -70,7 +70,7 @@ export default {
     const vm = this;
     return {
       buildDate: process.env,
-      top: 80,
+      top: 140,
       visible: false,
       isLogin: vm.$store.state.isLogin,
     };
