@@ -73,10 +73,9 @@ export default {
 
 <style lang="less" scoped>
   .user-info {
-    padding: 0 16px;
     cursor: pointer;
     &:hover {
-      background-color: #e6fbff;;
+      background: rgba(0, 0, 0, 0.09);
     }
   }
   .user-info-awatar {
@@ -88,5 +87,9 @@ export default {
     }
     font-size: 14px;
     color: @text-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
   }
 </style>

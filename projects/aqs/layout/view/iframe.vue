@@ -57,7 +57,7 @@ export default {
           }, 200);
         });
       }
-      this.height = document.documentElement.clientHeight - 170;
+      this.height = document.documentElement.clientHeight;
     },
   },
 };

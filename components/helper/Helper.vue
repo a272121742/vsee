@@ -1,7 +1,7 @@
 <template>
   <a-affix
     :offset-top="top"
-    :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 6000}"
+    :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 7000}"
   >
     <a-button
       type="primary"
@@ -13,7 +13,7 @@
     <a-drawer
       :width="800"
       :visible="visible"
-      :z-index="6000"
+      :z-index="7000"
       title="开发人员配置（生产环境不可见）"
       @close="hide"
     >

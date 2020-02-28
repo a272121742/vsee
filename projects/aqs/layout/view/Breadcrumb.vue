@@ -54,8 +54,10 @@ export default {
 
 <style lang="less" scoped>
   .ant-breadcrumb {
+    padding: 16px 24px;
     span {
       font-size: 16px;
+      line-height: 1;
     }
     > span:last-child {
       color: @primary-color;

@@ -68,6 +68,6 @@ export default {
   LAYOUT: void 0, // 布局组件
   HOME: void 0, // 首页组件
   IFRAME: void 0, // IFRAME组件
-  // 全局配置文件地址
-  GLOBAL_CONFIG: '/static/config.js',
+  // 使用边栏菜单
+  USE_SIDER: true,
 };

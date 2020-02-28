@@ -26,11 +26,16 @@ import {
   LocaleProvider,
   Menu,
   Spin,
+  Tabs,
+  Anchor,
   message,
 } from 'ant-design-vue';
 
 import SingleMessage from '@comp/alert/SingleMessage.js';
 import { debounce } from 'lodash';
+import AsyncComponent from '@comp/AsyncComponent';
+
+Vue.component('async-component', AsyncComponent);
 
 Vue.use(Col);
 Vue.use(Row);
@@ -56,7 +61,8 @@ Vue.use(Layout);
 Vue.use(LocaleProvider);
 Vue.use(Menu);
 Vue.use(Spin);
-
+Vue.use(Tabs);
+Vue.use(Anchor);
 
 Vue.component('v-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',

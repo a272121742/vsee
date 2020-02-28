@@ -134,7 +134,6 @@ export default {
 
 <style lang="less" scoped>
   .ant-menu {
-    height: 100%;
     border-right: 0 ;
   }
 </style>

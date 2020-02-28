@@ -31,14 +31,16 @@
         </a-menu-item>
       </a-menu>
     </a-dropdown>
-    <a-tab-pane
+    <template
       v-for="tab in tabs"
-      :key="tab.fullPath"
-      :tab="tab.meta.title"
-      :closable="totalTab > 1"
     >
-      <slot v-bind="tab" />
-    </a-tab-pane>
+      <a-tab-pane
+        :key="tab.fullPath"
+        :tab="tab.meta.title"
+        :closable="totalTab > 1"
+      >
+      </a-tab-pane>
+    </template>
   </a-tabs>
 </template>
 
@@ -141,46 +143,19 @@ export default {
 
 <style lang="less" scoped>
   .ant-tabs {
-    padding: 0!important;
-    background: transparent!important;
+    margin-top: 8px;
     /deep/ .ant-tabs-bar {
-      background: #FFF;
+      border: none;
       margin-bottom: 0;
-      .ant-tabs-extra-content {
-        width: 30px;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.04);
-      }
-      /deep/ .ant-tabs-tab {
-        border: none;
-        & > div {
-          height: 36px;
-          margin-top: 2px;
-        }
-        &.ant-tabs-tab-active {
-          &::after {
-            content: '';
-            display: block;
-            height: 2px;
-            margin: auto -16px;
-            background: @primary-color;
-          }
-        }
-      }
     }
-
-    .anticon-close {
-      color: rgba(0, 0, 0, 0.25);
-      font-size: 12px;
-      padding: 2px;
-      margin-left: 8px;
-      margin-right: 0;
-      transition: color 0.3s;
-      border-radius: 12px;
-      &:hover {
-        transition: color 0.3s, background 0.3s;
-        color: rgba(0, 0, 0, 0.45);
+    /deep/ .ant-tabs-tab {
+      border: none!important;
+    }
+    /deep/ .ant-tabs-nav-wrap {
+        margin-top: 2px;
       }
+    /deep/ .ant-tabs-ink-bar {
+      visibility: visible!important;
     }
   }
 </style>

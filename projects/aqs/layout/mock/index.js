@@ -124,7 +124,10 @@ mock.get('/sys/menu/nav', () => mock.result({
 
 
 mock.get('/sys/user/info', () => mock.result({
-  data: {},
+  data: {
+    realName: '模拟系统测试管理员账户超长名称',
+    name: 'TEST ADMINISTRATOR ACCOUNT',
+  },
   code: 0,
 }));
 
