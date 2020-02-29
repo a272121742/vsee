@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 
 const uselib = !!process.env.npm_config_uselib;
@@ -13,7 +12,6 @@ const isProd = process.env.NODE_ENV === 'production';
 
 // 查询启动项目
 const project = process.env.npm_config_project;
-const hasTheme = fs.existsSync(resolve('projects', project, 'theme.js'));
 
 console.log('启动的项目是', project);
 /**
@@ -24,50 +22,21 @@ console.log('启动的项目是', project);
 const proxy = (isProd && !process.env.npm_config_test) || (!isProd && !!process.env.npm_config_test);
 console.log('【当前模式】：', isProd ? '生产' : '开发', proxy ? '代理模式' : '本地模拟');
 
-// 修改主题配色
-let theme = {};
-if (hasTheme) {
-  // eslint-disable-next-line import/no-dynamic-require, global-require
-  theme = require(`./projects/${project}/theme.js`);
-}
-
 module.exports = {
   chainWebpack: (config) => {
     // 修复HMR
     config.resolve.symlinks(true);
     config.plugins.delete('prefetch');
     configs.forEach((fn) => fn(config));
-
-    if (process.env.NODE_ENV === 'production') {
-      // index.html 代码压缩
-      config.plugin('html').tap((args) => {
-        args[0].minify.useShortDoctype = true;
-        args[0].minify.removeEmptyAttributes = true;
-        args[0].minify.removeRedundantAttributes = true;
-        args[0].minify.keepClosingSlash = true;
-        args[0].minify.minifyJS = true;
-        args[0].minify.minifyCSS = true;
-        args[0].minify.minifyURLs = true;
-        return args;
-      });
-    } else {
-      console.log();
-    }
   },
   // lintOnSave: process.env.NODE_ENV !== 'production',
   outputDir: `dist/${project}`,
   lintOnSave: true,
   publicPath: process.env.NODE_ENV === 'production' ? `/${project}/` : '/',
   productionSourceMap: !isProd,
-  pluginOptions: {
-    'style-resources-loader': {
-      preProcessor: 'less',
-    },
-  },
   css: {
     loaderOptions: {
       less: {
-        modifyVars: theme,
         javascriptEnabled: true,
       },
     },
@@ -75,8 +44,8 @@ module.exports = {
   // 代理配置
   devServer: {
     overlay: {
-      warnings: !isProd,
-      errors: !isProd,
+      warnings: true,
+      errors: true,
     },
     // 代理配置
     proxy: proxy ? {
@@ -95,6 +64,7 @@ module.exports = {
   },
   // echarts必须此配置
   transpileDependencies: [
+    'vsee',
     'vue-echarts',
     'resize-detector',
   ],

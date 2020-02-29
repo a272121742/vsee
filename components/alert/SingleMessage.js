@@ -70,7 +70,7 @@ const api = {
         }
         if (argsDefault.type === 'loading') {
           argsDefault.close = true;
-          return;
+          return false;
         }
         if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
           argsDefault.onClose();
@@ -78,7 +78,6 @@ const api = {
         hide();
         argsDefault.duration = null;
       }
-      // eslint-disable-next-line consistent-return
       return argsDefault.duration > 0;
     }
     timer = run() && setInterval(run, 1000);
