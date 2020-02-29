@@ -1,49 +1,5 @@
-export const TOKEN_KEY = 'login_token';
-export const TOKEN_AUTOSET = true;
-export const LANGUAGE_KEY = 'language';
-export const LANGUAGE_DEFAULT = 'zh-CN';
-export const LOGIN_CACHE_KEY = 'cache_login_info';
-export const OTHER_GET_PARAMS = {};
-
-// 授权API
-export const AUTH_API = {
-  login: ['/auth/login', { appCode: 'ADMIN' }],
-  logout: ['/auth/logout', {}],
-};
-export const GLOBAL_API = {
-  user: ['/sys/user/info', { appCode: 'AQS' }],
-  menus: ['/sys/menu/nav', { appCode: 'AQS' }],
-  permissions: ['/sys/menu/permissions', { appCode: 'AQS' }],
-};
-
-/**
- * 排除不运行的模块
- */
-export const excludeModules = [
-
-];
-
-/**
- * 内容组件
- */
-export const contentComp = () => import('~/layout/view/AbstractContent.vue');
-
-/**
- * 布局组件
- */
-export const layoutComp = () => import('~/layout/view/DefaultLayout.vue');
-/**
- * 主页组件
- */
-export const homeComp = void 0;
-/**
- * iframe组件
- */
-export const iframeComp = () => import('~/layout/view/iframe.vue');
-
 export default {
   MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
-  // TODO: 准备要加的配置
   LANGUAGE_DEFAULT: 'zh-CN', // 语言默认值
   LANGUAGE_KEY: 'language', // 语言存储cookie的key
   LANGUAGE_RESET: false, // 语言是否每次启动都重置
@@ -53,21 +9,43 @@ export default {
   OTHER_GET_PARAMS: {}, // get 请求附带的其他参数
   // 用于授权使用的接口
   AUTH_LOGIN_API: {
-    URL: '/auth/login',
-    PARAMS: {},
+    URL: '/auth/login', // 接口地址
+    PARAMS: { appCode: 'ADMIN' }, // 接口参数
   },
   AUTH_LOGOUT_API: {
-    URL: '/auth/logout',
-    PARAMS: {},
+    URL: '/auth/logout', // 接口地址
+    PARAMS: {}, // 接口参数
   },
   // 其他顶层API集合
-  GLOBAL_API_LIST: {},
+  GLOBAL_API_LIST: {
+    user: ['/sys/user/info', { appCode: 'AQS' }],
+    menus: ['/sys/menu/nav', { appCode: 'AQS' }],
+    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }],
+  },
   EXCLUDE_MODULES: [], // 排除不加载的模块
-
-  CONTENT: void 0, // 内容组件
-  LAYOUT: void 0, // 布局组件
-  HOME: void 0, // 首页组件
-  IFRAME: void 0, // IFRAME组件
-  // 使用边栏菜单
-  USE_SIDER: true,
+  /**
+   * 布局类型，可设置为`menu`、`nav`、`anchor`
+   * menu - (默认)包括header（上）、sider（左）、content（右）
+   * nav - 包括header（上）、content（下）
+   * anchor - 同`menu`，但content是连续屏幕的
+   */
+  LAYOUT_TYPE: 'menu',
+  /**
+   * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
+   * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
+   * false - 不启用菜单
+   * sider - 边栏菜单
+   * anchor - 悬靠菜单
+   * nav - 导航菜单
+   * cust - 自定义菜单
+   */
+  MENU_TYPE: void 0,
+  /**
+   * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
+   * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
+   * bread - 面包屑模式
+   * tab - 页签模式
+   * cust - 自定义模式
+   */
+  CONTENT_HEAD: 'bread',
 };

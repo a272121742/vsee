@@ -12,6 +12,7 @@ module.exports = (config) => {
     .set('~', resolve(`projects/${project}`))
     .set('~~', resolve(`projects/${project}/common`))
     .set('@comp', resolve('components'))
+    .set('@layout', 'vsee/layout')
     .set('@lib', innerModule ? 'vsee/lib' : resolve('lib'))
     .set('@router', innerModule ? 'vsee/lib/router' : resolve('lib/router'))
     .set('@store', innerModule ? 'vsee/lib/store' : resolve('lib/store'))

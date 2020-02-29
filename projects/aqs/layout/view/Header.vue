@@ -23,7 +23,7 @@
     <div
       class="header-nav"
     >
-      <NavMenu v-if="false" />
+      <slot name="nav"></slot>
     </div>
     <div class="header-user">
       <UserAvatar />
@@ -35,8 +35,7 @@
 export default {
   components: {
     UserAvatar: () => import('./UserAvatar.vue'),
-    Banner: () => import('@comp/head/Banner.vue'),
-    NavMenu: () => import('./NavMenu.vue'),
+    Banner: () => import('./Banner.vue'),
   },
 };
 </script>

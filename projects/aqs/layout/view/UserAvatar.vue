@@ -6,32 +6,16 @@
   >
     <div class="user-info-awatar">
       <v-icon type="icontx_outlined"></v-icon>
-      <change-password
-        :visible.sync="showChangePassword"
-        :mapping="{ oldPassword: 'password', newPassword: 'newPassword'}"
-        url="/sys/user/password"
-      >
-      </change-password>
       {{ user.realName }}
     </div>
     <a-menu slot="overlay">
-      <a-menu-item key="0">
-        <a @click="downloadFromStatic($t('download.user_manual'))">
-          {{ $t('action.manual') }}
+      <a-menu-item key="gohome">
+        <a @click.stop.prevent="gohome">
+          {{ $t('action.go_home') }}
         </a>
       </a-menu-item>
-      <a-menu-item key="1">
-        <a @click="toChangePd">
-          {{ $t('password.title') }}
-        </a>
-      </a-menu-item>
-      <a-menu-item key="2">
-        <a @click.stop.prevent="toPortal">
-          {{ $t('action.toPortal') }}
-        </a>
-      </a-menu-item>
-      <a-menu-item key="3">
-        <a @click.stop.prevent="logoutHandle">
+      <a-menu-item key="logout">
+        <a @click.stop.prevent="logout">
           {{ $t('action.logout') }}
         </a>
       </a-menu-item>
@@ -41,30 +25,16 @@
 
 <script>
 export default {
-  components: {
-    ChangePassword: () => import('@comp/general/ChangePassword.vue'),
-  },
-  data () {
-    return {
-      form: null,
-      visible: false,
-      record: {},
-      showChangePassword: false,
-    };
-  },
   computed: {
     user () {
       return this.$store.state.userInfo;
     },
   },
   methods: {
-    toPortal () {
+    gohome () {
       window.location.replace(this.$store.state.isProd ? '/portal' : '/');
     },
-    toChangePd () {
-      this.showChangePassword = true;
-    },
-    logoutHandle () {
+    logout () {
       this.$store.dispatch('logout');
     },
   },

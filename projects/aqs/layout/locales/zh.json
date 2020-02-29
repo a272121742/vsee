@@ -1,9 +1,0 @@
-{
-  "action": {
-    "manual": "用户手册",
-    "toPortal": "返回TQIS首页"
-  },
-  "env": {
-    "name": "本系统仅用于测试"
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "action": {
-    "manual": "user manual",
-    "toPortal": "TQIS portal"
-  },
-  "env": {
-    "name": "Only For Test"
-  }
-}
