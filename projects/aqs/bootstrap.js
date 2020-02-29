@@ -7,7 +7,6 @@ import {
   Switch,
   Radio,
   AutoComplete,
-  DatePicker,
   Table,
   Modal,
   Select,
@@ -42,7 +41,6 @@ Vue.use(Row);
 Vue.use(Switch);
 Vue.use(Radio);
 Vue.use(AutoComplete);
-Vue.use(DatePicker);
 Vue.use(Table);
 Vue.use(Modal);
 Vue.use(Select);
