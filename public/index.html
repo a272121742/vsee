@@ -21,35 +21,25 @@
     <% for (var i in htmlWebpackPlugin.options.js) { %>
     <script type="text/javascript" src="<%= htmlWebpackPlugin.options.js[i] %>"></script>
     <% } %>
-    <title></title>
+    <script src="/static/icon/logo.js"></script>
+    <script src="/static/icon/iconfont.js"></script>
+    <title>BJEV</title>
     <style>
-      /* 字体 */
-      @font-face {
-        font-family: "SYHT";
-        src: url('/static/font/SourceHanSansCN-Regular.ttf');/*普通 */
-        font-weight: normal;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: "roboto";
-        src: url('/static/font/Roboto-Regular.ttf');/*普通 */
-        font-weight: normal;
-        font-style: normal;
-      }
       :root {
         overflow-y: scroll;
         overflow-x: hidden;
-      }
-      * {
-        font-family: "SYHT", "roboto";
       }
       html, body, #app {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0, 0.04);
-        /* background-color: yellow; */
+        background-color: rgba(0,0,0, 0.04);
+        font-family: "SYHT", "roboto", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol','Noto Color Emoji'!important;
+      }
+      .modal-open {
+        position: fixed;
+        width: 100%;
       }
       #SplashScreen {
         contain: strict;

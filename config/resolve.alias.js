@@ -3,7 +3,7 @@ const path = require('path');
 const cwd = process.cwd();
 const resolve = (dir) => path.join(cwd, dir);
 const project = process.env.npm_config_project;
-const innerModule = /\/node_modules\/vsee/.test(__dirname);
+const innerModule = /[\\/]node_modules[\\/]vsee/.test(__dirname);
 
 module.exports = (config) => {
   // 添加别名

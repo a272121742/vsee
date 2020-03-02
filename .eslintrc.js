@@ -8,7 +8,6 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
     'strict': 'error',
-    'eslint-disable-next-line': ['error', 'allways'],
     "linebreak-style": ["error", "unix"],
     'quotes': ["error", "single", { allowTemplateLiterals: true }],
     'semi': ["error", "always"],
