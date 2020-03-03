@@ -31,7 +31,7 @@ module.exports = {
   },
   // lintOnSave: process.env.NODE_ENV !== 'production',
   outputDir: `dist/${project}`,
-  lintOnSave: true,
+  lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? `/${project}/` : '/',
   productionSourceMap: !isProd,
   css: {
@@ -44,8 +44,8 @@ module.exports = {
   // 代理配置
   devServer: {
     overlay: {
-      warnings: true,
-      errors: true,
+      warnings: false,
+      errors: false,
     },
     // 代理配置
     proxy: proxy ? {

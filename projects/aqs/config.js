@@ -24,12 +24,19 @@ export default {
   },
   EXCLUDE_MODULES: [], // 排除不加载的模块
   /**
+   * 主页组件
+   * 主页组件参与路由注册，但不参与菜单配置
+   * 如果主页组件生效，则根路径会自动引导到主页；
+   * 如果主页组件不生效，则按照权限配置获取第一个菜单；
+   */
+  HOME_COMP: () => import('~/s1/router/index.vue'),
+  /**
    * 布局类型，可设置为`menu`、`nav`、`anchor`
    * menu - (默认)包括header（上）、sider（左）、content（右）
    * nav - 包括header（上）、content（下）
    * anchor - 同`menu`，但content是连续屏幕的
    */
-  LAYOUT_TYPE: 'menu',
+  LAYOUT_TYPE: 'nav',
   /**
    * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
    * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
@@ -39,7 +46,7 @@ export default {
    * nav - 导航菜单
    * cust - 自定义菜单
    */
-  MENU_TYPE: void 0,
+  MENU_TYPE: false,
   /**
    * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
    * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
@@ -47,5 +54,5 @@ export default {
    * tab - 页签模式
    * cust - 自定义模式
    */
-  CONTENT_HEAD: 'bread',
+  CONTENT_HEAD: false,
 };
