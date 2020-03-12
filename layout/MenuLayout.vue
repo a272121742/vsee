@@ -10,6 +10,7 @@
         theme="light"
         class="app-content-sider"
         collapsible
+        :trigger="collapsible ? void 0 : null"
       >
         <component :is="isSider"></component>
       </a-layout-sider>
@@ -24,7 +25,7 @@
           class="app-content-spiner"
           :spinning="refreshing"
         >
-          <transition>
+          <transition v-if="!refreshing">
             <keep-alive v-if="$store.state.config.keey_alive">
               <router-view
                 class="content-child-view"
@@ -52,11 +53,23 @@ export default {
     Header: () => import('~/layout/view/Header.vue'),
   },
   data () {
+    const collapsible = this.$store.state.config.menu_collapsible;
     return {
-      collapsed: false,
+      collapsible,
     };
   },
   computed: {
+    collapsed: {
+      get () {
+        return this.$store.state.config.menu_collapsed;
+      },
+      set (value) {
+        this.$store.commit('setConfig', {
+          ...this.$store.state.config,
+          menu_collapsed: value,
+        });
+      },
+    },
     refreshing () {
       return this.$store.state.refresh;
     },
@@ -94,7 +107,6 @@ export default {
   methods: {
     init () {
       this.$store.dispatch('fetchUser').then(() => {
-        this.blocking = false;
       }).catch((err) => {
         err && this.$message.error(this.$t(err));
       });

@@ -4,20 +4,22 @@
       v-if="$store.state.isBuildTest"
       style="font-size: 18px; color:red; position: fixed; left: 50%; transform:translate(-50%, 0);"
     >
-      {{ $t('env.name') }}
+      {{ $t('project.testDesc') }}
     </span>
     <div class="header-comp">
-      <v-icon
+      <div
         class="logo"
         type="iconlogo"
         @click="$store.dispatch('gohome')"
-      />
+      >
+      </div>
       <a-divider
         type="vertical"
       ></a-divider>
       <Banner
         class="banner"
-        title="模块名称"
+        :title="$t('project.title')"
+        :desc="$te('project.desc') ? $t('project.desc') : ''"
       />
     </div>
     <div
@@ -49,16 +51,14 @@ export default {
   .header-comp {
     order: -1;
     .logo {
-      color: @primary-color;
-      font-size: 168px;
-      cursor: pointer;
-      margin: 0 12px;
-      svg {
-        height: @header-height;
-      }
+      display: inline-block;
+      width: 140px;
+      height: 32px;
+      margin: 16px;
+      background: rgba(233, 233, 233)
     }
     .ant-divider {
-      top: -4px;
+      top: -28px;
       background: @primary-color;
     }
     .banner {

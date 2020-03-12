@@ -8,7 +8,19 @@
         <li>m1.vue之类带名称的称为具名路由</li>
         <li>默认路由和具名路由不可同时存在</li>
         <li>服务端只配置一级路由，不配置children，或children为空</li>
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
       </ul>
     </div>
   </div>
 </template>
+
+<script>
+import $ from '@http';
+
+export default {
+  created () {
+    console.log('created', this);
+    $.get('/test/test-retry');
+  },
+};
+</script>

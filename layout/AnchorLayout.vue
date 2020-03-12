@@ -10,6 +10,7 @@
         theme="light"
         class="app-content-sider"
         collapsible
+        :trigger="collapsible ? void 0 : null"
       >
         <component :is="isSider"></component>
       </a-layout-sider>
@@ -55,11 +56,23 @@ export default {
     AnchorContent: () => import('./AnchorContent.vue'),
   },
   data () {
+    const collapsible = this.$store.state.config.menu_collapsible;
     return {
-      collapsed: false,
+      collapsible,
     };
   },
   computed: {
+    collapsed: {
+      get () {
+        return this.$store.state.config.menu_collapsed;
+      },
+      set (value) {
+        this.$store.commit('setConfig', {
+          ...this.$store.state.config,
+          menu_collapsed: value,
+        });
+      },
+    },
     refreshing () {
       return this.$store.state.refresh;
     },

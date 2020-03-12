@@ -27,6 +27,7 @@ import {
   Spin,
   Tabs,
   Anchor,
+  Checkbox,
   message,
 } from 'ant-design-vue';
 
@@ -61,12 +62,10 @@ Vue.use(Menu);
 Vue.use(Spin);
 Vue.use(Tabs);
 Vue.use(Anchor);
+Vue.use(Checkbox);
 
 Vue.component('v-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',
-}));
-Vue.component('v-icon', Icon.createFromIconfontCN({
-  scriptUrl: '/static/icon/logo.js',
 }));
 
 Vue.config.productionTip = false;

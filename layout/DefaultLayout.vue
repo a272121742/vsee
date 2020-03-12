@@ -69,9 +69,6 @@ export default {
     refreshing () {
       return this.$store.state.refresh;
     },
-    reloading () {
-      return this.$store.state.reload;
-    },
   },
   created () {
     this.init();

@@ -1,36 +1,14 @@
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const cwd = process.cwd();
 const resolve = (dir) => path.join(cwd, dir);
 
 module.exports = async ({ config }) => {
-  // config.module.rules[1] = {
-  //   test: /\.vue$/,
-  //   loaders: ['vue-loader', 'storybook-addon-vue-info/loader'],
-  //   enforce: 'post',
-  // };
-  // config.module.rules.push({
-  //   test: [/\.story\.js$/, /index\.js$/],
-  //   loaders: [require.resolve('@storybook/addon-storysource/loader')],
-  //   include: [path.resolve(__dirname, '../')],
-  //   enforce: 'pre',
-  // });
-  // config.module.rules.push({
-  //   test: /\.md$/,
-  //   use: ['raw-loader'],
-  // });
-  // config.module.rules.push({
-  //   resourceQuery: /blockType=docs/,
-  //   use: ['storybook-readme/vue/docs-loader', 'html-loader', 'markdown-loader'],
-  // });
-  // // config.module.rules.push({
-  // //   test: /iview\/.*?js$/,
-  // //   loader: 'babel-loader'
-  // // });
-  // config.module.rules.push({
-  //   test: /\.(html|tpl)$/,
-  //   loader: 'html-loader'
-  // });
+  // config.plugins.push(new CopyWebpackPlugin([{
+  //   from: resolve(".storybook/public"),
+  //   to: resolve("storybook-static/static"),
+  //   ignore: [".*"]
+  // }]));
   config.module.rules.push({
     test: /\.less$/,
     loader: "style-loader!css-loader!less-loader?javascriptEnabled=true",
@@ -53,6 +31,6 @@ module.exports = async ({ config }) => {
   config.resolve.alias['@mix'] = resolve('lib/mixins');
   config.resolve.alias['@dir'] = resolve('lib/directives');
   // config.resolve.alias['@story'] = resolve('.storybook');
-  config.resolve.alias['~'] = resolve('stories/src');
+  config.resolve.alias['~'] = resolve('.storybook/src');
   return config;
 };

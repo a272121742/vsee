@@ -1,0 +1,156 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|核心（Core）/配置中心（config）" />
+
+# 配置中心
+
+每个独立的项目中，都有一个`config.js`文件，这个文件非常的关键，下面公布这个文件中的所有配置：
+
+```javascript
+export default {
+  /**
+   * 菜单过滤逻辑
+   * 如果你希望服务端传过来的菜单要做一点业务上的处理，使用配置；
+   * 过滤函数中的参数表示菜单项，采用的是树遍历机制。
+   */
+  MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
+  /**
+   * 语言环境默认值
+   * 语言设置会进行校验的，如果不满足设定要求，或者未设置，则按照`zh-CN`来定义。
+   */
+  LANGUAGE_DEFAULT: 'zh-CN',
+  /**
+   * 语言存储在cookie的键名
+   * 默认值`language`，当然为了应用安全性也可以自行进行加密
+   */
+  LANGUAGE_KEY: 'language',
+  /**
+   * 语言环境重置开关
+   * 如果设置为`true`，则应用打开时，每次都会设置语言为`LANGUAGE_DEFAULT`
+   * 否则，会通过cookie已经存在的值进行语言环境的设置
+   */
+  LANGUAGE_RESET: false,
+  /**
+   * 登录令牌储存在cookie的键名
+   * 默认值`login_token`，当然为了应用安全性也可以自行进行加密
+   */
+  TOKEN_KEY: 'login_token',
+  /**
+   * 登录令牌自动下发开关
+   * 默认值`false`，登录成功后，会自动拦截服务端令牌并进行全局应用的设置；
+   * 设置为`true`后，登录请求会将服务端数据返回给开发者自行处理令牌信息。
+   */
+  TOKEN_CUSTSET: false,
+  /**
+   * 用户登录缓存储存在cookie的键名
+   * 默认值`cache_login_info`，当然为了应用安全性也可以自行进行加密；
+   * 用户登录信息在存储时，已经做了加密处理。
+   */
+  LOGIN_CACHE_KEY: 'cache_login_info',
+  /**
+   * GET请求附带参数
+   * 可追加额外的附带参数，例如`_t: Date.now()`，亦或者是你需要的
+   */
+  OTHER_GET_PARAMS: {},
+  /**
+   * 用于登录授权使用的接口
+   */
+  AUTH_LOGIN_API: {
+    URL: '/auth/login', // 接口地址
+    PARAMS: { appCode: 'ADMIN' }, // 接口参数
+  },
+  /**
+   * 用于登出授权使用的接口
+   */
+  AUTH_LOGOUT_API: {
+    URL: '/auth/logout', // 接口地址
+    PARAMS: {}, // 接口参数
+  },
+  /**
+   * 顶层API集合，顶层API会加载到顶层`store`中心。
+   */
+  GLOBAL_API_LIST: {
+    user: ['/sys/user/info', { appCode: 'AQS' }],
+    menus: ['/sys/menu/nav', { appCode: 'AQS' }],
+    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }],
+  },
+  /**
+   * 排除不加载的模块
+   * 如果有些模块你不希望应用加载到，可以使用此参数。
+   */
+  EXCLUDE_MODULES: [],
+  /**
+   * 主页组件
+   * 主页组件参与路由注册，但不参与菜单配置
+   * 如果主页组件生效，则根路径会自动引导到主页；
+   * 如果主页组件不生效，则按照权限配置获取第一个菜单；
+   * 设置为`falsely`时不启用主页引导。
+   */
+  HOME_COMP: () => import('~/module/router/index.vue'),
+  /**
+   * 布局类型，可设置为`menu`、`nav`、`anchor`
+   * menu - (默认)包括header（上）、sider（左）、content（右）
+   * nav - 包括header（上）、content（下）
+   * anchor - 同`menu`，但content是连续屏幕的
+   */
+  LAYOUT_TYPE: 'menu',
+  /**
+   * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
+   * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
+   * false - 不启用菜单
+   * sider - 边栏菜单
+   * anchor - 悬靠菜单
+   * nav - 导航菜单
+   * cust - 自定义菜单
+   * 该属性自动链接到`store.config.menu_type`。
+   */
+  MENU_TYPE: void 0,
+  /**
+   * 菜单是否可搜索
+   * truely - 可缩缩时，会启用默认收缩模式
+   * falsely - 不可收缩时，会启用手动收缩模式，如果不设置手动收缩，即为不收缩
+   * 该值直接影响`this.$store.state.config.menu_collapsible`
+   * 该属性链接到`store.config.menu_collapsible`。
+   */
+  MENU_COLLAPSIBLE: true,
+  /**
+   * 菜单收缩状态
+   * falsely - 非收缩状态，默认值；
+   * truely - 收缩状态；
+   * 该值直接影响`this.$store.state.config.menu_collapsed`
+   * 该属性链接到`store.config.menu_collapsed`。
+   */
+  MENU_COLLAPSED: false,
+  /**
+   * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
+   * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
+   * bread - 面包屑模式
+   * tab - 页签模式
+   * cust - 自定义模式
+   * 该属性链接到`store.config.content_head`。
+   */
+  CONTENT_HEAD: 'bread',
+  /**
+   * 动态标题配置，可设置为`falsely`、`String`、`Function`
+   * falsely - 自动标题模式，默认值，包括[false, 0, undefined, null, '', NaN]
+   * String - 固定标题文字
+   * Function - 动态标题函数，函数参数按顺序为：route、i18n
+   */
+  DYNAMIC_TITLE: (route, i18n) => {
+    const titleList = [];
+    if (i18n && i18n.te('project.title')) {
+      titleList.push(i18n.t('project.title'));
+    }
+    if (route && route.meta && route.meta.title) {
+      titleList.push(route.meta.title);
+    }
+    return titleList.join(' - ');
+  },
+  /**
+   * 跳过登录
+   * 如果你的项目中包含了登录模块，都会被自动注册进去，但如果你希望绕过登录模块，可以使用此选项。
+   */
+  SKIP_LOGIN: false,
+};
+
+```

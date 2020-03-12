@@ -20,7 +20,7 @@ console.log('启动的项目是', project);
  * 2. 开发模式下，如果配置了test，则连接代理，反之连接模式数据
  */
 const proxy = (isProd && !process.env.npm_config_test) || (!isProd && !!process.env.npm_config_test);
-console.log('【当前模式】：', isProd ? '生产' : '开发', proxy ? '代理模式' : '本地模拟');
+console.log('【当前模式】：', isProd ? '生产' : '开发', proxy ? '代理模式' : '本地模拟', uselib ? '测试lib' : '正式lib');
 
 module.exports = {
   chainWebpack: (config) => {

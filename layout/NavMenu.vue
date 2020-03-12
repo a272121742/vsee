@@ -1,5 +1,6 @@
 <template>
   <a-menu
+    v-model="openKeys"
     mode="horizontal"
     :default-selected-keys="defaultSelectedKeys"
     :open-keys="openKeys"
@@ -43,34 +44,8 @@ export default {
     SubMenu: () => import('./SubMenu.vue'),
   },
   data () {
-    const { matched } = this.$route;
-    let openKeys = [matched[matched.length - 1].path];
-    const last = matched[matched.length - 1];
-    // const hasIframeItem = last.path === matched[matched.length - 2].path;
-    if (last) {
-      const splitList = last.path.split('/').reduce((arr, item) => {
-        const len = arr.length;
-        if (/^https?%3A%2F%2F/.test(item)) {
-          if (arr._added_) {
-            arr[len - 1] = `${arr[len - 1]}/${item}`;
-          } else {
-            arr.push(item);
-            arr._added_ = true;
-          }
-        } else {
-          arr.push(item);
-        }
-        return arr;
-      }, []);
-      const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-      openKeys = [...result];
-      if (result.length === 3 && !/\?\/$/.test(result[2])) {
-        openKeys[2] = result[2].replace(result[1], result[0]);
-        openKeys.splice(1, 1);
-      }
-    }
     return {
-      openKeys,
+      openKeys: [],
     };
   },
   computed: {
@@ -109,16 +84,47 @@ export default {
     },
   },
   watch: {
-    $route () {
-      this.$store.dispatch('reload');
+    $route: {
+      immediate: true,
+      handler () {
+        this.openKeys = this.getOpenKeys();
+      },
     },
   },
   methods: {
     jump ({ key }) {
       this.$router.push({ path: key });
     },
+    getOpenKeys () {
+      const { matched } = this.$route;
+      let openKeys = [matched[matched.length - 1].path];
+      const last = matched[matched.length - 1];
+      if (last) {
+        const splitList = last.path.split('/').reduce((arr, item) => {
+          const len = arr.length;
+          if (/^https?%3A%2F%2F/.test(item)) {
+            if (arr._added_) {
+              arr[len - 1] = `${arr[len - 1]}/${item}`;
+            } else {
+              arr.push(item);
+              arr._added_ = true;
+            }
+          } else {
+            arr.push(item);
+          }
+          return arr;
+        }, []);
+        const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
+        openKeys = [...result];
+        if (result.length === 3 && !(/\?\/$/.test(result[2]))) {
+          openKeys[2] = result[2].replace(result[1], result[0]);
+          openKeys.splice(1, 1);
+        }
+      }
+      return openKeys;
+    },
     openChange (openKeys) {
-      this.openKeys = openKeys.filter((item, index) => index === openKeys.length - 1);
+      this.openKeys = openKeys;
     },
     fixedMenu (menus = []) {
       return menus.filter((item) => {
