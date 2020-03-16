@@ -207,8 +207,7 @@ export default {
         // this.$store.dispatch('logout');
         if (this.$store.state.isMock) {
           this.$store.commit('setToken', 'abc');
-        }
-        if (!err) {
+        } else if (!err) {
           this.$store.dispatch('login', userInfo).then((res) => {
             if (res.token) {
               this.$store.commit('setLoginStatus', res.token);
@@ -216,7 +215,6 @@ export default {
           }).catch((errCode) => {
             errCode && this.$message.error(this.$t(errCode));
           }).finally(() => {
-            this.$store.dispatch('reload');
             this.$store.dispatch('refresh');
           });
         }

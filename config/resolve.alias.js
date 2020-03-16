@@ -5,6 +5,9 @@ const resolve = (dir) => path.join(cwd, dir);
 const project = process.env.npm_config_project;
 const innerModule = /[\\/]node_modules[\\/]vsee/.test(__dirname);
 
+const isProd = process.env.NODE_ENV === 'production';
+const proxy = (isProd && !process.env.npm_config_test) || (!isProd && !!process.env.npm_config_test);
+
 module.exports = (config) => {
   // 添加别名
   config.resolve.alias
@@ -21,5 +24,6 @@ module.exports = (config) => {
     .set('@util', innerModule ? 'vsee/lib/utils' : resolve('lib/utils'))
     .set('@mix', innerModule ? 'vsee/lib/mixins' : resolve('lib/mixins'))
     .set('@dir', innerModule ? 'vsee/lib/directives' : resolve('lib/directives'))
-    .set('@static', resolve('public/static'));
+    .set('@static', resolve('public/static'))
+    .set('@mock', innerModule ? 'vsee/lib/mock' : resolve('lib/mock'));
 };

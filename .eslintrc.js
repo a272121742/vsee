@@ -35,7 +35,7 @@ module.exports = {
     "no-underscore-dangle": [0, { enforceInMethodNames: true }],
     "prefer-destructuring": ["error", { object: true, array: false }],
     "no-template-curly-in-string": 0,
-    "consistent-return": ["error", { treatUndefinedAsUnspecified: true }]
+    "consistent-return": ["error", { treatUndefinedAsUnspecified: true }],
   },
   parserOptions: {
     parser: "babel-eslint"

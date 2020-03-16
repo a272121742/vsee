@@ -27,12 +27,12 @@
 export default {
   computed: {
     user () {
-      return this.$store.state.userInfo;
+      return this.$store.state.user;
     },
   },
   methods: {
     gohome () {
-      window.location.replace(this.$store.state.isProd ? '/portal' : '/');
+      this.$store.dispatch('gohome');
     },
     logout () {
       this.$store.dispatch('logout');

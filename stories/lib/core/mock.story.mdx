@@ -29,7 +29,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 ### 引入mock
 
 ```javascript
-import mock from '@lib/mock.js';
+import mock from '@mock';
 ```
 
 ### 模拟数据
@@ -79,7 +79,7 @@ Mock.get('/api/users', () => {
 我们也为模拟批量数据做了简化处理，避免使用原生`key|count`的模拟模式，简化后的代码如下：
 
 ```javascript
-import mock from '@lib/mock.js';
+import mock from '@mock';
 const list = mock({
   no: 'IRSYYYY@string("number", 6)',
   title: '@ctitle',

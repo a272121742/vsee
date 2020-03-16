@@ -15,9 +15,9 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
     "@hyjiacan/vue-ellipsis": "^1.1.0",
-    "ant-design-vue": "^1.4.11",
+    "ant-design-vue": "^1.4.12",
     "axios": "^0.19.2",
     "js-base64": "^2.5.2",
     "js-cookie": "^2.2.1",

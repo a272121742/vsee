@@ -1,4 +1,4 @@
-import mock from '@lib/mock.js';
+import mock from '@mock';
 import { Random } from 'mockjs';
 
 mock.get('/auth/captcha', (uuid) => Random.dataImage('128x38', Random.string('lower', 6)));

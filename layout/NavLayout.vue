@@ -92,18 +92,6 @@ export default {
       return null;
     },
   },
-  created () {
-    this.init();
-  },
-  methods: {
-    init () {
-      this.$store.dispatch('fetchUser').then(() => {
-        this.blocking = false;
-      }).catch((err) => {
-        err && this.$message.error(this.$t(err));
-      });
-    },
-  },
 };
 </script>
 

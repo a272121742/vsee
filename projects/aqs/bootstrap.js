@@ -28,6 +28,12 @@ import {
   Tabs,
   Anchor,
   Checkbox,
+  DatePicker,
+  Popconfirm,
+  Upload,
+  Alert,
+  InputNumber,
+  Empty,
   message,
 } from 'ant-design-vue';
 
@@ -63,6 +69,12 @@ Vue.use(Spin);
 Vue.use(Tabs);
 Vue.use(Anchor);
 Vue.use(Checkbox);
+Vue.use(DatePicker);
+Vue.use(Popconfirm);
+Vue.use(Upload);
+Vue.use(Alert);
+Vue.use(InputNumber);
+Vue.use(Empty);
 
 Vue.component('v-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',

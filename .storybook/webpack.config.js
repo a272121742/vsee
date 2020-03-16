@@ -30,6 +30,7 @@ module.exports = async ({ config }) => {
   config.resolve.alias['@util'] = resolve('lib/utils');
   config.resolve.alias['@mix'] = resolve('lib/mixins');
   config.resolve.alias['@dir'] = resolve('lib/directives');
+  config.resolve.alias['@mock'] = resolve('lib/mock');
   // config.resolve.alias['@story'] = resolve('.storybook');
   config.resolve.alias['~'] = resolve('.storybook/src');
   return config;

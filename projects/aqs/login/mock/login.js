@@ -1,6 +1,7 @@
-import mock from '@lib/mock.js';
+import mock from '@mock';
 import { Random } from 'mockjs';
 
+console.log('加载了呀');
 
 mock.get('/auth/captcha', (uuid) => {
   console.log('发送图片', uuid);

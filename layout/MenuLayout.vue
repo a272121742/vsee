@@ -101,17 +101,6 @@ export default {
       return null;
     },
   },
-  created () {
-    this.init();
-  },
-  methods: {
-    init () {
-      this.$store.dispatch('fetchUser').then(() => {
-      }).catch((err) => {
-        err && this.$message.error(this.$t(err));
-      });
-    },
-  },
 };
 </script>
 

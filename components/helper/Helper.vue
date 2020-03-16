@@ -26,10 +26,11 @@
           path="@comp/helper/LoginForm.vue"
         />
       </a-row>
-      <a-row>
+      <a-row v-if="!disableProxy">
         是否代理
         <a-switch
           :default-checked="!$store.state.isMock"
+          :disabled="disableProxy"
           @change="onProxyChange"
         />
       </a-row>
@@ -73,6 +74,7 @@ export default {
       top: 140,
       visible: false,
       isLogin: vm.$store.state.isLogin,
+      disableProxy: process.env.proxy,
     };
   },
   computed: {

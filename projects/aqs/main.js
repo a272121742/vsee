@@ -9,6 +9,9 @@ Vue.nextTick(() => {
     store,
     i18n,
     name: 'App',
+    created () {
+      this.$store.dispatch('fetchUser');
+    },
     render () {
       return (
         <a-locale-provider locale={ this.$store.state.local4antd }>

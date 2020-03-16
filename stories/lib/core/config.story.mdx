@@ -151,6 +151,64 @@ export default {
    * 如果你的项目中包含了登录模块，都会被自动注册进去，但如果你希望绕过登录模块，可以使用此选项。
    */
   SKIP_LOGIN: false,
+  /**
+   * 请求超时时间，请求超时后将自动返回超时消息
+   */
+  HTTP_TIMEOUT: 60000,
+  /**
+   * `axios`额外附加头部信息
+   * 封装的`axios`允许覆盖原有的头部信息，但仅限于除去`token`、`Authorization`、`Accept-Language`以外的信息。
+   */
+  HTTP_HEADER: {},
+  /**
+   * 关闭模拟模块的日志
+   */
+  AXIOS_CLOSE_MOCK_LOG: false,
+  /**
+   * @TODO:
+   * 重连目录，可为`falsely`或`String[]`
+   * falsely - 不启用重连；
+   * String[] - 按照重连地址进行重新连接
+   */
+  // AXIOS_RETRY_LIST: ['https://easy-mock.com/mock/5b03c10305e00e7fd3cb3d68/example', 'http://rap2api.taobao.org/app/mock/116'],
+  /**
+   * 项目的根目录，即门户的地址，登出时需要
+   */
+  PORTAL_APTH: '/',
+  /**
+   * 代理，支持多重代理
+   * $api - 核心代理，必须存在
+   * $xxx - 可以根据需要建立其他的代理
+   */
+  DEV_PROXY: 'http://dev.auto.aas/mojo-gateway/',
+  /**
+   * 日期格式化
+   */
+  DATE_FORMAT: 'YYYY-MM-DD',
+  /**
+   * 时间格式化
+   */
+  TEIME_FORMAT: 'HH:mm:ss',
+  /**
+   * 时间日期格式化
+   * 如果不给定，将会自动处理为`${DATE_FORMAT} ${TEIME_FORMAT}`的格式
+   */
+  DATETIME_FORMAT: void 0,
+  /**
+   * 空时间展示
+   * 如果时间为空，或者转换失败，或者转换后不是合法时间，则显示此项，默认值为空字符串`''`
+   */
+  EMPTY_DATETIME: '-',
+  /**
+   * 分页组件配置
+   */
+  PAGESIZE_OPTIONS: ['10', '20', '50'],
+  /**
+   * 服务端分页对象
+   * 如果为函数，则通过函数进行构建，函数参数为`current`、`pageSize`，该场景可是适配更多的服务端或数据库；
+   * 如果不设置，则采用默认方式
+   */
+  SERVER_PAGINATION: void 0,
 };
 
 ```
