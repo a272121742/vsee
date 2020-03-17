@@ -27,11 +27,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-.content-child-view-item {
-  margin-bottom: 16px;
-  background: #FFF;
-  min-height: calc(100vh - @app-layout-header-height - @app-layout-footer-height - 32px);
-}
-</style>

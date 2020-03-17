@@ -2,7 +2,6 @@
   <a-menu
     v-model="openKeys"
     mode="inline"
-    :default-selected-keys="defaultSelectedKeys"
     :open-keys="openKeys"
     @select="jump"
     @openChange="openChange"
@@ -135,9 +134,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-.ant-menu {
-  border-right: 0;
-}
-</style>

@@ -15,7 +15,6 @@ function addStyleResource (rule) {
     .options({
       patterns: [
         resolve('projects', project, 'theme.less'),
-        // 'node_modules/vsee/layout/layout.less',
         resolve('node_modules/vsee/layout/*.less'),
       ],
       injector: 'append',

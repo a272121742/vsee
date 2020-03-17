@@ -51,9 +51,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-  /deep/ .anchor-menu-wrapper {
-    max-height: unset!important;
-  }
-</style>

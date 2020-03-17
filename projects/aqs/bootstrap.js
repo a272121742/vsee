@@ -91,5 +91,5 @@ Vue.prototype.$message = message;
 // 页面滚动后，相关组件收起下拉
 window.addEventListener('scroll', debounce(() => {
   document.querySelectorAll('input:focus').forEach((item) => item.blur());
-  document.querySelectorAll('.ant-select-open').forEach((item) => item.click());
+  document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
 }, 400));

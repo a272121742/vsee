@@ -1,5 +1,6 @@
 <template>
   <a-tabs
+    ref="tab"
     hide-add
     :active-key="currentTab"
     :animated="false"
@@ -10,8 +11,8 @@
   >
     <a-dropdown
       slot="tabBarExtraContent"
-      :trigger="['click']"
-      :get-popup-container="e => e.parentNode"
+      :trigger="['hover']"
+      placement="bottomRight"
     >
       <a-button
         icon="down"
@@ -31,6 +32,7 @@
         </a-menu-item>
       </a-menu>
     </a-dropdown>
+
     <template
       v-for="tab in tabs"
     >
@@ -140,22 +142,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-  .ant-tabs {
-    margin-top: 8px;
-    /deep/ .ant-tabs-bar {
-      border: none;
-      margin-bottom: 0;
-    }
-    /deep/ .ant-tabs-tab {
-      border: none!important;
-    }
-    /deep/ .ant-tabs-nav-wrap {
-        margin-top: 2px;
-      }
-    /deep/ .ant-tabs-ink-bar {
-      visibility: visible!important;
-    }
-  }
-</style>

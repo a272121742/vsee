@@ -62,9 +62,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-  .iframe-container {
-    margin: 0;
-  }
-</style>

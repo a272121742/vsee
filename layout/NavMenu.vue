@@ -137,15 +137,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-  .ant-menu {
-    border: none;
-    /deep/ .ant-menu-item, /deep/ .ant-menu-submenu {
-      padding-left: 0;
-      padding-right: 0;
-      line-height: 60px;
-      top: 3px;
-    }
-  }
-</style>
