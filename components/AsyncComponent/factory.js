@@ -1,9 +1,10 @@
 import AsyncLoading from './AsyncLoading.vue';
 import AsyncError from './AsyncError.vue';
 
-function factory (path, delay = 0, timeout = 3000) {
+function factory (path, delay = 0, timeout = 60000) {
   const useCompLib = path.charAt(0) === '@';
   const compPath = useCompLib ? path.split('/').slice(1).join('/') : path.charAt(0) === '/' ? path.slice(1) : path;
+  console.log('延迟多久呢？', delay);
   return () => ({
     // 需要加载的组件
     component: useCompLib ? import(`@comp/${compPath}`).catch(() => AsyncError) : import(`~/${compPath}`).catch(() => AsyncError),

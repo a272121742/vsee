@@ -1,6 +1,6 @@
 <template>
   <a-tabs
-    ref="tab"
+    class="app-tabs"
     hide-add
     :active-key="currentTab"
     :animated="false"

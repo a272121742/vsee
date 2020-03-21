@@ -116,7 +116,7 @@ export default {
    * tab - 页签模式
    * cust - 自定义模式
    */
-  CONTENT_HEAD: 'tab',
+  CONTENT_HEAD: 'bread',
   /**
    * 路由模式，默认history
    */

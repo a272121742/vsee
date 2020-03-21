@@ -10,11 +10,16 @@ Vue.nextTick(() => {
     i18n,
     name: 'App',
     created () {
-      this.$store.dispatch('fetchUser');
+      const listen = store.watch((state) => state.isLogin, (isLogin) => {
+        if (isLogin) {
+          this.$store.dispatch('fetchUser');
+          listen && listen();
+        }
+      }, { immediate: true });
     },
     render () {
       return (
-        <a-locale-provider locale={ this.$store.state.local4antd }>
+        <a-locale-provider id="app" locale={ this.$store.state.local4antd }>
           <router-view />
         </a-locale-provider>
       );

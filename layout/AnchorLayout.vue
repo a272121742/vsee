@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import './layout.less';
+
 export default {
   components: {
     Header: () => import('~/layout/view/Header.vue'),
@@ -94,7 +96,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-@import "layout.less";
-</style>

@@ -33,7 +33,7 @@ mock.get('/masterdata/v1/vehicle/page', ({
 });
 
 // 车型代码
-mock.get('/masterdata/v1/vehicle/modelAndCode', (params) => ({
+mock.get('/masterdata/v1/vehicle/modelAndCode', () => ({
   data: [{
     id: 1,
     vhclModelCode: 'dd',
@@ -54,7 +54,7 @@ mock.get('/masterdata/v1/vehicle/modelAndCode', (params) => ({
   code: 0,
 }), { timeout: 1000 });
 // 车型名称
-mock.get('/v1/vehicle/select', (params) => ({
+mock.get('/v1/vehicle/select', () => ({
   data: [{
     id: 1,
     name: '12345',

@@ -1,12 +1,22 @@
-// @app-layout-header-height: 64px;
-// @app-layout-footer-height: 0px;
-// @app-content-header-height: 48px;
-// @app-content-footer-height: 0px;
+@app-layout-header-height: 64px;
+@app-layout-footer-height: 0px;
+@app-content-header-height: 48px;
+@app-content-footer-height: 0px;
+@app-content-border-width: 16px; 
 @app-content-sider-width: 200px;
 @app-content-sider-width-min: 80px;
 @app-content-sider-trigger-height: 48px;
 @app-layout-zindex: 1050;
 @app-content-zindex: 1000;
+
+.app-scroll {
+  .__rail-is-vertical, .__rail-is-horizontal{
+    z-index: @app-layout-zindex + 2!important;
+    .__bar-is-vertical, .__bar-is-horizontal {
+      background: fade(@primary-color, 66%)!important;
+    }
+  }
+}
 .app-layout {
   .app-layout-header {
     position: fixed;
@@ -25,13 +35,13 @@
       }
       .app-content-warpper {
         .app-content-spiner {
-          min-height: calc(100vh - @app-layout-header-height -  @app-layout-footer-height - @app-content-footer-height - 32px);
+          min-height: calc(100vh - @app-layout-header-height -  @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         }
       }
       .app-content-header {
         top: @app-layout-header-height;
         & + .app-content-warpper .app-content-spiner {
-          min-height: calc(100vh - @app-layout-header-height - @app-content-header-height -  @app-layout-footer-height - @app-content-footer-height - 32px);
+          min-height: calc(100vh - @app-layout-header-height - @app-content-header-height -  @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         }
       }
     }
@@ -46,35 +56,40 @@
       bottom: @app-layout-footer-height;
       padding: 0;
       box-shadow: @box-shadow-v;
-      overflow-x: hidden;
       & ~ .app-content-header {
         left: @app-content-sider-width;
       }
       & ~ .app-content-warpper {
         margin-left: @app-content-sider-width;
         .app-content-spiner {
-          width: calc(100vw - @app-content-sider-width - 32px);
+          width: calc(100vw - @app-content-sider-width - 2*@app-content-border-width);
         }
       }
       & ~ .app-content-footer {
         left: @app-content-sider-width;
       }
-      /deep/ .ant-layout-sider-trigger {
+      .ant-layout-sider-trigger {
         z-index: @app-layout-zindex;
         height: @app-content-sider-trigger-height;
         bottom: @app-layout-footer-height;
+        &:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
       }
-      /deep/ .ant-layout-sider-children {
+      .ant-layout-sider-children {
         .ant-affix {
           position: relative!important;
           top: unset!important;
         }
       }
-      /deep/ .ant-layout-sider-children:not(:last-of-type) {
+      .ant-layout-sider-children:not(:last-of-type) {
         &::after {
           content: '';
           display: inline-block;
           padding-bottom: @app-content-sider-trigger-height;
+        }
+        .ant-menu::after {
+          height: @app-content-sider-trigger-height;
         }
       }
 
@@ -85,7 +100,7 @@
         & ~ .app-content-warpper {
           margin-left: @app-content-sider-width-min;
           .app-content-spiner {
-            width: calc(100vw - @app-content-sider-width-min - 32px);
+            width: calc(100vw - @app-content-sider-width-min - 2*@app-content-border-width);
           }
         }
         & ~ .app-content-footer {
@@ -106,7 +121,7 @@
       & ~ .app-content-warpper {
         margin-top: @app-content-header-height;
         .app-content-spiner {
-          min-height: calc(100vh -  @app-content-header-height - @app-layout-footer-height - @app-content-footer-height - 32px);
+          min-height: calc(100vh -  @app-content-header-height - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         }
       }
     }
@@ -116,12 +131,12 @@
       margin-bottom: @app-content-footer-height;
       overflow-x: visible;
       .app-content-spiner {
-        margin: 16px;
+        margin: @app-content-border-width;
         background: #FFF;
         box-shadow: @box-shadow-base;
-        min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 32px);
-        width: 100vw;
-        /deep/ .ant-spin-dot-spin {
+        min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
+        width: calc(100vw - 2*@app-content-border-width);
+        .ant-spin-dot-spin {
           margin-top: 33vh;
         }
         .content-child-view {
@@ -152,18 +167,18 @@
 
   .app-layout-header .ant-menu {
     border: none;
-    /deep/ .ant-menu-item, /deep/ .ant-menu-submenu {
+    .ant-menu-item, .ant-menu-submenu {
       padding-left: 0;
       padding-right: 0;
       line-height: 60px;
       top: 3px;
     }
   }
-  .ant-tabs {
-    &, /deep/ .ant-tabs-bar, /deep/ .ant-tabs-nav-container, /deep/ .ant-tabs-extra-content {
+  .app-tabs.ant-tabs {
+    &, .ant-tabs-bar, .ant-tabs-nav-container, .ant-tabs-extra-content {
       height: @app-content-header-height;
     }
-    /deep/ .ant-tabs-tab, /deep/ .ant-tabs-extra-content {
+    .ant-tabs-tab, .ant-tabs-extra-content {
       border: none;
       line-height: @app-content-header-height;
     }
@@ -175,7 +190,7 @@
     // /deep/ .ant-tabs-nav-wrap {
     //     margin-top: 2px;
     //   }
-    /deep/ .ant-tabs-ink-bar {
+    .ant-tabs-ink-bar {
       visibility: visible;
     }
   }
@@ -185,7 +200,7 @@
   .content-child-view-item {
     margin-bottom: 16px;
     background: #FFF;
-    min-height: calc(100vh - @app-layout-header-height - @app-layout-footer-height - 32px);
+    min-height: calc(100vh - @app-layout-header-height - @app-layout-footer-height - 2*@app-content-border-width);
   }
   .iframe-container {
     margin: 0;

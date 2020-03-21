@@ -1,53 +1,59 @@
 <template>
-  <a-layout class="app-layout">
-    <a-layout-header class="app-layout-header">
-      <Header />
-    </a-layout-header>
-    <a-layout class="app-layout-content">
-      <a-layout-sider
-        v-if="[void 0, 'sider', 'cust'].includes($store.state.config.menu_type)"
-        v-model="collapsed"
-        theme="light"
-        class="app-content-sider"
-        collapsible
-        :trigger="collapsible ? void 0 : null"
-      >
-        <component :is="isSider"></component>
-      </a-layout-sider>
-      <a-layout-header
-        v-if="$store.state.config.content_head"
-        class="app-content-header"
-      >
-        <component :is="isContentHeader"></component>
+  <vue-scroll class="app-scroll">
+    <a-layout class="app-layout">
+      <a-layout-header class="app-layout-header">
+        <Header />
       </a-layout-header>
-      <a-layout-content class="app-content-warpper">
-        <a-spin
-          class="app-content-spiner"
-          :spinning="refreshing"
+      <a-layout class="app-layout-content">
+        <a-layout-sider
+          v-if="[void 0, 'sider', 'cust'].includes($store.state.config.menu_type)"
+          v-model="collapsed"
+          theme="light"
+          class="app-content-sider"
+          collapsible
+          :trigger="collapsible ? void 0 : null"
         >
-          <transition v-if="!refreshing">
-            <keep-alive v-if="$store.state.config.keey_alive">
+          <vue-scroll class="app-content-sider-scroll">
+            <component :is="isSider"></component>
+          </vue-scroll>
+        </a-layout-sider>
+        <a-layout-header
+          v-if="$store.state.config.content_head"
+          class="app-content-header"
+        >
+          <component :is="isContentHeader"></component>
+        </a-layout-header>
+        <a-layout-content class="app-content-warpper">
+          <a-spin
+            class="app-content-spiner"
+            :spinning="refreshing"
+          >
+            <transition v-if="!refreshing">
+              <keep-alive v-if="$store.state.config.keey_alive">
+                <router-view
+                  class="content-child-view"
+                />
+              </keep-alive>
               <router-view
+                v-else
                 class="content-child-view"
               />
-            </keep-alive>
-            <router-view
-              v-else
-              class="content-child-view"
-            />
-          </transition>
-        </a-spin>
-      </a-layout-content>
-      <a-layout-footer class="app-content-footer">
+            </transition>
+          </a-spin>
+        </a-layout-content>
+        <a-layout-footer class="app-content-footer">
+        </a-layout-footer>
+      </a-layout>
+      <a-layout-footer class="app-layout-footer">
       </a-layout-footer>
+      <component :is="isHelper"></component>
     </a-layout>
-    <a-layout-footer class="app-layout-footer">
-    </a-layout-footer>
-    <component :is="isHelper"></component>
-  </a-layout>
+  </vue-scroll>
 </template>
 
 <script>
+import './layout.less';
+
 export default {
   components: {
     Header: () => import('~/layout/view/Header.vue'),
@@ -103,7 +109,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-@import "layout.less";
-</style>

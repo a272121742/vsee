@@ -19,22 +19,39 @@
 @app-layout-footer-height: 0px;   // 底部footer的高度
 @app-content-header-height: 48px; // 内容区域header的高度
 @app-content-footer-height: 0px;  // 内容区域footer的高度
+@app-content-border-width: 16px;  // 内容区域外部边框大小
 
 .app-content-header.ant-layout-header {
   background-color: #FFF;
 }
-
-// 分列表单下的item样式 ========================begin==========================
-.col-layout-form.ant-form-horizontal, .col-layout-form.ant-form-inline {
+@form-label-fixed-width: 88px;
+.col-layout-form.ant-form-horizontal, 
+.col-layout-form.ant-form-inline {
   .ant-form-item {
     display: flex;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     .ant-form-item-label {
-      flex: 1;
+      flex: none;
+      flex-basis: @form-label-fixed-width;
+      label {
+        display: inline-block;
+        width: @form-label-fixed-width;
+        max-height: 28px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        word-break: break-all;
+        line-height: 1;
+        margin-top: 5px;
+      }
     }
     .ant-form-item-control-wrapper {
-      flex: 2.5;
+      flex: auto;
     }
+  }
+  .col-layout-form-actions {
+    float: right;
+    margin: 4px 12px 0;
   }
 } 
 // 垂直布局表单，修改为紧凑型

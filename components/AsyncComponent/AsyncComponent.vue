@@ -67,14 +67,19 @@ export default {
     // 超时警告时间
     timeout: {
       type: Number,
-      default: 2000,
+      default: 60000,
     },
   },
-  data () {
-    return {
-      // 构建异步组件 - 懒加载实现
-      AsyncComponent: factory(this.path, this.delay, this.timeout),
-    };
+  // data () {
+  //   return {
+  //     // 构建异步组件 - 懒加载实现
+  //     AsyncComponent: factory(this.path, this.delay, this.timeout),
+  //   };
+  // },
+  computed: {
+    AsyncComponent () {
+      return factory(this.path, this.delay, this.timeout);
+    },
   },
   watch: {
     path () {
