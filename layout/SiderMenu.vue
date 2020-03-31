@@ -18,10 +18,6 @@
           style="font-size: 16px;"
           :type="menu.icon"
         />
-        <a-icon
-          v-else
-          type="desktop"
-        />
         <span>{{ menu.meta.title }}</span>
       </a-menu-item>
       <sub-menu
@@ -125,10 +121,15 @@ export default {
     },
     openChange (openKeys) {
       const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
-      if (this.menuKeys.indexOf(latestOpenKey) === -1) {
+      if (!this.menuKeys.includes(latestOpenKey)) {
         this.openKeys = openKeys;
       } else {
-        this.openKeys = latestOpenKey ? [latestOpenKey] : [];
+        const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
+        if (index >= 0 && openKeys.length > 2) {
+          this.openKeys[index] = latestOpenKey;
+        } else {
+          this.openKeys.push(latestOpenKey);
+        }
       }
     },
   },

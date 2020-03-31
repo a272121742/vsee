@@ -1,10 +1,10 @@
 <template>
   <iframe
     ref="frame"
+    class="app-iframe"
     name="frameOther"
     :src="src"
     width="100%"
-    :height="height"
     frameborder="0"
     scrolling="false"
     :style="{ opacity }"
@@ -57,7 +57,7 @@ export default {
           }, 200);
         });
       }
-      this.height = document.documentElement.clientHeight;
+      // this.height = document.documentElement.clientHeight;
     },
   },
 };

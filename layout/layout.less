@@ -72,9 +72,9 @@
         z-index: @app-layout-zindex;
         height: @app-content-sider-trigger-height;
         bottom: @app-layout-footer-height;
-        &:hover {
-          background: rgba(0, 0, 0, 0.05);
-        }
+        // &:hover {
+        //   background: rgba(0, 0, 0, 0.05);
+        // }
       }
       .ant-layout-sider-children {
         .ant-affix {
@@ -88,7 +88,7 @@
           display: inline-block;
           padding-bottom: @app-content-sider-trigger-height;
         }
-        .ant-menu::after {
+        .ant-menu-root::after {
           height: @app-content-sider-trigger-height;
         }
       }
@@ -194,7 +194,17 @@
       visibility: visible;
     }
   }
-  /deep/ .anchor-menu-wrapper {
+  .ant-breadcrumb {
+    padding: 16px 24px;
+    span {
+      font-size: 16px;
+      line-height: 1;
+    }
+    & > span:last-child {
+      color: @primary-color;
+    }
+  }
+  .anchor-menu-wrapper {
     max-height: unset!important;
   }
   .content-child-view-item {
@@ -202,8 +212,9 @@
     background: #FFF;
     min-height: calc(100vh - @app-layout-header-height - @app-layout-footer-height - 2*@app-content-border-width);
   }
-  .iframe-container {
+  .app-iframe {
     margin: 0;
+    height: calc(100vh - @app-layout-header-height - @app-content-header-height - @app-content-footer-height - @app-layout-footer-height - 2*@app-content-border-width - 6px);
   }
 }
 

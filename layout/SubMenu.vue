@@ -7,10 +7,6 @@
         style="font-size: 16px;"
         :type="props.menuInfo.icon"
       />
-      <a-icon
-        v-else
-        type="desktop"
-      />
       <span>{{ props.menuInfo.meta.title }}</span>
     </span>
     <template v-if="props.menuInfo.children && props.menuInfo.children.length">

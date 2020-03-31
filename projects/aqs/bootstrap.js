@@ -40,11 +40,9 @@ import {
 import SingleMessage from '@comp/alert/SingleMessage.js';
 import { debounce } from 'lodash';
 import AsyncComponent from '@comp/AsyncComponent';
-import VueLazyComponent from '@xunlei/vue-lazy-component';
-import vuescroll from 'vuescroll';
 
 Vue.component('async-component', AsyncComponent);
-Vue.use(VueLazyComponent);
+
 Vue.use(Col);
 Vue.use(Row);
 Vue.use(Switch);
@@ -77,8 +75,6 @@ Vue.use(Upload);
 Vue.use(Alert);
 Vue.use(InputNumber);
 Vue.use(Empty);
-
-Vue.use(vuescroll);
 
 Vue.component('v-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',

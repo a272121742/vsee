@@ -3,6 +3,7 @@ const path = require('path');
 const cwd = process.cwd();
 const resolve = (...dir) => path.join(cwd, ...dir);
 const project = process.env.npm_config_project;
+const innerModule = /[\\/]node_modules[\\/]vsee/.test(__dirname);
 
 module.exports = (config) => {
   const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
@@ -14,6 +15,7 @@ function addStyleResource (rule) {
     .loader('style-resources-loader')
     .options({
       patterns: [
+        resolve(innerModule ? 'node_modules/vsee/layout/layout.less' : 'layout/layout.less'),
         resolve('projects', project, 'theme.less'),
       ],
       injector: 'append',

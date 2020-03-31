@@ -1,5 +1,8 @@
 <template>
-  <vue-scroll class="app-scroll">
+  <vue-scroll
+    class="app-scroll"
+    :ops="$store.state.config.scroll_config"
+  >
     <a-layout class="app-layout">
       <a-layout-header class="app-layout-header">
         <Header />
@@ -57,6 +60,7 @@ import './layout.less';
 export default {
   components: {
     Header: () => import('~/layout/view/Header.vue'),
+    VueScroll: () => import('vuescroll'),
   },
   data () {
     const collapsible = this.$store.state.config.menu_collapsible;

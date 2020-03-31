@@ -11,7 +11,12 @@
         :href="`#${menu.fullPath}`"
       >
         <template #title>
-          <a-icon type="desktop"></a-icon>
+          <v-icon
+            v-if="menu.icon"
+            class="anticon"
+            style="font-size: 16px;"
+            :type="menu.icon"
+          />
           {{ menu.meta.title }}
         </template>
         <template v-if="menu.children && menu.children.length && menu.leaf">
@@ -22,7 +27,12 @@
             :href="`#${menu.fullPath}`"
           >
             <template #title>
-              <a-icon type="desktop"></a-icon>
+              <v-icon
+                v-if="menu.icon"
+                class="anticon"
+                style="font-size: 16px;"
+                :type="menu.icon"
+              />
               {{ menu.meta.title }}
             </template>
           </a-anchor-link>
@@ -40,14 +50,14 @@ export default {
     },
   },
   mounted () {
-    const vm = this;
-    const { anchor } = this.$refs;
-    if (anchor && anchor.$watch) {
-      anchor.$watch('activeLink', (value) => {
-        // window.location.hash = value || '#';
-        vm.$emit('change', value);
-      });
-    }
+    // const vm = this;
+    // const { anchor } = this.$refs;
+    // if (anchor && anchor.$watch) {
+    //   anchor.$watch('activeLink', (value) => {
+    //     // window.location.hash = value || '#';
+    //     vm.$emit('change', value);
+    //   });
+    // }
   },
 };
 </script>

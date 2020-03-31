@@ -200,4 +200,13 @@ export default {
    * 如果不设置，则采用默认方式
    */
   SERVER_PAGINATION: void 0,
+  /**
+   * 路由是否深度递归，如果为`true`，则进行深度递归以获取首页，否则只做第一级的菜单获取
+   */
+  ROUTER_DEEP: true,
+  SCROLL: {
+    bar: {
+      keepShow: true,
+    },
+  },
 };
