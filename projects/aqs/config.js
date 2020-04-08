@@ -116,7 +116,7 @@ export default {
    * tab - 页签模式
    * cust - 自定义模式
    */
-  CONTENT_HEAD: 'bread',
+  CONTENT_HEAD: 'tab',
   /**
    * 路由模式，默认history
    */
@@ -209,4 +209,15 @@ export default {
       keepShow: true,
     },
   },
+  // VALIDATION: {
+  //   // idcard: /^\S$/,
+  //   // phone: /^\S$/,
+  //   // mobile: /^\S$/,
+  //   // username: /^\S$/,
+  //   // password: /^\S$/,
+  // },
+  /**
+   * `content`区域是否缓存，默认`false`，设置为`true`则缓存
+   */
+  CONTENT_KEEP_ALIVE: true,
 };

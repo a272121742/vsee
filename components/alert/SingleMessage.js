@@ -11,13 +11,13 @@ import SingleMessage from './SingleMessage.vue';
 // 默认不自动关闭
 const defaultDuration = null;
 
-let defaultTop;
+const defaultTop = '64px';
 // 消息实例
 let messageInstance;
 const prefixCls = 'ant-message';
 const transitionName = 'move-up';
 const getContainer = () => document.body;
-const key = 'SINGLE_MESSAGE_KEY';
+const containerID = 'SINGLE_MESSAGE_KEY';
 
 /**
  * 创建单例实例
@@ -87,7 +87,7 @@ const api = {
       clearInterval(timer);
     }
     if (messageInstance) {
-      messageInstance.removeNotice(key);
+      messageInstance.removeNotice(containerID);
       if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
         argsDefault.onClose();
       }
@@ -119,7 +119,7 @@ function notice (args) {
     // 获取实例
     getMessageInstance((instance) => {
       instance.notice({
-        key,
+        key: containerID,
         duration: null,
         style: {},
         content: (createElement) => createElement(SingleMessage, {
@@ -137,7 +137,7 @@ function notice (args) {
                 clearInterval(timer);
               }
             }
-            instance.removeNotice(key);
+            instance.removeNotice(containerID);
           },
         }),
         onClose: callback,
@@ -146,7 +146,7 @@ function notice (args) {
   });
   const result = () => {
     if (messageInstance) {
-      messageInstance.removeNotice(key);
+      messageInstance.removeNotice(containerID);
     }
   };
   result.then = (filled, rejected) => closePromise.then(filled, rejected);

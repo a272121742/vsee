@@ -131,6 +131,9 @@ export default {
       showForgetPd: false,
     };
   },
+  beforeCreate () {
+    console.log(this.$route.query.token);
+  },
   created () {
     this.recovery();
     const { mapPropsToFields, onValuesChange } = this;

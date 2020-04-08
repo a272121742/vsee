@@ -79,9 +79,6 @@ addParameters({
   options: {
     name: '模式库',
     selectedPanel: 'docs',
-    storySort: (a, b) => {
-      return 1;
-    }
   },
   docs: { 
     inlineStories: true,
