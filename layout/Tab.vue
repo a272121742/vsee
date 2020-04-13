@@ -46,8 +46,11 @@
           :spinning="$store.state.refresh"
         >
           <transition v-if="!$store.state.refresh">
-            <keep-alive v-if="$store.state.config.keep_alive">
-              <router-view class="content-child-view" />
+            <keep-alive>
+              <router-view
+                v-if="tab.fullPath === currentTab"
+                class="content-child-view"
+              />
             </keep-alive>
           </transition>
         </a-spin>
