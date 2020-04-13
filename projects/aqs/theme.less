@@ -86,6 +86,23 @@ body{
 }
 // 分列表单下的item样式 =========================end===========================
 
+// 设置滚动条样式 ========================begin==========================
+::-webkit-scrollbar {
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: fade(@primary-color, 66%);
+}
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background: @primary-color;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.04);
+}
+// 设置滚动条样式 ========================end==========================
+
 // 设置所有的弹出消息浮层层高 ========================begin==========================
 .ant-message {
   z-index: 6010;

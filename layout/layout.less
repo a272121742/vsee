@@ -14,6 +14,9 @@
     z-index: @app-layout-zindex + 2!important;
     .__bar-is-vertical, .__bar-is-horizontal {
       background: fade(@primary-color, 66%)!important;
+      &:hover {
+        background: @primary-color!important;
+      }
     }
   }
 }
