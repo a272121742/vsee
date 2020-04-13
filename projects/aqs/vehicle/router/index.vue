@@ -14,5 +14,8 @@ export default {
     'vehicle-list-table': () => import('../view/vehicle-list-table.vue'),
     'vehicle-search-form': () => import('../view/vehicle-search-form.vue'),
   },
+  created () {
+    console.log('created');
+  },
 };
 </script>

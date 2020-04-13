@@ -41,6 +41,16 @@
         :tab="tab.meta.title"
         :closable="totalTab > 1"
       >
+        <a-spin
+          class="app-content-spiner"
+          :spinning="$store.state.refresh"
+        >
+          <transition v-if="!$store.state.refresh">
+            <keep-alive v-if="$store.state.config.keep_alive">
+              <router-view class="content-child-view" />
+            </keep-alive>
+          </transition>
+        </a-spin>
       </a-tab-pane>
     </template>
   </a-tabs>
@@ -98,7 +108,9 @@ export default {
         const moduleFullPath = module.fullPath;
         if (!this.tabs[moduleFullPath]) {
           const tabKeys = Object.keys(this.tabs);
-          this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length };
+          const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
+          const component = matchedCompontents[matchedCompontents.length - 1];
+          this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
         }
         this.tabs[moduleFullPath].cachePath = fullPath;
         this.currentTab = moduleFullPath;

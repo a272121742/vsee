@@ -33,7 +33,7 @@
             :spinning="refreshing"
           >
             <transition>
-              <keep-alive v-if="$store.state.config.keey_alive">
+              <keep-alive v-if="$store.state.config.keep_alive">
                 <router-view
                   class="content-child-view"
                 />

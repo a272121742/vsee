@@ -6,8 +6,8 @@
     :src="src"
     width="100%"
     frameborder="0"
-    scrolling="false"
-    :style="{ opacity }"
+    allowfullscreen
+    :style="{ opacity, 'overflow-x': 'hidden', 'overflow-y': 'auto', }"
     @load="changeFrameHeight"
   ></iframe>
 </template>
