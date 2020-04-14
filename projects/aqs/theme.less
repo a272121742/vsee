@@ -15,15 +15,15 @@
 @box-shadow-v: 2px 2px 4px 0 rgba(0, 0, 0, 0.12);
 
 // 这里定义布局的属性
+@app-theme-color: white;  //主题色
+@app-background-color: #F5F5F5;  // 背景底色
+@app-content-background-color: white;  // 内容底色
 @app-layout-header-height: 64px;  // 顶部header的高度
 @app-layout-footer-height: 0px;   // 底部footer的高度
 @app-content-header-height: 48px; // 内容区域header的高度
 @app-content-footer-height: 0px;  // 内容区域footer的高度
 @app-content-border-width: 16px;  // 内容区域外部边框大小
 
-.app-content-header.ant-layout-header {
-  background-color: #FFF;
-}
 body{
   line-height: @app-content-header-height;
 }
@@ -89,6 +89,7 @@ body{
 // 设置滚动条样式 ========================begin==========================
 ::-webkit-scrollbar {
   height: 6px;
+  width: 6px;
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 6px;
