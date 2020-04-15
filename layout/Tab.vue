@@ -60,9 +60,15 @@
 </template>
 
 <script>
-import { uniqWith } from 'ramda';
+// import { uniqWith } from 'ramda';
 
 export default {
+  props: {
+    currentDirectory: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data () {
     return {
       tabs: {},
@@ -70,35 +76,35 @@ export default {
       totalTab: 0,
     };
   },
-  computed: {
-    currentDirectory () {
-      const { matched } = this.$route;
-      const last = matched[matched.length - 1];
-      if (last) {
-        const splitList = last.path.split('/').reduce((arr, item) => {
-          const len = arr.length;
-          if (/^https?%3A%2F%2F/.test(item)) {
-            if (arr._added_) {
-              arr[len - 1] = `${arr[len - 1]}/${item}`;
-            } else {
-              arr.push(item);
-              arr._added_ = true;
-            }
-          } else {
-            arr.push(item);
-          }
-          return arr;
-        }, []);
-        let result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-        result = uniqWith((a, b) => a.meta.title === b.meta.title, result.map((item) => this.$router.matcher.match(item)));
-        if (result.length === 1 && result[0].meta.title !== last.meta.title) {
-          result.push(last);
-        }
-        return result.filter((item) => item.meta.title);
-      }
-      return [];
-    },
-  },
+  // computed: {
+  //   currentDirectory () {
+  //     const { matched } = this.$route;
+  //     const last = matched[matched.length - 1];
+  //     if (last) {
+  //       const splitList = last.path.split('/').reduce((arr, item) => {
+  //         const len = arr.length;
+  //         if (/^https?%3A%2F%2F/.test(item)) {
+  //           if (arr._added_) {
+  //             arr[len - 1] = `${arr[len - 1]}/${item}`;
+  //           } else {
+  //             arr.push(item);
+  //             arr._added_ = true;
+  //           }
+  //         } else {
+  //           arr.push(item);
+  //         }
+  //         return arr;
+  //       }, []);
+  //       let result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
+  //       result = uniqWith((a, b) => a.meta.title === b.meta.title, result.map((item) => this.$router.matcher.match(item)));
+  //       if (result.length === 1 && result[0].meta.title !== last.meta.title) {
+  //         result.push(last);
+  //       }
+  //       return result.filter((item) => item.meta.title);
+  //     }
+  //     return [];
+  //   },
+  // },
   watch: {
     $route: {
       immediate: true,
@@ -136,7 +142,9 @@ export default {
         this.$nextTick(() => {
           const tabKeys = Object.keys(this.tabs);
           this.totalTab = tabKeys.length;
-          this.currentTab = tabKeys[tabKeys.length - 1];
+          if (!Object.hasOwnProperty.call(this.tabs, this.currentTab)) {
+            this.currentTab = tabKeys[tabKeys.length - 1];
+          }
         });
       }
     },

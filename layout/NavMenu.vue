@@ -1,9 +1,8 @@
 <template>
   <a-menu
-    v-model="openKeys"
     mode="horizontal"
-    :default-selected-keys="defaultSelectedKeys"
-    :open-keys="openKeys"
+    :selected-keys="openKeys"
+    :open-keys.sync="openKeys"
     @select="jump"
     @openChange="openChange"
   >
@@ -33,11 +32,15 @@
 </template>
 
 <script>
-import { uniqWith } from 'ramda';
-
 export default {
   components: {
     SubMenu: () => import('./SubMenu.vue'),
+  },
+  props: {
+    currentDirectory: {
+      type: Array,
+      default: () => [],
+    },
   },
   data () {
     return {
@@ -48,35 +51,8 @@ export default {
     menus () {
       return this.$store.state.routers.map((item) => ({ ...item }));
     },
-    defaultSelectedKeys () {
-      return this.currentDirectory.map((item) => item.fullPath);
-    },
-    currentDirectory () {
-      const { matched } = this.$route;
-      const last = matched[matched.length - 1];
-      if (last) {
-        const splitList = last.path.split('/').reduce((arr, item) => {
-          const len = arr.length;
-          if (/^https?%3A%2F%2F/.test(item)) {
-            if (arr._added_) {
-              arr[len - 1] = `${arr[len - 1]}/${item}`;
-            } else {
-              arr.push(item);
-              arr._added_ = true;
-            }
-          } else {
-            arr.push(item);
-          }
-          return arr;
-        }, []);
-        let result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-        result = uniqWith((a, b) => a.meta.title === b.meta.title, result.map((item) => this.$router.matcher.match(item)));
-        if (result.length === 1 && result[0].meta.title !== last.meta.title) {
-          result.push(last);
-        }
-        return result.filter((item) => item.meta.title);
-      }
-      return [];
+    menuKeys () {
+      return this.$store.state.routers.map((item) => item.fullPath);
     },
   },
   watch: {
@@ -92,54 +68,46 @@ export default {
       this.$router.push({ path: key });
     },
     getOpenKeys () {
-      const { matched } = this.$route;
-      let openKeys = [matched[matched.length - 1].path];
-      const last = matched[matched.length - 1];
-      if (last) {
-        const splitList = last.path.split('/').reduce((arr, item) => {
-          const len = arr.length;
-          if (/^https?%3A%2F%2F/.test(item)) {
-            if (arr._added_) {
-              arr[len - 1] = `${arr[len - 1]}/${item}`;
-            } else {
-              arr.push(item);
-              arr._added_ = true;
-            }
-          } else {
-            arr.push(item);
-          }
-          return arr;
-        }, []);
-        const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-        openKeys = [...result];
-        if (result.length === 3 && !(/\?\/$/.test(result[2]))) {
-          openKeys[2] = result[2].replace(result[1], result[0]);
-          openKeys.splice(1, 1);
-        }
-      }
-      return openKeys;
-    },
-    openChange (openKeys) {
-      this.openKeys = openKeys;
-      // const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
-      // if (!this.menuKeys.includes(latestOpenKey)) {
-      //   this.openKeys = openKeys;
-      // } else {
-      //   const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
-      //   if (index >= 0 && openKeys.length > 2) {
-      //     this.openKeys[index] = latestOpenKey;
-      //   } else {
-      //     this.openKeys.push(latestOpenKey);
+      // const { matched } = this.$route;
+      // let openKeys = [matched[matched.length - 1].path];
+      // const last = matched[matched.length - 1];
+      // if (last) {
+      //   const splitList = last.path.split('/').reduce((arr, item) => {
+      //     const len = arr.length;
+      //     if (/^https?%3A%2F%2F/.test(item)) {
+      //       if (arr._added_) {
+      //         arr[len - 1] = `${arr[len - 1]}/${item}`;
+      //       } else {
+      //         arr.push(item);
+      //         arr._added_ = true;
+      //       }
+      //     } else {
+      //       arr.push(item);
+      //     }
+      //     return arr;
+      //   }, []);
+      //   const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
+      //   openKeys = [...result];
+      //   if (result.length === 3 && !(/\?\/$/.test(result[2]))) {
+      //     openKeys[2] = result[2].replace(result[1], result[0]);
+      //     openKeys.splice(1, 1);
       //   }
       // }
+      // return openKeys;
+      return this.currentDirectory.map((item) => item.path);
     },
-    fixedMenu (menus = []) {
-      return menus.filter((item) => {
-        if (item.children && item.children.every((cld) => cld.hide)) {
-          delete item.children;
+    openChange (openKeys) {
+      const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
+      if (!this.menuKeys.includes(latestOpenKey)) {
+        this.openKeys = openKeys;
+      } else {
+        const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
+        if (index >= 0 && openKeys.length > 2) {
+          this.openKeys[index] = latestOpenKey;
+        } else {
+          this.openKeys.push(latestOpenKey);
         }
-        return !item.hide;
-      });
+      }
     },
   },
 };

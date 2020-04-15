@@ -7,7 +7,10 @@
       <a-layout-header class="app-layout-header">
         <Header>
           <template #nav>
-            <component :is="isNav"></component>
+            <component
+              :is="isNav"
+              :current-directory="currentDirectory"
+            ></component>
           </template>
         </Header>
       </a-layout-header>
@@ -25,7 +28,10 @@
           v-if="$store.state.config.content_head"
           :class="{ 'app-content-header': true, 'app-content-tab': isTab}"
         >
-          <component :is="isContentHeader"></component>
+          <component
+            :is="isContentHeader"
+            :current-directory="currentDirectory"
+          ></component>
         </a-layout-header>
         <a-layout-content
           v-if="!isTab"
@@ -60,6 +66,7 @@
 </template>
 
 <script>
+import { uniqWith } from 'ramda';
 import './layout.less';
 
 export default {
@@ -73,6 +80,33 @@ export default {
     };
   },
   computed: {
+    currentDirectory () {
+      const { matched } = this.$route;
+      const last = matched[matched.length - 1];
+      if (last) {
+        const splitList = last.path.split('/').reduce((arr, item) => {
+          const len = arr.length;
+          if (/^https?%3A%2F%2F/.test(item)) {
+            if (arr._added_) {
+              arr[len - 1] = `${arr[len - 1]}/${item}`;
+            } else {
+              arr.push(item);
+              arr._added_ = true;
+            }
+          } else {
+            arr.push(item);
+          }
+          return arr;
+        }, []);
+        let result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
+        result = uniqWith((a, b) => a.meta.title === b.meta.title, result.map((item) => this.$router.matcher.match(item)));
+        if (result.length === 1 && result[0].meta.title !== last.meta.title) {
+          result.push(last);
+        }
+        return result.filter((item) => item.meta.title);
+      }
+      return [];
+    },
     refreshing () {
       return this.$store.state.refresh;
     },
