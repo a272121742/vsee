@@ -110,7 +110,7 @@ export default {
    */
   MENU_COLLAPSED: false,
   /**
-   * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
+   * 内容区域顶部模式，可设置为`falsely`、`bread`、`tab`
    * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
    * bread - 面包屑模式
    * tab - 页签模式

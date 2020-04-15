@@ -23,18 +23,22 @@
         </a-layout-sider>
         <a-layout-header
           v-if="$store.state.config.content_head"
-          class="app-content-header"
+          :class="{ 'app-content-header': true, 'app-content-tab': isTab}"
         >
           <component :is="isContentHeader"></component>
         </a-layout-header>
-        <a-layout-content class="app-content-warpper">
+        <a-layout-content
+          v-if="!isTab"
+          class="app-content-warpper"
+        >
           <a-spin
             class="app-content-spiner"
             :spinning="refreshing"
           >
-            <transition>
+            <transition v-if="!refreshing">
               <keep-alive v-if="$store.state.config.keep_alive">
                 <router-view
+                  v-if="!isTab"
                   class="content-child-view"
                 />
               </keep-alive>
@@ -98,6 +102,9 @@ export default {
         return () => import('@comp/helper/Helper.vue');
       }
       return null;
+    },
+    isTab () {
+      return this.$store.state.config.content_head === 'tab';
     },
   },
 };

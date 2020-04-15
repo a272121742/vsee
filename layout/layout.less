@@ -78,8 +78,15 @@
       bottom: @app-layout-footer-height;
       padding: 0;
       box-shadow: @box-shadow-v;
+      & .ant-menu.ant-menu-inline, 
+      & .ant-menu.ant-menu-inline-collapsed {
+        border-right: none;
+      }
       & ~ .app-content-header {
         left: @app-content-sider-width;
+        &.app-content-tab .app-tabs .ant-tabs-bar {
+          width: calc(100vw - @app-content-sider-width);
+        }
       }
       & ~ .app-content-warpper {
         margin-left: @app-content-sider-width;
@@ -114,11 +121,10 @@
           height: @app-content-sider-trigger-height;
         }
       }
-
       &.ant-layout-sider-collapsed {
         & ~ .app-content-header {
           left: @app-content-sider-width-min;
-          &.app-content-tab .ant-tabs-bar{
+          &.app-content-tab .app-tabs .ant-tabs-bar{
             width: calc(100vw - @app-content-sider-width-min);
           }
         }
@@ -157,9 +163,11 @@
             background: white;
             z-index: @app-content-zindex;
             height: @app-content-header-height;
-            width: calc(100vw - @app-content-sider-width);
+            width: 100vw;
           }
-          .ant-tabs-bar, .ant-tabs-nav-container, .ant-tabs-extra-content {
+          .ant-tabs-bar,
+          .ant-tabs-nav-container,
+          .ant-tabs-extra-content {
             height: @app-content-header-height;
             margin-bottom: 0;
           }
