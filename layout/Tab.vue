@@ -114,17 +114,19 @@ export default {
         const len = this.currentDirectory.length;
         const dirs = this.currentDirectory.slice(0, isHideComponent ? len - 1 : len);
         const module = dirs[1] || dirs[0];
-        const moduleFullPath = module.fullPath;
-        if (!this.tabs[moduleFullPath]) {
-          const tabKeys = Object.keys(this.tabs);
-          const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
-          const component = matchedCompontents[matchedCompontents.length - 1];
-          this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
+        if (module) {
+          const moduleFullPath = module.fullPath;
+          if (!this.tabs[moduleFullPath]) {
+            const tabKeys = Object.keys(this.tabs);
+            const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
+            const component = matchedCompontents[matchedCompontents.length - 1];
+            this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
+          }
+          this.tabs[moduleFullPath].cachePath = fullPath;
+          this.currentTab = moduleFullPath;
+          this.totalTab = Object.keys(this.tabs).length;
+          this.$forceUpdate();
         }
-        this.tabs[moduleFullPath].cachePath = fullPath;
-        this.currentTab = moduleFullPath;
-        this.totalTab = Object.keys(this.tabs).length;
-        this.$forceUpdate();
       },
     },
     currentTab (value) {

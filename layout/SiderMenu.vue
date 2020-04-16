@@ -96,13 +96,10 @@ export default {
     },
     openChange (openKeys) {
       const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
-      console.log(openKeys, latestOpenKey);
-
       if (!this.menuKeys.includes(latestOpenKey)) {
         this.openKeys = openKeys;
       } else {
         const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
-        console.log(index);
         if (index >= 0 && openKeys.length > 2) {
           this.openKeys = openKeys;
         } else {

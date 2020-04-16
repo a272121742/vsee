@@ -59,11 +59,15 @@ export default {
   },
   /**
    * 顶层API集合，顶层API会加载到顶层`store`中心。
+   * 参数类型：
+   *  0 - 接口地址
+   *  1 - 接口参数
+   *  2 - 返回默认值
    */
   GLOBAL_API_LIST: {
-    user: ['/sys/user/info', { appCode: 'AQS' }],
-    menus: ['/sys/menu/nav', { appCode: 'AQS' }],
-    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }],
+    user: ['/sys/user/info', { appCode: 'AQS' }, {}],
+    menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
+    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
   },
   /**
    * 排除不加载的模块

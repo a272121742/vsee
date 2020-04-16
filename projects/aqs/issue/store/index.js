@@ -7,7 +7,9 @@ export default {
     tableRowData: {},
     vehicleInforSearch: {}, // 弹框搜索
     enterVehicleInfFormSearch: {},
-    issueSearchData: {},
+    issueSearchData: {
+      firstCausePart: void 0,
+    },
     selectedVehicleRowKeys: [], // dialogue里面的
     orderRowKeys: [], // 工单创建的 车辆信息 是索赔单号的合集
 
