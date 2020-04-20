@@ -2,14 +2,14 @@
   <a-form
     :form="vehicleForm"
     class="col-layout-form col-layout-search-form"
-    layout="horizontal"
+    layout="vertical"
     self-update
   >
     <a-row :gutter="24">
       <!-- 车型 -->
       <a-col :span="formItemSpan">
         <a-form-item
-          :label="$t('issue.vhclSeriesCode') + '这是一个文字超长的测试代码'"
+          :label="$t('issue.vhclSeriesCode')"
         >
           <multiple-net-select
             v-decorator="['vhclSeriesCode']"
@@ -23,10 +23,8 @@
           />
         </a-form-item>
       </a-col>
-    </a-row>
-    <a-row :gutter="24">
       <!-- 车型代码 -->
-      <a-col :span="formItemSpan * 2">
+      <a-col :span="formItemSpan">
         <a-form-item
           :label="$t('vehicle.vhclModelCode')"
         >
@@ -42,7 +40,7 @@
         </a-form-item>
       </a-col>
       <!-- 车型名称 -->
-      <a-col :span="formItemSpan * 2">
+      <a-col :span="formItemSpan">
         <a-form-item :label="$t('vehicle.vhclModelName')">
           <single-net-select
             v-decorator="['vhclModelName']"
@@ -55,10 +53,8 @@
           />
         </a-form-item>
       </a-col>
-    </a-row>
-    <a-row :gutter="24">
       <!-- 下线工厂 -->
-      <a-col :span="formItemSpan * 3">
+      <a-col :span="formItemSpan">
         <a-form-item :label="$t('vehicle.factoryName')">
           <single-net-select
             v-decorator="['factoryName']"
@@ -71,10 +67,8 @@
           />
         </a-form-item>
       </a-col>
-    </a-row>
-    <a-row :gutter="24">
       <!-- 颜色名称 -->
-      <a-col :span="formItemSpan * 4">
+      <a-col :span="formItemSpan">
         <a-form-item :label="$t('vehicle.colorName')">
           <single-net-select
             v-decorator="['colorName']"

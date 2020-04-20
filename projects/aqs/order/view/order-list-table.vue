@@ -154,19 +154,8 @@ export default {
     const idsSearch = ids ? { ids } : void 0;
     this.fetch(idsSearch);
   },
-  activated () {
-    if (this.$route.query.ids !== undefined) {
-      Object.assign(this.$route.query, { asqIssueRptId: '' });
-      this.pagination.pageSize = 100;
-      this.serverPagination.limit = 100;
-      this.pagination.showSizeChanger = false;
-    }
-    const { ids } = this.$route.query;
-    if (ids) {
-      this.fetch({ ids });
-    }
-  },
   methods: {
+
     // 选本页
     onSelectCurret (data) {
       this.orderFlag = false;

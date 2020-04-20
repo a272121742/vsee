@@ -11,17 +11,20 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 请求方式完全参考`RESTFUL`的设计思路。其中，请求头的会附带如下字段：
 
 ```javascript
-token: '',                    // token信息
-Authorization: '',            // 授权信息
-'Accept-Language': 'zh-CN',   // 语言环境
 /* 缓存策略 */
 'Cache-Control': 'no-cache,no-store,must-revalidate,max-age=0,no-siteapp,post-check=0,pre-check=0',
 Pragma: 'no-cache',
+/* ${HTTP_HEADER} */
+token: '',                    // token信息
+Authorization: '',            // 授权信息
+'Accept-Language': 'zh-CN',   // 语言环境
 ```
+
+注意，以上是默认的设置，其中你可以使用`config.HTTP_HEADER`覆盖或者增加额外的请求头，但`token`、`Authorization`、`Accept-Language`信息是由系统所为维护的，没有任何入口去进行维护，并且我们也不希望你去维护。
 
 ## 响应规范
 
-见下方【错误处理】，响应的数据结构一定包含`code`和`data`，如果`code`不为`0`，则还应该包含错误信息`msg`。对于登录接口来说，`token`信息都是放在`data`中的，前端在捕获到登录接口之后会自动识别`token`，并将`token`设置到今后请求的请求头中。
+见下方【[错误处理](#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86)】，响应的数据结构一定包含`code`和`data`，如果`code`不为`0`，则还应该包含错误信息`msg`。对于登录接口来说，`token`信息都是放在`data`中的，前端在捕获到登录接口之后会自动识别`token`，并将`token`设置到今后请求的请求头中。
 
 ## 引入方式
 

@@ -1,7 +1,16 @@
 {
   "project": {
-    "title": "Project Name",
-    "desc": "Project English Desc",
-    "testDesc": "Test Environment"
+    "title": "售后质量模块",
+    "testDesc": "Only For Test"
+  },
+  "action": {
+    "manual": "user manual",
+    "toPortal": "TQIS portal"
+  },
+  "env": {
+    "name": ""
+  },
+  "download": {
+    "user_manual": "AftersalesQuality_UserManual.pdf"
   }
 }

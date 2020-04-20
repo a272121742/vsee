@@ -349,7 +349,6 @@ export default {
     };
   },
   created () {
-    console.log(' order created');
     this.partCodeSearch();
     this.partNameSearch();
     this.supplierCodeSearch();

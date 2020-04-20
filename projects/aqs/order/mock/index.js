@@ -33,7 +33,7 @@ mock.get('/field-q/v1/claimorder/page', ({
     },
   });
 });
-mock.get('/masterdata/v1/part', () => ({
+mock.get('/masterdata/v1/part', (params) => ({
   data: [{
     id: 1,
     name: '678912',

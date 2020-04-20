@@ -7,14 +7,14 @@
       {{ $t('project.testDesc') }}
     </span>
     <div class="header-comp">
-      <div
+      <v-icon
         class="logo"
         type="iconlogo"
         @click="$store.dispatch('gohome')"
-      >
-      </div>
+      />
       <a-divider
         type="vertical"
+        style="height: 25%; margin: 25px 0; background: #0097E0"
       ></a-divider>
       <Banner
         class="banner"
@@ -51,14 +51,16 @@ export default {
   .header-comp {
     order: -1;
     .logo {
-      display: inline-block;
-      width: 140px;
-      height: 32px;
-      margin: 16px;
-      background: rgba(233, 233, 233)
+      color: @primary-color;
+      font-size: 168px;
+      margin: auto 16px;
+      cursor: pointer;
+      svg {
+        height: 64px;
+      }
     }
     .ant-divider {
-      top: -28px;
+      top: -7px;
       background: @primary-color;
     }
     .banner {

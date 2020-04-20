@@ -4,7 +4,7 @@
       :form="issuSearchForm"
       layout="vertical"
       self-update
-      class="col-layout-form"
+      class="col-layout-form col-layout-search-form"
     >
       <a-row :gutter="24">
         <!-- 报告编号 -->

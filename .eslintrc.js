@@ -36,6 +36,7 @@ module.exports = {
     "prefer-destructuring": ["error", { object: true, array: false }],
     "no-template-curly-in-string": 0,
     "consistent-return": ["error", { treatUndefinedAsUnspecified: true }],
+    "no-sequences": [0]
   },
   parserOptions: {
     parser: "babel-eslint"

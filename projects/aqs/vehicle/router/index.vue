@@ -1,10 +1,9 @@
 <template>
-  <div style="text-align: center;">
+  <div>
     <!-- 车辆信息查询 - 查询表单 -->
     <vehicle-search-form></vehicle-search-form>
     <!-- 车辆信息查询 - 表格 -->
-    <!-- <vehicle-list-table></vehicle-list-table> -->
-    <vehicle-list-table />
+    <vehicle-list-table></vehicle-list-table>
   </div>
 </template>
 

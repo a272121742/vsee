@@ -6,16 +6,32 @@
   >
     <div class="user-info-awatar">
       <v-icon type="icontx_outlined"></v-icon>
+      <change-password
+        :visible.sync="showChangePassword"
+        :mapping="{ oldPassword: 'password', newPassword: 'newPassword'}"
+        url="/sys/user/password"
+      >
+      </change-password>
       {{ user.realName }}
     </div>
     <a-menu slot="overlay">
-      <a-menu-item key="gohome">
-        <a @click.stop.prevent="gohome">
-          {{ $t('action.go_home') }}
+      <a-menu-item key="0">
+        <a @click="downloadFromStatic($t('download.user_manual'))">
+          {{ $t('action.manual') }}
         </a>
       </a-menu-item>
-      <a-menu-item key="logout">
-        <a @click.stop.prevent="logout">
+      <a-menu-item key="1">
+        <a @click="toChangePd">
+          {{ $t('password.title') }}
+        </a>
+      </a-menu-item>
+      <a-menu-item key="2">
+        <a @click.stop.prevent="toPortal">
+          {{ $t('action.toPortal') }}
+        </a>
+      </a-menu-item>
+      <a-menu-item key="3">
+        <a @click.stop.prevent="logoutHandle">
           {{ $t('action.logout') }}
         </a>
       </a-menu-item>
@@ -24,17 +40,34 @@
 </template>
 
 <script>
+import attachment from '~~/attachment.js';
+
 export default {
+  components: {
+    ChangePassword: () => import('@comp/general/ChangePassword.vue'),
+  },
+  mixins: [attachment],
+  data () {
+    return {
+      form: null,
+      visible: false,
+      record: {},
+      showChangePassword: false,
+    };
+  },
   computed: {
     user () {
       return this.$store.state.user;
     },
   },
   methods: {
-    gohome () {
-      this.$store.dispatch('gohome');
+    toPortal () {
+      window.location.replace(this.$store.state.isProd ? '/portal' : '/');
     },
-    logout () {
+    toChangePd () {
+      this.showChangePassword = true;
+    },
+    logoutHandle () {
       this.$store.dispatch('logout');
     },
   },
@@ -43,9 +76,10 @@ export default {
 
 <style lang="less" scoped>
   .user-info {
+    padding: 0 16px;
     cursor: pointer;
     &:hover {
-      background: rgba(0, 0, 0, 0.09);
+      background-color: #e6fbff;;
     }
   }
   .user-info-awatar {
@@ -57,9 +91,5 @@ export default {
     }
     font-size: 14px;
     color: @text-color;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-break: keep-all;
   }
 </style>

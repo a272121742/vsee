@@ -42,20 +42,18 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 @border-radius-base: 4px; // 组件/浮层圆角
 @border-color-base: #d9d9d9; // 边框色
 @box-shadow-base: 0 2px 8px rgba(0, 0, 0, .15); // 浮层阴影
+@box-shadow-h: 0 2px 4px 0 rgba(0, 0, 0, .12);
+@box-shadow-v: 2px 2px 4px 0 rgba(0, 0, 0, 0.12);
 
-.col-layout-form.ant-form-horizontal, 
-.col-layout-form.ant-form-inline {
-  .ant-form-item {
-    display: flex;
-    margin-bottom: 8px;
-    .ant-form-item-label {
-      flex: 1;
-    }
-    .ant-form-item-control-wrapper {
-      flex: 2.5;
-    }
-  }
-} 
+// 这里定义布局的属性
+@app-theme-color: white;  //主题色
+@app-background-color: #F5F5F5;  // 背景底色
+@app-content-background-color: white;  // 内容底色
+@app-layout-header-height: 64px;  // 顶部header的高度
+@app-layout-footer-height: 0px;   // 底部footer的高度
+@app-content-header-height: 48px; // 内容区域header的高度
+@app-content-footer-height: 0px;  // 内容区域footer的高度
+@app-content-border-width: 16px;  // 内容区域外部边框大小
 ```
 
 对该文件需要有几点说明：
@@ -67,3 +65,110 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 5. `theme.less`是可拔插的，你甚至可以删除掉这个文件，也不会对程序产生错误。除非你在`*.vue`文件中引入了里面的变量，会因为变量未定义而报错。
 
 > 注意：过去我们是定义的`theme.js`文件（现在废除这种写法），这个文件维护起来非常不友好，即没有实时性（修改之后要重新运行项目），也缺乏灵活性（只能以`key-value`形式定义变量）。所以我们对这种方式进行了改进，让开发者进行全局样式的制定。
+
+## 补丁less
+
+除了设置一些环境配置，我们还经过一些项目的通用性整理，增加了一些额外的样式库，这些样式库可以在下面的子组件、子页面中直接使用：
+
+```less
+// 通过配置`col-layout-form`，改变`ant-design-vue`的布局方式，使其更加紧凑
+@form-label-fixed-width: 88px;
+.col-layout-form.ant-form-horizontal, 
+.col-layout-form.ant-form-inline {
+  .ant-form-item {
+    display: flex;
+    margin-bottom: 2px;
+    .ant-form-item-label {
+      flex: none;
+      flex-basis: @form-label-fixed-width;
+      label {
+        display: inline-block;
+        width: @form-label-fixed-width;
+        max-height: 28px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        word-break: break-all;
+        line-height: 1;
+        margin-top: 5px;
+      }
+    }
+    .ant-form-item-control-wrapper {
+      flex: auto;
+    }
+  }
+  .col-layout-form-actions {
+    float: right;
+    margin: 4px 12px 0;
+  }
+} 
+.col-layout-form.ant-form-vertical {
+  .ant-form-item {
+    padding-bottom: 2px;
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+    // 时间类型组件长度100%
+    .ant-calendar-picker, .ant-time-picker {
+      display: block;
+    }
+  }
+  .col-layout-form-actions {
+    float: right;
+    margin: 23px 12px 0;
+  }
+}
+.col-layout-form.col-layout-search-form.ant-form-vertical {
+  .ant-form-item {
+    margin-bottom: 8px;
+    .ant-form-explain {
+      margin-top: -4px;
+      margin-bottom: -18px;
+    }
+  }
+}
+
+// 设置滚动条样式
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: fade(@primary-color, 66%);
+}
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background: @primary-color;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.04);
+}
+
+// 设置表格文本省略
+.ant-table-wrapper.ellipsis-table{
+  // 设置表格内容不换行
+  table {
+    // 只有定义表格的算法为fixed,th才有效果
+    table-layout: fixed;
+    word-wrap:break-all;
+  }
+  th > div, td {
+    // 超出长度的文字隐藏
+    overflow: hidden;
+    // 文字隐藏以后添加省略号
+    text-overflow: ellipsis;
+    // 强制不换行
+    white-space: nowrap;
+    // 文字不换行
+    word-break: keep-all;
+  }
+  // 设置单元格内填充
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 12px;
+  }
+}
+```
+
+> 注：后续我们也会针对一些常见的补丁`less`做专题文档。

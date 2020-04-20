@@ -1,7 +1,16 @@
 {
   "project": {
-    "title": "项目名称",
-    "desc": "项目英文说明",
-    "testDesc": "测试环境标记"
+    "title": "售后质量模块",
+    "testDesc": "本系统仅用于测试"
+  },
+  "action": {
+    "manual": "用户手册",
+    "toPortal": "返回TQIS首页"
+  },
+  "env": {
+    "name": "本系统仅用于测试"
+  },
+  "download": {
+    "user_manual": "售后质量_用户手册.pdf"
   }
 }

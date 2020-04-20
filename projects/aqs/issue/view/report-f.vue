@@ -20,6 +20,23 @@
           {{ $t('action.search') }}
         </a-button>
       </a-row> -->
+
+      <a-row
+        :gutter="24"
+        class="row1 "
+      >
+        <a-col
+          v-for="(data, index) in orderAboutData"
+          :key="index"
+          :span=" 24 / (orderAboutData.length || 1) "
+        >
+          <bar-graph
+            :title="data.reportName"
+            :x="data | filterType('X')"
+            :y="data | filterType('Y')"
+          />
+        </a-col>
+      </a-row>
     </a-card>
   </div>
 </template>
@@ -29,7 +46,7 @@
 export default {
   name: 'ReportF',
   components: {
-    // 'bar-graph': () => import('./bar-graph.vue'),
+    'bar-graph': () => import('./bar-graph.vue'),
   },
   filters: {
     /**
@@ -50,6 +67,10 @@ export default {
       type: Array,
       default: () => ({}),
     },
+  },
+  created () {
+    console.log(this.$message);
+    console.log(this.$confirm);
   },
 };
 </script>

@@ -332,7 +332,7 @@ export default {
       this.selectedKeys = data;
     },
     // 选全量
-    onSelectAll () {
+    onSelectAll (data) {
       if (this.pagination.total <= 5000) {
         this.handAllFlag = true;
         this.rowSelection.selectedRowKeys = this.keys;

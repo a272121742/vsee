@@ -120,13 +120,18 @@ export default {
    * tab - 页签模式
    * cust - 自定义模式
    */
-  CONTENT_HEAD: 'tab',
+  CONTENT_HEAD: 'bread',
   /**
    * 路由模式，默认history
    */
   ROUTER_MODE: 'history',
   /**
-   * 动态标题配置，可设置为`falsely`、`String`、`Function`
+   * 如果你使用的是自定义`router`行为，请设置此项为`true`
+   */
+  CUST_ROUTER: false,
+  /**
+   * 动态标题配置，可设置为`false`、`falsely`、`String`、`Function`
+   * false - 不设置标题，该标题会以`public/index.html`中设置的为准
    * falsely - 自动标题模式，默认值，包括[false, 0, undefined, null, '', NaN]
    * String - 固定标题文字
    * Function - 动态标题函数，函数参数按顺序为：route、i18n
@@ -164,6 +169,7 @@ export default {
    * 重连目录，可为`falsely`或`String[]`
    * falsely - 不启用重连；
    * String[] - 按照重连地址进行重新连接
+   * 目前暂未实现
    */
   // AXIOS_RETRY_LIST: ['https://easy-mock.com/mock/5b03c10305e00e7fd3cb3d68/example', 'http://rap2api.taobao.org/app/mock/116'],
   /**
@@ -208,20 +214,34 @@ export default {
    * 路由是否深度递归，如果为`true`，则进行深度递归以获取首页，否则只做第一级的菜单获取
    */
   ROUTER_DEEP: true,
+  /**
+   * 应用滚动条配置，详见：https://vuescrolljs.yvescoding.org/zh/guide/
+   */
   SCROLL: {
     bar: {
       keepShow: true,
     },
   },
-  // VALIDATION: {
-  //   // idcard: /^\S$/,
-  //   // phone: /^\S$/,
-  //   // mobile: /^\S$/,
-  //   // username: /^\S$/,
-  //   // password: /^\S$/,
-  // },
+  /**
+   * 重写业务验证器
+   * 架构中内置了['idcard', 'phone', 'mobile', 'username', 'password']验证规则，你可以选择重写，以覆盖原有规则（$v中还有其他其他规则，除了这几个，其他的是无法重写的）；
+   * 除了重写，你还可以追加，追加之后的规则可以直接使用`$v.xxx`；
+   */
+  VALIDATION: {
+    // idcard: /^\S$/,
+    // phone: /^\S$/,
+    // mobile: /^\S$/,
+    // username: /^\S$/,
+    // password: /^\S$/,
+  },
   /**
    * `content`区域是否缓存，默认`false`，设置为`true`则缓存
+   * 注意，`tab`模式下是强制`keep-alive`的，这本身就是符合`tab`的模式的。
    */
-  CONTENT_KEEP_ALIVE: true,
+  CONTENT_KEEP_ALIVE: false,
+  /**
+   * 是否启用根菜单索引
+   * 在`anchor`模式下，一级目录如果包含二级目录时，一级目录是无法渲染和绘制的。如果希望一级目录也可以点击、渲染和绘制，请将此选项设置为`true`；
+   */
+  ENABLE_ROOT_MENUS: false,
 };

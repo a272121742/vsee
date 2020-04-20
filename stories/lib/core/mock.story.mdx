@@ -86,7 +86,15 @@ const list = mock({
   createDate: '@date',
   desc: '@cparagraph',
 }, 100); // 模拟100条数据
+const single = mock({
+  no: 'IRSYYYY@string("number", 6)',
+  title: '@ctitle',
+  createDate: '@date',
+  desc: '@cparagraph',
+}); // 模拟单个数据对象
 ```
+
+> 注意：如果你显示的传入了`count`，那么无论如何，都会返回一个数组，哪怕是传入`count: 1`也是数组返回。除非你不传入`count`，同时我们也对`count`的有效性做了处理，但并未对安全性做处理，如果你传入一个非常大的数据，比如`500000000`，客户端也会生成这个数据，但会十分低效。
 
 ### 数据模版
 
