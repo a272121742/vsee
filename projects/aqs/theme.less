@@ -23,9 +23,20 @@
 @app-content-header-height: 48px; // 内容区域header的高度
 @app-content-footer-height: 0px;  // 内容区域footer的高度
 @app-content-border-width: 16px;  // 内容区域外部边框大小
+@app-content-sider-width: 200px;
+@app-content-sider-width-min: 80px;
 
 body{
   line-height: @app-content-header-height;
+}
+
+.app-content-sider {
+  min-width: @app-content-sider-width!important;
+  max-width: @app-content-sider-width!important;
+  &.ant-layout-sider-collapsed {
+    min-width: @app-content-sider-width-min!important;
+    max-width: @app-content-sider-width-min!important;
+  }
 }
 @form-label-fixed-width: 88px;
 .col-layout-form.ant-form-horizontal, 

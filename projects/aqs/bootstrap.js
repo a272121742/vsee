@@ -92,4 +92,4 @@ Vue.prototype.$message = message;
 window.addEventListener('scroll', debounce(() => {
   document.querySelectorAll('input:focus').forEach((item) => item.blur());
   document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
-}, 400));
+}, 800, { leading: true, trailing: false }));

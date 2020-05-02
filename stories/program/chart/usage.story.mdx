@@ -1,0 +1,683 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="方案|数据图表/编写范式" />
+
+# 问题
+
+在使用`vue`构建`echarts`的过程中，我发现很多人都会犯一些致命的问题，这些问题如同网络上很多人提出的“`vue`体系下是否可以继续使用`jQuery`”，答案当然是否定的。的确，你可以将两种技术混合在一起，但这么干你有必要知道这是为什么，应该如何避免其中的技术坑。`jQuery`是以`DOM`为中心，通过行为和事件来驱动的，而`vue`则是以数据为驱动的，两者本质上的差别就是在于`vue`不再关心`DOM`的产生时机。
+
+在`vue`中使用`echarts`，我见过的最多使用问题就是：
+
+1. 继续使用DOM来构建`echarts`的容器：
+
+```html
+<template>
+  <div id="myChart" ref="myChart" style="width: 400px; height: 240px;"></div>
+</template>
+
+<script>
+import Echarts from 'echarts';
+export default {
+  data () {
+    return {
+      chart: {},
+    }
+  },
+  mounted () {
+    this.initChart();
+  },
+  methods: {
+    initChart () {
+      this.$set(this, 'chart', Echarts.init(document.getElementById('myChart')));
+      // 后者使用
+      // this.$set(this, 'chart', Echart.init(this.$refs.myChart));
+      this.chart.setOption({ /* 参数配置 */ });
+    }
+  },
+};
+</script>
+```
+
+让我们来看看[官方文档](https://cn.vuejs.org/v2/api/#mounted)是怎么说明的：
+
+> 注意：`mounted`不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用`vm.$nextTick`替换掉`mounted`。
+
+上面这种写法是很多人最容易出问题的，明明代码写的没有问题，图表实例在本地也能运行，但是有时候打包放到开发环境下的时候，图表始终出不来。这就是没有正确使用`mounted`的原因，因为`mounted`并不能保证内部子组件全部渲染完成。但要额外说一点的是，除了子组件，包含有动态数据配置的元素也可能会导致当前元素无法正确渲染完成，例如`<div :style="styleConfig"></div>`。
+
+2. 滥用`watch`
+
+我发现很多人的代码喜欢通过这样的方式来保持图表的实时性：
+
+```html
+<template>
+  <div id="myChart" ref="myChart" style="width: 400px; height: 240px;"></div>
+</template>
+
+<script>
+import Echarts from 'echarts';
+export default {
+  props: {
+    config: {
+      type: Object,
+      required: true,
+    }
+  },
+  data () {
+    return {
+      chart: {},
+    }
+  },
+  mounted () {
+    this.initChart();
+  },
+  methods: {
+    initChart () {
+      this.$set(this, 'chart', Echarts.init(document.getElementById('myChart')));
+      // 后者使用
+      // this.$set(this, 'chart', Echart.init(this.$refs.myChart));
+      this.chart.setOption(this.config);
+    }
+  },
+  watch: {
+    config (config) {
+      this.chart.setOption(config);
+    }
+  }
+};
+</script>
+```
+
+这样的代码显然是画蛇添足，是一种对`vue`体系的亵渎。`vue`从组件数据传递的层面上，本来就是**单向数据流**的，`props`由上层组件传递下来之后，本来就会被订阅器所劫持，触发数据更新。但仍然很多开发者使用`watch`在子组件中再次对该属性进行一次**订阅劫持**，这无疑是对性能的损耗。`vue`的**双向绑定**和**单向数据流**虽然给我们提供了诸多便利，但我们让然要注意他在性能上的开销。尤其在做数据可视化项目时，每减少一次性能损耗，就能给视图的展示提供更加流畅的用户体验。
+
+# 如何正确使用
+
+## 模块化引入
+
+首先，作为架构师，当然是不能允许`echarts`被直接引入进入项目，当`echarts`直接引入项目时，将导致项目打包后体积过大。而且，如上面的问题1，并没有适配`vue`的开发模式。所以我们已经在`vsee`的开发环境中配置好了`vue-echarts`的相关引入。
+
+其次，虽然使用了`vue-echarts`，但我也不推荐在`bootstrap.js`中进行全局引入。`bootstrap.js`作为应用的前置引导，虽然可以进行组件的注册，但并非所有的页面都会用到图表，除非整个应用就是基于图表的。所以，更合理的方式是在每个图表中去引入。不推荐在全局的地方注册不代表不可以使用，这完全取决于你的环境。
+
+最后，让我们看看构建一个`line.vue`，是如何用两种模块化引入方式引入的：
+
+1. 同步引入：
+
+```javascript
+// 引入`vue-echarts`
+import VueECharts from 'vue-echarts';
+// 引入**线图**
+import 'echarts/lib/chart/line';
+// 引入**标题**组件
+import 'echarts/lib/component/title';
+// 引入**轴线**组件
+import 'echarts/lib/component/axis';
+// 引入**数据集**组件
+import 'echarts/lib/component/dataset';
+// 引入**网格**组件
+import 'echarts/lib/component/grid';
+// 引入**图例**组件
+import 'echarts/lib/component/legend';
+// 引入**提示**组件
+import 'echarts/lib/component/tooltip';
+
+export default {
+  components: {
+    VueECharts,
+  },
+};
+```
+
+同步引入的方式是最常见，也是最直接的。在打包过程中，`webpack`会将所有的模块从`echarts`的源码中抽离出来，打成独立的代码片段，构建成`webpack.required`的形式，然后将这些`required.id`和当前组件绑定在一起。你可以理解为，当渲染`line.vue`的时候，内部`echarts`的图表(`line`)模块、组件模块（`title`、`grid`、...）都已经提前加载好了。因此只用组装数据，来构建这个`line.vue`。
+
+2. 异步引入：
+
+```javascript
+export default {
+  components: {
+    VueCharts: () => (
+      // 引入**线图**
+      import('echarts/lib/chart/line'),
+      // 引入**标题**组件
+      import('echarts/lib/component/title'),
+      // 引入**轴线**组件
+      import('echarts/lib/component/axis'),
+      // 引入**数据集**组件
+      import('echarts/lib/component/dataset'),
+      // 引入**网格**组件
+      import('echarts/lib/component/grid'),
+      // 引入**图例**组件
+      import('echarts/lib/component/legend'),
+      // 引入**提示**组件
+      import('echarts/lib/component/tooltip'),
+      // 引入`vue-echarts`
+      import('vue-echarts')
+    ),
+  },
+};
+```
+
+异步的引入方式比较少见，特点是使用了`JavaScript`中的**括号运算符**，我们只要将要返回的组件写在最后即可。异步相对于同步方式的区别在于，打包后，`line.vue`组件是不会包含这些图表的组件的，而仅仅是包含`required.id`的。也就是说，用户进入到`line.vue`时，内部`echarts`的图表(`line`)模块、组件模块（`title`、`grid`、...）仅仅只是被引用了，需要先完成模块组装，再接入数据才能出图。
+
+我自己更倾向于是后者的写法，但这仍然取决于你的项目环境。如果项目中用到的图表不多，对于渲染时机要求没那么高，则可以采用后者。后者相对于前者会稍微慢那么一点点，但打包体积会更小。
+
+## 构建点
+
+构建点在哪个地方，这个设置好了，可以同时解决上面的两个问题。`vue-echarts`是已经对`echarts`进行的包装，因此你不用像以前一样继续使用`DOM`，之前也说了，这个有很多不确定性。`vue-echarts`都是通过`props.options`来传入配置的，通常，我们更多的是将`options`配置成`computed`属性，这有两点原因：
+
+1. 因为数据是单向流动的，当关联数据发生变化时，自动驱动`options`重新计算，并促使`vue-echarts`重新调用`setOption`方法；
+2. 图表中不会再有额外的属性设置方式，渲染的原始数据都会被锁定下来。
+
+我们可以通过两个例子来看看他们之间的区别，我们先来体验一下使用`data`的方式：
+
+```html
+<template>
+  <v-chart style="width: auto; height: 320px" :options="options"/>
+</template>
+
+<script>
+export default {
+  name: 'LineChart',
+  components: {
+    VCharts: () => (
+      // 引入**线图**
+      import('echarts/lib/chart/line'),
+      // 引入**标题**组件
+      import('echarts/lib/component/title'),
+      // 引入**轴线**组件
+      import('echarts/lib/component/axis'),
+      // 引入**数据集**组件
+      import('echarts/lib/component/dataset'),
+      // 引入**网格**组件
+      import('echarts/lib/component/grid'),
+      // 引入**图例**组件
+      import('echarts/lib/component/legend'),
+      // 引入**提示**组件
+      import('echarts/lib/component/tooltip'),
+      // 引入`vue-echarts`
+      import VueECharts from 'vue-echarts'
+    ),
+  },
+  data () {
+    return {
+      options: {
+        xAxis: {
+          data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+        },
+        yAxis: {},
+        series: [{
+          type: 'line',
+          data: [821, 932, 901, 934, 1290, 1330, 1320]
+        }]
+      }
+    }
+  },
+};
+</script>
+```
+
+当我们使用`data`作为`options`的引入方式时，有一个巨大的好处就是我们可以在内部对`options`进行任意的调配，而不会收到上层组件的影响。例如，我们执行这样的操作：
+
+```javascript
+mounted () {
+  this.$http.get('/api/get-data').then((res || []) => {
+    this.options.series[0].data = res;
+  });
+}
+```
+
+但你们有没有发现，这些操作是手动的，而且对配置的更改是离散化（你可以修改配置中的任何一项）。修改配置中的任何一项在开发过程中，我们需要调试、编码，当然是没有问题的。然而应用生成之后，唯一变化的只有数据，那么使用这种构建形式并没有得到多大的模式上的提升。
+
+那么我们再看看我所推崇的`compunted`方式：
+
+```html
+<template>
+  <v-chart style="width: auto; height: 320px" :options="options"/>
+</template>
+
+<script>
+export default {
+  name: 'LineChart',
+  components: {
+    VCharts: () => (
+      // 引入**线图**
+      import('echarts/lib/chart/line'),
+      // 引入**标题**组件
+      import('echarts/lib/component/title'),
+      // 引入**轴线**组件
+      import('echarts/lib/component/axis'),
+      // 引入**数据集**组件
+      import('echarts/lib/component/dataset'),
+      // 引入**网格**组件
+      import('echarts/lib/component/grid'),
+      // 引入**图例**组件
+      import('echarts/lib/component/legend'),
+      // 引入**提示**组件
+      import('echarts/lib/component/tooltip'),
+      // 引入`vue-echarts`
+      import VueECharts from 'vue-echarts'
+    ),
+  },
+  computed: {
+    options () {
+      return {
+        xAxis: {
+          data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+        },
+        yAxis: {},
+        series: [{
+          type: 'line',
+          data: [821, 932, 901, 934, 1290, 1330, 1320]
+        }]
+      };
+    },
+  },
+};
+</script>
+```
+
+写法上无非是将`data`转换为了`computed`，从数值转换为了`get函数`，这也意味着我们无法再对`options`进行赋值操作，除非你给他分别设置`get`和`set`函数。当我们这样做了之后，我们的关注点就不再是离散的配置，反而是**配置固定、数据变化**的模式。
+
+## 数据建模
+
+以上案例中，我们展示了一个非常简单的线图。但我们做的不够好，我们把配置都锁死了，以至于图表是压根不会变化的。为了让图表能够动态变化，我们需要抽离出其中变化的部分。在数据可视化中，变化最多的是数据，不是配置模型。当然有的时候，配置也会跟着数据的变化而变化，这就需要我们额外做一些处理，关于这点，我们会在后面的文章中提及。
+
+现在，我们把里面的数据都抽离出来，至少，有两个数据项是会发生变化的，一个是横坐标`xAxis`，一个是系列值`series`。我们可以这样去构建：
+
+```javascript
+export default {
+  props: {
+    xAxisData: {
+      type: Array,
+      required: true,
+    },
+    seriesData: {
+      typeArray,
+      required: true,
+    },
+  },
+  computed: {
+    options () {
+      const { xAxisData, seriesData } = this;
+      return {
+        xAxis: {
+          data: xAxisData,
+        },
+        yAxis: {},
+        series: [{
+          type: 'line',
+          data: seriesData,
+        }]
+      }
+    }
+  }
+}
+```
+
+现在看上去非常的不错了，我可以使用`<line-chart :xAxisData="[]"  :seriesData="[]" />`来构建图表了。
+
+有的时候，我们还会把两组数据进行一个合并，例如：
+
+```javascript
+export default {
+  props: {
+    dataMap: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    options () {
+      const { dataMap } = this;
+      return {
+        xAxis: {
+          data: dataMap.keys(),
+        },
+        yAxis: {},
+        series: [{
+          type: 'line',
+          data: dataMap.values(),
+        }]
+      }
+    }
+  }
+}
+```
+
+后者这种方式更加易于管理，因为我们只需要维护一个数据对象即可。但但从设计的理念上，并没有谁对谁错。无论是分开，还是合并，都是要结合业务特性、数据特性进行灵活变换的。因此，不能因为一开始设置属性的模式是分开的，当业务发生变化的时候，还继续按照原来的方式进行设置。这样**懒**的方式，是不利于后期维护的，更容易影响业务的变化。例如当数据发生变化时，就会导致前者无法自动增加或减少。前例子中要实现数据自适应，还需要增加一层**转换层**。
+
+## 数据管理
+
+上面提到过使用`data-map`的方式来构建数据模型，这通常是不错的选择，但他也有他的局限性，就是数据只能在单个`series`内增长，如果有新增的`series`，他也是无法适应的。我们也可以定义更复杂的数据模型，但这仍然要结合服务端、数据库端的数据结构来。在前端中，`echarts4`提供了更好的数据管理方式——`dataset`。
+
+这是我最喜欢的方式，也是能和服务端直接做映射的有效方式，例举一个最简单的例子：
+
+```javascript
+export default {
+  name: 'LineChart',
+  components: {
+    VCharts: () => (
+      // 引入**线图**
+      import('echarts/lib/chart/line'),
+      // 引入**标题**组件
+      import('echarts/lib/component/title'),
+      // 引入**轴线**组件
+      import('echarts/lib/component/axis'),
+      // 引入**数据集**组件
+      import('echarts/lib/component/dataset'),
+      // 引入**网格**组件
+      import('echarts/lib/component/grid'),
+      // 引入**图例**组件
+      import('echarts/lib/component/legend'),
+      // 引入**提示**组件
+      import('echarts/lib/component/tooltip'),
+      // 引入`vue-echarts`
+      import VueECharts from 'vue-echarts'
+    ),
+  },
+  computed: {
+    options () {
+      return {
+        dataset: {
+          source: [
+            ['-', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+            ['值', 821, 932, 901, 934, 1290, 1330, 1320]
+          ]
+        },
+        xAxis: {
+          type: 'category'
+        },
+        yAxis: {},
+        series: [{
+          type: 'line',
+          seriesLayoutBy: 'row'
+        }]
+      };
+    },
+  },
+};
+```
+
+看，现在的例子中，数据的维护更加集中了。当然，`dataset.source`还支持其他写法，但这是我们已经定义好了规范，第一行代表的是`dimensions`（纬度）,其余行代表的就是`data`（数据）了。更多有关`dataset`的使用方式，[点击这里查看](https://www.echartsjs.com/zh/tutorial.html#%E4%BD%BF%E7%94%A8%20dataset%20%E7%AE%A1%E7%90%86%E6%95%B0%E6%8D%AE)。
+
+如果你有多个`series`（系列）需要维护，甚至是动态的。结合之前提到过的配置方式，我们可以按照这样的方式开发：
+
+```javascript
+export default {
+  props: {
+    source: {
+      type: Array,
+      required: true,
+    }
+  },
+  computed: {
+    options () {
+      const { source } = this;
+      return {
+        dataset: {
+          source,
+        },
+        xAxis: {
+          type: 'category'
+        },
+        yAxis: {},
+        // 过滤掉第一行
+        series: source.filter((item, index) => !!index).map(item) => ({
+          type: 'line',
+          seriesLayoutBy: 'row',
+        }))
+      };
+    },
+  },
+};
+```
+
+现在数据的维护由上层组件负责，当数据纬度变化时，下层组件也会自动发生变化。
+
+## 数据转换
+
+如果你的服务端是`NodeJS`这样的，那么你很幸运，你可以和服务端无转换成本的通信。但如果是`Java`或者`C#`这类面向对象的语言，那么不好意思，前端定义的格式会让服务端大改，这也是为什么做分离式开发的时候，要进行沟通，关注数据结构的约定，而不是具体数据的值。
+
+`echarts.dataset.source`所使用的数据类型其实是一张`cross-table`（交叉表），交叉表形如如下格式：
+
+```javascript
+const crossTable = [
+  // 第一行定义纬度名称`dimensions.name`，纬度的第一列一般为空或者表格标题，后面都是真正的纬度集合
+  ['product', '2018', '2019', '2020']
+  // 其他行定义数据，数据的第一列是序列名称`series.name`，后面都是值集
+  ['汽车', 100, 110, 120],
+  ['电动车', 40, 50, 55],
+  ['摩托车', 3, 6, 10],
+];
+```
+
+由于`dimensions.name`和`series.name`都是字符串因此，这个矩阵是可以进行**行列反转**的（转置操作）。也就是转换成如下格式：
+
+```javascript
+const crossTableTranspose = [
+  // 转置后，第一行定义纬度名称`series.name`，纬度的第一列一般为空或者表格标题，后面都是真正的纬度集合
+  ['product', '汽车', '电动车', '摩托车']
+  // 转置后，其他行定义数据，数据的第一列是序列名称`dimensions.name`，后面都是值集
+  ['2018', 100, 40, 3],
+  ['2019', 110, 50, 6],
+  ['2020', 120, 55, 10],
+];
+```
+
+`echarts`中并不需要你手工进行**转置**操作，在设定`series`的时候可以制定按照某种方式进行读取，或者通过映射的方式进行。
+
+但是，服务端有时候因为某些原因，无法获取到`cross-table`，可能发送的是一张`pivot-table`（透视表），此时就要格外注意了，因为你有两种可选择方式继续进行开发。我们先来说说透视表的格式：
+
+```javascript
+const pivotTable = [
+  // 第一行是`metas.name`，即头信息
+  ['类型', '年份', '产值（万辆）'],
+  // 后面行都是数据
+  ['汽车', 2018, 100],
+  ['汽车', 2019, 110],
+  ['汽车', 2020, 120],
+  ['电动车', 2018, 40],
+  ['电动车', 2019, 50],
+  ['电动车', 2020, 55],
+  ['摩托车', 2018, 3],
+  ['摩托车', 2019, 6],
+  ['摩托车', 2020, 10],
+];
+```
+
+这种格式是不是非常的熟悉，是的，他等价于：
+
+```javascript
+const pivotTableJSON = [
+  { type: '汽车', year: 2018, value: 100 },
+  { type: '汽车', year: 2019, value: 110 },
+  { type: '汽车', year: 2020, value: 120 },
+  { type: '电动车', year: 2018, value: 40 },
+  { type: '电动车', year: 2019, value: 50 },
+  { type: '电动车', year: 2020, value: 55 },
+  { type: '摩托车', year: 2018, value: 3 },
+  { type: '摩托车', year: 2019, value: 6 },
+  { type: '摩托车', year: 2020, value: 10 },
+];
+```
+
+渗透表相对于`json-list`的好处就是，省去了重复字段的传入，对于做大数据可视化的图表来说，流量可以节省更多。而且数据的映射都是由服务端做好的，不需要客户端再对数据进行重新映射，例如这里的`type`映射成为**类型**、`year`映射为**年份**。渗透表对于服务端来说，也是易于转换和扩展的。但是，渗透表并不满足于我们的需求，我们最终要的还**交叉表**。现在，你有两条路径可以走，一个是告知服务端将返回的数据结构更改为交叉表，这取决于服务端的数据算法是否可行以及效率、技术问题。当服务端告知这是不可行的时候，那么前端不得不参与数据转换的方式，的确，数据转换本来就不是客户端应该做的，但有时候它却是最直接的。在`vsee`中，我们定义了专门转换渗透表到交叉表的方式，详细的源码为：
+
+```javascript
+/**
+ * @param Object config - 转换配置
+ * {
+ *    reverse:  // 反转矩阵，默认`false`；
+ *    series:   // 序列下标或名称，默认`0`，也可是是数组；
+ *    xAxis:    // `x轴`下标或名称，默认`0`；
+ *    yAxis:    // `y轴`下标或名称，默认`0`；
+ *    title:    // 数据源的标题，即`source[0][0]`的值，默认`'-'`；
+ *    unhead:   // 是否无头数据，即表头，默认`false`表示有表头；
+ * }
+ * @param Array list - 转换的数组（二维数组）
+ */
+export const tablePick = (config = {}) => (list = []) => {
+  const { reverse = false, unhead = false } = config;
+  const names = list[0] || [];
+  let { series = 0, xAxis = 0, yAxis = 0 } = config;
+  if (typeof series === 'string' && names.includes(series)) {
+    series = [names.indexOf(series)];
+  } else if (series instanceof Array) {
+    series = series.map((item) => (typeof item === 'string' ? names.indexOf(item) : item));
+  } else if (typeof series !== 'number') {
+    throw new Error('series未能成功匹配到');
+  }
+  if (typeof xAxis === 'string' && names.includes(xAxis)) {
+    xAxis = names.indexOf(xAxis);
+  } else if (typeof xAxis !== 'number') {
+    throw new Error('xAxis未能成功匹配到');
+  }
+  if (typeof yAxis === 'string' && names.includes(yAxis)) {
+    yAxis = names.indexOf(yAxis);
+  } else if (typeof yAxis !== 'number') {
+    throw new Error('yAxis未能成功匹配到');
+  }
+  const result = list.reduce(({ ln, l0 }, row, index, { length }) => {
+    if (index || unhead) {
+      const cs = series.map((y) => row[y]);
+      let cx = reverse ? row[xAxis] : row[yAxis];
+      cx = cx === void 0 ? null : cx;
+      let cy = reverse ? row[yAxis] : row[xAxis];
+      cy = cy === void 0 ? null : cy;
+      if (Object.hasOwnProperty.call(ln, cy)) {
+        ln[cy].push(...cs);
+      } else {
+        ln[cy] = [cy, ...cs];
+      }
+      if (!l0.includes(cx)) {
+        series.forEach(() => l0.push(cx));
+      }
+    }
+    return index === length - 1 ? [l0, ...Object.values(ln)] : { ln, l0 };
+  }, { ln: {}, l0: [config.title || '-'] });
+  return result;
+};
+```
+
+使用方法：
+
+```javascript
+import { tablePick } from '@util/datahelper.js';
+
+// 配置转换规则，生成转换`cross-table`的函数
+const toCross = tablePick({
+  xAxis: 0,
+  yAxis: 1,
+  series: [2],
+});
+
+// 准备原始数据
+const pivotTable = [
+  // 第一行是`metas.name`，即头信息
+  ['类型', '年份', '产值（万辆）'],
+  // 后面行都是数据
+  ['汽车', 2018, 100],
+  ['汽车', 2019, 110],
+  ['汽车', 2020, 120],
+  ['电动车', 2018, 40],
+  ['电动车', 2019, 50],
+  ['电动车', 2020, 55],
+  ['摩托车', 2018, 3],
+  ['摩托车', 2019, 6],
+  ['摩托车', 2020, 10],
+];
+
+// 转换数据
+console.log(toCross(pivotTable));
+```
+
+使用`tablePick`函数有两个需要注意的：
+
+1. 待转换的`pivotTable`必须是完整数据，如果预计转换成一个`m * n`的数据矩阵，那么`pivotTable`必须是有`m * n`的数据行。刚才的例子中，如果删除`pivotTable`中的任意一行，都会导致转换的结果与预期不对，这是因为数据缺失造成的。如果前端去考虑数据缺失的算法，这回导致使用大量的回溯算法，造成前端的CPU密集。
+2. 他不会再次处理数据，仅仅是将数据进行了重排，如果涉及到数据类型或格式不对，你可以在转换之前做好前置转换工作。
+
+## 标准化
+
+无规矩无以成方圆，在制作图表的过程中，我们发现一套系统中，对图表的设置大多是固定的，这也就是我们所谓的主题。有关主题的设计，我们会放一个专题进行讲解。这里，我们针对某个项目，提供了`~~/echart-options.js`文件，内部有很多公共常量可供使用，内部我们使用了`mergeDeep`的方案，保证开发者能使用少量配置，来构建全局的图表对象。
+
+```javascript
+// 引入构建器函数和全局分割线颜色常量
+import buildEchartOption, { GLOBAL_SPLIT_LINE_COLOR } from '~~/echart-options.js';
+
+export default {
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    }
+  },
+  computed: {
+    options () {
+      const splitNumber = 5;
+      const splitLines = new Array(splitNumber).fill('');
+      const { data = {} } = this;
+      const {
+        legend = [], indicator = [], border = [], radarData = [],
+      } = data;
+      return buildEchartOption({
+        legend: {
+          data: legend,
+        },
+        radar: {
+          indicator,
+          splitNumber,
+          splitLine: {
+            lineStyle: {
+              color: splitLines.map((item, index) => (index ? GLOBAL_SPLIT_LINE_COLOR : 'transparent')),
+            },
+          },
+          splitArea: {
+            show: false,
+          },
+        },
+        series: [{
+          type: 'radar',
+          areaStyle: {
+            opacity: 0.2,
+          },
+          data: radarData,
+        }, {
+          type: 'radar',
+          data: [{ value: border, name: '-' }],
+          lineStyle: {
+            color: GLOBAL_AXIS_LINE_COLOR,
+            width: 1,
+          },
+          symbol: 'none',
+          silent: true,
+        }],
+      }, 'radar');
+    }
+  }
+};
+```
+
+当图表中大量运用了应用中定义的常量，这也意味着：
+
+1. 整体的风格将保持一致；
+2. 他的维护是容易的，我们只要在风格配置那里进行修改，所有关联到此配置的图表统一就做了修改；
+
+## 设计思路
+
+最后我们说说设计思路上的，设计一个图表不止有一种方式，我们可以有很多中方式，但无论何种方式，都是需要设计的。在设计之前，我们就需要了解如下关键点：
+
+1. 我们需要将数据展示成什么样？
+2. 数据从何而来？
+3. 我们有什么样的数据？
+4. 数据是否可变更，可变更的方式是什么？
+5. 数据变化的影响范围？
+6. 空状态/异常状态/加载状态的显示如何？
+7. 数据的交互形式如何？
+
+首先我们就要搞清楚我们绘制的是什么图表，可能是笛卡尔坐标图，也有可能是极坐标或雷达图，他们所需要的数据和配置都是不一样的。有的人会觉得，数据不都是从服务端传过来的么？真不一定，例如说“标题”有可能就是写死的。我们在做数据可视化的时候就要了解数据的来源，其实就是要了解数据会展示成什么样。因为目标不一样，我们实现的手段就多种多样。当我们剥离出那些静态数据，或者上下文数据，剩下从服务端过来的数据就要认真思考他的结构了。我们有什么样的数据，也就决定我们能组装成什么样的图表，当图表的数据不够用时，或者很难使用的时候，要考虑服务端增加数据或者修改结构了。
+
+作为前端，其抽象能力表现在能否将一个图表进行多次复用，这根数据的变化是息息相关了。比如统计型数据业务中，有关各大区销售额的统计信息就是一个相对固定的。因为各个大区都是约定俗成的，不会再发生变化的，唯一的变化是公司的业务可能不在那里。再比如销售过程的转换率，每个阶段的设定其实都是固定的，也不会再发生变化。这种图表在构建的时候，可以直接写死，因为他是业务关联性较强的。但有的图表要编写出具有可扩展性的。例如每个人的销售能力对比，人员会增加，销售能力的指标也会增加，因此他在横向、纵向纬度上都会发生变更。数据的可变化方式将决定我们编写图表组件的模式，要么使他具备充分的业务展示、统计、分析能力，要么使他具备可扩展、可伸缩、自适应的能力。
+
+有关数据变化的影响范围，这个需要UI设计师和前端共同探讨出来。因为整个图表的配置对象都可以称之为数据，只是我们会分离出图表配置信息和主数据。当数据能影响配置信息时，就说明配置信息的部分受影响的信息也要动态化，甚至可配置化或者业务化（业务规则）。`echarts`当然是提供了类似视觉映射的方式，但有时，为了达到一个很好的视觉可视化效果，我们就要充分发挥数据的价值，通过额外的业务规则将数据变成动态图表配置，实现更丰富的结果。
+
+最后，也是大部分开发容易忽略的点。就是控状态、异常状态、加载状态的展示效果。数据可视化展示过程是一个时间纬度的渲染过程，但受限于设计稿的静态展示，很多设计师只会把成型后的图表展示出来。如果正在获取数据，亦或者获取到的数据为空和异常，都不会在做处理。这使得客户端上的表现不是那么吸引人。除了设计师要提供视觉上的设计，开发者也要主动去询问有关这些状态的原型和实现机制。其实，这也是数据的交互行为之一，但大家往往更加关注悬停、点击等交互，却忽略了加载、结果等交互的发生。
+
+更多的思考这些内容，将有助于开发则开发出更加适用可扩展、简单易维护、丰富好体验、有用且符合用户需求的可视化图表。

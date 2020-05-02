@@ -8,7 +8,7 @@
         class="content-child-view-item"
       >
         <div>
-          <vue-lazy-component>
+          <vue-lazy-component :timeout="index * 2000">
             <template
               v-if="scope.loading"
               slot-scope="scope"
@@ -25,6 +25,10 @@
                 ></component>
               </keep-alive>
             </template>
+            <a-spin
+              slot="skeleton"
+              style="width: 100%; min-height: calc(100vh - 48px); text-align: center;"
+            />
           </vue-lazy-component>
         </div>
       </a-row>
