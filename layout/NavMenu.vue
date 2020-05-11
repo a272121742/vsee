@@ -14,7 +14,7 @@
         :key="menu.fullPath"
         :title="menu.meta.title"
       >
-        <v-icon
+        <a-icon
           v-if="menu.icon"
           class="anticon"
           style="font-size: 16px;"

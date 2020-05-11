@@ -1,7 +1,7 @@
 <template functional>
   <a-sub-menu :key="props.menuInfo.fullPath">
     <span slot="title">
-      <v-icon
+      <a-icon
         v-if="props.menuInfo.icon"
         class="anticon"
         style="font-size: 16px;"

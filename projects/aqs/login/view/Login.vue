@@ -11,10 +11,10 @@
             <div class="ant-drawer-body">
               <div>
                 <div class="logo">
-                  <v-icon
+                  <a-icon
                     class="logo"
                     type="iconlogo"
-                  ></v-icon>
+                  ></a-icon>
                 </div>
                 <div class="radio-group">
                   <language-radio class="language-radio"></language-radio>

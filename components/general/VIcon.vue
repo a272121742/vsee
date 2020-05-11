@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="icon v-icon"
+    class="icon a-icon"
     aria-hidden="true"
     v-bind="$attrs"
     v-on="$listeners"

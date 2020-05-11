@@ -16,7 +16,10 @@
           collapsible
           :trigger="collapsible ? void 0 : null"
         >
-          <vue-scroll class="app-content-sider-scroll">
+          <vue-scroll
+            class="app-content-sider-scroll"
+            :ops="menuScroll"
+          >
             <component
               :is="isSider"
               :current-directory="currentDirectory"
@@ -25,7 +28,7 @@
         </a-layout-sider>
         <a-layout-header
           v-if="$store.state.config.content_head"
-          :class="{ 'app-content-header': true, 'app-content-tab': isTab}"
+          :class="{ 'app-content-header': true, 'app-content-tab': !!isTab}"
         >
           <component
             :is="isContentHeader"
@@ -77,6 +80,11 @@ export default {
     const collapsible = this.$store.state.config.menu_collapsible;
     return {
       collapsible,
+      menuScroll: {
+        scrollPanel: {
+          scrollingX: false,
+        },
+      },
     };
   },
   computed: {

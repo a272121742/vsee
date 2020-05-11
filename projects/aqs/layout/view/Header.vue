@@ -7,7 +7,7 @@
       {{ $t('project.testDesc') }}
     </span>
     <div class="header-comp">
-      <v-icon
+      <a-icon
         class="logo"
         type="iconlogo"
         @click="$store.dispatch('gohome')"
@@ -52,8 +52,8 @@ export default {
     order: -1;
     .logo {
       color: @primary-color;
-      font-size: 168px;
       margin: auto 16px;
+      font-size: 168px;
       cursor: pointer;
       svg {
         height: 64px;

@@ -2,9 +2,9 @@
   <div class="root">
     <!-- 标题 -->
     <h2 class="title">
-      <v-icon
+      <a-icon
         type="iconbs_filled"
-      ></v-icon>
+      ></a-icon>
       {{ $t('issue.vehicleInformation') }}
     </h2>
     <!-- 操作按钮 -->
@@ -19,7 +19,7 @@
         style="margin-right:10px;"
         @click="() => (showVechicleSearchModal = true)"
       >
-        <v-icon type="icondccj_outlined1"></v-icon>
+        <a-icon type="icondccj_outlined1"></a-icon>
         {{ $t('action.vehicleSearch') }}
         <vehicle-search-dialog
           :visible.sync="(showVechicleSearchModal)"

@@ -64,7 +64,7 @@ Vue.use(Tabs);
 Vue.use(Anchor);
 Vue.use(Checkbox);
 
-Vue.component('v-icon', Icon.createFromIconfontCN({
+Vue.component('a-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',
 }));
 

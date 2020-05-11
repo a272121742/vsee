@@ -11,7 +11,7 @@
         :href="`#${menu.fullPath}`"
       >
         <template #title>
-          <v-icon
+          <a-icon
             v-if="menu.icon"
             class="anticon"
             style="font-size: 16px;"
@@ -27,7 +27,7 @@
             :href="`#${menu.fullPath}`"
           >
             <template #title>
-              <v-icon
+              <a-icon
                 v-if="menu.icon"
                 class="anticon"
                 style="font-size: 16px;"

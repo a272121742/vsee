@@ -1,0 +1,115 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="方案|字体图标" />
+
+## 问题
+
+在使用某一类`vue UI`库的时候，往往会局限于它有限的`iconfont`，而不得不让设计师开发多套`iconfont`。但在引入过程中，出现了维护比较复杂的情况。例如，设计师提供了`iconfont-a.js`、`iconfont-b.js`、`iconfont-c.js`等字体图标。以`ant-design-vue`为例，我们的开发人员会以如下的方式引入到项目中：
+
+```javascript
+import Vue from 'vue';
+import { Icon } from 'ant-design-vue';
+
+// 引入`logo`图标，`logo`图标相对来说比其他的图标都大；
+Vue.component('v-logo', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/logo.js',
+}));
+// 引入其他图标，其他图标和`ant-design-vue`所提供的`a-icon`保持一致。
+Vue.component('v-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/iconfont.js',
+}));
+```
+
+那么问题就来了，我们在项目开发过程中，会大量的交错使用`v-log`、`v-icon`、`a-icon`，如果图标是动态的，也将意味着我们要跟随数据的动态去动态切换这些`iconfont`，例如：
+
+```html
+<v-icon
+  v-if="menu.icon"
+  :type="menu.icon"
+/>
+<a-icon
+  v-else
+  type="desktop"
+/>
+```
+
+当设计师所提供的`iconfont`文件越来越多时，这将会导致管理和维护越来越麻烦，代码也要加入复杂的逻辑判断。而且，传入到`vue模版`中的字符串压根无法判断当前`iconfont`类型是在哪个文件中的。此时，就连封装一个统一的文件都无法进行。
+
+## 解决方案
+
+在经过很多次的尝试后，我们发现，在`ant-deisgn-vue`中，可以实现同构方案：
+
+```javascript
+import Vue from 'vue';
+import { Icon } from 'ant-design-vue';
+
+// 引入`logo`图标，`logo`图标相对来说比其他的图标都大；
+Vue.component('a-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/logo.js',
+}));
+// 引入其他图标，其他图标和`ant-design-vue`所提供的`a-icon`保持一致。
+Vue.component('a-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/iconfont.js',
+}));
+```
+
+即注册成同名组件，`Icon.createFromIconfontCN`会自动做合并处理。当然，**必须注意的是**，你无法为每个`iconfont`单独设置样式。如果你像如下的方式做了，将会导致所有的`iconfont`，包括`ant-design-vue`的`icon`都变成红色：
+
+```javascript
+import Vue from 'vue';
+import { Icon } from 'ant-design-vue';
+
+// 引入`logo`图标，`logo`图标相对来说比其他的图标都大；
+Vue.component('a-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/logo.js',
+}));
+// 引入其他图标，其他图标和`ant-design-vue`所提供的`a-icon`保持一致。
+Vue.component('a-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/iconfont.js',
+  extraCommonProps: {
+    style: 'color: red;', // @ERROR: 这将会导致所有的`iconfont`都变成**红色**
+  }
+}));
+```
+
+## 设计资产规范
+
+为了将**前端资源**和**设计资产**进行规范化管理和统一，我们联合设计师团队，做出如下对于`iconfont`的规格控制。
+
+1. 设计师在本地构建`svg`文件，上传前命名为`-颜色类型-名称-风格.svg`；
+2. **颜色类型**有且只包含"**single（单色）**"和"**color（彩色）**"两种类型；
+3. **名称**如果按照拼音构建，必须是拼音全写，避免缩写造成的词汇量不够，如果能按照英文方式更好。名称如果有分词，使用短横杠`-`切分；
+4. **风格**有且只包含"**filled（填充风格）**"和"**outlined（线条风格）**"两种风格。其中填充风格底色可变换，线条风格内容可变换；
+5. 彩色风格可以不包含风格；
+
+例如：
+
+```javascript
+-single-label-filled.svg
+-single-label-outlined.svg
+-color-tubiao.svg
+-color-huigoubiaoti.svg
+```
+
+这些文件在导入[阿里图标库](https://www.iconfont.cn)时，如果是**单色图标**，记得选择去除颜色上传。上传之后的`iconfont`会被系统自动命名，名称如下：
+
+```javascript
+icon-single-label-filled
+icon-single-label-outlined
+icon-color-tubiao
+icon-color-huigoubiaoti
+```
+
+至此，可以交给前端开发者进行统一的资产调度、配置和使用了。
+
+### 立项
+
+[阿里图标库](https://www.iconfont.cn)使用时，可以创建多个项目，我们约定，一个平台对应一个项目，因此也只会生成一个`iconfont.js`文件，开发者将导出该库直接使用。注意，无论该平台下有多少个项目，为了保证资产设计的一致性，都必须做成一个项目，除非有合理的理由可进行分开立项。
+
+### 资产管理
+
+设计师直接在[阿里图标库](https://www.iconfont.cn)进行资产的设计、维护和管理。开发者由主要负责人对其下载后，放在前端资产中进行统一维护，其他开发者只负责使用。
+
+### 图表使用
+
+如果开发者想在`echarts`图表中使用`iconfont`，请在设计资产项目中拷贝图标的`svg`代码即可。

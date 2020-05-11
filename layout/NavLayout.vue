@@ -26,7 +26,7 @@
         </a-layout-sider>
         <a-layout-header
           v-if="$store.state.config.content_head"
-          :class="{ 'app-content-header': true, 'app-content-tab': isTab}"
+          :class="{ 'app-content-header': true, 'app-content-tab': !!isTab}"
         >
           <component
             :is="isContentHeader"

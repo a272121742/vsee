@@ -15,7 +15,7 @@
         <a-button
           type="primary"
         >
-          <v-icon type="icondccj_outlined1"></v-icon>
+          <a-icon type="icondccj_outlined1"></a-icon>
           {{ $t('action.single_report') }}
         </a-button>
       </router-link>
@@ -30,7 +30,7 @@
           type="primary"
           :style="{ marginLeft: '8px' }"
         >
-          <v-icon type="iconplcj_outlined1"></v-icon>
+          <a-icon type="iconplcj_outlined1"></a-icon>
           {{ $t('action.batch_report') }}
         </a-button>
       </router-link>

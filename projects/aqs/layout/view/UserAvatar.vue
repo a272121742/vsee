@@ -5,7 +5,7 @@
     class="user-info"
   >
     <div class="user-info-awatar">
-      <v-icon type="icontx_outlined"></v-icon>
+      <a-icon type="icontx_outlined" />
       <change-password
         :visible.sync="showChangePassword"
         :mapping="{ oldPassword: 'password', newPassword: 'newPassword'}"

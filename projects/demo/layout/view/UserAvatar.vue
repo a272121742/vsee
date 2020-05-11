@@ -5,7 +5,7 @@
     class="user-info"
   >
     <div class="user-info-awatar">
-      <v-icon type="icontx_outlined"></v-icon>
+      <a-icon type="icontx_outlined"></a-icon>
       {{ user.realName }}
     </div>
     <a-menu slot="overlay">

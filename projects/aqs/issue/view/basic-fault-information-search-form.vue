@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <h2 class="title">
-      <v-icon type="iconbs_filled"></v-icon>
+      <a-icon type="iconbs_filled"></a-icon>
       {{ $t('issue.basicFaultInformation') }}
     </h2>
     <a-form

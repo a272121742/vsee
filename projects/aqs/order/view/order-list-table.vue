@@ -8,7 +8,7 @@
         style="margin-right: 8px;"
         @click="create('single')"
       >
-        <v-icon type="icondccj_outlined1"></v-icon>
+        <a-icon type="icondccj_outlined1"></a-icon>
         {{ $t('action.single_report') }}
       </a-button>
       <a-button
@@ -16,7 +16,7 @@
         :disabled="rowSelection.selectedRowKeys.length <= 1"
         @click="create('batch')"
       >
-        <v-icon type="iconplcj_outlined1"></v-icon>
+        <a-icon type="iconplcj_outlined1"></a-icon>
         {{ $t('action.batch_report') }}
       </a-button>
     </div>

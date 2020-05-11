@@ -76,7 +76,10 @@ Vue.use(Alert);
 Vue.use(InputNumber);
 Vue.use(Empty);
 
-Vue.component('v-icon', Icon.createFromIconfontCN({
+Vue.component('a-icon', Icon.createFromIconfontCN({
+  scriptUrl: '/static/icon/logo.js',
+}));
+Vue.component('a-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',
 }));
 

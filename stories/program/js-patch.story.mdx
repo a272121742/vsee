@@ -1,0 +1,69 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="方案|程序补丁" />
+
+# 问题
+
+在不同的浏览器下，会有一些兼容性的问题，尤其是万恶的`IE`系列，这里，我们为大家列举了一下项目中常见的补丁。可根据项目的自身需要添加进入，当然，很多时候你也无需处理，框架内已经有很多`babel`处理机制帮助解决了。
+
+## requestAnimationFrame补丁
+
+`requestAnimationFrame`是**请求动画帧**，用于实现流畅的动画。但该API仅仅提供在较新浏览器上，为了兼容更多浏览器，可以实现向下降级，使用如下**代码块**:
+
+```javascript
+(function loadRequestAnimationFrame () {
+  let lastTime = 0;
+  const vendors = ['webkit', 'moz'];
+  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; x += 1) {
+    window.requestAnimationFrame = window[`${vendors[x]}RequestAnimationFrame`];
+    window.cancelAnimationFrame = window[`${vendors[x]}CancelAnimationFrame`] || window[`${vendors[x]}CancelRequestAnimationFrame`];
+  }
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = (_cb) => {
+      const currTime = new Date().getTime();
+      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      const id = window.setTimeout(() => {
+        _cb(currTime + timeToCall);
+      }, timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+  }
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = (id) => {
+      clearTimeout(id);
+    };
+  }
+}());
+```
+
+## IE系列fiexed滚动防抖补丁
+
+IE下，滚动执行频率和浏览器的渲染频率不搭配，导致`fixed`图层先随屏幕滚动到上方（fixed），然后有重新渲染回来（rerend），这样就出现了上下抖动到问题。使用如下补丁解决：
+
+```javascript
+(function loadScroll () {
+  if (navigator.userAgent.match(/Trident\/7\./)) {
+    document.body.addEventListener && document.body.addEventListener('mousewheel', (event) => {
+      event.preventDefault();
+      const wd = event.wheelDelta;
+      const csp = window.pageYOffset;
+      window.scrollTo(0, csp - wd);
+    });
+  }
+}());
+```
+
+## ant-design-vue滚动收缩补丁
+
+`ant-design-vue`组件中，像**下拉组件**、**悬停组件**等组件，滚动页面后，无法还原到原始到状态。可以使用如下的补丁。使用前需要使用`lodash.debounce`进行防抖处理。
+
+```javascript
+// 滚动监听补丁
+(function loadScroll () {
+  window.addEventListener('scroll', debounce(() => {
+    document.querySelectorAll('input:focus, .ant-tooltip-open').forEach((item) => item.blur());
+    document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
+  }, 800, { leading: true, trailing: false }));
+}());
+```
