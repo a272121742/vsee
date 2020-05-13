@@ -32,7 +32,7 @@
 <script>
 export default {
   components: {
-    SubMenu: () => import('./SubMenu.vue'),
+    'sub-menu': () => import('./SubMenu.vue'),
   },
   props: {
     currentDirectory: {

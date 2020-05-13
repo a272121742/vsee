@@ -10,17 +10,23 @@
       <span>{{ props.menuInfo.meta.title }}</span>
     </span>
     <template v-if="props.menuInfo.children && props.menuInfo.children.length">
-      <template v-for="menu in props.menuInfo.children">
+      <template v-for="item in props.menuInfo.children">
         <a-menu-item
-          v-if="!menu.children || !menu.children.length"
-          :key="menu.fullPath"
-          :title="menu.meta.title"
+          v-if="!item.children || !item.children.length"
+          :key="item.fullPath"
+          :title="item.meta.title"
         >
-          <span>{{ menu.meta.title }}</span>
+          <a-icon
+            v-if="item.icon"
+            class="anticon"
+            style="font-size: 16px;"
+            :type="item.icon"
+          />
+          <span>{{ item.meta.title }}</span>
         </a-menu-item>
         <sub-menu
           v-else
-          :key="menu.fullPath"
+          :key="item.fullPath"
           :menu-info="item"
         />
       </template>
@@ -32,7 +38,7 @@ export default {
   props: {
     menuInfo: {
       type: Object,
-      default: () => ({}),
+      required: true,
     },
   },
 };
