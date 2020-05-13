@@ -2,6 +2,7 @@
   <vue-scroll
     class="app-scroll"
     :ops="$store.state.config.scroll_config"
+    @handle-scroll="$root.contentScroll"
   >
     <a-layout class="app-layout">
       <a-layout-header class="app-layout-header">

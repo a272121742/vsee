@@ -147,6 +147,23 @@ mock.get('/sys/menu/nav', () => mock.result({
       name: '授权报表',
       url: authUrl,
     }],
+  }, {
+    id: 12000,
+    appCode,
+    name: '一级菜单（共三级）',
+    url: 's12',
+    children: [{
+      id: 12010,
+      appCode,
+      name: '二级菜单（共三级）',
+      url: 'm1',
+      children: [{
+        id: 12011,
+        appCode,
+        name: '三级菜单（共三级）',
+        url: 'd1',
+      }],
+    }],
   }],
 }));
 

@@ -23,9 +23,9 @@ export default {
   },
   // 其他顶层API集合
   GLOBAL_API_LIST: {
-    user: ['/sys/user/info', { appCode: 'AQS' }],
-    menus: ['/sys/menu/nav', { appCode: 'AQS' }],
-    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }],
+    user: ['/sys/user/info', { appCode: 'AQS' }, {}],
+    menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
+    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
   },
   EXCLUDE_MODULES: [], // 排除不加载的模块
   /**

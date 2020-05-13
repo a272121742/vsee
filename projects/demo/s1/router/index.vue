@@ -13,14 +13,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import $ from '@http';
-
-export default {
-  created () {
-    console.log('created', this);
-    $.get('/test/test-retry');
-  },
-};
-</script>

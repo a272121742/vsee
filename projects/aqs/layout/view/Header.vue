@@ -14,7 +14,6 @@
       />
       <a-divider
         type="vertical"
-        style="height: 25%; margin: 25px 0; background: #0097E0"
       ></a-divider>
       <Banner
         class="banner"
@@ -60,7 +59,7 @@ export default {
       }
     }
     .ant-divider {
-      top: -7px;
+      top: -8px;
       background: @primary-color;
     }
     .banner {

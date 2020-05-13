@@ -4,7 +4,10 @@
     :get-popup-container="e => e.parentNode"
     class="user-info"
   >
-    <div class="user-info-awatar">
+    <div
+      class="user-info-awatar"
+      :title="user.realName"
+    >
       <a-icon type="icontx_outlined" />
       <change-password
         :visible.sync="showChangePassword"
@@ -26,7 +29,7 @@
         </a>
       </a-menu-item>
       <a-menu-item key="2">
-        <a @click.stop.prevent="toPortal">
+        <a @click.stop.prevent="gohome">
           {{ $t('action.toPortal') }}
         </a>
       </a-menu-item>
@@ -49,9 +52,6 @@ export default {
   mixins: [attachment],
   data () {
     return {
-      form: null,
-      visible: false,
-      record: {},
       showChangePassword: false,
     };
   },
@@ -61,13 +61,13 @@ export default {
     },
   },
   methods: {
-    toPortal () {
-      window.location.replace(this.$store.state.isProd ? '/portal' : '/');
-    },
     toChangePd () {
       this.showChangePassword = true;
     },
-    logoutHandle () {
+    gohome () {
+      this.$store.dispatch('gohome');
+    },
+    logout () {
       this.$store.dispatch('logout');
     },
   },
@@ -76,10 +76,9 @@ export default {
 
 <style lang="less" scoped>
   .user-info {
-    padding: 0 16px;
     cursor: pointer;
     &:hover {
-      background-color: #e6fbff;;
+      background: rgba(0, 0, 0, 0.09);
     }
   }
   .user-info-awatar {
@@ -91,5 +90,9 @@ export default {
     }
     font-size: 14px;
     color: @text-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
   }
 </style>

@@ -11,7 +11,7 @@
   >
     <a-dropdown
       slot="tabBarExtraContent"
-      :trigger="['hover']"
+      :trigger="['click']"
       placement="bottomRight"
     >
       <a-button

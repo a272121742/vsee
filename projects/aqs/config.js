@@ -69,6 +69,7 @@ export default {
     menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
     permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
   },
+  SKIP_API_LIST: [],
   /**
    * 排除不加载的模块
    * 如果有些模块你不希望应用加载到，可以使用此参数。
