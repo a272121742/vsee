@@ -28,6 +28,8 @@ import {
   Tabs,
   Anchor,
   Checkbox,
+  Alert,
+  DatePicker,
   message,
 } from 'ant-design-vue';
 
@@ -63,10 +65,12 @@ Vue.use(Spin);
 Vue.use(Tabs);
 Vue.use(Anchor);
 Vue.use(Checkbox);
+Vue.use(Alert);
+Vue.use(DatePicker);
 
-Vue.component('a-icon', Icon.createFromIconfontCN({
-  scriptUrl: '/static/icon/iconfont.js',
-}));
+// Vue.component('a-icon', Icon.createFromIconfontCN({
+//   scriptUrl: '/static/icon/iconfont.js',
+// }));
 
 Vue.config.productionTip = false;
 message.config({

@@ -162,6 +162,11 @@ mock.get('/sys/menu/nav', () => mock.result({
         appCode,
         name: '三级菜单（共三级）',
         url: 'd1',
+      }, {
+        id: 12012,
+        appCode,
+        name: '三级菜单2（共三级）',
+        url: 'd2',
       }],
     }],
   }],
