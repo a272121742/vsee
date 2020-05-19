@@ -72,16 +72,22 @@ export default {
       checkboxOptions: ['Apple', 'Pear', 'Orange'],
       formRecord: {
         checkbox: ['Apple'],
-        test: 'test',
-        names: ['123'],
+        // test: 'test',
+        // names: ['朝辞白帝彩云间'],
       },
     };
   },
   created () {
-    this.formRecord = { names: ['123'], test: '123' };
-    // setTimeout((res) => {
-    //   this.formRecord = res;
-    // }, 2000, { names: ['明月即使有', '把酒问青天'], test: '123' });
+    console.log(this);
+    // this.formRecord = { names: ['123'], test: '123' };
+    /**
+     * 1. 合并缓存 data.record created.record
+     * 2. 独立缓存 created.record
+     */
+    // this.form.set({ names: ['床前明月光'], test: '123' }, true);
+    setTimeout((res) => {
+      this.form.update(res, true);
+    }, 2000, { names: ['明月即使有', '把酒问青天'], test: '123' });
   },
   methods: {
     reset () {

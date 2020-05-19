@@ -38,7 +38,7 @@
         <template slot-scope="text, record">
           <div
             :class="{'board-cell-container': true, 'board-cell-container-up' : record[`${meta}_STANDARD`] === true, 'board-cell-container-down': record[`${meta}_STANDARD`] === false}"
-            @click.prevent.stop="$emit('cell-click', e, text, record)"
+            @click.prevent.stop="(e) => $emit('cell-click', e, text, record)"
           >
             <div class="board-cell-layer-bottom"></div>
             <div class="board-cell-layer-top">
