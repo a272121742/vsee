@@ -73,7 +73,7 @@ export default {
     padding-left: 200px;
   }
   .header-user {
-    flex-basis: 180px;
+    flex-basis: 200px;
     overflow: hidden;
   }
 }

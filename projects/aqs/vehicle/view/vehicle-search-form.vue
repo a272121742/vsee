@@ -1,4 +1,5 @@
 <template>
+  <!-- 车辆查询表单  -->
   <a-form
     :form="vehicleForm"
     class="col-layout-form col-layout-search-form"
@@ -8,9 +9,7 @@
     <a-row :gutter="24">
       <!-- 车型 -->
       <a-col :span="formItemSpan">
-        <a-form-item
-          :label="$t('issue.vhclSeriesCode')"
-        >
+        <a-form-item :label="$t('issue.vhclSeriesCode')">
           <multiple-net-select
             v-decorator="['vhclSeriesCode']"
             :placeholder="$t('form.select')"
@@ -25,9 +24,7 @@
       </a-col>
       <!-- 车型代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item
-          :label="$t('vehicle.vhclModelCode')"
-        >
+        <a-form-item :label="$t('vehicle.vhclModelCode')">
           <single-net-select
             v-decorator="['vhclModelCode']"
             :placeholder="$t('form.select')"
@@ -104,20 +101,6 @@
           />
         </a-form-item>
       </a-col>
-      <!-- 省份名称 -->
-      <!-- <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.areaCode')">
-          <single-net-select
-            v-decorator="['provinceCode']"
-            :placeholder="$t('form.select')"
-            url="/masterdata/v1/area/province"
-            value-by="areaCode"
-            :label-of="(item) => item.areaNameZh"
-            allow-clear
-            close-search
-          />
-        </a-form-item>
-      </a-col> -->
       <!-- 质保起始日期 -->
       <a-col :span="formItemSpan">
         <a-form-item :label="$t('vehicle.salesDate')">
@@ -129,21 +112,23 @@
           />
         </a-form-item>
       </a-col>
-
-      <!-- 查询 + 重置 -->
+      <!-- 功能按钮区域 -->
       <div class="col-layout-form-actions">
+        <!-- 查询按钮 -->
         <a-button
           type="primary"
           @click="vehicleSearch"
         >
           {{ $t('action.find') }}
         </a-button>
+        <!-- 重置按钮 -->
         <a-button
           :style="{ marginLeft: '8px' }"
           @click="vehicleReset"
         >
           {{ $t('action.reset') }}
         </a-button>
+        <!-- 导出按钮 -->
         <a-button
           :style="{ marginLeft: '8px' }"
           @click="vehicleExport"
@@ -157,12 +142,11 @@
 
 <script>
 import { omit } from 'ramda';
-
 import storeModuleMix from '@mix/store-module.js';
-import formRecordMix from '@mix/form-record.js';
+import formRecordMix from '@mix/form-record-mix.js';
 import timeFormatMix from '@mix/time-format.js';
 
-const fileds = ['vhclSeriesCode', 'vhclModelCode', 'vhclModelName', 'factoryName', 'colorName', 'vin', 'prodDate', 'warrantyBeginDate'];
+// 排除参数不传入接口
 const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
 
 
@@ -176,7 +160,7 @@ export default {
       name: 'vehicle',
       action: ['getVehicleExportData'],
     }),
-    formRecordMix('vehicleForm', fileds),
+    formRecordMix('vehicleForm'),
     timeFormatMix,
   ],
   data () {
@@ -185,10 +169,11 @@ export default {
     };
   },
   methods: {
+    /**
+     * 车辆查询
+     */
     vehicleSearch () {
-      this.transformMomentDate(this.vehicleFormRecord, 'prodDate');
-      this.transformMomentDate(this.vehicleFormRecord, 'warrantyBeginDate');
-      const vehicleSearchList = omitSearchFields({ ...this.vehicleFormRecord });
+      const vehicleSearchList = this.getQuery();
       this.$store.commit('vehicle/set', { vehicleSearchList });
     },
     /**
@@ -202,7 +187,17 @@ export default {
      * 导出
      */
     vehicleExport () {
-      this.getVehicleExportData(this.vehicleFormRecord).then();
+      const vehicleSearchList = this.getQuery();
+      this.getVehicleExportData(vehicleSearchList).then();
+    },
+    /**
+     * 处理查询参数，其中时间格式Moment会转换成字符串或者数字
+     */
+    getQuery () {
+      // `transformMomentDate`自动处理`prodDate`参数为`prodDateStart`、`prodDateEnd`格式
+      this.transformMomentDate(this.vehicleFormRecord, 'prodDate');
+      this.transformMomentDate(this.vehicleFormRecord, 'warrantyBeginDate');
+      return omitSearchFields(this.vehicleFormRecord);
     },
   },
 };
@@ -214,10 +209,10 @@ export default {
     margin-left: 12px;
   }
 }
-/deep/  .ant-select-dropdown-menu-root{
-      overflow:visible ;
- .ant-select-dropdown-menu-item{
-      overflow:visible ;
+/deep/ .ant-select-dropdown-menu-root {
+  overflow: visible;
+  .ant-select-dropdown-menu-item {
+    overflow: visible;
   }
 }
 </style>

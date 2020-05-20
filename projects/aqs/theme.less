@@ -23,21 +23,7 @@
 @app-content-header-height: 48px; // 内容区域header的高度
 @app-content-footer-height: 0px;  // 内容区域footer的高度
 @app-content-border-width: 16px;  // 内容区域外部边框大小
-@app-content-sider-width: 200px;
-@app-content-sider-width-min: 80px;
 
-body{
-  line-height: @app-content-header-height;
-}
-
-.app-content-sider {
-  min-width: @app-content-sider-width!important;
-  max-width: @app-content-sider-width!important;
-  &.ant-layout-sider-collapsed {
-    min-width: @app-content-sider-width-min!important;
-    max-width: @app-content-sider-width-min!important;
-  }
-}
 @form-label-fixed-width: 88px;
 .col-layout-form.ant-form-horizontal, 
 .col-layout-form.ant-form-inline {
@@ -97,6 +83,11 @@ body{
 }
 // 分列表单下的item样式 =========================end===========================
 
+// 设置所有的弹出消息浮层层高 ========================begin==========================
+.ant-message {
+  z-index: 6010;
+}
+// 设置所有的弹出消息浮层层高 =========================end===========================
 // 设置滚动条样式 ========================begin==========================
 ::-webkit-scrollbar {
   height: 6px;
@@ -113,14 +104,6 @@ body{
 ::-webkit-scrollbar-track {
   background: rgba(0,0,0,0.04);
 }
-// 设置滚动条样式 ========================end==========================
-
-// 设置所有的弹出消息浮层层高 ========================begin==========================
-.ant-message {
-  z-index: 6010;
-}
-// 设置所有的弹出消息浮层层高 =========================end===========================
-
 // 设置表格文本省略 =========================begin===========================
 .ant-table-wrapper.ellipsis-table{
   // 设置表格内容不换行
@@ -145,4 +128,5 @@ body{
     padding: 12px;
   }
 }
+
 // 设置表格文本省略 =========================end===========================

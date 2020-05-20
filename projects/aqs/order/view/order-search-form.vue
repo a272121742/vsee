@@ -122,9 +122,7 @@
       </a-col>
       <!-- 车型代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item
-          :label="$t('order.vhclModelSaleCode')"
-        >
+        <a-form-item :label="$t('order.vhclModelSaleCode')">
           <multiple-net-select
             v-decorator="['vhclSeriesCode']"
             :placeholder="$t('form.select')"
@@ -316,14 +314,13 @@
 <script>
 import { uniq, omit } from 'ramda';
 import storeModuleMix from '@mix/store-module.js';
-import formRecordMix from '@mix/form-record.js';
+import formRecordMix from '@mix/form-record-mix.js';
 import timeFormatMix from '@mix/time-format.js';
 
 
 const omitSearchFields = omit(['prodDate', 'repairDate', 'warrantyBeginDate']);
 
 
-const fileds = ['claimNo', 'vin', 'partName', 'partCode', 'faultSignCode', 'faultSignAnalysis', 'prodDate', 'repairDate', 'faultMileageStart', 'faultMileageEnd', 'warrantyBeginDate', 'supplierCode', 'supplierName', 'serviceStationId', 'licenseNo', 'vhclSeriesCode', 'claimOrderStatus'];
 export default {
   name: 'Order',
   path: '/order',
@@ -336,7 +333,7 @@ export default {
       name: 'order',
       action: ['getOrderExportData', 'getPartCodeData', 'getPartNameData', 'getSupplierCodeData', 'getSupplierNameData'],
     }),
-    formRecordMix('claimOrderForm', fileds),
+    formRecordMix('claimOrderForm'),
     timeFormatMix,
   ],
   data () {
@@ -354,16 +351,12 @@ export default {
     this.supplierCodeSearch();
     this.supplierNameSearch();
   },
-
   methods: {
     /**
      * 查询
      */
     orderSearch () {
-      this.transformMomentDate(this.claimOrderFormRecord, 'prodDate');
-      this.transformMomentDate(this.claimOrderFormRecord, 'repairDate');
-      this.transformMomentDate(this.claimOrderFormRecord, 'warrantyBeginDate');
-      const claimOrderFormSearch = omitSearchFields({ ...this.claimOrderFormRecord });
+      const claimOrderFormSearch = this.getQuery();
       this.$store.commit('order/set', { claimOrderFormSearch });
     },
     /**
@@ -377,12 +370,12 @@ export default {
      * 导出数据
      */
     orderExport () {
-      this.getOrderExportData(this.claimOrderFormRecord).then();
+      const claimOrderFormSearch = this.getQuery();
+      this.getOrderExportData(claimOrderFormSearch).then();
     },
     onFaultSignAnalysisChange (value, label) {
       this.claimOrderFormRecord.faultSignAnalysis = label;
     },
-
     /**
      * 祸首件与供应商 自动加载搜索
      */
@@ -406,20 +399,26 @@ export default {
         this.supplierNameSource = uniq(res.map((item) => item.supplierNameZh));
       });
     },
+    getQuery () {
+      this.transformMomentDate(this.claimOrderFormRecord, 'prodDate');
+      this.transformMomentDate(this.claimOrderFormRecord, 'repairDate');
+      this.transformMomentDate(this.claimOrderFormRecord, 'warrantyBeginDate');
+      return omitSearchFields({ ...this.claimOrderFormRecord });
+    },
   },
 };
 </script>
 <style lang="less" scoped>
- /deep/  .ant-select-dropdown-menu-root{
-      overflow:visible ;
- .ant-select-dropdown-menu-item{
-      overflow:visible ;
+/deep/ .ant-select-dropdown-menu-root {
+  overflow: visible;
+  .ant-select-dropdown-menu-item {
+    overflow: visible;
   }
-  .inputNumber{
+  .inputNumber {
     width: 100%;
   }
 }
 /deep/ .ant-select-auto-complete.ant-select .ant-select-search--inline {
-    position: absolute;
+  position: absolute;
 }
 </style>;

@@ -6,21 +6,15 @@
 </template>
 
 <script>
-// import VChart from 'vue-echarts';
-// import 'echarts/lib/chart/bar';
-// import 'echarts/lib/component/title';
-// import 'echarts/lib/component/tooltip';
-// import 'echarts/lib/component/axis';
+import VChart from 'vue-echarts';
+import 'echarts/lib/chart/bar';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/axis';
 
 export default {
   components: {
-    VChart: () => (
-      import('echarts/lib/chart/bar'),
-      import('echarts/lib/component/title'),
-      import('echarts/lib/component/tooltip'),
-      import('echarts/lib/component/axis'),
-      import('vue-echarts')
-    ),
+    VChart,
   },
   props: {
     title: {

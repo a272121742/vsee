@@ -47,11 +47,7 @@ export default {
     return {
       columns: vehicleListColumns,
       list: [],
-      total: 0,
       loading: false,
-      pagination: {
-        pageSizeOptions: ['10', '20', '50', '100'],
-      },
     };
   },
   watch: {
@@ -67,7 +63,6 @@ export default {
     if (this.$route.query.vin !== undefined) {
       Object.assign(this.$route.query, { asqIssueRptId: '' });
       this.pagination.pageSize = 100;
-      this.serverPagination.limit = 100;
       this.pagination.showSizeChanger = false;
     }
     const { vin } = this.$route.query;
@@ -78,14 +73,19 @@ export default {
     fetch (vin) {
       this.loading = true;
       if (Object.keys(this.$route.query).length !== 0 && this.$route.query.asqIssueRptId !== '') {
-        this.getVehicleAllPage({ asqIssueRptId: this.$route.query.asqIssueRptId, ...this.serverPagination }).then(this.load).finally(this.reset);
+        this
+          .getVehicleAllPage({ asqIssueRptId: this.$route.query.asqIssueRptId, ...this.serverPagination })
+          .then(this.load)
+          .finally(this.reset);
       } else {
-        this.getVehiclePage({ ...vin, ...this.serverPagination }).then(this.load).finally(this.reset);
+        this
+          .getVehiclePage({ ...vin, ...this.serverPagination })
+          .then(this.load)
+          .finally(this.reset);
       }
     },
     load (res) {
       if (Object.keys(this.$route.query).length !== 0 && this.$route.query.asqIssueRptId !== '') {
-        console.log('工单', res);
         this.list = res.list;
         this.pagination.total = res.total;
       } else {
@@ -93,6 +93,9 @@ export default {
         this.pagination.total = res.total;
       }
     },
+    /**
+     * 重置loading状态
+     */
     reset () {
       this.loading = false;
     },

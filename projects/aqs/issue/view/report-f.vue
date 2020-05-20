@@ -68,10 +68,6 @@ export default {
       default: () => ({}),
     },
   },
-  created () {
-    console.log(this.$message);
-    console.log(this.$confirm);
-  },
 };
 </script>
 <style lang="less" scoped>

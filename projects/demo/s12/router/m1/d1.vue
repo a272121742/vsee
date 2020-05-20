@@ -60,8 +60,6 @@
   </a-form>
 </template>
 
-</template>
-
 <script>
 import formRecordMix from '@mix/form-record-mix.js';
 
@@ -101,6 +99,11 @@ export default {
     },
     add (list = [], index) {
       list.splice(index, 0, '');
+    },
+    set () {
+      this.$store.commit('s12/update', (store) => {
+        store.a = 1;
+      });
     },
   },
 };

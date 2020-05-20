@@ -26,34 +26,148 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
   - theme.less      // 全局样式文件
 ```
 
+`theme.less`是一个四层结构，分别是：
+
+1. 规范定义；
+2. 组件库注入（Ant Design Vue）；
+3. 系统框架注入（Vsee）；
+4. 自定义；
+
 一个`theme.less`的案例如下：
 
 ```less
-@primary-color: #0097E0; // 全局主色
-@link-color: #0097E0; // 链接色
-@success-color: #B7D342; // 成功色
-@warning-color: #FABE00; // 警告色
-@error-color: #D1291A; // 错误色
-@font-size-base: 14px; // 主字号
-@heading-color: rgba(0, 0, 0, .85); // 标题色
-@text-color: rgba(0, 0, 0, .65); // 主文本色
-@text-color-secondary: rgba(0, 0, 0, .45); // 次文本色
-@disabled-color: rgba(0, 0, 0, .25); // 失效色
-@border-radius-base: 4px; // 组件/浮层圆角
-@border-color-base: #d9d9d9; // 边框色
-@box-shadow-base: 0 2px 8px rgba(0, 0, 0, .15); // 浮层阴影
-@box-shadow-h: 0 2px 4px 0 rgba(0, 0, 0, .12);
-@box-shadow-v: 2px 2px 4px 0 rgba(0, 0, 0, 0.12);
+/** 规范定义 **/
+// 主字体集合
+@global-font-family: 'SYHT', 'roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+// 第一字体
+@global-font-face-t1: 'SYHT';
+// 第二字体
+@global-font-face-t2: 'roboto';
+// 正常字体大小
+@global-font-size-normal: 14px;
+// 标题字体大小
+@global-font-size-title: 20px;
+// 说明字体大小（用于一些较小字体场景）
+@global-font-size-desc: 12px;
+// 标识字体大小（用于一些较大字体场景）
+@global-font-size-banner: 28px;
+// 常规字重
+@global-font-weight-normal: 400;
+// 中文加粗字重
+@global-font-weight-bold-zh: 500;
+// 英文加粗字重
+@global-font-weight-bold-en: 600;
+// 文字行高
+@global-font-line-height: 1;
 
-// 这里定义布局的属性
-@app-theme-color: white;  //主题色
-@app-background-color: #F5F5F5;  // 背景底色
-@app-content-background-color: white;  // 内容底色
-@app-layout-header-height: 64px;  // 顶部header的高度
-@app-layout-footer-height: 0px;   // 底部footer的高度
-@app-content-header-height: 48px; // 内容区域header的高度
-@app-content-footer-height: 0px;  // 内容区域footer的高度
-@app-content-border-width: 16px;  // 内容区域外部边框大小
+// 品牌色
+@global-brand-color: #0097E0;
+// 【主题色】全局背景色
+@global-theme-bg-color: #FFFFFF;
+// 【主题色】页面背景色
+@page-theme-gb-color: #F5F5F5;
+// 【主题色】板块背景色
+@block-theme-gb-color-normal: transparent;
+// 【主题色】透明板块背景色
+@block-theme-gb-color-transparent: transparent;
+// 【主题色】主字色
+@global-font-color: #595959;
+// 【主题色】辅字色1
+@global-font-color-1: #262626;
+// 【主题色】辅字色2
+@global-font-color-2: #8C8C8C;
+// 【功能色】通行色
+@global-success-color: #32B700;
+// 【功能色】否定色
+@global-error-color: #D1291A;
+// 【功能色】警告色
+@global-warning-color: #FABE00;
+// 【功能色】失效色
+@global-disabled-color: #BFBFBF;
+// 【功能色】阴影色
+@global-shadow-color: rgba(0, 0, 0, .12);
+// 【功能色】边框色
+@global-border-color: #D9D9D9;
+// 【层次】应用层
+@global-layer-app: 0;
+// 【层次】内容展示层
+@global-layer-content: 1;
+// 【层次】下拉展示层
+@global-layer-overlay: 1000;
+// 【层次】导航层
+@global-layer-nav: 1050;
+// 【层次】辅助层
+@global-layer-helper: 1100;
+// 【层次】模态层
+@global-layer-modal: 1200;
+// 【层次】通知层
+@global-layer-notify: 1500;
+// 【层次】封顶层
+@global-layer-max: 2000;
+// 【阴影】横向1级
+@global-shadow-h1: 0 2px 4px 0 @global-shadow-color;
+// 【阴影】横向2级
+@global-shadow-h2: none;
+// 【阴影】纵向1级
+@global-shadow-v1: 2px 2px 4px 0 @global-shadow-color;
+// 【阴影】纵向2级
+@global-shadow-v2: none;
+// 【阴影】环绕1级
+@global-shadow-b1: 0 2px 8px @global-shadow-color;
+// 【阴影】环绕2级
+@global-shadow-b2: none;
+// 小间距
+@global-gap-small: 8px;
+// 普通间距
+@global-gap-normal: 16px;
+// 大间距
+@global-gap-large: 24px;
+
+// ant-design-vue 配置 https://github.com/vueComponent/ant-design-vue/blob/master/components/style/themes/default.less
+@font-family: @global-font-family;
+@primary-color: @global-brand-color; // 全局主色
+@link-color: @global-brand-color; // 链接色
+@success-color: @global-success-color; // 成功色
+@warning-color: @global-warning-color; // 警告色
+@error-color: @global-error-color; // 错误色
+@body-background: @global-theme-bg-color; // body背景色
+@heading-color: @global-font-color-1; // 标题色
+@text-color: @global-font-color; // 主文本色
+@border-color-base: @global-border-color; // 边框色
+@text-color-secondary: @global-font-color-2; // 次文本色
+@disabled-color: @global-disabled-color; // 失效色
+@box-shadow-base: @global-shadow-b1; // 浮层阴影
+
+// vsee 配置
+@app-layout-header-height: 64px;  // 应用布局头部高度
+@app-layout-footer-height: 0px;   // 应用布局底部高度
+@app-content-header-height: 48px; // 内容区域头部高度
+@app-content-footer-height: 0px;  // 内容区域底部高度
+@app-content-border-width: 16px;  // 内容区域外边距
+@app-content-sider-width: 200px;  // 内容菜单宽度
+@app-content-sider-width-min: 80px; // 内容菜单最小宽度
+@app-content-sider-trigger-height: 48px;  // 内容菜单控制器高度
+@app-content-padding: 12px 16px;  // 内容区域内边距
+@app-layout-zindex: @global-layer-nav;
+@app-content-zindex: @global-layer-content;
+@app-theme-color: @global-theme-bg-color;  //主题色
+@app-background-color: @page-theme-gb-color;  // 背景底色
+@app-content-background-color: @global-theme-bg-color;
+@box-shadow-h: @global-shadow-h1;
+@box-shadow-v: @global-shadow-v1;
+
+/**
+ * 1. 请使用如下方式增加颜色的定义
+ * @your-defined: color(~`colorPalette('@{other-defined}', 1)`);
+ * 例如，定义线条颜色，取全局边框色`@global-border-color`进行运算后取第3个值，取值范围 1~10。
+ * @line-color: color(~`colorPalette('@{global-border-color', 3)`);
+ * 2. 或者使用`fade`函数设置透明度来改变颜色
+ * 例如，定义同类元素背景的颜色，进行透明度`4%`的的设置
+ * @panel-border-color: red;
+ * @panel-gb-color: fade(@panel-border-color, 4%);
+ */
+
+// 这里是其他样式的定义
 ```
 
 对该文件需要有几点说明：

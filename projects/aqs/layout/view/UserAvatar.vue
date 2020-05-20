@@ -4,11 +4,8 @@
     :get-popup-container="e => e.parentNode"
     class="user-info"
   >
-    <div
-      class="user-info-awatar"
-      :title="user.realName"
-    >
-      <a-icon type="icontx_outlined" />
+    <div class="user-info-awatar">
+      <a-icon type="icontx_outlined"></a-icon>
       <change-password
         :visible.sync="showChangePassword"
         :mapping="{ oldPassword: 'password', newPassword: 'newPassword'}"
@@ -29,7 +26,7 @@
         </a>
       </a-menu-item>
       <a-menu-item key="2">
-        <a @click.stop.prevent="gohome">
+        <a @click.stop.prevent="toPortal">
           {{ $t('action.toPortal') }}
         </a>
       </a-menu-item>
@@ -61,13 +58,13 @@ export default {
     },
   },
   methods: {
+    toPortal () {
+      this.$store.dispatch('gohome');
+    },
     toChangePd () {
       this.showChangePassword = true;
     },
-    gohome () {
-      this.$store.dispatch('gohome');
-    },
-    logout () {
+    logoutHandle () {
       this.$store.dispatch('logout');
     },
   },

@@ -28,17 +28,16 @@ import {
   Tabs,
   Anchor,
   Checkbox,
-  DatePicker,
-  Popconfirm,
-  Upload,
   Alert,
+  Popconfirm,
+  DatePicker,
+  Upload,
   InputNumber,
-  Empty,
   message,
 } from 'ant-design-vue';
 
 import SingleMessage from '@comp/alert/SingleMessage.js';
-// import { debounce } from 'lodash';
+import { debounce } from 'lodash';
 import AsyncComponent from '@comp/AsyncComponent';
 
 Vue.component('async-component', AsyncComponent);
@@ -69,16 +68,12 @@ Vue.use(Spin);
 Vue.use(Tabs);
 Vue.use(Anchor);
 Vue.use(Checkbox);
-Vue.use(DatePicker);
-Vue.use(Popconfirm);
-Vue.use(Upload);
 Vue.use(Alert);
+Vue.use(Popconfirm);
+Vue.use(DatePicker);
+Vue.use(Upload);
 Vue.use(InputNumber);
-Vue.use(Empty);
 
-Vue.component('a-icon', Icon.createFromIconfontCN({
-  scriptUrl: '/static/icon/logo.js',
-}));
 Vue.component('a-icon', Icon.createFromIconfontCN({
   scriptUrl: '/static/icon/iconfont.js',
 }));
@@ -91,8 +86,8 @@ message.show = SingleMessage.show;
 message.close = SingleMessage.close;
 Vue.prototype.$message = message;
 
-// // 页面滚动后，相关组件收起下拉
-// window.addEventListener('scroll', debounce(() => {
-//   document.querySelectorAll('input:focus').forEach((item) => item.blur());
-//   document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
-// }, 800, { leading: true, trailing: false }));
+// 页面滚动后，相关组件收起下拉
+window.addEventListener('scroll', debounce(() => {
+  document.querySelectorAll('input:focus').forEach((item) => item.blur());
+  document.querySelectorAll('.ant-select-open').forEach((item) => item.click());
+}, 400));

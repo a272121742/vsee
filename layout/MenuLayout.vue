@@ -2,7 +2,7 @@
   <vue-scroll
     class="app-scroll"
     :ops="$store.state.config.scroll_config"
-    @handle-scroll="$root.contentScroll"
+    @handle-scroll="contentScroll"
   >
     <a-layout class="app-layout">
       <a-layout-header class="app-layout-header">
@@ -160,6 +160,11 @@ export default {
     },
     isTab () {
       return this.$store.state.config.content_head === 'tab';
+    },
+  },
+  methods: {
+    contentScroll (vertical, horizontal, event) {
+      this.$root.contentScroll && this.$root.contentScroll(event, vertical, horizontal);
     },
   },
 };

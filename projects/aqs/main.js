@@ -1,8 +1,10 @@
+// 加载vue
 import Vue from 'vue';
 import i18n from '@i18n';
 import router from '@router';
 import store from '@store';
 import { debounce } from 'lodash';
+
 
 Vue.nextTick(() => {
   const app = new Vue({
