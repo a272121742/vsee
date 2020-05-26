@@ -24,6 +24,13 @@
     <div
       class="header-nav"
     >
+      <a-icon type="fast-forward" />
+      <a-icon type="iconshzl_twoTone" />
+      <a-icon type="iconsgcl_outlined" />
+      <a-icon type="iconsxy_filled" />
+      <a-icon type="iconxx_filled" />
+      <a-icon type="caret-down" />
+      <a-icon type="calendar" />
       <slot name="nav"></slot>
     </div>
     <div class="header-user">
@@ -42,10 +49,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@header-height: 64px;
+@header-height: @app-layout-header-height;
+@nav-wdith: 200px;
 .app-header-wide {
   display: flex;
-  height: 100%;
   margin: 0 16px;
   .header-comp {
     order: -1;
@@ -54,7 +61,7 @@ export default {
       margin: auto 16px;
       font-size: 168px;
       cursor: pointer;
-      svg {
+      /deep/ svg {
         height: 64px;
       }
     }
@@ -70,10 +77,10 @@ export default {
   .header-nav {
     flex-grow: 1;
     overflow: hidden;
-    padding-left: 200px;
+    padding-left: @nav-wdith;
   }
   .header-user {
-    flex-basis: 200px;
+    flex-basis: @nav-wdith;
     overflow: hidden;
   }
 }

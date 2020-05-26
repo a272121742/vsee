@@ -1,0 +1,134 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|助手（Helper）/时间日期" />
+
+# 前言
+
+这并不是最终的助手，因为目前`ant-design-vue`并没有摆脱`moment`库的繁重，时间处理这块对于业务上来说，处理的点并不是特别的多，所以，我们仍然是在等待官方给予替换`moment`的最好解决方案再说。
+
+## 使用方式
+
+我们抛除了原来的`mix`混入模式，改用更全面的方式，你可以在`~/bootstrap.js`中提前配置：
+
+```javascript
+import Vue from 'vue';
+import DATATIME_EXTENDS from '@util/datetime-helper.js';
+
+Vue.use(DATATIME_EXTENDS);
+```
+
+## 过滤器
+
+注册该组件的时候，就会向全局注册如下过滤器：
+
+1. `DATE_FORMAT` - 日期格式化；
+2. `TIME_FORMAT` - 时间格式化；
+3. `DATETIME_FORMAT` - 日期时间格式化；
+
+例如你有一个时间变量，在展示或者传递的时候，在`vue`中就可以用到如下的写法：
+
+```html
+{{ record.date | DATE_FORMAT }}
+```
+
+同样，在传值的过程中，也可以使用该方法。
+
+## 全局常量
+
+我们也会向全局注册全局常量：
+
+1. DATE_FORMAT - 与`config.DATE_FORMAT`设定值一致；
+1. TIME_FORMAT - 与`config.TIME_FORMAT`设定值一致；
+1. DATETIME_FORMAT - 与`config.DATETIME_FORMAT`设定值一致；
+
+## 公开方法
+
+就目前而言，时间的处理在结合服务端开发时，会略显不同。我们无法提交一个`Array<Moment>`类型的值给服务端，必须转换为`{start, end}`的方式才行。因此，我们公开了一些有用的方法给开发者使用。公开发方法的目录为：
+
+```javascript
+export {
+  /**
+   * 获取`moment`对象，如果无法转换为`moment`对象，则转换为配置的`EMPTY_DATETIME_VALUE`
+   */ 
+  GET_MOMENT (value) {},
+  /**
+   * 按照配置的`DATE_FORMAT`获取日期格式化;
+   */ 
+  GET_DATE_FORMAT (value) {},
+  /**
+   * 按照配置的`TIME_FORMAT`获取时间格式化;
+   */ 
+  GET_DATETIME_FORMAT (value) {},
+  /**
+   * 按照配置的`DATETIME_FORMAT`获取时间日期格式化;
+   */ 
+  GET_DATETIME_FORMAT (value) {},
+  /**
+   * 获取天开头
+   */ 
+  GET_START_OF_DAY (value) {},
+  /**
+   * 获取天结尾
+   */ 
+  GET_END_OF_DAY (value) {},
+  /**
+   * 获取周开头
+   */ 
+  GET_START_OF_WEEK (value) {},
+  /**
+   * 获取周结尾
+   */ 
+  GET_END_OF_WEEK (value) {},
+  /**
+   * 获取月开头
+   */ 
+  GET_START_OF_MONTH (value) {},
+  /**
+   * 获取月结尾
+   */ 
+  GET_END_OF_MOMENT (value) {},
+  /**
+   * 获取年开头
+   */ 
+  GET_START_OF_YEAR (value) {},
+  /**
+   * 获取年结尾
+   */ 
+  GET_END_OF_YEAR (value) {},
+  /**
+   * 获取日时间范围
+   */ 
+  DAY_RANGE (begin, end) {},
+  /**
+   * 获取周时间范围
+   */ 
+  WEEK_RANGE (begin, end) {},
+  /**
+   * 获取月时间范围
+   */ 
+  MONTH_RANGE (begin, end) {},
+  /**
+   * 获取年时间范围
+   */ 
+  MONTH_RANGE (begin, end) {},
+  /**
+   * 将范围时间`Array`转换为`Map`
+   */ 
+  RANGE_TO_MAP: (field) => (begin, end) => {},
+  /**
+   * 将`Map`时间转换为范围`Array`
+   */ 
+  MAP_TO_RANGE: (field) => (json) => {},
+  /**
+   * 处理`record`中的字段`field`，将其从`Array`转为`Map`；
+   * 例如，`record`中包含属性`createTime`，查询时，查询在某个范围被创建的工单时，提交前，用该函数处理：
+   * RANGE_TO_MAP_BY_FIELD(record, 'createTime')，会把`createTime: [begin, end]`转化为`{createTimeStart: begin, createTimeEnd: end}`，`start`、`end`的配置参见配置项`START_FIELDNAME`和`END_FIELDNAME`
+   */ 
+  RANGE_TO_MAP_BY_FIELD (record, field) {},
+  /**
+   * 处理`record`中的字段`field`，将其从`Map`转为`Array`；
+   * `RANGE_TO_MAP_BY_FIELD`函数的逆运算；
+   */ 
+  MAP_TO_RANGE_BY_FIELD (value) {},
+}
+```

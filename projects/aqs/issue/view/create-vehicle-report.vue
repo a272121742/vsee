@@ -82,7 +82,6 @@ export default {
     //   type: String,
     //   required: true,
     //   validator (value) {
-    //     console.log('全量吗内容', value);
     //     return ~['1', '2', '3'].indexOf(value);
     //   },
     // },
@@ -118,8 +117,6 @@ export default {
     },
   },
   created () {
-    console.log('登录的信息', this.$store.state.userInfo);
-
     /**
      * 售后工单创建报告  拿到后台响应的数据
      */

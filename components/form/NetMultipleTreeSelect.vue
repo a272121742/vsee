@@ -13,6 +13,7 @@
     :dropdown-style="{ 'max-height': '300px', 'min-height': 'auto' }"
     show-checked-strategy="SHOW_PARENT"
     dropdown-match-select-width
+    show-arrow
     v-on="exclude(['change'], $listeners)"
     @change="handlerChange"
   >

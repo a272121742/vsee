@@ -1,12 +1,7 @@
 import mock from '@mock';
 import { Random } from 'mockjs';
 
-console.log('加载了呀');
-
-mock.get('/auth/captcha', (uuid) => {
-  console.log('发送图片', uuid);
-  return Random.dataImage('128x38', Random.string('lower', 6));
-});
+mock.get('/auth/captcha', () => Random.dataImage('128x38', Random.string('lower', 6)));
 
 mock.post('/auth/login', () => mock.result({
   data: {

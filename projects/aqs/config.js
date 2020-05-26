@@ -26,7 +26,7 @@ export default {
   TEIME_FORMAT: 'HH:mm:ss',
   DATETIME_FORMAT: void 0,
   EMPTY_DATETIME: '-',
-  PAGESIZE_OPTIONS: ['10', '20', '50', '100', '200'],
+  PAGESIZE_OPTIONS: ['10', '20', '50'],
   SERVER_PAGINATION: void 0,
   SCROLL: {
     bar: {
@@ -34,4 +34,13 @@ export default {
     },
   },
   DYNAMIC_TITLE: 'BJEV-TQIS',
+  DATETIME: {
+    DATE_FORMAT: 'YYYY-MM-DD',
+    TIME_FORMAT: 'HH:mm:ss',
+    DATETIME_FORMAT: (DATE_FORMAT, TIME_FORMAT) => `${DATE_FORMAT} ${TIME_FORMAT}`,
+    EMPTY_DATETIME_FORMAT: '-',
+    EMPTY_DATETIME_VALUE: null,
+    START_FIELDNAME: (fieldname) => `${fieldname}Start`,
+    END_FIELDNAME: (fieldname) => `${fieldname}End`,
+  },
 };

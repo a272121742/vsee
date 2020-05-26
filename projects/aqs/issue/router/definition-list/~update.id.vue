@@ -109,7 +109,6 @@ export default {
      */
     const { id } = this;
     this.getDetailProblemReport(id).then((res) => {
-      console.log('内容', res);
       this.$store.commit('issue/set', { isEditHand: true });
       this.asqIssueRptId = res.asqIssueRptId;
       if (res.asqIssueDefnData.asqIssueRptType === '3') {
@@ -141,8 +140,6 @@ export default {
             });
           } else {
             // 走全量
-            console.log('全量', this.mergeData);
-            console.log('查询条件', this.$store.state.issue.vehicleInforSearch);
             this.mergeData.params = this.$store.state.issue.vehicleInforSearch;
             this.saveAllEdit(this.mergeData).then(() => {
               this.$router.push('/issue/definition-list');

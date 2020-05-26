@@ -360,7 +360,6 @@ export default {
      * 用来监听 删除之后的故障频次也要跟着改变
      */
     '$store.state.issue.faultFrequency': function (value) {
-      console.log('故障频次', value);
       this.problemDescFormRecord.faultFrequency = value;
     },
   },

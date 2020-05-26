@@ -280,7 +280,6 @@ export default {
           key: 'all-data',
           text: '选全部',
           onSelect: (changableRowKeys) => {
-            console.log('changableRowKeys', changableRowKeys);
             this.onSelectAll(changableRowKeys);
           },
         }];
@@ -305,7 +304,6 @@ export default {
           key: 'all-data',
           text: '选全部',
           onSelect: (changableRowKeys) => {
-            console.log('changableRowKeys', changableRowKeys);
             this.onSelectAll(changableRowKeys);
           },
         }];
@@ -332,7 +330,7 @@ export default {
       this.selectedKeys = data;
     },
     // 选全量
-    onSelectAll (data) {
+    onSelectAll () {
       if (this.pagination.total <= 5000) {
         this.handAllFlag = true;
         this.rowSelection.selectedRowKeys = this.keys;

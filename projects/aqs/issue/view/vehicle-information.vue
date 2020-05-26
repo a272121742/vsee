@@ -384,7 +384,6 @@ export default {
     if (this.$route.query.orderFlag !== undefined) {
       this.orderFlag = this.$route.query.orderFlag;
     }
-    console.log('内容', this.list.length);
   },
   methods: {
     // 子传父
@@ -432,14 +431,12 @@ export default {
     tableChangeHandle () {
       if (this.orderFlag) {
         // 工单 + 全量 + 创建
-        console.log('工单 + 全量 + 创建');
         this.getAllReporterData({ claimNoTwo: this.totalKeys, ...this.paramsMap, ...this.serverPagination }).then((res) => {
           this.pagination.pageSize = 10;
           this.list = res.resultData;
         });
       } else if (this.handAllFlag) {
         // 手工 + 全量 + 创建
-        console.log('手工 + 全量 + 创建');
         this.getAllHandsPage({ notInVin: this.totalKeys, ...this.resultParams, ...this.serverPagination }).then((res) => {
           this.list = res.resultData.list;
           this.pagination.pageSize = 10;

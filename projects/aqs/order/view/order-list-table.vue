@@ -204,7 +204,6 @@ export default {
       }
     },
     create (type) {
-      console.log('内容', this.$store.state.order.claimOrderFormSearch);
       const num = this.rowSelection.selectedRowKeys.length;
       const resListNo = this.rowSelection.selectedRowKeys;
       if (type === 'batch') {

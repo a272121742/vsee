@@ -11,6 +11,7 @@
     :filter-tree-node="filterTreeNode"
     :dropdown-style="{ 'max-height': '300px', 'min-height': 'auto' }"
     dropdown-match-select-width
+    show-arrow
     @change="handlerChange"
   >
     <template #suffixIcon>

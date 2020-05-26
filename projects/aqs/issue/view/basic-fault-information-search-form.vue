@@ -207,7 +207,6 @@ export default {
     resultData: {
       immediate: false,
       handler (resultData = []) {
-        console.log('基础内容', resultData);
         const { vhclModelSaleCode, partId, supplierId } = resultData[0];
         this.basicFaultInfFormRecord = {
           vhclSeriesCode: vhclModelSaleCode,
@@ -223,7 +222,6 @@ export default {
     noResultData: {
       immediate: false,
       handler (noResultData = []) {
-        console.log('基础内容', noResultData);
         const { vhclModelSaleCode, partId, supplierId } = noResultData[0];
         this.basicFaultInfFormRecord = {
           vhclSeriesCode: vhclModelSaleCode,

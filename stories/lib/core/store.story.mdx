@@ -57,12 +57,12 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
   },
   mutations: {
     /**
-     * 设置登录状态
+     * 设置登录状态，并且根据`token`状态处理登录状态。即如果`token`不为`falsely`，则会设置登录状态`isLogin=true`
      * @params String token - 设置的TOKEN信息，如果存在则存储Cookie，否则清除Cookie，重置为非登录状态
      */ 
     setLoginStatus (token) {},
     /**
-     * 设置令牌信息，setLoginStatus的同名方法
+     * 设置令牌信息，setLoginStatus的同名方法，但仅仅设置`token`，不会修改`isLogin`的状态
      * @params String token - 设置的TOKEN信息，如果存在则存储Cookie，否则清除Cookie，重置为非登录状态
      */ 
     setToken (token) {},

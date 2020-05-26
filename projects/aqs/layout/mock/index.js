@@ -1,5 +1,5 @@
 import mock from '@mock';
-import cdb from '@lib/cdb.js';
+// import cdb from '@lib/cdb.js';
 
 const appCode = 'AQS';
 

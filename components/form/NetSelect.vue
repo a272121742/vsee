@@ -10,6 +10,7 @@
     :disabled="$attrs.disabled || rending"
     :max-tag-count="$attrs['max-tag-count'] || 0"
     :get-popup-container="el => el.parentNode"
+    show-arrow
     v-on="exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
@@ -41,6 +42,8 @@ import { omit, prop, uniqWith } from 'ramda';
 import { debounce, isArray } from 'lodash';
 import { renameKey } from '@util/datahelper.js';
 import $ from '@http';
+
+console.error('该组件即将弃用，请使用新版的[\'MutipleNetSelect\', \'NetMultipleTreeSelect\', \'NetSingleTreeSelect\', \'SingleNetSelect\']');
 
 const key2value = renameKey('key', 'value');
 // const value2key = renameKey('value', 'key');

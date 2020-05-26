@@ -5,7 +5,6 @@ import router from '@router';
 import store from '@store';
 import { debounce } from 'lodash';
 
-
 Vue.nextTick(() => {
   const app = new Vue({
     router,

@@ -1,0 +1,33 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="方案|时间日期" />
+
+## 标准化
+
+时间日期的展示和处理需要使用标准化的方式，为此我们可以在`~/config.js`中配置全局的时间信息：
+
+```javascript
+export default {
+  /* ... */
+  /**
+   * 时间格式化配置对象
+   */ 
+  DATETIME: {
+    // 日期格式化，默认`YYYY-MM-DD`;
+    DATE_FORMAT: 'YYYY-MM-DD',
+    // 时间格式化，默认`HH:mm:ss`;
+    TIME_FORMAT: 'HH:mm:ss',
+    // 时间日期格式化，默认`YYYY-MM-DD HH:mm:ss`，可以为字符串，或函数，函数会返回已经定义的**日期格式化**和**时间格式化**配置，我们约定时间日期格式化应该和日期格式化、时间格式化保持一致。
+    DATETIME_FORMAT: (DATE_FORMAT, TIME_FORMAT) => `${DATE_FORMAT} ${TIME_FORMAT}`,
+    // 空时间格式化
+    EMPTY_DATETIME_FORMAT: '-',
+    // 空时间的传递值，可以为[void 0, null, '']三选一，不在可选范围内时，选择为`null`；
+    EMPTY_DATETIME_VALUE: null,
+    // 开时时间命名规则，必须为函数，是一个拼接字段名的函数；
+    START_FIELDNAME: (fieldname) => `${fieldname}Start`,
+    // 结束时间命名规则，必须为函数，是一个拼接字段名的函数；
+    END_FIELDNAME: (fieldname) => `${fieldname}End`,
+  },
+  /* ... */
+}
+```

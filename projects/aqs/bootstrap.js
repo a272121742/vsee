@@ -19,7 +19,7 @@ import {
   Drawer,
   Dropdown,
   Form,
-  Icon,
+  // Icon,
   Input,
   Layout,
   LocaleProvider,
@@ -35,13 +35,17 @@ import {
   InputNumber,
   message,
 } from 'ant-design-vue';
+import AIcon from '@comp/general/AIcon.js';
 
 import SingleMessage from '@comp/alert/SingleMessage.js';
-import { debounce } from 'lodash';
 import AsyncComponent from '@comp/AsyncComponent';
+import DatetimeFilter from '@util/datetime-helper.js';
+
+Vue.use(DatetimeFilter);
 
 Vue.component('async-component', AsyncComponent);
 
+Vue.use(AIcon, { prefix: 'icon', url: ['/static/icon/logo.js', '/static/icon/iconfont.js'] });
 Vue.use(Col);
 Vue.use(Row);
 Vue.use(Switch);
@@ -59,7 +63,7 @@ Vue.use(Divider);
 Vue.use(Drawer);
 Vue.use(Dropdown);
 Vue.use(Form);
-Vue.use(Icon);
+// Vue.use(Icon);
 Vue.use(Input);
 Vue.use(Layout);
 Vue.use(LocaleProvider);
@@ -74,10 +78,6 @@ Vue.use(DatePicker);
 Vue.use(Upload);
 Vue.use(InputNumber);
 
-Vue.component('a-icon', Icon.createFromIconfontCN({
-  scriptUrl: '/static/icon/iconfont.js',
-}));
-
 Vue.config.productionTip = false;
 message.config({
   top: '180px',
@@ -85,9 +85,3 @@ message.config({
 message.show = SingleMessage.show;
 message.close = SingleMessage.close;
 Vue.prototype.$message = message;
-
-// 页面滚动后，相关组件收起下拉
-window.addEventListener('scroll', debounce(() => {
-  document.querySelectorAll('input:focus').forEach((item) => item.blur());
-  document.querySelectorAll('.ant-select-open').forEach((item) => item.click());
-}, 400));

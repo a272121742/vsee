@@ -131,9 +131,6 @@ export default {
       showForgetPd: false,
     };
   },
-  beforeCreate () {
-    console.log(this.$route.query.token);
-  },
   created () {
     this.recovery();
     const { mapPropsToFields, onValuesChange } = this;
@@ -166,7 +163,6 @@ export default {
             if (res.isNeedUpps === 1) {
               this.showChangePassword = true;
             } else if (res.token) {
-              this.$store.commit('setLoginStatus', res.token);
               const goPage = this.$route.query.redirect || '/';
               if (this.$router.matcher.match(goPage).name === '404') {
                 this.$router.push({ path: '/' });

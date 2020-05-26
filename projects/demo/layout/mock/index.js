@@ -180,3 +180,8 @@ mock.get('/sys/menu/permissions', () => mock.result({
   data: {},
   code: 0,
 }));
+
+mock.get('/test/list', () => ({
+  data: [{ id: '0', name: 'EC3' }, { id: '1', name: 'EX2' }],
+  code: 0,
+}), { timeout: 1000 });

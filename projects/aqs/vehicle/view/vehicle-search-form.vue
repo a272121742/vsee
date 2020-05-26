@@ -97,7 +97,7 @@
             v-decorator="[
               'prodDate'
             ]"
-            :format="GLOBAL_SELECT_DATE_FORMAT"
+            :format="DATE_FORMAT"
           />
         </a-form-item>
       </a-col>
@@ -108,7 +108,7 @@
             v-decorator="[
               'warrantyBeginDate'
             ]"
-            :format="GLOBAL_SELECT_DATE_FORMAT"
+            :format="DATE_FORMAT"
           />
         </a-form-item>
       </a-col>
@@ -144,7 +144,7 @@
 import { omit } from 'ramda';
 import storeModuleMix from '@mix/store-module.js';
 import formRecordMix from '@mix/form-record-mix.js';
-import timeFormatMix from '@mix/time-format.js';
+import { RANGE_TO_MAP_BY_FIELD } from '@util/datetime-helper.js';
 
 // 排除参数不传入接口
 const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
@@ -161,7 +161,6 @@ export default {
       action: ['getVehicleExportData'],
     }),
     formRecordMix('vehicleForm'),
-    timeFormatMix,
   ],
   data () {
     return {
@@ -195,8 +194,8 @@ export default {
      */
     getQuery () {
       // `transformMomentDate`自动处理`prodDate`参数为`prodDateStart`、`prodDateEnd`格式
-      this.transformMomentDate(this.vehicleFormRecord, 'prodDate');
-      this.transformMomentDate(this.vehicleFormRecord, 'warrantyBeginDate');
+      RANGE_TO_MAP_BY_FIELD(this.vehicleFormRecord, 'prodDate');
+      RANGE_TO_MAP_BY_FIELD(this.vehicleFormRecord, 'warrantyBeginDate');
       return omitSearchFields(this.vehicleFormRecord);
     },
   },

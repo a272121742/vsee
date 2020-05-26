@@ -61,12 +61,12 @@ module.exports = (config) => {
           name: 'common-utils',
           maxSize: 20000,
         },
-        // styles: {
-        //   name: 'styles',
-        //   test: /\.(le|c)ss$/,
-        //   chunks: 'all',
-        //   enforce: true,
-        // },
+        styles: {
+          name: 'styles',
+          test: /\.(le|c)ss$/,
+          chunks: 'all',
+          enforce: true,
+        },
       },
     });
 };

@@ -35,7 +35,7 @@ Vue.component('v-icon', Icon.createFromIconfontCN({
 
 当设计师所提供的`iconfont`文件越来越多时，这将会导致管理和维护越来越麻烦，代码也要加入复杂的逻辑判断。而且，传入到`vue模版`中的字符串压根无法判断当前`iconfont`类型是在哪个文件中的。此时，就连封装一个统一的文件都无法进行。
 
-## 解决方案
+## ❌方案一（已验证为错误的）
 
 在经过很多次的尝试后，我们发现，在`ant-deisgn-vue`中，可以实现同构方案：
 
@@ -72,26 +72,111 @@ Vue.component('a-icon', Icon.createFromIconfontCN({
 }));
 ```
 
+但经过反复测试，发现，该方法是错误的。虽然自定义图标是出现了，但是原生的图标却无法展示。该问题仍然是在注册组件时，`a-icon`占用了`ant-design-vue`里自带的`AIcon`组件。但我们仍然是需要一个同构方案的，否则将会用两种逻辑来表示不同的图标。
+
+## 正解（已经验证可行）
+
+我们仍然希望使用**同构**的解决方案，保持和`AIcon`一致的前提下，还能继续使用我们自定义的图标。经过研究，我们开发出`AIcon.js`组件，他会自动进行判断是原生的图标还是自定义的。其源码为：
+
+```javascript
+import { Icon } from 'ant-design-vue';
+import AIcon from './AIcon.vue';
+
+export default {
+  /**
+   * 安装函数
+   * @params {String} prefix  - Symbol前缀，设计师设计资产时会加这个标记，默认为`icon-`
+   */
+  install (Vue, { prefix = 'icon-', url = [] } = {}) {
+    AIcon.prefix = prefix;
+    url.forEach((scriptUrl) => {
+      Icon.createFromIconfontCN({ scriptUrl });
+    });
+    Vue.component('a-icon', AIcon);
+  },
+};
+```
+
+```html
+<template>
+  <i
+    v-if="isCustom"
+    :class="['a-icon', 'anticon', `a-${type}`]"
+    :aria-label="`自定义图标：${type}`"
+    v-bind="$props"
+    v-on="$listeners"
+  >
+    <svg
+      width="1em"
+      height="1em"
+      fill="currentColor"
+      :data-icon="type"
+      focusable="false"
+      aria-hidden="true"
+    >
+      <use :xlink:href="`#${type}`"></use>
+    </svg>
+  </i>
+  <ant-icon
+    v-else
+    class="a-icon"
+    v-bind="$props"
+  ></ant-icon>
+</template>
+
+<script>
+import { Icon } from 'ant-design-vue';
+
+export default {
+  components: {
+    AntIcon: Icon,
+  },
+  props: Icon.props,
+  computed: {
+    isCustom () {
+      return this.type && !!~this.type.indexOf(this.$options.prefix);
+    },
+  },
+};
+</script>
+```
+
+使用的时候，就不能再使用`ant-design-vue`所使用的`Icon`了，而要改用我们的`AIcon`，使用方法如下：
+
+```javascript
+import Vue from 'vue';
+import AIcon from '@comp/general/AIcon.js';
+
+Vue.use(AIcon, { prefix: 'icon-', url: ['/static/icon/logo.js', '/static/icon/iconfont.js'] });
+```
+
+### 原生图标 vs 自定义图标
+
+**原生图标**和**自定义图标**几乎没太大区别，只是属性上不一致而已，他们的`class`如下：
+
+1. 他们的`class`都包含`a-icon anticon`；
+2. 原生的第三`class`以`anticon-`开头，自定义的第三`class`以`a-${preifx}`开头，`prefix`是前面定义的前缀。
+
 ## 设计资产规范
 
 为了将**前端资源**和**设计资产**进行规范化管理和统一，我们联合设计师团队，做出如下对于`iconfont`的规格控制。
 
-1. 设计师在本地构建`svg`文件，上传前命名为`-颜色类型-名称-风格.svg`；
+1. 设计师在本地构建`svg`文件，上传前命名为`颜色类型-名称-风格.svg`，上传时，设置`Symbol前缀`为`icon-`；
 2. **颜色类型**有且只包含"**single（单色）**"和"**color（彩色）**"两种类型；
 3. **名称**如果按照拼音构建，必须是拼音全写，避免缩写造成的词汇量不够，如果能按照英文方式更好。名称如果有分词，使用短横杠`-`切分；
 4. **风格**有且只包含"**filled（填充风格）**"和"**outlined（线条风格）**"两种风格。其中填充风格底色可变换，线条风格内容可变换；
 5. 彩色风格可以不包含风格；
 
-例如：
+例如，上传前，本地文件名为：
 
 ```javascript
--single-label-filled.svg
--single-label-outlined.svg
--color-tubiao.svg
--color-huigoubiaoti.svg
+single-label-filled.svg
+single-label-outlined.svg
+color-tubiao.svg
+color-huigoubiaoti.svg
 ```
 
-这些文件在导入[阿里图标库](https://www.iconfont.cn)时，如果是**单色图标**，记得选择去除颜色上传。上传之后的`iconfont`会被系统自动命名，名称如下：
+这些文件在导入[阿里图标库](https://www.iconfont.cn)时，如果是**单色图标**，记得选择去除颜色上传。上传之后的`iconfont`会被系统自动命名，命名规则由`Symbol前缀`所控制，生成的名称结果如下：
 
 ```javascript
 icon-single-label-filled

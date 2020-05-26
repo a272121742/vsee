@@ -208,11 +208,7 @@ export default {
         if (this.$store.state.isMock) {
           this.$store.commit('setToken', 'abc');
         } else if (!err) {
-          this.$store.dispatch('login', userInfo).then((res) => {
-            if (res.token) {
-              this.$store.commit('setLoginStatus', res.token);
-            }
-          }).catch((errCode) => {
+          this.$store.dispatch('login', userInfo).then().catch((errCode) => {
             errCode && this.$message.error(this.$t(errCode));
           }).finally(() => {
             this.$store.dispatch('refresh');

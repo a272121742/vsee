@@ -11,7 +11,7 @@
         <a-input
           v-decorator="[
             `names[${index}]`, {
-              preserve: true
+              initialValue: key,
             }]"
         />
         <a-icon
@@ -32,6 +32,17 @@
             `checkbox`, {
             }]"
           :options="checkboxOptions"
+        />
+      </a-form-item>
+      <a-form-item label="下拉多选">
+        <multiple-net-select
+          v-decorator="[
+            `muselect`, {
+            }]"
+          label-of="name"
+          value-by="name"
+          url="/test/list"
+          :delay="false"
         />
       </a-form-item>
       <a-form-item label="日期范围">
@@ -64,28 +75,34 @@
 import formRecordMix from '@mix/form-record-mix.js';
 
 export default {
-  mixins: [formRecordMix('form')],
+  components: {
+    MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
+  },
+  mixins: [formRecordMix('form', ['muselect', 'names', 'checkbox'])],
   data () {
     return {
       checkboxOptions: ['Apple', 'Pear', 'Orange'],
-      formRecord: {
-        checkbox: ['Apple'],
-        // test: 'test',
-        // names: ['朝辞白帝彩云间'],
-      },
+      // formRecord: {
+      //   checkbox: ['Apple'],
+      //   // test: 'test',
+      //   names: ['朝辞白帝彩云间'],
+      //   muselect: ['EX2'],
+      // },
     };
   },
   created () {
     console.log(this);
+    // this.formRecord.muselect = ['EX2'];
     // this.formRecord = { names: ['123'], test: '123' };
     /**
      * 1. 合并缓存 data.record created.record
      * 2. 独立缓存 created.record
      */
     // this.form.set({ names: ['床前明月光'], test: '123' }, true);
-    setTimeout((res) => {
-      this.form.update(res, true);
-    }, 2000, { names: ['明月即使有', '把酒问青天'], test: '123' });
+    // this.$nextTick(() => {
+    //   // this.formRecord.muselect = ['EX2'];
+    this.form.update({ muselect: ['EX2'], names: ['朝辞白帝彩云间'] }, true);
+    // });
   },
   methods: {
     reset () {

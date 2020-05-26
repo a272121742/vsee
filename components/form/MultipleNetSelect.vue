@@ -10,6 +10,7 @@
     :filter-option="$attrs['filter-option'] || filterOption"
     :disabled="$attrs.disabled || rending"
     :get-popup-container="el => el.parentNode"
+    show-arrow
     v-on="$options.exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
