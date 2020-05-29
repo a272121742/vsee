@@ -174,11 +174,12 @@
 // 分列表单下的item样式 =========================end===========================
 // 设置滚动条样式 ========================begin==========================
 ::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+  height: 12px;
+  width: 12px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 6px;
+  border: 2px solid @page-theme-gb-color; 
+  border-radius: 12px;
   background: fade(@primary-color, 66%);
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -186,7 +187,10 @@
   background: @primary-color;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.04);
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  display: none;
 }
 // 设置所有的弹出消息浮层层高 ========================begin==========================
 .ant-message {

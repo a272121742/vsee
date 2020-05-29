@@ -1,0 +1,16 @@
+{
+  "project": {
+    "title": "组件案例",
+    "testDesc": "Only For Test"
+  },
+  "action": {
+    "manual": "user manual",
+    "toPortal": "TQIS portal"
+  },
+  "env": {
+    "name": ""
+  },
+  "download": {
+    "user_manual": "AftersalesQuality_UserManual.pdf"
+  }
+}

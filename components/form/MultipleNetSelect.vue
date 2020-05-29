@@ -374,7 +374,7 @@ export default {
 <style lang="less" scoped>
   .ant-select {
     /deep/ .ant-select-selection--multiple {
-      padding-bottom: 0!important;
+      padding-bottom: 0;
     }
   }
 </style>

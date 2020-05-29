@@ -21,6 +21,7 @@
     v-else
     class="a-icon"
     v-bind="$props"
+    v-on="$listeners"
   ></ant-icon>
 </template>
 

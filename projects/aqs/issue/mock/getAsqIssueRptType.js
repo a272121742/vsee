@@ -9,7 +9,7 @@ const list = mock({
 const db = cdb.link('AsqIssueRptType', list);
 
 
-mock.get('/sys/dict', ({ dictType }) => {
+mock.get('/sys/dict', () => {
   const datas = db.find() || [];
 
   return mock.result({

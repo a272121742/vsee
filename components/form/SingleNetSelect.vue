@@ -1,6 +1,5 @@
 <template>
   <a-select
-    v-bind="$options.exclude(['options', 'label-in-value'], $attrs)"
     label-in-value
     :value="labelValue"
     :default-active-first-option="false"
@@ -10,6 +9,7 @@
     :disabled="$attrs.disabled || rending"
     :get-popup-container="el => el.parentNode"
     show-arrow
+    v-bind="$options.exclude(['options', 'label-in-value'], $attrs)"
     v-on="$options.exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"

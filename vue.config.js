@@ -47,20 +47,18 @@ module.exports = {
       warnings: true,
       errors: true,
     },
-    // // 代理配置
-    // proxy: proxy ? {
-    //   '/api': {
-    //     target: 'http://106.75.63.69:8091/mojo-gateway',
-    //     // target: 'http://192.168.3.60:18080',
-    //     changeOrigin: true,
-    //     // 关闭https安全证书
-    //     secure: false,
-    //     // 重写接口
-    //     pathRewrite: {
-    //       '^/api': '', // ，将"以/api开头"的字符串替换为“”
-    //     },
-    //   },
-    // } : void 0,
+    proxy: {
+      '/api': {
+        target: 'http://tqis-dev.autodev.aas/mojo-gateway/',
+        changeOrigin: true,
+        // 关闭https安全证书
+        secure: false,
+        // 重写接口
+        pathRewrite: {
+          '^/api': '', // ，将"以/api开头"的字符串替换为“”
+        },
+      },
+    },
   },
   // echarts必须此配置
   transpileDependencies: [

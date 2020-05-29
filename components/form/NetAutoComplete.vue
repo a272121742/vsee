@@ -1,0 +1,341 @@
+<template>
+  <a-auto-complete
+    class="net-auto-complete"
+    :value="input"
+    :default-active-first-option="false"
+    :data-source="options"
+    :filter-option="$attrs['filter-option'] || filterOption"
+    :disabled="$attrs.disabled || rending"
+    :get-popup-container="el => el.parentNode"
+    v-bind="$options.exclude(['data-source'], $attrs)"
+    v-on="$options.exclude(['change'], $listeners)"
+    @dropdownVisibleChange="dropdownVisibleChange"
+    @search="onTextChange"
+    @change="onChange"
+  >
+    <template #notFoundContent>
+      <a-spin
+        v-if="fetching"
+        size="small"
+      >
+        <a-icon
+          slot="indicator"
+          type="loading"
+          spin
+        />
+      </a-spin>
+      <a-empty
+        v-else
+      />
+    </template>
+    <a-input class="net-auto-complete-helper">
+      <a-icon
+        slot="suffix"
+        :type="suffixType"
+        style="font-size: 12px;"
+      />
+    </a-input>
+  </a-auto-complete>
+</template>
+
+<script>
+import { omit, uniqWith } from 'ramda';
+import { debounce } from 'lodash';
+import { renameKey } from '@util/datahelper.js';
+import $ from '@http';
+
+const PAGE_DEFAULT = 1;
+const LIMIT_DEFAULT = 20;
+const ORDER_DEFAULT = '';
+const ORDER_FIELD_DEFAULT = '';
+const CODE_DEFAULT = '';
+const NAME_DEFAULT = '';
+// const Q_DEFAULT = '';
+
+
+const key2value = renameKey('key', 'value');
+const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key));
+
+export default {
+  props: {
+    // 基于网络的下拉列表，url的配置是必须
+    url: {
+      type: String,
+      required: true,
+    },
+    // 显示值
+    labelOf: {
+      type: [String, Function],
+      default () {
+        return this.valueBy;
+      },
+    },
+    // 传递值
+    valueBy: {
+      type: String,
+      required: true,
+    },
+    // 查询值
+    searchBy: {
+      type: String,
+      default: '',
+      validator (value) {
+        return ['code', 'name', 'all', ''].includes(value);
+      },
+    },
+    // 排序字段
+    orderField: {
+      type: String,
+      default: '',
+    },
+    // 排序方式
+    order: {
+      type: String,
+      default: '',
+    },
+    value: {
+      type: [Number, String],
+      default: undefined,
+    },
+    /**
+     * 形式为{}，会写入到q中
+     */
+    query: {
+      type: Object,
+      default: () => ({}),
+    },
+    /**
+     * 是否缓存
+     */
+    cache: {
+      type: Boolean,
+      default: true,
+    },
+    /**
+     * 是否延时，即在点击之后加载，默认延时
+     */
+    delay: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  // 排除可能影响内部组件的外部参数
+  exclude: omit,
+  data () {
+    return {
+      /**
+       * 数据集，每一项的格式为 { value, label }
+       */
+      options: [],
+      /**
+       * 输入值
+       */
+      input: void 0,
+      /**
+       * 判断是否输入法打字中，`true`表示正在打字中
+       */
+      // composing: false,
+      /**
+       * 是否正在请求中，`true`表示网络请求完成
+       */
+      fetching: false,
+      /**
+       * 组件值加载状态，`true`表示值渲染完成
+       */
+      rending: false,
+      searchWord: void 0,
+    };
+  },
+  computed: {
+    params () {
+      const query = this.query || {};
+      const page = query.page > 0 ? (Math.floor(query.page) || PAGE_DEFAULT) : PAGE_DEFAULT;
+      const limit = query.limit > 0 ? (Math.floor(query.limit) || LIMIT_DEFAULT) : LIMIT_DEFAULT;
+      const order = this.order || ORDER_DEFAULT;
+      const orderField = this.orderField || ORDER_FIELD_DEFAULT;
+      const ids = [];
+      const cds = [];
+      // if (this.valueBy === 'id') {
+      //   ids = this.value ? [this.value] : [];
+      // }
+      // if (this.valueBy === 'code') {
+      //   cds = this.value ? [this.value] : [];
+      // }
+      const q = JSON.stringify(this.query || {});
+      let code = CODE_DEFAULT;
+      let name = NAME_DEFAULT;
+      if (this.searchBy === 'code') {
+        code = this.searchWord || '';
+      } else if (this.searchBy === 'name') {
+        name = this.searchWord || '';
+      } else if (this.searchBy === 'all') {
+        code = this.searchWord || '';
+        name = this.searchWord || '';
+      }
+      return {
+        page,
+        limit,
+        order,
+        orderField,
+        ids,
+        cds,
+        code,
+        name,
+        q,
+      };
+    },
+    /**
+     * 后缀样式
+     */
+    suffixType () {
+      return this.rending ? 'loading' : 'search';
+    },
+    /**
+     * 搜索模式，如果上层组件配置了`filter-option`，则按照上层组件进行本地搜索，否则查看是否配置了关键字搜索，有关键字搜索时才进行关键字搜索，否则仍然进行原生的本地搜索
+     */
+    filterOption () {
+      return this.$attrs['filter-option'] || this.searchBy ? false : (input = '', option) => {
+        const label = option.componentOptions.children[0].text || '';
+        return ~label.toLowerCase().indexOf(input.toLowerCase());
+      };
+    },
+  },
+  watch: {
+    /**
+     * 监听`delay`的更改，在两个**select**关联时有用，
+     * `delay`被修改为`false`时，立刻获取数据
+     */
+    delay (value) {
+      !value && this.init();
+    },
+    /**
+     * 监听上层组件`value`值的修改
+     * 外部`value`发生变化时，检查lableValue是否完整，如果不完整，表明是回显状态
+     */
+    value: {
+      immediate: true,
+      handler (value) {
+        // // 如果为undefined，则表示创建或者没值，否则表示回显
+        // if (value !== void 0 && value !== null) {
+        //   this.input = value;
+        //   this.rending = true;
+        //   // 从options中查找label
+        //   const inputValue = this.options.find((item) => item.value === value);
+        //   // 如果存在，则表示已经加载过，
+        //   if (inputValue) {
+        //     this.input = inputValue.value;
+        //     this.rending = false;
+        //   } else {
+        //     // 否则从网络获取
+        //     const config = {};
+        //     const { valueBy } = this;
+        //     config[valueBy] = value;
+        //     this.fetch(config).then((list) => {
+        //       const inputValueSelected = list.find((item) => item.value === value);
+        //       this.input = inputValueSelected ? inputValueSelected.value : value;
+        //     }).finally(() => {
+        //       this.rending = false;
+        //     });
+        //   }
+        // } else {
+        //   this.input = void 0;
+        // }
+        this.input = value;
+      },
+    },
+  },
+  created () {
+    this.searchWord = this.value;
+    this.init();
+  },
+  methods: {
+    init () {
+      const { url, delay } = this;
+      // 非延时，或回显时，立刻获取数据;
+      url && !delay && this.fetch({}).then((list) => {
+        const selectValue = [];
+        const options = uniqOption([...selectValue.map(key2value), ...list]);
+        this.options = options;
+      });
+    },
+    /**
+     * 点击下拉时获取数据，以下情况满足时获取进行网络拉取
+     * 1. 下拉展开时，
+     */
+    dropdownVisibleChange (visible) {
+      if (visible) {
+        this.options = [];
+        this.fetching = true;
+        this.fetch({}).then((list) => {
+          this.options = list;
+        }).finally(() => {
+          this.fetching = false;
+        });
+      }
+    },
+    /**
+     * 文本搜索，如果配置了本地搜索则不走网络
+     */
+    onTextChange: debounce(function textChange (word = '') {
+      // 如果有单词，并且配置了`word-key`
+      if (!this.filterOption) {
+        this.searchWord = word;
+        this.fetching = true;
+        this.fetch({}).then((list) => {
+          this.options = list;
+        }).finally(() => {
+          this.fetching = false;
+        });
+      }
+    }, 200),
+    /**
+     * 发起网络请求，可携带额外的参数`config`
+     * 注意：`fetch`函数不应该防抖
+     */
+    fetch (config) {
+      const {
+        url, valueBy, labelOf = valueBy, params,
+      } = this;
+      return new Promise((resolve) => {
+        if (config) {
+          url && $.get(url, { ...params, ...config }).then((res = []) => {
+            const list = res.map((item) => ({
+              text: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
+              value: item[valueBy],
+            }));
+            resolve(uniqOption(list));
+          }).catch(() => {
+            resolve([]);
+          });
+        } else {
+          resolve([]);
+        }
+      });
+    },
+    /**
+     * 必要的onChange事件，将`{ value, label }`类型值转换为`value`
+     */
+    onChange (value, VNode) {
+      if (value) {
+        this.$emit('change', value, VNode);
+      } else {
+        this.$emit('change', void 0, VNode);
+      }
+      this.$nextTick(() => {
+        this.input = value;
+      });
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+  .net-auto-complete {
+    /deep/ .ant-select-search--inline {
+      position: absolute;
+    }
+    // &:hover /deep/ .net-auto-complete-helper .ant-input-suffix{
+    //   display: none;
+    // }
+  }
+</style>

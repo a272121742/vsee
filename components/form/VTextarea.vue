@@ -1,5 +1,5 @@
 <template>
-  <div class="v-textarea">
+  <span class="v-textarea ant-input-affix-wrapper">
     <a-textarea
       :value="text"
       v-bind="$attrs"
@@ -13,22 +13,22 @@
       <span
         v-show="allowClear"
         class="v-input-suffix"
+        @click="triggerChange"
       >
         <a-icon
           v-show="text"
           slot="suffix"
           type="close-circle"
           theme="filled"
-          @click="triggerChange()"
         />
       </span>
       <span
         v-if="limit"
-        :style="{ 'margin-right': text && allowClear ? 0 : '18px'}"
+        :style="{ 'margin-right': text && allowClear ? 0 : '21px'}"
         class="v-input-limit"
       >{{ length }} / {{ limit }}</span>
     </div>
-  </div>
+  </span>
 </template>
 
 <script>
@@ -158,27 +158,24 @@ export default {
 </script>
 <style lang="less" scoped>
   .v-textarea {
-    position: relative;
-    .ant-input {
-      padding-bottom: 14px;
-    }
     .v-input-helper {
       position: absolute;
       display: inline-block;
       background-color: white;
-      bottom: 5px;
-      right: 17px;
+      bottom: 6px;
+      right: 14px;
       height: 14px;
       line-height: 100%;
-      width: calc(100% - 19px);
+      width: calc(100% - 15px);
       span {
         float: right;
         color: rgba(0, 0, 0, .45);
       }
     }
     .v-input-helper-out {
+      margin-top: -2px;
       height: 14px;
-      line-height: 150%;
+      line-height: 100%;
       width: 100%;
       span {
         float: right;
@@ -191,8 +188,10 @@ export default {
       }
     }
     .v-input-suffix {
-      margin: 0 2px;
+      cursor: pointer;
+      margin: 0 2px 0 7px;
       opacity: 0;
+      font-size: 12px;
       &:hover {
         opacity: .6;
       }

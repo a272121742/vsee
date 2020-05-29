@@ -8,6 +8,11 @@ const authUrl = 'http%3A%2F%2F106.75.63.69%3A37799%2F%2FWebReport%2FReportServer
 mock.get('/sys/menu/nav', () => mock.result({
   code: 0,
   data: [{
+    id: 100000000,
+    appCode,
+    name: '测试案例',
+    url: 'demo',
+  }, {
     id: 1000,
     appCode,
     name: '一级菜单(独立)',
