@@ -22,7 +22,7 @@ import {
   // Icon,
   Input,
   Layout,
-  LocaleProvider,
+  ConfigProvider,
   Menu,
   Spin,
   Tabs,
@@ -66,7 +66,7 @@ Vue.use(Form);
 // Vue.use(Icon);
 Vue.use(Input);
 Vue.use(Layout);
-Vue.use(LocaleProvider);
+Vue.use(ConfigProvider);
 Vue.use(Menu);
 Vue.use(Spin);
 Vue.use(Tabs);

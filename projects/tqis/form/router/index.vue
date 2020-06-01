@@ -33,6 +33,12 @@
     >
       <BindRecord />
     </a-tab-pane>
+    <!-- <a-tab-pane
+      key="SourceCode"
+      tab="源代码"
+    >
+      <SourceCode :code="code" />
+    </a-tab-pane> -->
   </a-tabs>
 </template>
 
@@ -44,14 +50,12 @@ export default {
     QuerySelect: () => import('../view/QuerySelect.vue'),
     FormLayout: () => import('../view/FormLayout.vue'),
     BindRecord: () => import('../view/BindRecord.vue'),
+    // SourceCode: () => import('~~/comp/SourceCodeView.vue'),
+  },
+  data () {
+    return {
+      code: '<template>123</template>',
+    };
   },
 };
 </script>
-
-<style lang="less" scoped>
-  .content-tab {
-    /deep/ .ant-tabs-tabpane {
-      min-height: calc(100vh - 228px);
-    }
-  }
-</style>

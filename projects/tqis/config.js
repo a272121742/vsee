@@ -16,6 +16,7 @@ export default {
   DEV_PROXY: 'http://tqis-dev.autodev.aas/mojo-gateway/',
   DYNAMIC_TITLE: 'BJEV-TQIS',
   CONTENT_HEAD: 'bread',
+  MENU_COLLAPSIBLE: true,
   DATETIME: {
     DATE_FORMAT: 'YYYY-MM-DD',
     TIME_FORMAT: 'HH:mm:ss',
@@ -29,5 +30,9 @@ export default {
     id: 10000,
     name: '表单案例',
     url: 'form',
+  }, {
+    id: 20000,
+    name: '表格案例',
+    url: 'table',
   }],
 };

@@ -27,7 +27,8 @@
               ]"
               :placeholder="$t('form.input')"
               :limit="1000"
-              auto-clear
+              helper-out
+              allow-clear
             />
           </a-form-item>
         </a-col>

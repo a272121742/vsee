@@ -5,6 +5,7 @@
       sub-title="搜索表单无需校验时可采用紧凑模式缩减空间"
     >
       <template slot="extra">
+        <a-button>查看源码</a-button>
         <a-switch v-model="compact" />
       </template>
     </a-page-header>

@@ -35,6 +35,7 @@ import {
   PageHeader,
   Empty,
   Slider,
+  Tag,
   message,
 } from 'ant-design-vue';
 import AIcon from '@comp/general/AIcon.js';
@@ -86,6 +87,7 @@ Vue.use(InputNumber);
 Vue.use(PageHeader);
 Vue.use(Empty);
 Vue.use(Slider);
+Vue.use(Tag);
 
 Vue.config.productionTip = false;
 message.config({

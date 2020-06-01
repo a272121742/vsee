@@ -7,7 +7,7 @@
 @app-content-sider-width-min: 80px;
 @app-content-sider-trigger-height: 48px;
 @app-content-padding: 12px 16px;
-@app-layout-zindex: @global-layer-nav;
+@app-layout-zindex: @global-layer-nav + 1;
 @app-content-zindex: @global-layer-overlay;
 @app-theme-color: white;  //主题色
 @app-background-color: #F5F5F5;  // 背景底色
@@ -15,7 +15,7 @@
 
 .app-scroll {
   .__rail-is-vertical, .__rail-is-horizontal{
-    z-index: @app-layout-zindex + 2!important;
+    z-index: @app-layout-zindex + 3!important;
     .__bar-is-vertical, .__bar-is-horizontal {
       background: fade(@primary-color, 66%)!important;
       &:hover {
@@ -27,7 +27,7 @@
 .app-layout {
   & > .app-layout-header {
     position: fixed;
-    z-index: @app-layout-zindex;
+    z-index: @app-layout-zindex + 3;
     top: 0;
     left: 0;
     right: 0;
@@ -72,7 +72,7 @@
     margin-bottom: @app-layout-footer-height;
     .app-content-sider {
       position: fixed;
-      z-index: @app-layout-zindex - 1;
+      z-index: @app-layout-zindex + 2;
       top: 0;
       left: 0;
       bottom: @app-layout-footer-height;
@@ -98,7 +98,7 @@
         left: @app-content-sider-width;
       }
       .ant-layout-sider-trigger {
-        z-index: @app-layout-zindex;
+        z-index: @app-layout-zindex + 2;
         height: @app-content-sider-trigger-height;
         bottom: @app-layout-footer-height;
         // &:hover {
@@ -141,7 +141,7 @@
     }
     .app-content-header {
       position: fixed;
-      z-index: @global-layer-nav - 2;
+      z-index: @app-layout-zindex + 1;
       left: 0;
       top: 0;
       right: 0;
@@ -161,12 +161,13 @@
           .ant-tabs-bar {
             position: fixed;
             background: white;
-            z-index: @app-content-zindex;
+            z-index: @app-layout-zindex + 1;
             height: @app-content-header-height;
             width: 100vw;
             padding-right: 16px;
           }
           .ant-tabs-bar,
+          .ant-tabs-nav,
           .ant-tabs-nav-container,
           .ant-tabs-extra-content {
             height: @app-content-header-height;
@@ -204,14 +205,15 @@
       margin-bottom: @app-content-footer-height;
       overflow-x: visible;
       .app-content-spiner {
+        position: relative;
         margin: @app-content-border-width;
         background: @app-content-background-color;
         box-shadow: @box-shadow-base;
         min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         width: calc(100vw - 2*@app-content-border-width);
-        .ant-spin-dot-spin {
+        & > .ant-spin-dot-spin {
           position: absolute;
-          top: calc(50vh + 2*@app-content-border-width);
+          top: calc(50% - 10px);
         }
         .content-child-view {
           &:not(iframe) {
@@ -222,7 +224,7 @@
     }
     .app-content-footer {
       position: fixed;
-      z-index: @app-content-zindex;
+      z-index: @app-layout-zindex + 1;
       bottom: @app-layout-footer-height;
       right: 0;
       height: @app-content-footer-height;
@@ -231,7 +233,7 @@
   }
   .app-layout-footer {
     position: fixed;
-    z-index: @app-layout-zindex;
+    z-index: @app-layout-zindex + 2;
     bottom: 0;
     left: 0;
     right: 0;

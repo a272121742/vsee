@@ -1,5 +1,5 @@
 <template>
-  <span class="v-textarea ant-input-affix-wrapper">
+  <span class="v-textarea">
     <a-textarea
       :value="text"
       v-bind="$attrs"
@@ -24,7 +24,7 @@
       </span>
       <span
         v-if="limit"
-        :style="{ 'margin-right': text && allowClear ? 0 : '21px'}"
+        :style="{ 'margin-right': text && allowClear ? 0 : '12px'}"
         class="v-input-limit"
       >{{ length }} / {{ limit }}</span>
     </div>
@@ -158,24 +158,38 @@ export default {
 </script>
 <style lang="less" scoped>
   .v-textarea {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-variant: tabular-nums;
+    line-height: 1;
+    list-style: none;
+    font-feature-settings: 'tnum';
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    text-align: start;
+    & > textarea {
+      margin: 0px;
+    }
+    .ant-input {
+      padding: 4px 12px 14px;
+    }
     .v-input-helper {
       position: absolute;
       display: inline-block;
       background-color: white;
-      bottom: 6px;
-      right: 14px;
+      bottom: 1px;
+      right: 18px;
       height: 14px;
-      line-height: 100%;
-      width: calc(100% - 15px);
+      width: calc(100% - 20px);
       span {
         float: right;
         color: rgba(0, 0, 0, .45);
       }
     }
     .v-input-helper-out {
-      margin-top: -2px;
       height: 14px;
-      line-height: 100%;
       width: 100%;
       span {
         float: right;
@@ -189,7 +203,7 @@ export default {
     }
     .v-input-suffix {
       cursor: pointer;
-      margin: 0 2px 0 7px;
+      margin: 1px 2px 0 7px;
       opacity: 0;
       font-size: 12px;
       &:hover {

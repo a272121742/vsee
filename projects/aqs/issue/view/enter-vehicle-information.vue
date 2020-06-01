@@ -24,7 +24,7 @@
               ]"
               :placeholder="$t('form.input')"
               :limit="1000"
-              auto-clear
+              allow-clear
             />
           </a-form-item>
         </a-col>
@@ -43,7 +43,7 @@
               ]"
               :placeholder="$t('form.input')"
               :limit="1000"
-              auto-clear
+              allow-clear
             />
           </a-form-item>
         </a-col>

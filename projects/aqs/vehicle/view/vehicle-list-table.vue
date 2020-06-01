@@ -5,7 +5,7 @@
     :data-source="list"
     :pagination="pagination"
     :loading="loading"
-    :scroll="{x: 2500}"
+    :scroll="{x: 2500, y: 1000}"
     @change="tableChangeHandle"
   >
     <template v-for="(col, index) in columns">

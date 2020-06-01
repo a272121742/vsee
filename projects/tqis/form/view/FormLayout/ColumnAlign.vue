@@ -41,7 +41,6 @@
           <v-textarea
             v-decorator="['问题备注']"
             :limit="1000"
-            helper-out
             allow-clear
           />
         </a-form-item>

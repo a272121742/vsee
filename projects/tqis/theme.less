@@ -129,13 +129,6 @@
   }
 }
 
-// .form-read-only {
-//   .ant-form-item-required::before {
-//     display: none;
-//   }
-// }
-
-
 /**
  * 表单列布局紧凑模式样式
  */
@@ -170,9 +163,10 @@
   }
 }
 
-@form-label-fixed-width: 82px;
+
 // 列对齐模式
 .form-column-align {
+  @form-label-fixed-width: 82px;
   .ant-form-item {
     display: flex;
     .ant-form-item-label {
@@ -187,6 +181,7 @@
         white-space: initial;
         word-break: break-all;
         line-height: 1;
+        top: -4px;
         &::after {
           align-self: flex-end;
           margin-bottom: 1px;
@@ -195,61 +190,32 @@
     }
     .ant-form-item-control-wrapper {
       flex-grow: 1;
+      .ant-form-item-control {
+        line-height: 28px;
+      }
     }
   }
 }
-// 分列表单下的item样式 =========================end===========================
 
-// 设置所有的弹出消息浮层层高 ========================begin==========================
-.ant-message {
-  z-index: 6010;
+// 解决tab高度问题
+.content-tab {
+  /deep/ .ant-tabs-tabpane {
+    min-height: calc(100vh - 228px);
+  }
 }
-// 设置所有的弹出消息浮层层高 =========================end===========================
-// 设置滚动条样式 ========================begin==========================
-// 滚动条样式 begin /////////////////////////////////////////////////////////
+
+// 滚动条样式
 ::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  border: 2px solid @page-theme-gb-color;
-  border-radius: 12px;
-  background: fade(@primary-color, 66%);
+  border: 4px solid transparent; 
+  border-radius: 16px;
+  box-shadow: 8px 8px 0 fade(@primary-color, 66%) inset;
 }
 ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
-  background: @primary-color;
+  box-shadow: 8px 8px 0 @primary-color inset;
 }
-::-webkit-scrollbar-track {
-  display: none;
-}
-::-webkit-scrollbar-corner {
-  display: none;
-}
-// 设置表格文本省略 =========================begin===========================
-.ant-table-wrapper.ellipsis-table {
-  // 设置表格内容不换行
-  table {
-    // 只有定义表格的算法为fixed,th才有效果
-    table-layout: fixed;
-    word-wrap: break-all;
-  }
-  th > div,
-  td {
-    // 超出长度的文字隐藏
-    overflow: hidden;
-    // 文字隐藏以后添加省略号
-    text-overflow: ellipsis;
-    // 强制不换行
-    white-space: nowrap;
-    // 文字不换行
-    word-break: keep-all;
-  }
-  // 设置单元格内填充
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td {
-    padding: 12px;
-  }
-}
-
-// 设置表格文本省略 =========================end===========================

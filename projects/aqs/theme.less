@@ -120,6 +120,73 @@
 @box-shadow-h: @global-shadow-h1;
 @box-shadow-v: @global-shadow-v1;
 
+/**
+ * 表单列布局紧凑模式样式
+ */
+ .form-column-split-compact {
+  .ant-form-item {
+    padding-bottom: 0;
+    margin-bottom: 4px;
+  }
+  // 垂直模式下做特殊处理
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 滑块间距缩小
+  .ant-slider {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .ant-switch {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .ant-checkbox-group {
+    margin-top: 4px;
+  }
+  // 时间类型组件长度100%
+  .ant-input-number,
+  .ant-calendar-picker,
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+
+@form-label-fixed-width: 82px;
+// 列对齐模式
+.form-column-align {
+  .ant-form-item {
+    display: flex;
+    .ant-form-item-label {
+      flex: 0 0 @form-label-fixed-width;
+      & > label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: @form-label-fixed-width;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        word-break: break-all;
+        line-height: 1;
+        top: -4px;
+        &::after {
+          align-self: flex-end;
+          margin-bottom: 1px;
+        }
+      }
+    }
+    .ant-form-item-control-wrapper {
+      flex-grow: 1;
+      .ant-form-item-control {
+        line-height: 28px;
+      }
+    }
+  }
+}
+
 @form-label-fixed-width: 88px;
 .col-layout-form.ant-form-horizontal, 
 .col-layout-form.ant-form-inline {
@@ -187,17 +254,17 @@
 // 设置滚动条样式 ========================begin==========================
 // 滚动条样式 begin /////////////////////////////////////////////////////////
 ::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
+  height: 16px;
+  width: 16px;
 }
 ::-webkit-scrollbar-thumb {
-  border: 2px solid @page-theme-gb-color; 
-  border-radius: 12px;
-  background: fade(@primary-color, 66%);
+  border: 4px solid transparent; 
+  border-radius: 16px;
+  box-shadow: 8px 8px 0 fade(@primary-color, 66%) inset;
 }
 ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
-  background: @primary-color;
+  box-shadow: 8px 8px 0 @primary-color inset;
 }
 ::-webkit-scrollbar-track {
   display: none;
