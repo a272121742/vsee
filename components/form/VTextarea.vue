@@ -1,7 +1,7 @@
 <template>
   <span class="v-textarea">
     <a-textarea
-      :value="text"
+      :value="value"
       v-bind="$attrs"
       v-on="exclude(['change'], $listeners)"
       @change="handleChange"
@@ -16,7 +16,7 @@
         @click="() => triggerChange()"
       >
         <a-icon
-          v-show="text"
+          v-show="value"
           slot="suffix"
           type="close-circle"
           theme="filled"
@@ -24,7 +24,7 @@
       </span>
       <span
         v-if="limit"
-        :style="{ 'margin-right': text && allowClear ? 0 : '12px'}"
+        :style="{ 'margin-right': value && allowClear ? 0 : '12px'}"
         class="v-input-limit"
       >{{ length }} / {{ limit }}</span>
     </div>
@@ -114,7 +114,6 @@ export default {
     const value = this.value || '';
     const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
     return {
-      text: value === undefined ? value : limitValue,
       exclude: omit,
     };
   },
@@ -123,7 +122,7 @@ export default {
      * 文本长度
      */
     length () {
-      return getLength(this.text, this.zh);
+      return getLength(this.value, this.zh);
     },
     /**
      * 是否显示helper，配置了allowClear或者limit的时候启用
@@ -138,23 +137,17 @@ export default {
       return this.$el.querySelector('textarea');
     },
   },
-  watch: {
-    value (value) {
-      this.text = value;
-    },
-  },
   methods: {
     handleChange (e) {
       const value = e.target.value || '';
       const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
-      if (this.text !== limitValue) {
+      if (this.value !== limitValue) {
         this.triggerChange(limitValue);
+      } else {
+        this.triggerChange(this.value);
       }
     },
     triggerChange (changedValue = null) {
-      if (!hasProp(this, 'value')) {
-        this.text = changedValue;
-      }
       this.$emit('change', changedValue);
     },
   },
