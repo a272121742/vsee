@@ -1,66 +1,53 @@
 <template>
   <div class="root">
-    <a-form
-      :form="enterVehicleInfForm"
+    <a-form-model
+      ref="enterVehicleInfForm"
+      :model="enterVehicleInfForm"
       layout="inline"
-      :label-col="{span:3}"
-      :wrapper-col="{span:21}"
-      self-update
-      class="col-layout-form"
+      class="form-column-align"
     >
       <a-row>
         <!-- 环境 -->
         <a-col :span="24">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="env"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.env')"
           >
             <v-textarea
-              v-decorator="[
-                'env',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]}
-              ]"
+              v-model="enterVehicleInfForm.env"
               :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
         <!-- 数据分析 -->
         <a-col :span="24">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="vhclInfo"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.envhclInfov')"
           >
             <v-textarea
-              v-decorator="[
-                'vhclInfo',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]}
-              ]"
+              v-model="enterVehicleInfForm.vhclInfo"
               :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
       </a-row>
-    </a-form>
+    </a-form-model>
   </div>
 </template>
 <script>
-import formRecordMix from '@mix/form-record.js';
+import { validator } from '@util/formhelper.js';
 import { pick } from 'ramda';
 
 const fileds = ['env', 'vhclInfo'];
 export default {
-  components: {
-    VTextarea: () => import('@comp/form/VTextarea.vue'),
-  },
-  mixins: [formRecordMix('enterVehicleInfForm', fileds)],
+  mixins: [validator],
   props: {
     envAndIfoData: {
       type: Object,
@@ -69,27 +56,29 @@ export default {
   },
   data () {
     return {
+      enterVehicleInfForm: {},
     };
   },
   watch: {
     envAndIfoData: {
       immediate: true,
       handler (envAndIfoData = {}) {
-        this.enterVehicleInfFormRecord = pick(fileds, envAndIfoData);
+        this.enterVehicleInfForm = pick(fileds, envAndIfoData);
       },
     },
   },
   methods: {
     getEnvAndInfoData () {
       return new Promise((resolve, reject) => {
-        this.enterVehicleInfForm.validateFields((err) => {
-          if (!err) {
-            const enterVehicleList = { ...this.enterVehicleInfFormRecord };
+        this.$refs.enterVehicleInfForm.validate((valid) => {
+          if (valid) {
+            const enterVehicleList = { ...this.enterVehicleInfForm };
             this.$store.commit('issue/set', { enterVehicleList });
             resolve(enterVehicleList);
           } else {
-            reject(err);
+            reject(valid);
           }
+          return valid;
         });
       });
     },

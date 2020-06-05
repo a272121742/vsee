@@ -5,14 +5,24 @@
       sub-title="避免因为加载时高度未固定而突然撑开布局"
     >
       <template slot="extra">
+        返回空
+        <a-switch
+          v-model="fixedContainerDataEmpty"
+          @change="loadData"
+        />
+        固定高
         <a-switch
           v-model="fixedContainerHeight"
           @change="loadData"
         />
+        <a-button @click="loadData">
+          加载
+        </a-button>
       </template>
     </a-page-header>
     <FixedContainer
       ref="fixedContainerTable"
+      :empty="fixedContainerDataEmpty"
       :fixed="fixedContainerHeight"
       class="padding-left-24"
     >
@@ -27,6 +37,7 @@ export default {
   },
   data () {
     return {
+      fixedContainerDataEmpty: false,
       fixedContainerHeight: true,
     };
   },

@@ -9,7 +9,7 @@
     <div class="header-comp">
       <a-icon
         class="logo"
-        type="iconlogo"
+        type="icon-logo"
         @click="$store.dispatch('gohome')"
       />
       <a-divider
@@ -55,7 +55,7 @@ export default {
       font-size: 168px;
       cursor: pointer;
       /deep/ svg {
-        height: 64px;
+        height: @header-height;
       }
     }
     .ant-divider {

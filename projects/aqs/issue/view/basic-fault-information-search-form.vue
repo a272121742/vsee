@@ -1,30 +1,24 @@
 <template>
   <div class="root">
     <h2 class="title">
-      <a-icon type="iconbs_filled"></a-icon>
+      <a-icon type="icon-single-bs-filled"></a-icon>
       {{ $t('issue.basicFaultInformation') }}
     </h2>
-    <a-form
-      :form="basicFaultInfForm"
+    <a-form-model
+      ref="basicFaultInfForm"
+      :model="basicFaultInfForm"
       layout="vertical"
-      self-update
-      class="col-layout-form"
     >
       <a-row :gutter="24">
         <!-- 车型 -->
         <a-col :span="formItemSpan">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="vhclSeriesCode"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.vhclSeriesCode')"
           >
             <single-net-select
-              v-decorator="[
-                'vhclSeriesCode',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]
-                }
-              ]"
+              v-model="basicFaultInfForm.vhclSeriesCode"
               :placeholder="$t('form.select')"
               url="/masterdata/v1/vehicleseries/seriesCodeList"
               value-by="vhclSeriesCode"
@@ -32,20 +26,17 @@
               allow-clear
               search-by="name"
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
         <!-- 问题来源 -->
         <a-col :span="formItemSpan">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="asqIssueSource"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.asqIssueSource')"
           >
             <single-net-select
-              v-decorator="['asqIssueSource',{
-                rules: [
-                  $v.required($t('issue.notBeBlank'))
-                ]
-              }]"
+              v-model="basicFaultInfForm.asqIssueSource"
               :placeholder="$t('form.select')"
               url="/sys/dict?dictType=asq_issue_source"
               value-by="dictValue"
@@ -53,43 +44,34 @@
               allow-clear
               close-search
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
         <!-- 问题属类 -->
         <a-col :span="formItemSpan">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="asqIssueCategory"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.asqIssueCategory')"
           >
             <single-net-select
-              v-decorator="[
-                'asqIssueCategory',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]
-                }
-              ]"
+              v-model="basicFaultInfForm.asqIssueCategory"
               :placeholder="$t('form.select')"
               url="/sys/dict?dictType=asq_issue_category"
               value-by="dictValue"
               :label-of="(item) => item.dictName"
               allow-clear
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
         <!-- 祸首件 -->
         <a-col :span="formItemSpan">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="firstCausePart"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.firstCausePart')"
           >
             <single-net-select
-              v-decorator="[
-                'firstCausePart',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]
-                }]"
+              v-model="basicFaultInfForm.firstCausePart"
               :placeholder="$t('form.select')"
               url="/masterdata/v1/part/partList?orderField=name"
               value-by="id"
@@ -97,20 +79,17 @@
               allow-clear
               search-by="all"
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
-      </a-row>
-      <a-row :gutter="24">
         <!-- 供应商 -->
         <a-col :span="formItemSpan">
-          <a-form-item :label="$t('issue.supplierCode')">
+          <a-form-model-item
+            prop="supplierId"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
+            :label="$t('issue.supplierCode')"
+          >
             <single-net-select
-              v-decorator="[
-                'supplierId',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]
-                }]"
+              v-model="basicFaultInfForm.supplierId"
               :placeholder="$t('form.select')"
               url="/masterdata/v1/supplier/supplierList"
               value-by="id"
@@ -118,48 +97,37 @@
               allow-clear
               search-by="all"
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
         <!-- 发布时间 -->
         <a-col :span="formItemSpan">
-          <a-form-item
-            required
+          <a-form-model-item
             :label="$t('issue.createDate')"
           >
             <a-date-picker
-              v-decorator="[
-                'createDate', {
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]
-                }]"
-              :format="ACTION_LABEL_DATE_FORMAT"
+              v-model="basicFaultInfForm.createDate"
+              :format="DATE_FORMAT"
               disabled
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
       </a-row>
-      </a-row>
-    </a-form>
+    </a-form-model>
   </div>
 </template>
 
 <script>
 import storeModuleMix from '@mix/store-module.js';
-import formRecordMix from '@mix/form-record.js';
-import timeFormatMix from '@mix/time-format.js';
-import moment from 'moment';
+import { validator } from '@util/formhelper.js';
+import { GET_MOMENT, GET_DATETIME_FORMAT } from '@util/datetime-helper.js';
 import { pick } from 'ramda';
 
 
 const fileds = ['vhclSeriesCode', 'asqIssueSource', 'asqIssueCategory', 'firstCausePart', 'createDate', 'supplierId'];
+
 export default {
-  components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
-  },
   mixins: [
-    timeFormatMix,
-    formRecordMix('basicFaultInfForm', fileds),
+    validator,
     storeModuleMix({
       name: 'issue',
       action: ['getReporterData', 'getAllReporterData'],
@@ -185,8 +153,8 @@ export default {
   data () {
     return {
       formItemSpan: 6,
-      basicFaultInfFormRecord: {
-        createDate: moment(),
+      basicFaultInfForm: {
+        createDate: GET_MOMENT(Date.now()),
       },
     };
   },
@@ -197,8 +165,8 @@ export default {
     mergeData: {
       immediate: true,
       handler (mergeData = {}) {
-        const createDate = mergeData.createDate ? moment(mergeData.createDate) : moment();
-        this.basicFaultInfFormRecord = pick(fileds, { ...mergeData, createDate });
+        const createDate = GET_MOMENT(mergeData.createDate) || GET_MOMENT(Date.now());
+        this.basicFaultInfForm = pick(fileds, { ...mergeData, createDate });
       },
     },
     /**
@@ -208,10 +176,10 @@ export default {
       immediate: false,
       handler (resultData = []) {
         const { vhclModelSaleCode, partId, supplierId } = resultData[0];
-        this.basicFaultInfFormRecord = {
+        this.basicFaultInfForm = {
           vhclSeriesCode: vhclModelSaleCode,
           firstCausePart: partId,
-          createDate: moment(),
+          createDate: GET_MOMENT(Date.now()),
           supplierId,
         };
       },
@@ -223,32 +191,30 @@ export default {
       immediate: false,
       handler (noResultData = []) {
         const { vhclModelSaleCode, partId, supplierId } = noResultData[0];
-        this.basicFaultInfFormRecord = {
+        this.basicFaultInfForm = {
           vhclSeriesCode: vhclModelSaleCode,
           firstCausePart: partId,
-          createDate: moment(),
+          createDate: GET_MOMENT(Date.now()),
           supplierId,
         };
       },
     },
   },
-  created () {
-  },
   methods: {
-    moment,
     /**
      * 获取表单数据，返回给上层组件使用
      */
     getData () {
       return new Promise((resolve, reject) => {
-        this.basicFaultInfForm.validateFieldsAndScroll((err) => {
-          if (!err) {
-            const basicFaultInfList = { ...this.basicFaultInfFormRecord };
-            basicFaultInfList.createDate = basicFaultInfList.createDate.format(this.ACTION_LABEL_DATE_FORMAT);
+        this.$refs.basicFaultInfForm.validate((valid) => {
+          if (valid) {
+            const basicFaultInfList = { ...this.basicFaultInfForm };
+            basicFaultInfList.createDate = GET_DATETIME_FORMAT(basicFaultInfList.createDate);
             resolve(basicFaultInfList);
           } else {
-            reject(err);
+            reject(valid);
           }
+          return valid;
         });
       });
     },

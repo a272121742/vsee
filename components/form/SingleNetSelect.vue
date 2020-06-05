@@ -74,6 +74,10 @@ const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key))
 // }
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     // 基于网络的下拉列表，url的配置是必须
     url: {
@@ -83,7 +87,9 @@ export default {
     // 显示值
     labelOf: {
       type: [String, Function],
-      required: true,
+      default () {
+        return this.valueBy;
+      },
     },
     // 传递值
     valueBy: {
@@ -337,7 +343,7 @@ export default {
      */
     fetch (config) {
       const {
-        url, labelOf, valueBy, params,
+        url, valueBy, labelOf = valueBy, params,
       } = this;
       // const query = transformQuery(this.query);
       return new Promise((resolve) => {
@@ -361,9 +367,9 @@ export default {
      */
     onChange (labelValue, VNode) {
       if (labelValue) {
-        this.$emit('change', labelValue.key, labelValue.label, VNode);
+        this.$emit('change', labelValue.key || null, labelValue.label || null, VNode);
       } else {
-        this.$emit('change', void 0, void 0, VNode);
+        this.$emit('change', null, null, VNode);
       }
       this.$nextTick(() => {
         this.labelValue = labelValue;

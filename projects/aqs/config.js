@@ -18,7 +18,7 @@ export default {
     permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
   },
   MENU_COLLAPSIBLE: true,
-  CONTENT_HEAD: 'tab',
+  CONTENT_HEAD: 'bread',
   HTTP_TIMEOUT: 60000,
   PORTAL_APTH: '/',
   DEV_PROXY: 'http://tqis-dev.autodev.aas/mojo-gateway/',
@@ -34,13 +34,4 @@ export default {
     },
   },
   DYNAMIC_TITLE: 'BJEV-TQIS',
-  DATETIME: {
-    DATE_FORMAT: 'YYYY-MM-DD',
-    TIME_FORMAT: 'HH:mm:ss',
-    DATETIME_FORMAT: (DATE_FORMAT, TIME_FORMAT) => `${DATE_FORMAT} ${TIME_FORMAT}`,
-    EMPTY_DATETIME_FORMAT: '-',
-    EMPTY_DATETIME_VALUE: null,
-    START_FIELDNAME: (fieldname) => `${fieldname}Start`,
-    END_FIELDNAME: (fieldname) => `${fieldname}End`,
-  },
 };

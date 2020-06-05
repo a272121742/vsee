@@ -6,7 +6,7 @@
     self-update
     :class="{'form-column-align': align}"
   >
-    <a-row>
+    <a-row :gutter="12">
       <!-- 问题标题 -->
       <a-col :span="formItemSpan * 4">
         <a-form-item
@@ -14,7 +14,7 @@
           label="问题标题"
         >
           <a-input
-            v-decorator="['问题标题']"
+            v-decorator="['问题标题', { rules: [ $v.required('必须填写') ] }]"
             allow-clear
           />
         </a-form-item>
@@ -170,7 +170,7 @@
 <script>
 import formRecordMix from '@mix/form-record-mix.js';
 
-const fileds = ['报告编号', '报告类型', '问题属类', '问题来源', '问题分类', '祸首件', '车型', '车型代码', '车型名称', '服务站', '供应商代码', '供应商名称', '单据状态', '故障代码', '故障现象', '下线工厂', '颜色名称', '问题级别', '发布日期', '生产日期', '销售日期', '维修日期', '出厂日期'];
+const fileds = ['问题标题', '报告编号', '报告类型', '问题属类', '问题来源', '问题分类', '祸首件', '车型', '车型代码', '车型名称', '服务站', '供应商代码', '供应商名称', '单据状态', '故障代码', '故障现象', '下线工厂', '颜色名称', '问题级别', '发布日期', '生产日期', '销售日期', '维修日期', '出厂日期'];
 
 export default {
   mixins: [formRecordMix('form', fileds)],

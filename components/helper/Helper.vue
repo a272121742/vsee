@@ -1,7 +1,7 @@
 <template>
   <a-affix
     :offset-top="top"
-    :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 7000}"
+    :style="{ position: 'fixed', top: `${top}px`, right: '0px', 'z-index': 6000}"
   >
     <a-button
       type="primary"
@@ -13,7 +13,7 @@
     <a-drawer
       :width="800"
       :visible="visible"
-      :z-index="7000"
+      :z-index="6000"
       title="开发人员配置（生产环境不可见）"
       @close="hide"
     >
@@ -26,11 +26,10 @@
           path="@comp/helper/LoginForm.vue"
         />
       </a-row>
-      <a-row v-if="!disableProxy">
+      <a-row>
         是否代理
         <a-switch
           :default-checked="!$store.state.isMock"
-          :disabled="disableProxy"
           @change="onProxyChange"
         />
       </a-row>
@@ -74,7 +73,6 @@ export default {
       top: 140,
       visible: false,
       isLogin: vm.$store.state.isLogin,
-      disableProxy: process.env.proxy,
     };
   },
   computed: {

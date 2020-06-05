@@ -13,7 +13,7 @@
       <span
         v-show="allowClear"
         class="v-input-suffix"
-        @click="triggerChange"
+        @click="() => triggerChange()"
       >
         <a-icon
           v-show="text"
@@ -69,6 +69,10 @@ function zhSubString (t = '', length = 0) {
 }
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     /**
      * textarea的值
@@ -147,7 +151,7 @@ export default {
         this.triggerChange(limitValue);
       }
     },
-    triggerChange (changedValue) {
+    triggerChange (changedValue = null) {
       if (!hasProp(this, 'value')) {
         this.text = changedValue;
       }
@@ -173,16 +177,16 @@ export default {
       margin: 0px;
     }
     .ant-input {
-      padding: 4px 12px 14px;
+      padding: 4px 12px 12px;
     }
     .v-input-helper {
       position: absolute;
       display: inline-block;
       background-color: white;
       bottom: 1px;
-      right: 18px;
+      right: 14px;
       height: 14px;
-      width: calc(100% - 20px);
+      width: calc(100% - 16px);
       span {
         float: right;
         color: rgba(0, 0, 0, .45);

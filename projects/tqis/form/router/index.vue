@@ -1,7 +1,8 @@
 <template>
   <a-tabs
-    default-active-key="1"
+    :active-key="selectedTab"
     class="content-tab"
+    @change="changeTab"
   >
     <a-tab-pane
       key="FormItemList"
@@ -54,8 +55,23 @@ export default {
   },
   data () {
     return {
-      code: '<template>123</template>',
+      // code: '<template>123</template>',
+      selectedTab: 'FormItemList',
     };
+  },
+  beforeRouteEnter (to, from, next) {
+    if (to.query.key) {
+      next((vm) => {
+        vm.selectedTab = to.query.key;
+      });
+    }
+    next();
+  },
+  methods: {
+    changeTab (key) {
+      this.selectedTab = key;
+      this.$route.query.key = key;
+    },
   },
 };
 </script>

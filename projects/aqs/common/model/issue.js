@@ -83,7 +83,7 @@ const issueStatus = {
   scopedSlots: {
     customRender: 'issueStatus',
   },
-  width: 100,
+  width: 180,
 };
 // 41、 操作
 const operate = {

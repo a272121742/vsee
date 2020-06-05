@@ -1,53 +1,46 @@
 <template>
   <div class="root">
     <h2 class="title">
-      <a-icon type="iconbs_filled"></a-icon>
+      <a-icon type="icon-single-bs-filled"></a-icon>
       {{ $t('issue.initialAnalysis') }}
     </h2>
-    <a-form
-      :form="initialAnalysisForm"
+    <a-form-model
+      ref="initialAnalysisForm"
+      :model="initialAnalysisForm"
       layout="inline"
-      :label-col="{span:3}"
-      :wrapper-col="{span:21}"
-      self-update
-      class="col-layout-form"
+      :label-col=" {span: 3} "
+      :wrapper-col="{ span: 21 }"
+      class="form-column-align"
     >
       <a-row>
         <a-col :span="24">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="originalAnalysis"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.initialAnalysis')"
           >
             <v-textarea
-              v-decorator="[
-                'originalAnalysis',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]}
-              ]"
+              v-model="initialAnalysisForm.originalAnalysis"
               :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
       </a-row>
-    </a-form>
+    </a-form-model>
   </div>
 </template>
+
 <script>
-import formRecordMix from '@mix/form-record.js';
+import { validator } from '@util/formhelper.js';
 import { pick } from 'ramda';
 
 const fileds = ['originalAnalysis'];
 
 
 export default {
-
-  components: {
-    VTextarea: () => import('@comp/form/VTextarea.vue'),
-  },
-  mixins: [formRecordMix('initialAnalysisForm', fileds)],
+  mixins: [validator],
   props: {
     mergeData: {
       type: Object,
@@ -56,13 +49,14 @@ export default {
   },
   data () {
     return {
+      initialAnalysisForm: {},
     };
   },
   watch: {
     mergeData: {
       immediate: true,
       handler (mergeData = {}) {
-        this.initialAnalysisFormRecord = pick(fileds, mergeData);
+        this.initialAnalysisForm = pick(fileds, mergeData);
       },
     },
   },
@@ -72,13 +66,14 @@ export default {
      */
     getData () {
       return new Promise((resolve, reject) => {
-        this.initialAnalysisForm.validateFieldsAndScroll((err) => {
-          if (!err) {
-            const initialAnalysisList = { ...this.initialAnalysisFormRecord };
+        this.$refs.initialAnalysisForm.validate((valid) => {
+          if (valid) {
+            const initialAnalysisList = { ...this.initialAnalysisForm };
             resolve(initialAnalysisList);
           } else {
-            reject(err);
+            reject(valid);
           }
+          return valid;
         });
       });
     },
@@ -87,7 +82,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .root {
-  margin-bottom: 32px;
   .ant-input {
     height: 56px;
   }

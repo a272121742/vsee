@@ -1,68 +1,54 @@
 <template>
-  <a-form
-    :form="form"
+  <a-form-model
+    :model="form"
     @submit.stop.self.prevent="handleSubmit"
   >
     <!-- uuid -->
-    <a-form-item>
+    <a-form-model-item>
       <a-input
-        v-decorator="['uuid', {initialValue: record.uuid}]"
+        v-model="form.uuid"
         type="hidden"
       >
       </a-input>
-    </a-form-item>
+    </a-form-model-item>
     <!-- 用户名 -->
-    <a-form-item>
+    <a-form-model-item
+      prop="username"
+      :rules="[$v.required($t('username.required_message'))]"
+    >
       <a-auto-complete
-        v-decorator="['username', {
-          initialValue: record.username,
-          rules: [{type: 'string', required: true, message: $t('username.required_message')}]
-        }]"
+        v-model="form.username"
         :data-source="accounts"
         :placeholder="$t('username.placeholder')"
-        :dropdown-style="{'z-index': 6001}"
         allow-clear
-        show-search
         autocomplete="off"
         size="large"
-        @search="handleSearch"
-        @select="handleSubmit"
+        class="background-white-50"
       >
         <a-icon
           slot="prefix"
           type="user"
           style="color: rgba(0,0,0,.25)"
         />
-        <!-- <a-select-option
-          v-for="(act, index) in accounts"
-          :key="index"
-          :value="act"
-        >
-          {{ act.slice(0, -12) }}
-        </a-select-option> -->
       </a-auto-complete>
-    </a-form-item>
+    </a-form-model-item>
     <!-- 密码 -->
-    <a-form-item>
-      <password
-        v-decorator="['password', {
-          initialValue: record.password,
-          rules: [{type: 'string', required: true, message: $t('password.required_message')}]
-        }]"
+    <a-form-model-item
+      prop="password"
+      :rules="[$v.required($t('password.required_message'))]"
+    >
+      <a-input-password
+        v-model="form.password"
         :placeholder="$t('password.placeholder')"
         autocomplete="off"
         allow-clear
         size="large"
+        class="background-white-50"
       >
-        <a-icon
-          slot="prefix"
-          type="lock"
-          style="color: rgba(0,0,0,.25)"
-        />
-      </password>
-    </a-form-item>
+      </a-input-password>
+    </a-form-model-item>
     <!-- 验证码 -->
-    <!-- <a-form-item>
+    <!-- <a-form-model-item>
       <captcha-input
         v-decorator="['captcha', {
           rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
@@ -80,8 +66,8 @@
           style="color: rgba(0,0,0,.25)"
         />
       </captcha-input>
-    </a-form-item> -->
-    <a-form-item>
+    </a-form-model-item> -->
+    <a-form-model-item>
       <a-button
         type="primary"
         size="large"
@@ -90,13 +76,13 @@
       >
         {{ $t('login.submit') }}
       </a-button>
-    </a-form-item>
-  </a-form>
+    </a-form-model-item>
+  </a-form-model>
 </template>
 
 <script>
+import { validator } from '@util/formhelper.js';
 import { getUUID } from '@util/datahelper.js';
-import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
 
 const mailback = '@bjev.com.cn';
 const accounts = [
@@ -165,55 +151,48 @@ const accounts = [
   `shenjincheng@baicvbu.com`,
 ];
 export default {
+
   components: {
     // VInput: () => import('@comp/form/VInput.vue'),
     // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
-    Password: () => import('@comp/form/Password.vue'),
+    // Password: () => import('@comp/form/Password.vue'),
   },
-
+  mixins: [validator],
   data () {
     return {
-      /**
-       * 表单
-       */
-      form: null,
-      /**
-       * 表单数据
-       */
-      record: {
-        username: null,
+      form: {
+        username: 'superadmin@bjev.com.cn',
         password: 'bjev2019',
         // captcha: null,
         uuid: getUUID(),
       },
-
       accounts,
     };
-  },
-  created () {
-    const { mapPropsToFields, onValuesChange } = this;
-    this.form = this.$form.createForm(this, {
-      mapPropsToFields,
-      onValuesChange,
-    });
   },
   methods: {
     /**
      * 提交数据
      */
     handleSubmit (e) {
-      this.form.validateFields((err, loginInfo) => {
+      this.form.validateFields((valid) => {
         const userInfo = (typeof e === 'string') ? { ...loginInfo, username: e } : loginInfo;
         // this.$store.dispatch('logout');
         if (this.$store.state.isMock) {
           this.$store.commit('setToken', 'abc');
-        } else if (!err) {
-          this.$store.dispatch('login', userInfo).then().catch((errCode) => {
+        }
+        if (valid) {
+          this.$store.dispatch('login', userInfo).then((res) => {
+            if (res.token) {
+              this.$store.commit('setLoginStatus', res.token);
+            }
+          }).catch((errCode) => {
             errCode && this.$message.error(this.$t(errCode));
           }).finally(() => {
+            this.$store.dispatch('reload');
             this.$store.dispatch('refresh');
           });
         }
+        return valid;
       });
     },
     handleSearch (value) {

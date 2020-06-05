@@ -3,7 +3,7 @@
     <!-- 标题 -->
     <h2 class="title">
       <a-icon
-        type="iconbs_filled"
+        type="icon-single-bs-filled"
       ></a-icon>
       {{ $t('issue.vehicleInformation') }}
     </h2>
@@ -19,7 +19,7 @@
         style="margin-right:10px;"
         @click="() => (showVechicleSearchModal = true)"
       >
-        <a-icon type="icondccj_outlined1"></a-icon>
+        <a-icon type="icon-single-dccj-outlined"></a-icon>
         {{ $t('action.vehicleSearch') }}
         <vehicle-search-dialog
           :visible.sync="(showVechicleSearchModal)"
@@ -49,13 +49,13 @@
       <!-- 售后工单 + 编辑是工单 的 车辆查询表格 -->
       <a-table
         v-if="isHandmade==='0'"
+        class="table-cell-ellipsis"
         :data-source="list"
         row-key="claimNo"
         :pagination="pagination"
         :row-selection="rowSelection"
-        :scroll="{x: 1400,y:670}"
+        :scroll="{x: 1400,y: 670 }"
         size="small"
-        class="ellipsis-table"
         @change="tableChangeHandle"
       >
         <template v-for="(col,index) in columns">
@@ -134,7 +134,7 @@
         :row-selection="rowSelection"
         :scroll="list.length>4?{x: 1400,y:670}:{x: 1400}"
         size="small"
-        class="ellipsis-table"
+        class="table-cell-ellipsis"
         @change="tableChangeHandle"
       >
         <template v-for="(col,index) in columns">
@@ -221,7 +221,6 @@ import { vehicleInformationColumns } from '~~/model/vehicleInformation';
 export default {
   name: 'VehicleInformation',
   components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
     'vehicle-search-dialog': () => import('./vehicle-search-dialog.vue'),
     'enter-vehicle-information': () => import('./enter-vehicle-information.vue'),
   },
@@ -553,7 +552,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .root {
-  margin-bottom: 16px;
   .title {
     margin: 16px 0;
     font-size: 14px;
@@ -568,16 +566,8 @@ export default {
   .operate-buttons {
     margin: 0 0 16px;
   }
-  /deep/ .ant-table-fixed {
-    tbody tr {
-      height: 65px!important;
-    }
+  /deep/ .ant-table-wrapper {
+    .table-container-fixed-defined(38px; 38px; 4);
   }
-  // /deep/  .ant-select-dropdown-menu-root{
-  //     overflow:visible ;
-  //   .ant-select-dropdown-menu-item{
-  //     overflow:visible ;
-  //   }
-  // }
 }
 </style>

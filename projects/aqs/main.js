@@ -3,7 +3,7 @@ import Vue from 'vue';
 import i18n from '@i18n';
 import router from '@router';
 import store from '@store';
-// import { debounce } from 'lodash';
+import { debounce } from 'lodash';
 
 Vue.nextTick(() => {
   const app = new Vue({
@@ -20,13 +20,13 @@ Vue.nextTick(() => {
       }, { immediate: true });
     },
     methods: {
-      // contentScroll: debounce(() => {
-      //   document.querySelectorAll('input:focus').forEach((item) => item.blur());
-      //   document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
-      // }, 800, { leading: true, trailing: false }),
+      contentScroll: debounce(() => {
+        document.querySelectorAll('input:focus').forEach((item) => item.blur());
+        document.querySelectorAll('.ant-select-open, .ant-dropdown-open').forEach((item) => item.click());
+      }, 800, { leading: true, trailing: false }),
     },
     render () {
-      return (
+      return this.$store.state.reload ? <a-spin id="app"/> : (
         <a-config-provider id="app" locale={ this.$store.state.local4antd }>
           <router-view />
         </a-config-provider>

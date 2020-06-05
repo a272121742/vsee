@@ -1,0 +1,223 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="方案|样式补丁" />
+
+## 表单
+
+[点我查看完整案例](http://106.75.63.69:8091/tqis/form?key=FormLayout)
+
+### 【全局】通用样式
+
+修改表单布局中`form-item`上下间距，使其相对适中，提升页面利用率：
+
+```less
+// 修改所有工单表单的统一样式
+.ant-form {
+  .ant-form-item {
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .ant-form-explain {
+    margin-top: 0px;
+    margin-bottom: -22px;
+  }
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 时间类型组件长度100%
+  .ant-input-number,
+  .ant-calendar-picker,
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+```
+
+### 紧凑模式
+
+紧凑模式仅仅适用于无需验证的表单，例如查询表单，由于无需验证，上下之间的间隔缩短，有效利用现有空间：
+
+```less
+// 表单列布局紧凑模式样式
+.form-column-split-compact {
+  .ant-form-item {
+    padding-bottom: 0;
+    margin-bottom: 4px;
+  }
+  // 垂直模式下做特殊处理
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 滑块间距缩小
+  .ant-slider {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .ant-switch {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .ant-checkbox-group {
+    margin-top: 4px;
+  }
+}
+```
+
+### 对齐模式
+
+使用`horizontal`布局表单或者`inline`布局时，`label`与表单组件之前会抢占空间，切表单组件无法填充满剩下的空间。使用对齐模式后可解决此问题，该问题使用`flex`布局，因此只在受用于`flex`布局的浏览器上使用：
+
+```less
+/**
+ * @form-label-fixed-width: 表单`label`的固定宽度，默认值`82px`，约等于4个汉字，该范围已经包括**必选符号**和**冒号**;
+ */
+.form-column-align-defined(@form-label-fixed-width: 82px) {
+  &.ant-form-horizontal,
+  &.ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      .ant-form-item-label {
+        flex: 0 0 @form-label-fixed-width;
+        & > label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: @form-label-fixed-width;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: initial;
+          word-break: break-all;
+          line-height: 1;
+          top: -4px;
+          &::after {
+            align-self: flex-end;
+            margin-bottom: 1px;
+          }
+        }
+      }
+      .ant-form-item-control-wrapper {
+        flex-grow: 1;
+        .ant-form-item-control {
+          line-height: 28px;
+        }
+      }
+    }
+  }
+}
+.form-column-align {
+  .form-column-align-defined();
+}
+```
+
+### 操作分区
+
+表单中如果包含操作分区，可使用此样式：
+
+```less
+// 带操作区域的分列表单
+.form-column-action-right {
+  // 操作区域
+  .form-column-action {
+    padding-top: 23px;
+    float: right;
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+}
+```
+
+## 表格
+
+[点我查看完整案例](http://106.75.63.69:8091/tqis/table)
+
+### 定高表格
+
+表格中，固定表格高度以撑开容器，避免视图上数据突然被加载。
+
+```less
+.table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
+  @scroll-bar-height: 16px;
+  @table-body-height: @table-row-height * @table-row-count;
+  @table-height: @table-header-height + @table-body-height;
+  @table-empty-height: @table-body-height;
+  // 修改加载区域
+  /deep/ .ant-spin-spinning {
+    min-height:  @table-height;
+  }
+  /deep/ .ant-table-scroll {
+    // 滚动区域的中心高度固定，并增加滚动条的高度
+    .ant-table-body {
+      min-height: @table-height + @scroll-bar-height - @addition-container-height;
+      & when (@addition-container-height >= @scroll-bar-height) {
+        overflow-x: unset!important;
+      }
+    }
+  }
+  // `暂无数据`悬浮到上层
+  /deep/ .ant-table-placeholder {
+    position: absolute;
+    top: @table-header-height;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: @table-empty-height;
+  }
+  // 加载过程中不显示`暂无数据`
+  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
+    opacity: 0;
+  }
+}
+.table-container-fixed {
+  .table-container-fixed-defined(38px; 38px; 5);
+}
+```
+
+### 防溢单元格
+
+防止单元格数据溢出，而显示`...`：
+
+```less
+// 表格单元格溢出隐藏并显示`...`
+.table-cell-ellipsis {
+  th > div, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+  // 设置单元格内填充
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+```
+
+## 滚动条
+
+全局优化了滚动条的宽度和命中区域，提升交互：
+
+```less
+// 滚动条样式
+::-webkit-scrollbar {
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 4px solid transparent; 
+  border-radius: 16px;
+  box-shadow: 8px 8px 0 fade(@primary-color, 66%) inset;
+}
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  box-shadow: 8px 8px 0 @primary-color inset;
+}
+```

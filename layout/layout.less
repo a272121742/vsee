@@ -13,6 +13,11 @@
 @app-background-color: #F5F5F5;  // 背景底色
 @app-content-background-color: white;
 
+#app {
+  &.ant-spin .ant-spin-dot {
+    margin-top: calc(50vh - 10px);
+  }
+}
 .app-scroll {
   .__rail-is-vertical, .__rail-is-horizontal{
     z-index: @app-layout-zindex + 3!important;

@@ -1,205 +1,203 @@
 <template>
-  <a-form
-    :form="claimOrderForm"
-    class="col-layout-form col-layout-search-form"
+  <a-form-model
+    :model="claimOrderForm"
+    class="order-search-form form-column-split-compact form-column-action-right"
     layout="vertical"
-    self-update
   >
     <a-row :gutter="24">
       <!-- 索赔类型 -->
       <!-- <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.claimOrderType')">
+        <a-form-model-item :label="$t('order.claimOrderType')">
           <multiple-net-select
-            v-decorator="['claimOrderType']"
+            v-model="claimOrderForm.claimOrderType']"
             :placeholder="$t('form.select')"
             url=""
             value-by="claimOrderType"
-            :label-of="(item) => item.claimOrderType"
             allow-clear
             search-by="name"
             :max-tag-count="1"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col> -->
       <!-- 索赔单号 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.claimNo')">
+        <a-form-model-item :label="$t('order.claimNo')">
           <a-input
-            v-decorator="['claimNo']"
+            v-model="claimOrderForm.claimNo"
             :placeholder="$t('form.input')"
             autocomplete="off"
             allow-clear
           />
           <!-- <single-net-select
-            v-decorator="['claimNo']"
+            v-model="claimOrderForm.claimNo']"
             :placeholder="$t('form.select')"
             url="/field-q/v1/claimorder/codeAndClaimNo"
             value-by="claimNo"
-            :label-of="(item) => item.claimNo"
             allow-clear
             search-by="name"
           /> -->
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- vin -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.vin')">
+        <a-form-model-item :label="$t('order.vin')">
           <a-input
-            v-decorator="['vin']"
+            v-model="claimOrderForm.vin"
             :placeholder="$t('form.input')"
             autocomplete="off"
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 车牌号 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.licenseNo')">
+        <a-form-model-item :label="$t('order.licenseNo')">
           <a-input
-            v-decorator="['licenseNo']"
+            v-model="claimOrderForm.licenseNo"
             :placeholder="$t('form.input')"
             autocomplete="off"
             allow-clear
           />
           <!-- <multiple-net-select
-            v-decorator="['licenseNo']"
+            v-model="claimOrderForm.licenseNo']"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicle/licenseNoList"
             value-by="licenseNo"
-            :label-of="(item) => item.licenseNo"
             search-by="name"
             allow-clear
             :max-tag-count="1"
           /> -->
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 服务站 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.serviceStationId')">
+        <a-form-model-item :label="$t('order.serviceStationId')">
           <multiple-net-select
-            v-decorator="['serviceStationId']"
+            v-model="claimOrderForm.serviceStationId"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/servicestation/stationList"
             value-by="id"
-            :label-of="(item) => item.serviceStationShortName+'-'+item.serviceStationCode"
+            :label-of="(item) => `${item.serviceStationShortName}-${item.serviceStationCode}`"
             search-by="all"
             allow-clear
             :max-tag-count="0"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 故障里程 -->
       <a-col :span="formItemSpan">
-        <a-form-item
-          style="margin-bottom: 0;padding-bottom:0"
+        <a-form-model-item
+          style="margin-bottom: 0; padding-bottom: 0;"
           :label="$t('order.faultMileageForm')"
         >
           <a-input-group compact>
-            <a-form-item style="width: 42%;">
+            <a-form-model-item style="width: 42%;">
               <a-input-number
-                v-decorator="['faultMileageStart']"
+                v-model="claimOrderForm.faultMileageStart"
                 style="width: 100%;border-radius: 4px 0 0 4px; text-align: center"
                 placeholder="≥(km)"
                 class="inputNumber"
                 :min="0"
               />
-            </a-form-item>
+            </a-form-model-item>
             <a-input
               style=" width: 16%; border-left: 0;border-radius:0; pointer-events: none; backgroundColor: #fff"
               placeholder="~"
               disabled
             />
-            <a-form-item style="width: 42%;">
+            <a-form-model-item style="width: 42%;">
               <a-input-number
-                v-decorator="['faultMileageEnd']"
+                v-model="claimOrderForm.faultMileageEnd"
                 style="width: 100%; text-align: center;border-left: 0;border-radius: 0 4px 4px 0;"
                 placeholder="≤(km)"
                 :min="0"
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-input-group>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 车型代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.vhclModelSaleCode')">
+        <a-form-model-item
+          :label="$t('order.vhclModelSaleCode')"
+        >
           <multiple-net-select
-            v-decorator="['vhclSeriesCode']"
+            v-model="claimOrderForm.vhclSeriesCode"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicleseries/seriesCodeList"
             value-by="id"
-            :label-of="(item) => item.vhclSeriesCode"
+            label-of="vhclSeriesCode"
             allow-clear
             search-by="name"
             :max-tag-count="1"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 祸首件代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.code')">
-          <a-auto-complete
-            v-decorator="['partCode']"
-            :data-source="partCodeSource"
+        <a-form-model-item :label="$t('order.code')">
+          <net-auto-complete
+            v-model="claimOrderForm.partCode"
+            url="/masterdata/v1/part/partList"
             :placeholder="$t('form.input')"
             allow-clear
             :get-popup-container="el => el.parentNode"
             dropdown-match-select-width
-            @search="partCodeSearch"
-          >
-          </a-auto-complete>
-        </a-form-item>
+            value-by="code"
+            search-by="code"
+          />
+        </a-form-model-item>
       </a-col>
       <!-- 祸首件名称 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.name')">
-          <a-auto-complete
-            v-decorator="['partName']"
-            :data-source="partNameSource"
+        <a-form-model-item :label="$t('order.name')">
+          <net-auto-complete
+            v-model="claimOrderForm.partName"
+            url="/masterdata/v1/part/partNameList"
             :placeholder="$t('form.input')"
             allow-clear
             :get-popup-container="el => el.parentNode"
             dropdown-match-select-width
-            @search="partNameSearch"
-          >
-          </a-auto-complete>
-        </a-form-item>
+            value-by="name"
+            search-by="name"
+          />
+        </a-form-model-item>
       </a-col>
       <!-- 供应商代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.supplierCode')">
-          <a-auto-complete
-            v-decorator="['supplierCode']"
-            :data-source="supplierCodeSource"
+        <a-form-model-item :label="$t('order.supplierCode')">
+          <net-auto-complete
+            v-model="claimOrderForm.supplierCode"
+            url="/masterdata/v1/supplier/supplierList"
             :placeholder="$t('form.input')"
             allow-clear
             :get-popup-container="el => el.parentNode"
             dropdown-match-select-width
-            @search="supplierCodeSearch"
-          >
-          </a-auto-complete>
-        </a-form-item>
+            value-by="supplierCode"
+            search-by="code"
+          />
+        </a-form-model-item>
       </a-col>
       <!-- 供应商名称 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.supplierName')">
-          <a-auto-complete
-            v-decorator="['supplierName']"
-            :data-source="supplierNameSource"
+        <a-form-model-item :label="$t('order.supplierName')">
+          <net-auto-complete
+            v-model="claimOrderForm.supplierCode"
+            url="/masterdata/v1/supplier/supplierNameList"
             :placeholder="$t('form.input')"
             allow-clear
             :get-popup-container="el => el.parentNode"
             dropdown-match-select-width
-            @search="supplierNameSearch"
-          >
-          </a-auto-complete>
-        </a-form-item>
+            value-by="supplierNameZh"
+            search-by="name"
+          />
+        </a-form-model-item>
       </a-col>
       <!-- 暂留 -->
       <!-- <a-col :span="formItemSpan">
-        <a-form-item :label="$t('issue.supplierCode')">
+        <a-form-model-item :label="$t('issue.supplierCode')">
           <multiple-net-select
-            v-decorator="['supplierId']"
+            v-model="claimOrderForm.supplierId"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/supplier/supplierList"
             value-by="id"
@@ -208,86 +206,82 @@
             search-by="all"
             :max-tag-count="0"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col> -->
       <!-- 单据状态 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.claimOrderStatus')">
+        <a-form-model-item :label="$t('order.claimOrderStatus')">
+          <!-- @FIXME: 这里的地址不应该放参数，应该封装在q里 -->
           <multiple-net-select
-            v-decorator="['claimOrderStatus']"
+            v-model="claimOrderForm.claimOrderStatus"
             :placeholder="$t('form.select')"
             url="/sys/dict?dictType=claim_order_status"
             value-by="dictValue"
-            :label-of="(item) => item.dictName"
+            label-of="dictName"
             allow-clear
             search-by="name"
             :max-tag-count="1"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 故障代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.faultCode')">
+        <a-form-model-item :label="$t('order.faultCode')">
           <single-net-select
-            v-decorator="['faultSignCode']"
+            v-model="claimOrderForm.faultSignCode"
             :placeholder="$t('form.select')"
             url="/field-q/v1/claimorder/faultCode"
             value-by="faultSignCode"
-            :label-of="(item) => item.faultSignCode"
             allow-clear
             search-by="code"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 故障现象 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.faultSignAnalysis')">
+        <a-form-model-item :label="$t('order.faultSignAnalysis')">
           <single-net-select
-            v-decorator="['faultSignAnalysis']"
+            v-model="claimOrderForm.faultSignAnalysis"
             :placeholder="$t('form.select')"
             url="/field-q/v1/claimorder/faultReason"
             value-by="faultSignAnalysis"
-            :label-of="(item) => item.faultSignAnalysis"
             allow-clear
             search-by="name"
             @change="onFaultSignAnalysisChange"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 生产日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.prodDate')">
+        <a-form-model-item :label="$t('order.prodDate')">
           <a-range-picker
-            v-decorator="[
-              'prodDate'
-            ]"
-            :format="GLOBAL_SELECT_DATE_FORMAT"
+            v-model="claimOrderForm.prodDate"
+            :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 销售日期日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.salesDate')">
+        <a-form-model-item :label="$t('order.salesDate')">
           <a-range-picker
-            v-decorator="[
-              'warrantyBeginDate'
-            ]"
-            :format="GLOBAL_SELECT_DATE_FORMAT"
+            v-model="claimOrderForm.warrantyBeginDate"
+            :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 维修日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('order.repairDate')">
+        <a-form-model-item :label="$t('order.repairDate')">
           <a-range-picker
-            v-decorator="[
-              'repairDate'
-            ]"
-            :format="GLOBAL_SELECT_DATE_FORMAT"
+            v-model="claimOrderForm.repairDate"
+            :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
-      <div class="col-layout-form-actions">
+      <a-col
+        class="form-column-action"
+        :span="formItemSpan"
+      >
         <a-button
           type="primary"
           @click="orderSearch"
@@ -306,119 +300,69 @@
         >
           {{ $t('action.export') }}
         </a-button>
-      </div>
+      </a-col>
     </a-row>
-  </a-form>
+  </a-form-model>
 </template>
 
 <script>
-import { uniq, omit } from 'ramda';
+import { omit } from 'ramda';
 import storeModuleMix from '@mix/store-module.js';
-import formRecordMix from '@mix/form-record-mix.js';
-import timeFormatMix from '@mix/time-format.js';
-
+import { RANGE_TO_MAP_BY_FIELD } from '@util/datetime-helper.js';
 
 const omitSearchFields = omit(['prodDate', 'repairDate', 'warrantyBeginDate']);
 
-
 export default {
-  name: 'Order',
-  path: '/order',
-  components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
-    MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
-  },
   mixins: [
     storeModuleMix({
       name: 'order',
       action: ['getOrderExportData', 'getPartCodeData', 'getPartNameData', 'getSupplierCodeData', 'getSupplierNameData'],
     }),
-    formRecordMix('claimOrderForm'),
-    timeFormatMix,
   ],
   data () {
     return {
       formItemSpan: 6,
-      partCodeSource: [],
-      partNameSource: [],
-      supplierCodeSource: [],
-      supplierNameSource: [],
+      claimOrderForm: {},
     };
-  },
-  created () {
-    this.partCodeSearch();
-    this.partNameSearch();
-    this.supplierCodeSearch();
-    this.supplierNameSearch();
   },
   methods: {
     /**
      * 查询
      */
     orderSearch () {
-      const claimOrderFormSearch = this.getQuery();
+      RANGE_TO_MAP_BY_FIELD(this.claimOrderForm, 'prodDate');
+      RANGE_TO_MAP_BY_FIELD(this.claimOrderForm, 'repairDate');
+      RANGE_TO_MAP_BY_FIELD(this.claimOrderForm, 'warrantyBeginDate');
+      const claimOrderFormSearch = omitSearchFields({ ...this.claimOrderForm });
       this.$store.commit('order/set', { claimOrderFormSearch });
     },
     /**
      * 重置
      */
     orderReset () {
-      this.claimOrderForm.reset();
+      this.$set(this, 'claimOrderForm', {});
       this.$store.commit('order/set', { claimOrderFormSearch: {} });
     },
     /**
      * 导出数据
      */
     orderExport () {
-      const claimOrderFormSearch = this.getQuery();
-      this.getOrderExportData(claimOrderFormSearch).then();
+      this.getOrderExportData(this.claimOrderForm).then();
     },
     onFaultSignAnalysisChange (value, label) {
-      this.claimOrderFormRecord.faultSignAnalysis = label;
-    },
-    /**
-     * 祸首件与供应商 自动加载搜索
-     */
-    partCodeSearch (value) {
-      this.getPartCodeData({ code: value }).then((res) => {
-        this.partCodeSource = uniq(res.map((item) => item.code));
-      });
-    },
-    partNameSearch (value) {
-      this.getPartNameData({ name: value }).then((res) => {
-        this.partNameSource = uniq(res.map((item) => item.name));
-      });
-    },
-    supplierCodeSearch (value) {
-      this.getSupplierCodeData({ code: value }).then((res) => {
-        this.supplierCodeSource = uniq(res.map((item) => item.supplierCode));
-      });
-    },
-    supplierNameSearch (value) {
-      this.getSupplierNameData({ name: value }).then((res) => {
-        this.supplierNameSource = uniq(res.map((item) => item.supplierNameZh));
-      });
-    },
-    getQuery () {
-      this.transformMomentDate(this.claimOrderFormRecord, 'prodDate');
-      this.transformMomentDate(this.claimOrderFormRecord, 'repairDate');
-      this.transformMomentDate(this.claimOrderFormRecord, 'warrantyBeginDate');
-      return omitSearchFields({ ...this.claimOrderFormRecord });
+      this.claimOrderForm.faultSignAnalysis = label;
     },
   },
 };
 </script>
 <style lang="less" scoped>
-/deep/ .ant-select-dropdown-menu-root {
-  overflow: visible;
-  .ant-select-dropdown-menu-item {
-    overflow: visible;
+  .order-search-form {
+    min-height: 291px;
+    /deep/  .ant-select-dropdown-menu-root{
+      overflow:visible ;
+      /deep/ .ant-select-dropdown-menu-item{
+        overflow:visible ;
+      }
+    }
   }
-  .inputNumber {
-    width: 100%;
-  }
-}
-/deep/ .ant-select-auto-complete.ant-select .ant-select-search--inline {
-  position: absolute;
-}
 </style>;

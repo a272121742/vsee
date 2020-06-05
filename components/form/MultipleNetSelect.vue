@@ -75,6 +75,10 @@ function hasProp (instance, selfProp) {
 // }
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     // 基于网络的下拉列表，url的配置是必须
     url: {
@@ -84,7 +88,9 @@ export default {
     // 显示值
     labelOf: {
       type: [String, Function],
-      required: true,
+      default () {
+        return this.valueBy;
+      },
     },
     // 传递值
     valueBy: {
@@ -334,7 +340,7 @@ export default {
      */
     fetch (config) {
       const {
-        url, labelOf, valueBy, params,
+        url, valueBy, labelOf = valueBy, params,
       } = this;
       // const query = transformQuery(this.query);
       return new Promise((resolve) => {
@@ -364,7 +370,7 @@ export default {
       if (labelValue && labelValue.length) {
         this.$emit('change', labelValue.map(prop('key')), labelValue.map(prop('label')), VNode);
       } else {
-        this.$emit('change', void 0, void 0, VNode);
+        this.$emit('change', null, null, VNode);
       }
     },
   },

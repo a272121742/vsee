@@ -106,6 +106,8 @@
     "disabled": "Disabled",
     "loaded": "Loaded",
     "unload": "Unload",
+    "closable": "Closable",
+    "unclosable": "Unclosable",
     "loading": "Loading",
     "fetching": "Fetching",
     "validating": "Validating",

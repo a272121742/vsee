@@ -129,9 +129,30 @@
   }
 }
 
-/**
- * 表单列布局紧凑模式样式
- */
+// 修改所有工单表单的统一样式
+.ant-form {
+  .ant-form-item {
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .ant-form-explain {
+    margin-top: 0px;
+    margin-bottom: -22px;
+  }
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 时间类型组件长度100%
+  .ant-input-number,
+  .ant-calendar-picker,
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+
+// 表单列布局紧凑模式样式
 .form-column-split-compact {
   .ant-form-item {
     padding-bottom: 0;
@@ -155,45 +176,106 @@
   .ant-checkbox-group {
     margin-top: 4px;
   }
-  // 时间类型组件长度100%
-  .ant-input-number,
-  .ant-calendar-picker,
-  .ant-time-picker {
-    width: 100%;
-  }
 }
 
 
 // 列对齐模式
-.form-column-align {
-  @form-label-fixed-width: 82px;
-  .ant-form-item {
-    display: flex;
-    .ant-form-item-label {
-      flex: 0 0 @form-label-fixed-width;
-      & > label {
-        display: inline-flex;
-        align-items: center;
-        justify-content: flex-end;
-        width: @form-label-fixed-width;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: initial;
-        word-break: break-all;
-        line-height: 1;
-        top: -4px;
-        &::after {
-          align-self: flex-end;
-          margin-bottom: 1px;
+.form-column-align-defined(@form-label-fixed-width: 82px) {
+  &.ant-form-horizontal,
+  &.ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      .ant-form-item-label {
+        flex: 0 0 @form-label-fixed-width;
+        & > label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: @form-label-fixed-width;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: initial;
+          word-break: break-all;
+          line-height: 1;
+          top: -4px;
+          &::after {
+            align-self: flex-end;
+            margin-bottom: 1px;
+          }
+        }
+      }
+      .ant-form-item-control-wrapper {
+        flex-grow: 1;
+        .ant-form-item-control {
+          line-height: 28px;
         }
       }
     }
-    .ant-form-item-control-wrapper {
-      flex-grow: 1;
-      .ant-form-item-control {
-        line-height: 28px;
+  }
+}
+.form-column-align {
+  .form-column-align-defined();
+}
+
+// 带操作区域的分列表单
+.form-column-action-right {
+  // 操作区域
+  .form-column-action {
+    padding-top: 23px;
+    float: right;
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+}
+
+.table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
+  @scroll-bar-height: 16px;
+  @table-body-height: @table-row-height * @table-row-count;
+  @table-height: @table-header-height + @table-body-height;
+  @table-empty-height: @table-body-height;
+  // 修改加载区域
+  /deep/ .ant-spin-spinning {
+    min-height:  @table-height;
+  }
+  /deep/ .ant-table-scroll {
+    // 滚动区域的中心高度固定，并增加滚动条的高度
+    .ant-table-body {
+      min-height: @table-height + @scroll-bar-height - @addition-container-height;
+      & when (@addition-container-height >= @scroll-bar-height) {
+        overflow-x: unset!important;
       }
     }
+  }
+  // `暂无数据`悬浮到上层
+  /deep/ .ant-table-placeholder {
+    position: absolute;
+    top: @table-header-height;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: @table-empty-height;
+  }
+  // 加载过程中不显示`暂无数据`
+  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
+    opacity: 0;
+  }
+}
+
+// 表格单元格溢出隐藏并显示`...`
+.table-cell-ellipsis {
+  th > div, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+  // 设置单元格内填充
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 }
 

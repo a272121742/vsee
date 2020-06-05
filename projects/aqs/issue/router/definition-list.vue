@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <!-- 筛选表单 -->
-    <div>
+    <div style="height: 118px;">
       <issue-search-form></issue-search-form>
     </div>
     <!-- 操作按钮 -->
@@ -15,7 +15,7 @@
         <a-button
           type="primary"
         >
-          <a-icon type="icondccj_outlined1"></a-icon>
+          <a-icon type="icon-single-dccj-outlined"></a-icon>
           {{ $t('action.single_report') }}
         </a-button>
       </router-link>
@@ -30,7 +30,7 @@
           type="primary"
           :style="{ marginLeft: '8px' }"
         >
-          <a-icon type="iconplcj_outlined1"></a-icon>
+          <a-icon type="icon-single-plcj-outlined"></a-icon>
           {{ $t('action.batch_report') }}
         </a-button>
       </router-link>
@@ -38,7 +38,7 @@
     <!-- 表格 -->
     <div>
       <a-table
-        class="ellipsis-table"
+        class="table-container-fixed table-cell-ellipsis"
         :data-source="list"
         row-key="id"
         :pagination="pagination"
@@ -207,23 +207,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@table-height:609px;
-@table-head-height:54px;
   .root {
     .underline {
       text-decoration: underline;
     }
     .ant-table-wrapper {
-        padding-top: 16px;
-        /deep/ .ant-spin-nested-loading {
-          height: @table-height;
-        }
-        /deep/ .ant-table-placeholder {
-          height: calc(@table-height - @table-head-height);
-          .ant-empty-normal {
-            margin-top: calc(@table-height / 2 - @table-head-height);
-          }
-        }
+      padding-top: 16px;
+      /deep/ .ant-table-pagination.ant-pagination {
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
     }
     .operate-buttons {
       margin-top: 8px;

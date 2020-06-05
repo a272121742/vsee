@@ -82,6 +82,7 @@ export default {
     //   type: String,
     //   required: true,
     //   validator (value) {
+    //     console.log('全量吗内容', value);
     //     return ~['1', '2', '3'].indexOf(value);
     //   },
     // },
@@ -192,6 +193,11 @@ export default {
             });
           }
         }
+      }).finally(() => {
+        this.saveBtn = false;
+        this.save2Btn = false;
+        this.save2Loading = false;
+        this.saveLoading = false;
       });
     },
   },

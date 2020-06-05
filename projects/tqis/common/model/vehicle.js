@@ -3,7 +3,6 @@
  */
 import { GET_DATE_FORMAT } from '@util/datetime-helper.js';
 
-
 // 1. 库存地点代码
 const dealerCode = {
   dataIndex: 'dealerCode',
@@ -19,7 +18,6 @@ const custCode = {
     customRender: 'custCode',
   },
   width: 140,
-
 };
 // 3. 车辆状态
 const vhclStatus = {
@@ -44,7 +42,7 @@ const vhclModelCode = {
   scopedSlots: {
     customRender: 'vhclModelCode',
   },
-  width: 130,
+  width: 140,
 };
 // 4. 车型名称
 const vhclModelName = {
@@ -69,7 +67,7 @@ const brandCode = {
   scopedSlots: {
     customRender: 'brandCode',
   },
-  width: 100,
+  width: 120,
   align: 'center',
 };
 // 6. 品牌名称中文
@@ -78,7 +76,7 @@ const brandName = {
   scopedSlots: {
     customRender: 'brandName',
   },
-  width: 110,
+  width: 120,
 };
 // 7. 入库日期
 const inStockDate = {
@@ -112,7 +110,7 @@ const colorCode = {
   scopedSlots: {
     customRender: 'colorCode',
   },
-  width: 100,
+  width: 120,
 };
 // 9.颜色名称
 const colorName = {
@@ -120,7 +118,7 @@ const colorName = {
   scopedSlots: {
     customRender: 'colorName',
   },
-  width: 100,
+  width: 120,
 };
 
 // 11.vin
@@ -153,7 +151,7 @@ const factoryName = {
   scopedSlots: {
     customRender: 'factoryName',
   },
-  width: 120,
+  width: 130,
 };
   // 18.钥匙码
 const carKeyCode = {
@@ -161,14 +159,14 @@ const carKeyCode = {
   scopedSlots: {
     customRender: 'carKeyCode',
   },
-  width: 110,
+  width: 130,
 };
 const salesOrderNo = {
   dataIndex: 'salesOrderNo',
   scopedSlots: {
     customRender: 'salesOrderNo',
   },
-  width: 120,
+  width: 130,
 };
   // 17.总部库存锁定标志（Y/N）
 const isLocked = {
@@ -194,7 +192,7 @@ const regionName = {
   scopedSlots: {
     customRender: 'regionName',
   },
-  width: 120,
+  width: 130,
 };
 // 17.省份代码
 const provinceCode = {
@@ -202,7 +200,7 @@ const provinceCode = {
   scopedSlots: {
     customRender: 'provinceCode',
   },
-  width: 120,
+  width: 130,
 };
 // 17.省份名称
 const provinceName = {
@@ -210,7 +208,7 @@ const provinceName = {
   scopedSlots: {
     customRender: 'provinceName',
   },
-  width: 120,
+  width: 130,
 };
 
 export default {};

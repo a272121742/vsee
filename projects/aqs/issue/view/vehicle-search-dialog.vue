@@ -13,21 +13,20 @@
   >
     <div>
       <!-- 表格 -->
-      <a-form
-        :form="dialogForm"
-        class="col-layout-form col-layout-search-form"
+      <a-form-model
+        :model="dialogForm"
+        class="form-column-split-compact form-column-action-right"
         layout="vertical"
-        self-update
       >
         <!-- {{ record }} -->
         <a-row :gutter="24">
           <!-- 车型 -->
           <a-col :span="formItemSpan">
-            <a-form-item
+            <a-form-model-item
               :label="$t('issue.vhclSeriesCode')"
             >
               <multiple-net-select
-                v-decorator="['vhclSeriesCode']"
+                v-model="dialogForm.vhclSeriesCode"
                 :placeholder="$t('form.select')"
                 url="/masterdata/v1/vehicleseries/seriesCodeList"
                 value-by="id"
@@ -36,24 +35,24 @@
                 search-by="name"
                 :max-tag-count="1"
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- VIN -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.vinTit')">
+            <a-form-model-item :label="$t('issue.vinTit')">
               <a-input
-                v-decorator="['vin']"
+                v-model="dialogForm.vin"
                 placeholder="请输入"
                 autocomplete="off"
                 allow-clear
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- 电池 -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.batteryCode')">
+            <a-form-model-item :label="$t('issue.batteryCode')">
               <multiple-net-select
-                v-decorator="['batteryCode']"
+                v-model="dialogForm.batteryCode"
                 :placeholder="$t('form.select')"
                 url="/masterdata/v1/vehicle/batteryAndCode"
                 value-by="id"
@@ -62,13 +61,13 @@
                 allow-clear
                 search-by="code"
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- 下线工厂 -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.factoryName')">
+            <a-form-model-item :label="$t('issue.factoryName')">
               <single-net-select
-                v-decorator="['factoryName']"
+                v-model="dialogForm.factoryName"
                 :placeholder="$t('form.select')"
                 url="/sys/dict?dictType=factory_code"
                 value-by="dictName"
@@ -76,35 +75,33 @@
                 allow-clear
                 close-search
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- 生产日期 -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.prodDate')">
+            <a-form-model-item :label="$t('issue.prodDate')">
               <a-range-picker
-                v-decorator="[
-                  'prodDate'
-                ]"
+                v-model="dialogForm.prodDate"
                 :get-calendar-container="e => e.parentNode"
+                :format="DATE_FORMAT"
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- 销售日期 -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.salesDate')">
+            <a-form-model-item :label="$t('issue.salesDate')">
               <a-range-picker
-                v-decorator="[
-                  'warrantyBeginDate'
-                ]"
+                v-model="dialogForm.warrantyBeginDate"
                 :get-calendar-container="e => e.parentNode"
+                :format="DATE_FORMAT"
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
           <!-- 车辆用途 -->
           <a-col :span="formItemSpan">
-            <a-form-item :label="$t('issue.carUsageCode')">
+            <a-form-model-item :label="$t('issue.carUsageCode')">
               <multiple-net-select
-                v-decorator="['carUsageCode']"
+                v-model="dialogForm.carUsageCode"
                 :placeholder="$t('form.select')"
                 url="/sys/dict?dictType=car_usage_code"
                 value-by="dictValue"
@@ -112,10 +109,13 @@
                 allow-clear
                 close-search
               />
-            </a-form-item>
+            </a-form-model-item>
           </a-col>
 
-          <div class="col-layout-form-actions">
+          <a-col
+            class="form-column-action"
+            :span="formItemSpan"
+          >
             <a-button
               type="primary"
               @click="getDialogSearch"
@@ -128,9 +128,9 @@
             >
               {{ $t('action.reset') }}
             </a-button>
-          </div>
+          </a-col>
         </a-row>
-      </a-form>
+      </a-form-model>
       <!-- 信息提示 -->
       <a-alert
         class="vehicle-info-alert"
@@ -149,7 +149,7 @@
         :row-selection="rowSelection"
         :loading="loading"
         size="small"
-        class="ellipsis-table"
+        class="table-cell-ellipsis"
         :scroll="{x: 1000}"
         :disabled="true"
         @change="tableChangeHandle"
@@ -178,23 +178,17 @@
 </template>
 <script>
 import { omit } from 'ramda';
-import formRecordMix from '@mix/form-record.js';
-import timeFormatMix from '@mix/time-format.js';
 import tableRowSelectionMix from '@mix/table-row-selection.js';
 import storeModuleMix from '@mix/store-module.js';
 import paginationMix from '@mix/pagination.js';
+import { RANGE_TO_MAP_BY_FIELD } from '@util/datetime-helper.js';
 import { dialogColumns } from '~~/model/VehicleSearchDialog.js';
 
-const fileds = ['vin', 'batteryCode', 'factoryName', 'prodDate', 'warrantyBeginDate', 'carUsageCode', 'vhclSeriesCode'];
+// const fileds = ['vin', 'batteryCode', 'factoryName', 'prodDate', 'warrantyBeginDate', 'carUsageCode', 'vhclSeriesCode'];
+
 const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
 export default {
-  components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
-    MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
-  },
   mixins: [
-    formRecordMix('dialogForm', fileds),
-    timeFormatMix,
     tableRowSelectionMix(),
     paginationMix(),
     tableRowSelectionMix(),
@@ -215,6 +209,7 @@ export default {
   },
   data () {
     return {
+      dialogForm: {},
       selectedKeys: [],
       formItemSpan: 6,
       columns: dialogColumns,
@@ -247,7 +242,7 @@ export default {
     visible (value) {
       if (value) {
         this.selectedKeys = [];
-        this.dialogForm.reset();
+        this.$set(this, 'dialogForm', {});
         this.rowSelection.selectedRowKeys = [];
         this.handAllFlag = false;
         this.fetch();
@@ -310,10 +305,10 @@ export default {
     },
     // 表单
     getDialogSearch () {
-      this.transformMomentDate(this.dialogFormRecord, 'prodDate');
-      this.transformMomentDate(this.dialogFormRecord, 'warrantyBeginDate');
+      RANGE_TO_MAP_BY_FIELD(this.dialogForm, 'prodDate');
+      RANGE_TO_MAP_BY_FIELD(this.dialogForm, 'warrantyBeginDate');
       this.pagination.current = 1;
-      this.fetch(omitSearchFields({ ...this.dialogFormRecord }));
+      this.fetch(omitSearchFields({ ...this.dialogForm }));
     },
     dialogRest () {
       this.dialogForm.reset();
@@ -360,7 +355,7 @@ export default {
       if (!this.handAllFlag) {
         this.rowSelection.selectedRowKeys = [];
       }
-      this.fetch(omitSearchFields({ ...this.dialogFormRecord }));
+      this.fetch(omitSearchFields({ ...this.dialogForm }));
     },
     showConfirm (that) {
       this.rowSelection.selectedRowKeys.length = this.pagination.total;
@@ -390,7 +385,7 @@ export default {
       this.$emit('update:visible', false);
       this.$emit('fn', this.handAllFlag);
       this.$set(this, 'selectedKeys', []);
-      this.$store.commit('issue/set', { vehicleInforSearch: omitSearchFields({ ...this.dialogFormRecord }) });
+      this.$store.commit('issue/set', { vehicleInforSearch: omitSearchFields({ ...this.dialogForm }) });
     },
     handleCancel () {
       this.$emit('update:visible', false);
@@ -400,26 +395,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-  .col-layout-form-actions {
-    .ant-btn {
-      margin-left: 8px;
-    }
+  .vehicle-info-alert {
+    margin-top: 12px;
   }
-  @table-height: 460px;
-  @table-head-height: 54px;
   .ant-table-wrapper {
-    padding-top: 12px;
-    /deep/ .ant-spin-nested-loading {
-      height: @table-height;
-    }
-    /deep/ .ant-table-placeholder {
-      height: calc(@table-height - @table-head-height);
-      .ant-empty-normal {
-        margin-top: calc(@table-height / 2 - @table-head-height);
-      }
-    }
-    /deep/ .ant-table-pagination {
-      margin-bottom: 0;
+    .table-container-fixed-defined(38px; 38px; 10; 16px);
+    padding-top: 16px;
+    /deep/ .ant-table-pagination.ant-pagination {
+      margin-top: 8px;
+      margin-bottom: 4px;
     }
   }
 </style>

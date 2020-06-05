@@ -120,10 +120,32 @@
 @box-shadow-h: @global-shadow-h1;
 @box-shadow-v: @global-shadow-v1;
 
-/**
- * 表单列布局紧凑模式样式
- */
- .form-column-split-compact {
+
+// 修改所有工单表单的统一样式
+.ant-form {
+  .ant-form-item {
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .ant-form-explain {
+    margin-top: 0px;
+    margin-bottom: -22px;
+  }
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 时间类型组件长度100%
+  .ant-input-number,
+  .ant-calendar-picker,
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+
+// 表单列布局紧凑模式样式
+.form-column-split-compact {
   .ant-form-item {
     padding-bottom: 0;
     margin-bottom: 4px;
@@ -146,116 +168,129 @@
   .ant-checkbox-group {
     margin-top: 4px;
   }
-  // 时间类型组件长度100%
-  .ant-input-number,
-  .ant-calendar-picker,
-  .ant-time-picker {
-    width: 100%;
-  }
 }
 
-@form-label-fixed-width: 82px;
-// 列对齐模式
-.form-column-align {
-  .ant-form-item {
-    display: flex;
-    .ant-form-item-label {
-      flex: 0 0 @form-label-fixed-width;
-      & > label {
-        display: inline-flex;
-        align-items: center;
-        justify-content: flex-end;
-        width: @form-label-fixed-width;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: initial;
-        word-break: break-all;
-        line-height: 1;
-        top: -4px;
-        &::after {
-          align-self: flex-end;
-          margin-bottom: 1px;
+
+/**
+ * @form-label-fixed-width: 表单`label`的固定宽度，默认值`82px`，约等于4个汉字，该范围已经包括**必选符号**和**冒号**;
+ */
+ .form-column-align-defined(@form-label-fixed-width: 82px) {
+  &.ant-form-horizontal,
+  &.ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      .ant-form-item-label {
+        flex: 0 0 @form-label-fixed-width;
+        & > label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: @form-label-fixed-width;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: initial;
+          word-break: break-all;
+          line-height: 1;
+          top: -4px;
+          &::after {
+            align-self: flex-end;
+            margin-bottom: 1px;
+          }
+        }
+      }
+      .ant-form-item-control-wrapper {
+        flex-grow: 1;
+        .ant-form-item-control {
+          line-height: 28px;
         }
       }
     }
-    .ant-form-item-control-wrapper {
-      flex-grow: 1;
-      .ant-form-item-control {
-        line-height: 28px;
-      }
-    }
+  }
+}
+.form-column-align {
+  .form-column-align-defined();
+}
+
+// 带操作区域的分列表单
+.form-column-action-right {
+  // 操作区域
+  .form-column-action {
+    padding-top: 23px;
+    float: right;
+    display: inline-flex;
+    justify-content: flex-end;
   }
 }
 
-@form-label-fixed-width: 88px;
-.col-layout-form.ant-form-horizontal, 
-.col-layout-form.ant-form-inline {
-  .ant-form-item {
+/**
+ * @table-header-height: 表头的高度，默认值`54px`，如果你的表头是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-height: 表格行高度，默认值`56px`，如果你的表格行是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-count: 表格最小显示行数，默认`10`，定义多少行，空表格将按照此高度固定；
+ * @addition-container-height: 增补高度，默认`0px`，此功能用来减去滚动条高度，如果想去掉滚动条高度，设置为`16px`即可；
+ */
+.table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
+  @scroll-bar-height: 16px;
+  @table-body-height: @table-row-height * @table-row-count;
+  @table-height: @table-header-height + @table-body-height;
+  @table-empty-height: @table-body-height;
+  // 修改加载区域
+  /deep/ .ant-spin-spinning {
+    min-height:  @table-height;
+  }
+  /deep/ .ant-table-scroll {
+    // 滚动区域的中心高度固定，并增加滚动条的高度
+    .ant-table-body {
+      min-height: @table-height + @scroll-bar-height - @addition-container-height;
+      & when (@addition-container-height >= @scroll-bar-height) {
+        overflow-x: unset!important;
+      }
+    }
+  }
+  // `暂无数据`悬浮到上层
+  /deep/ .ant-table-placeholder {
+    position: absolute;
+    top: @table-header-height;
+    left: 0;
+    right: 0;
     display: flex;
-    margin-bottom: 2px;
-    .ant-form-item-label {
-      flex: none;
-      flex-basis: @form-label-fixed-width;
-      label {
-        display: inline-block;
-        width: @form-label-fixed-width;
-        max-height: 28px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: initial;
-        word-break: break-all;
-        line-height: 1;
-        margin-top: 5px;
-      }
-    }
-    .ant-form-item-control-wrapper {
-      flex: auto;
-    }
+    align-items: center;
+    justify-content: center;
+    min-height: @table-empty-height;
   }
-  .col-layout-form-actions {
-    float: right;
-    margin: 4px 12px 0;
-  }
-} 
-// 垂直布局表单，修改为紧凑型
-.col-layout-form.ant-form-vertical {
-  .ant-form-item {
-    padding-bottom: 2px;
-    .ant-form-item-label {
-      padding-bottom: 2px;
-    }
-    // 时间类型组件长度100%
-    .ant-calendar-picker, .ant-time-picker {
-      display: block;
-    }
-  }
-  .col-layout-form-actions {
-    float: right;
-    margin: 23px 12px 0;
+  // 加载过程中不显示`暂无数据`
+  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
+    opacity: 0;
   }
 }
-// 如果是搜索表单，修改上下间距
-.col-layout-form.col-layout-search-form.ant-form-vertical {
-  .ant-form-item {
-    margin-bottom: 8px;
-    .ant-form-explain {
-      margin-top: -4px;
-      margin-bottom: -18px;
-    }
-  }
+.table-container-fixed {
+  .table-container-fixed-defined(46px; 46px; 10);
 }
-// 分列表单下的item样式 =========================end===========================
 
-// 设置所有的弹出消息浮层层高 ========================begin==========================
-.ant-message {
-  z-index: 6010;
+// 表格单元格溢出隐藏并显示`...`
+.table-cell-ellipsis {
+  th > div, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+  // 设置单元格内填充
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
 }
-// 设置所有的弹出消息浮层层高 =========================end===========================
-// 设置滚动条样式 ========================begin==========================
-// 滚动条样式 begin /////////////////////////////////////////////////////////
+
+.ant-message {
+  z-index: @global-layer-notify;
+}
+
+// 滚动条样式
 ::-webkit-scrollbar {
   height: 16px;
   width: 16px;
+  background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
   border: 4px solid transparent; 
@@ -266,35 +301,3 @@
   cursor: pointer;
   box-shadow: 8px 8px 0 @primary-color inset;
 }
-::-webkit-scrollbar-track {
-  display: none;
-}
-::-webkit-scrollbar-corner {
-  display: none;
-}
-// 设置表格文本省略 =========================begin===========================
-.ant-table-wrapper.ellipsis-table{
-  // 设置表格内容不换行
-  table {
-    // 只有定义表格的算法为fixed,th才有效果
-    table-layout: fixed;
-    word-wrap:break-all;
-  }
-  th > div, td {
-    // 超出长度的文字隐藏
-    overflow: hidden;
-    // 文字隐藏以后添加省略号
-    text-overflow: ellipsis;
-    // 强制不换行
-    white-space: nowrap;
-    // 文字不换行
-    word-break: keep-all;
-  }
-  // 设置单元格内填充
-  .ant-table-thead > tr > th,
-  .ant-table-tbody > tr > td {
-    padding: 12px;
-  }
-}
-
-// 设置表格文本省略 =========================end===========================

@@ -1,6 +1,4 @@
-import timeFormatMix from '@mix/time-format.js';
-
-const dateFormat = timeFormatMix.filters.GLOBAL_SELECT_DATE_FORMAT;
+import { GET_DATE_FORMAT } from '@util/datetime-helper.js';
 
 /**
  * 问题定义（车辆信息）
@@ -73,7 +71,7 @@ export const dialogColumns = [
   batteryCode,
   factoryName,
   eleMotorCode,
-  { ...prodDate, customRender: dateFormat },
-  { ...salesDate, customRender: dateFormat },
+  { ...prodDate, customRender: GET_DATE_FORMAT },
+  { ...salesDate, customRender: GET_DATE_FORMAT },
   materialCode,
 ];

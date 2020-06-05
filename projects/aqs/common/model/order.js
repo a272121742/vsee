@@ -2,9 +2,7 @@
  * 数据模型
  */
 
-import timeFormatMix from '@mix/time-format.js';
-
-const dateFormat = timeFormatMix.filters.GLOBAL_SELECT_DATE_FORMAT;
+import { GET_DATE_FORMAT } from '@util/datetime-helper.js';
 
 // 3. 索赔单号
 const claimNo = {
@@ -289,11 +287,11 @@ export const orderListColumns = [
   claimTypeL1Name,
   claimTypeL2Name,
   licenseNo,
-  { ...prodDate, customRender: dateFormat },
-  { ...salesDate, customRender: dateFormat },
-  { ...repairBeginDate, customRender: dateFormat },
-  { ...applyDate, customRender: dateFormat },
-  { ...approveDate, customRender: dateFormat },
+  { ...prodDate, customRender: GET_DATE_FORMAT },
+  { ...salesDate, customRender: GET_DATE_FORMAT },
+  { ...repairBeginDate, customRender: GET_DATE_FORMAT },
+  { ...applyDate, customRender: GET_DATE_FORMAT },
+  { ...approveDate, customRender: GET_DATE_FORMAT },
   eleMotorCode,
   serviceStationCode,
   faultSignCode,

@@ -1,51 +1,45 @@
 <template>
   <div class="root">
     <h2 class="title">
-      <a-icon type="iconbs_filled"></a-icon>
+      <a-icon type="icon-single-bs-filled"></a-icon>
       {{ $t('issue.temporaryMeasures') }}
     </h2>
-    <a-form
-      :form="temporaryMeasuresForm"
+    <a-form-model
+      ref="temporaryMeasuresForm"
+      :model="temporaryMeasuresForm"
       layout="inline"
-      :label-col="{span:3}"
-      :wrapper-col="{span:21}"
-      self-update
-      class="col-layout-form"
+      :label-col="{ span: 3 }"
+      :wrapper-col="{ span: 21 }"
+      class="form-column-align"
     >
       <a-row>
         <a-col :span="24">
-          <a-form-item
-            required
+          <a-form-model-item
+            prop="tempSolution"
+            :rules="[$v.required($t('issue.notBeBlank'))]"
             :label="$t('issue.temporaryMeasures')"
           >
             <v-textarea
-              v-decorator="[
-                'tempSolution',{
-                  rules: [
-                    $v.required($t('issue.notBeBlank'))
-                  ]}
-              ]"
+              v-model="temporaryMeasuresForm.tempSolution"
               :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />
-          </a-form-item>
+          </a-form-model-item>
         </a-col>
       </a-row>
-    </a-form>
+    </a-form-model>
   </div>
 </template>
+
 <script>
-import formRecordMix from '@mix/form-record.js';
+import { validator } from '@util/formhelper.js';
 import { pick } from 'ramda';
 
 const fileds = ['tempSolution'];
 
 export default {
-  components: {
-    VTextarea: () => import('@comp/form/VTextarea.vue'),
-  },
-  mixins: [formRecordMix('temporaryMeasuresForm', fileds)],
+  mixins: [validator],
   props: {
     mergeData: {
       type: Object,
@@ -54,13 +48,14 @@ export default {
   },
   data () {
     return {
+      temporaryMeasuresForm: {},
     };
   },
   watch: {
     mergeData: {
       immediate: true,
       handler (mergeData = {}) {
-        this.temporaryMeasuresFormRecord = pick(fileds, mergeData);
+        this.temporaryMeasuresForm = pick(fileds, mergeData);
       },
     },
   },
@@ -70,13 +65,14 @@ export default {
      */
     getData () {
       return new Promise((resolve, reject) => {
-        this.temporaryMeasuresForm.validateFieldsAndScroll((err) => {
-          if (!err) {
-            const temporaryMeasuresList = { ...this.temporaryMeasuresFormRecord };
+        this.$refs.temporaryMeasuresForm.validate((valid) => {
+          if (valid) {
+            const temporaryMeasuresList = { ...this.temporaryMeasuresForm };
             resolve(temporaryMeasuresList);
           } else {
-            reject(err);
+            reject(valid);
           }
+          return valid;
         });
       });
     },
@@ -85,7 +81,6 @@ export default {
 </script>
 <style lang="less" scoped>
 .root {
-  margin-bottom: 32px;
   .ant-input {
     height: 56px;
   }

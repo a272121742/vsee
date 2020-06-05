@@ -1,182 +1,165 @@
 <template>
-  <div class="root">
-    <a-form
-      :form="issuSearchForm"
-      layout="vertical"
-      self-update
-      class="col-layout-form col-layout-search-form"
-    >
-      <a-row :gutter="24">
-        <!-- 报告编号 -->
-        <a-col
-          :span="formItemSpan"
+  <a-form-model
+    :model="issuSearchForm"
+    layout="vertical"
+    class="issue-search-form form-column-split-compact form-column-action-right"
+  >
+    <a-row :gutter="24">
+      <!-- 报告编号 -->
+      <a-col
+        :span="formItemSpan"
+      >
+        <a-form-model-item :label="$t('issue.asqIssueRptCode')">
+          <single-net-select
+            v-model="issuSearchForm.asqIssueRptCode"
+            :placeholder="$t('form.select')"
+            url="/field-q/v1/asqissuedefn/codeList"
+            value-by="asqIssueRptCode"
+            allow-clear
+            search-by="name"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 报告类型 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="$t('issue.asqIssueRptType')">
+          <!-- @FIXME: 这里的地址不应该放参数，应该封装在q里 -->
+          <multiple-net-select
+            v-model="issuSearchForm.asqIssueRptType"
+            :placeholder="$t('form.select')"
+            url="/sys/dict?dictType=asq_issue_rpt_type"
+            value-by="dictValue"
+            label-of="dictName"
+            allow-clear
+            close-search
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 问题来源 -->
+      <a-col
+        :span="formItemSpan"
+      >
+        <a-form-model-item :label="$t('issue.asqIssueSource')">
+          <!-- @FIXME: 这里的地址不应该放参数，应该封装在q里 -->
+          <multiple-net-select
+            v-model="issuSearchForm.asqIssueSource"
+            :placeholder="$t('form.select')"
+            url="/sys/dict?dictType=asq_issue_source"
+            value-by="dictValue"
+            label-of="dictName"
+            allow-clear
+            close-search
+            :max-tag-count="1"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 发布日期 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="$t('issue.createDate')">
+          <a-range-picker
+            v-model="issuSearchForm.createDate"
+            :format="DATE_FORMAT"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 问题分类 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item
+          :label="$t('issue.asqIssueCategory')"
         >
-          <a-form-item :label="$t('issue.asqIssueRptCode')">
-            <single-net-select
-              v-decorator="['asqIssueRptCode']"
-              :placeholder="$t('form.select')"
-              url="/field-q/v1/asqissuedefn/codeList"
-              value-by="asqIssueRptCode"
-              :label-of="(item) => item.asqIssueRptCode"
-              allow-clear
-              search-by="name"
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 报告类型 -->
-        <a-col :span="formItemSpan">
-          <a-form-item :label="$t('issue.asqIssueRptType')">
-            <multiple-net-select
-              v-decorator="['asqIssueRptType']"
-              :placeholder="$t('form.select')"
-              url="/sys/dict?dictType=asq_issue_rpt_type"
-              value-by="dictValue"
-              :label-of="(item) => item.dictName"
-              allow-clear
-              close-search
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 问题来源 -->
-        <a-col
-          :span="formItemSpan"
+          <!-- @FIXME: 这里的地址不应该放参数，应该封装在q里 -->
+          <single-net-select
+            v-model="issuSearchForm.asqIssueCategory"
+            :placeholder="$t('form.select')"
+            url="/sys/dict?dictType=asq_issue_category"
+            value-by="dictValue"
+            label-of="dictName"
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 祸首件 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item
+          :label="$t('issue.firstCausePart')"
         >
-          <a-form-item :label="$t('issue.asqIssueSource')">
-            <multiple-net-select
-              v-decorator="['asqIssueSource']"
-              :placeholder="$t('form.select')"
-              url="/sys/dict?dictType=asq_issue_source"
-              value-by="dictValue"
-              :label-of="(item) => item.dictName"
-              allow-clear
-              close-search
-              :max-tag-count="1"
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 发布日期 -->
-        <a-col :span="formItemSpan">
-          <a-form-item :label="$t('issue.createDate')">
-            <a-range-picker
-              v-decorator="['createDate']"
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 问题分类 -->
-        <a-col :span="formItemSpan">
-          <a-form-item
-            :label="$t('issue.asqIssueCategory')"
-          >
-            <single-net-select
-              v-decorator="[
-                'asqIssueCategory'
-              ]"
-              :placeholder="$t('form.select')"
-              url="/sys/dict?dictType=asq_issue_category"
-              value-by="dictValue"
-              :label-of="(item) => item.dictName"
-              allow-clear
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 祸首件 -->
-        <a-col :span="formItemSpan">
-          <a-form-item
-            :label="$t('issue.firstCausePart')"
-          >
-            <single-net-select
-              v-decorator="[
-                'firstCausePart']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList?orderField=name"
-              value-by="id"
-              :label-of="(item) => item.name+'-'+item.code"
-              allow-clear
-              search-by="all"
-            />
-          </a-form-item>
-        </a-col>
-        <!-- 车型 -->
-        <a-col :span="formItemSpan">
-          <a-form-item :label="$t('issue.vhclSeriesCode')">
-            <multiple-net-select
-              v-decorator="['vhclSeriesCode']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/vehicleseries/seriesCodeList"
-              value-by="vhclSeriesCode"
-              :label-of="(item) => item.vhclSeriesCode"
-              allow-clear
-              search-by="name"
-              :max-tag-count="1"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col
-          :span="formItemSpan"
-          :style="{ textAlign: 'right', marginTop: '23px' }"
+          <!-- @FIXME: 这里的地址不应该放参数，应该封装在order-field里 -->
+          <single-net-select
+            v-model="issuSearchForm.firstCausePart"
+            :placeholder="$t('form.select')"
+            url="/masterdata/v1/part/partList"
+            order-field="name"
+            value-by="id"
+            :label-of="(item) => `${item.name}-${item.code}`"
+            allow-clear
+            search-by="all"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 车型 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="$t('issue.vhclSeriesCode')">
+          <multiple-net-select
+            v-model="issuSearchForm.vhclSeriesCode"
+            :placeholder="$t('form.select')"
+            url="/masterdata/v1/vehicleseries/seriesCodeList"
+            value-by="vhclSeriesCode"
+            allow-clear
+            search-by="name"
+            :max-tag-count="1"
+          />
+        </a-form-model-item>
+      </a-col>
+      <a-col
+        class="form-column-action"
+        :span="formItemSpan"
+      >
+        <a-button
+          type="primary"
+          html-type="submit"
+          @click="issueSearch"
         >
-          <a-button
-            type="primary"
-            html-type="submit"
-            @click="issueSearch"
-          >
-            {{ $t('action.find') }}
-          </a-button>
-          <a-button
-            :style="{ marginLeft: '8px' }"
-            @click="resetFormData"
-          >
-            {{ $t('action.reset') }}
-          </a-button>
-        </a-col>
-      </a-row>
-    </a-form>
-  </div>
+          {{ $t('action.find') }}
+        </a-button>
+        <a-button
+          :style="{ marginLeft: '8px' }"
+          @click="resetFormData"
+        >
+          {{ $t('action.reset') }}
+        </a-button>
+      </a-col>
+    </a-row>
+  </a-form-model>
 </template>
 
 <script>
-import formRecordMix from '@mix/form-record.js';
-import timeFormatMix from '@mix/time-format.js';
-
-const fileds = ['asqIssueRptCode', 'asqIssueRptType', 'asqIssueSource', 'createDate', 'asqIssueCategory', 'firstCausePart', 'vhclSeriesCode'];
+import { RANGE_TO_MAP_BY_FIELD } from '@util/datetime-helper.js';
 
 export default {
-  components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
-    MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
-  },
-
-  mixins: [
-    formRecordMix('issuSearchForm', fileds),
-    timeFormatMix,
-  ],
   data () {
     return {
       formItemSpan: 6,
+      issuSearchForm: {},
     };
   },
-
   methods: {
     // 重置表单
     resetFormData () {
-      this.issuSearchForm.reset();
+      this.$set(this, 'issuSearchForm', {});
       this.$store.commit('issue/set', { issueSearchData: {} });
     },
     // 查询已创建的问题报告
     issueSearch () {
-      this.transformMomentDate(this.issuSearchFormRecord, 'createDate');
-      const issueSearchData = { ...this.issuSearchFormRecord };
+      RANGE_TO_MAP_BY_FIELD(this.issuSearchForm, 'createDate');
+      const issueSearchData = { ...this.issuSearchForm };
       this.$store.commit('issue/set', { issueSearchData });
     },
-
   },
 };
 </script>
 
 <style lang="less" scoped>
-.root{
-  .ant-btn{
-    width:65px;
- }
-}
+  .issue-search-form {
+    min-height: 118px;
+  }
 </style>

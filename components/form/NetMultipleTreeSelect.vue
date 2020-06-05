@@ -61,6 +61,10 @@ function transformQuery (query) {
 }
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     // 下拉列表的值，或单对象，或数组，该属性由`v-decorator`控制
     value: {
@@ -210,9 +214,9 @@ export default {
         this.labelValue = labelValue;
       }
       if (labelValue && labelValue.length) {
-        this.$emit('change', labelValue.map((item) => item.value), null, extra);
+        this.$emit('change', labelValue.map((item) => item.value), labelValue.map((item) => item.label), extra);
       } else {
-        this.$emit('change', void 0, void 0, extra);
+        this.$emit('change', null, null, extra);
       }
     },
     filterTreeNode (input = '', treeNode) {

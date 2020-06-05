@@ -8,7 +8,7 @@
     "toPortal": "TQIS portal"
   },
   "env": {
-    "name": ""
+    "name": "Only Test"
   },
   "download": {
     "user_manual": "AftersalesQuality_UserManual.pdf"

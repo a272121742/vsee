@@ -1,6 +1,6 @@
 <template>
   <a-card
-    :title="`A: ${$t('title.reporttitlA')}`"
+    :title="`A: `+ $t('title.reporttitlA')"
   >
     <table>
       <!-- 故障时间 -->

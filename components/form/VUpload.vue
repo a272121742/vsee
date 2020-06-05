@@ -62,6 +62,10 @@ const file2client = (serverFile = {}) => {
 
 export default {
   exclude: omit,
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     /**
      * 已上传文件列表，作为表单值可直接使用
@@ -117,6 +121,8 @@ export default {
         const doneFileList = this.previews.filter((file) => file.status === 'done');
         if (doneFileList.length) {
           this.$emit('change', doneFileList.map(file2server));
+        } else {
+          this.$emit('change', null);
         }
       }
     },

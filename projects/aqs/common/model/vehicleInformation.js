@@ -2,9 +2,8 @@
  * 问题定义（车辆信息）
  */
 
-import timeFormatMix from '@mix/time-format.js';
+import { GET_DATE_FORMAT } from '@util/datetime-helper.js';
 
-const dateFormat = timeFormatMix.filters.GLOBAL_SELECT_DATE_FORMAT;
 
 // 1. VIN
 const vin = {
@@ -89,8 +88,8 @@ export const vehicleInformationColumns = [
   batteryCode,
   factoryName,
   eleMotorCode,
-  { ...prodDate, customRender: dateFormat },
-  { ...salesDate, customRender: dateFormat },
+  { ...prodDate, customRender: GET_DATE_FORMAT },
+  { ...salesDate, customRender: GET_DATE_FORMAT },
   dealerCityId,
   serviceStationId,
 ];

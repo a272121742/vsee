@@ -26,7 +26,7 @@ Vue.nextTick(() => {
       }, 800, { leading: true, trailing: false }),
     },
     render () {
-      return (
+      return this.$store.state.reload ? <a-spin id="app"/> : (
         <a-config-provider id="app" locale={ this.$store.state.local4antd }>
           <router-view />
         </a-config-provider>

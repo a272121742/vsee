@@ -1,11 +1,11 @@
 <template>
   <a-table
-    class="ellipsis-table"
+    class="table-cell-ellipsis"
     row-key="id"
     :data-source="list"
     :pagination="pagination"
     :loading="loading"
-    :scroll="{x: 2500, y: 1000}"
+    :scroll="{x: 2500}"
     @change="tableChangeHandle"
   >
     <template v-for="(col, index) in columns">
@@ -47,7 +47,11 @@ export default {
     return {
       columns: vehicleListColumns,
       list: [],
+      total: 0,
       loading: false,
+      pagination: {
+        pageSizeOptions: ['10', '20', '50', '100'],
+      },
     };
   },
   watch: {
@@ -63,6 +67,7 @@ export default {
     if (this.$route.query.vin !== undefined) {
       Object.assign(this.$route.query, { asqIssueRptId: '' });
       this.pagination.pageSize = 100;
+      this.serverPagination.limit = 100;
       this.pagination.showSizeChanger = false;
     }
     const { vin } = this.$route.query;
@@ -73,15 +78,9 @@ export default {
     fetch (vin) {
       this.loading = true;
       if (Object.keys(this.$route.query).length !== 0 && this.$route.query.asqIssueRptId !== '') {
-        this
-          .getVehicleAllPage({ asqIssueRptId: this.$route.query.asqIssueRptId, ...this.serverPagination })
-          .then(this.load)
-          .finally(this.reset);
+        this.getVehicleAllPage({ asqIssueRptId: this.$route.query.asqIssueRptId, ...this.serverPagination }).then(this.load).finally(this.reset);
       } else {
-        this
-          .getVehiclePage({ ...vin, ...this.serverPagination })
-          .then(this.load)
-          .finally(this.reset);
+        this.getVehiclePage({ ...vin, ...this.serverPagination }).then(this.load).finally(this.reset);
       }
     },
     load (res) {
@@ -93,9 +92,6 @@ export default {
         this.pagination.total = res.total;
       }
     },
-    /**
-     * 重置loading状态
-     */
     reset () {
       this.loading = false;
     },
@@ -107,20 +103,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @table-height: 554px;
-  @table-head-height: 54px;
   .ant-table-wrapper {
+    .table-container-fixed-defined(67px; 46px);
     padding-top: 16px;
-    /deep/ .ant-spin-nested-loading {
-      min-height: @table-height;
-    }
-    /deep/ .ant-table-placeholder {
-      min-height: calc(@table-height - @table-head-height);
-      .ant-empty-normal {
-        margin-top: calc(@table-height / 2 - @table-head-height);
-      }
-    }
     /deep/ .ant-table-pagination.ant-pagination {
+      margin-top: 8px;
       margin-bottom: 4px;
     }
   }

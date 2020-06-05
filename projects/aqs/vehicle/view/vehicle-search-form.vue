@@ -1,217 +1,203 @@
 <template>
-  <!-- 车辆查询表单  -->
-  <a-form
-    :form="vehicleForm"
-    class="col-layout-form col-layout-search-form"
+  <a-form-model
+    :model="vehicleForm"
+    class="vechicle-search-form form-column-split-compact form-column-action-right"
     layout="vertical"
-    self-update
   >
     <a-row :gutter="24">
       <!-- 车型 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('issue.vhclSeriesCode')">
+        <a-form-model-item :label="$t('issue.vhclSeriesCode')">
           <multiple-net-select
-            v-decorator="['vhclSeriesCode']"
+            v-model="vehicleForm.vhclSeriesCode"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicleseries/seriesCodeList"
             value-by="id"
-            :label-of="(item) => item.vhclSeriesCode"
+            label-of="vhclSeriesCode"
             allow-clear
             search-by="name"
             :max-tag-count="1"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 车型代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.vhclModelCode')">
+        <a-form-model-item :label="$t('vehicle.vhclModelCode')">
           <single-net-select
-            v-decorator="['vhclModelCode']"
+            v-model="vehicleForm.vhclModelCode"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicle/modelAndCode"
             value-by="vhclModelCode"
-            :label-of="(item) => item.vhclModelCode"
             allow-clear
             search-by="code"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 车型名称 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.vhclModelName')">
+        <a-form-model-item :label="$t('vehicle.vhclModelName')">
           <single-net-select
-            v-decorator="['vhclModelName']"
+            v-model="vehicleForm.vhclModelName"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicle/modelAndCode"
             value-by="vhclModelName"
-            :label-of="(item) => item.vhclModelName"
             allow-clear
             search-by="name"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 下线工厂 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.factoryName')">
+        <a-form-model-item :label="$t('vehicle.factoryName')">
           <single-net-select
-            v-decorator="['factoryName']"
+            v-model="vehicleForm.factoryName"
             :placeholder="$t('form.select')"
             url="/sys/dict?dictType=factory_code"
             value-by="dictName"
-            :label-of="(item) => item.dictName"
             allow-clear
             close-search
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 颜色名称 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.colorName')">
+        <a-form-model-item :label="$t('vehicle.colorName')">
           <single-net-select
-            v-decorator="['colorName']"
+            v-model="vehicleForm.colorName"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/vehicle/colorNameAndCode"
             value-by="colorName"
-            :label-of="(item) => item.colorName"
             allow-clear
             search-by="name"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- vin -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.vin')">
+        <a-form-model-item :label="$t('vehicle.vin')">
           <a-input
-            v-decorator="['vin']"
+            v-model="vehicleForm.vin"
             placeholder="请输入"
             autocomplete="off"
             allow-clear
             search-by="name"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 出厂日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.prodDate')">
+        <a-form-model-item :label="$t('vehicle.prodDate')">
           <a-range-picker
-            v-decorator="[
-              'prodDate'
-            ]"
+            v-model="vehicleForm.prodDate"
             :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
+      <!-- 省份名称 -->
+      <!-- <a-col :span="formItemSpan">
+        <a-form-model-item :label="$t('vehicle.areaCode')">
+          <single-net-select
+            v-model="vehicleForm.provinceCode"
+            :placeholder="$t('form.select')"
+            url="/masterdata/v1/area/province"
+            value-by="areaCode"
+            :label-of="(item) => item.areaNameZh"
+            allow-clear
+            close-search
+          />
+        </a-form-model-item>
+      </a-col> -->
       <!-- 质保起始日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item :label="$t('vehicle.salesDate')">
+        <a-form-model-item :label="$t('vehicle.salesDate')">
           <a-range-picker
-            v-decorator="[
-              'warrantyBeginDate'
-            ]"
+            v-model="vehicleForm.warrantyBeginDate"
             :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
-      <!-- 功能按钮区域 -->
-      <div class="col-layout-form-actions">
-        <!-- 查询按钮 -->
+
+      <!-- 查询 + 重置 -->
+      <a-col
+        class="form-column-action"
+        :span="formItemSpan"
+      >
         <a-button
           type="primary"
           @click="vehicleSearch"
         >
           {{ $t('action.find') }}
         </a-button>
-        <!-- 重置按钮 -->
         <a-button
           :style="{ marginLeft: '8px' }"
           @click="vehicleReset"
         >
           {{ $t('action.reset') }}
         </a-button>
-        <!-- 导出按钮 -->
         <a-button
           :style="{ marginLeft: '8px' }"
           @click="vehicleExport"
         >
           {{ $t('action.export') }}
         </a-button>
-      </div>
+      </a-col>
     </a-row>
-  </a-form>
+  </a-form-model>
 </template>
 
 <script>
 import { omit } from 'ramda';
 import storeModuleMix from '@mix/store-module.js';
-import formRecordMix from '@mix/form-record-mix.js';
 import { RANGE_TO_MAP_BY_FIELD } from '@util/datetime-helper.js';
 
-// 排除参数不传入接口
 const omitSearchFields = omit(['prodDate', 'warrantyBeginDate']);
 
 
 export default {
-  components: {
-    SingleNetSelect: () => import('@comp/form/SingleNetSelect.vue'),
-    MultipleNetSelect: () => import('@comp/form/MultipleNetSelect.vue'),
-  },
   mixins: [
     storeModuleMix({
       name: 'vehicle',
       action: ['getVehicleExportData'],
     }),
-    formRecordMix('vehicleForm'),
   ],
   data () {
     return {
       formItemSpan: 6,
+      vehicleForm: {
+      },
     };
   },
   methods: {
-    /**
-     * 车辆查询
-     */
     vehicleSearch () {
-      const vehicleSearchList = this.getQuery();
+      RANGE_TO_MAP_BY_FIELD(this.vehicleForm, 'prodDate');
+      RANGE_TO_MAP_BY_FIELD(this.vehicleForm, 'warrantyBeginDate');
+      const vehicleSearchList = omitSearchFields({ ...this.vehicleForm });
       this.$store.commit('vehicle/set', { vehicleSearchList });
     },
     /**
      * 重置
      */
     vehicleReset () {
-      this.vehicleForm.reset();
+      this.$set(this, 'vehicleForm', {});
       this.$store.commit('vehicle/set', { vehicleSearchList: {} });
     },
     /**
      * 导出
      */
     vehicleExport () {
-      const vehicleSearchList = this.getQuery();
-      this.getVehicleExportData(vehicleSearchList).then();
-    },
-    /**
-     * 处理查询参数，其中时间格式Moment会转换成字符串或者数字
-     */
-    getQuery () {
-      // `transformMomentDate`自动处理`prodDate`参数为`prodDateStart`、`prodDateEnd`格式
-      RANGE_TO_MAP_BY_FIELD(this.vehicleFormRecord, 'prodDate');
-      RANGE_TO_MAP_BY_FIELD(this.vehicleFormRecord, 'warrantyBeginDate');
-      return omitSearchFields(this.vehicleFormRecord);
+      this.getVehicleExportData(this.vehicleForm).then();
     },
   },
 };
 </script>
 <style lang="less" scoped>
-.form-buttons-warpper {
-  float: right;
-  .ant-btn {
-    margin-left: 12px;
+  .vechicle-search-form {
+    min-height: 173px;
+    /deep/ .ant-select-dropdown-menu-root {
+      overflow: visible;
+      /deep/ .ant-select-dropdown-menu-item {
+        overflow: visible;
+      }
+    }
   }
-}
-/deep/ .ant-select-dropdown-menu-root {
-  overflow: visible;
-  .ant-select-dropdown-menu-item {
-    overflow: visible;
-  }
-}
 </style>

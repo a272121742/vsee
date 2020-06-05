@@ -2,6 +2,7 @@
 
 // 测试筛选框的
 // mock.get('/field-q/v1/asqissuedefn/page', (params) => {
+//   console.log(params);
 //   return {
 //     data: [{
 //       id: 1,

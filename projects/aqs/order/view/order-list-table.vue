@@ -8,7 +8,7 @@
         style="margin-right: 8px;"
         @click="create('single')"
       >
-        <a-icon type="icondccj_outlined1"></a-icon>
+        <a-icon type="icon-single-dccj-outlined"></a-icon>
         {{ $t('action.single_report') }}
       </a-button>
       <a-button
@@ -16,7 +16,7 @@
         :disabled="rowSelection.selectedRowKeys.length <= 1"
         @click="create('batch')"
       >
-        <a-icon type="iconplcj_outlined1"></a-icon>
+        <a-icon type="icon-single-plcj-outlined"></a-icon>
         {{ $t('action.batch_report') }}
       </a-button>
     </div>
@@ -26,12 +26,12 @@
       show-icon
     >
       <template #message>
-        {{ $t('status.selected') }} ： <span style="color: #0097E0;">{{ rowSelection.selectedRowKeys.length }} {{ $t('page.article') }}</span>
+        已选 ： <span style="color: #0097E0;">{{ rowSelection.selectedRowKeys.length }} 条</span>
       </template>
     </a-alert>
     <!-- 表格 -->
     <a-table
-      class="ellipsis-table"
+      class="table-container-fixed table-cell-ellipsis"
       row-key="claimNo"
       :data-source="list"
       :pagination="pagination"
@@ -80,8 +80,13 @@ export default {
   ],
   data () {
     return {
+      // columns: orderListColumns,
       list: [],
+      total: 0,
       loading: false,
+      pagination: {
+        pageSizeOptions: ['10', '20', '50', '100'],
+      },
       rowSelection: {
         columnWidth: 68,
         hideDefaultSelections: true,
@@ -149,6 +154,7 @@ export default {
     this.fetch(idsSearch);
   },
   methods: {
+
     // 选本页
     onSelectCurret (data) {
       this.orderFlag = false;
@@ -257,27 +263,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.root {
-  .vehicle-info-alert {
-    margin-top: 12px;
-  }
-}
-
-@table-height: 554px;
-@table-head-height: 54px;
-.ant-table-wrapper {
-  padding-top: 16px;
-  /deep/ .ant-spin-nested-loading {
-    min-height: @table-height;
-  }
-  /deep/ .ant-table-placeholder {
-    min-height: calc(@table-height - @table-head-height);
-    .ant-empty-normal {
-      margin-top: calc(@table-height / 2 - @table-head-height);
+  .root {
+    .vehicle-info-alert {
+      margin-top: 12px;
     }
   }
-  /deep/ .ant-table-pagination.ant-pagination {
-    margin-bottom: 4px;
+  .ant-table-wrapper {
+    padding-top: 16px;
+    /deep/ .ant-table-pagination.ant-pagination {
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
   }
-}
 </style>

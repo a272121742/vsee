@@ -57,6 +57,10 @@ const key2value = renameKey('key', 'value');
 const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key));
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
   props: {
     // 基于网络的下拉列表，url的配置是必须
     url: {
@@ -319,7 +323,7 @@ export default {
       if (value) {
         this.$emit('change', value, VNode);
       } else {
-        this.$emit('change', void 0, VNode);
+        this.$emit('change', null, VNode);
       }
       this.$nextTick(() => {
         this.input = value;
