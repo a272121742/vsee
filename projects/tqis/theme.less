@@ -178,6 +178,15 @@
   }
 }
 
+// 解决下拉列表超出后无横向滚动条的问题
+.ant-select-dropdown-menu-root {
+  overflow: visible;
+  .ant-select-dropdown-menu-item {
+    display: block;
+    overflow: visible;
+  }
+}
+
 
 // 列对齐模式
 .form-column-align-defined(@form-label-fixed-width: 82px) {
@@ -228,6 +237,12 @@
   }
 }
 
+/**
+ * @table-header-height: 表头的高度，默认值`54px`，如果你的表头是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-height: 表格行高度，默认值`56px`，如果你的表格行是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-count: 表格最小显示行数，默认`10`，定义多少行，空表格将按照此高度固定；
+ * @addition-container-height: 增补高度，默认`0px`，此功能用来减去滚动条高度，如果想去掉滚动条高度，设置为`16px`即可；
+ */
 .table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
   @scroll-bar-height: 16px;
   @table-body-height: @table-row-height * @table-row-count;
@@ -276,13 +291,6 @@
   .ant-table-tbody > tr > td {
     padding-top: 12px;
     padding-bottom: 12px;
-  }
-}
-
-// 解决tab高度问题
-.content-tab {
-  /deep/ .ant-tabs-tabpane {
-    min-height: calc(100vh - 228px);
   }
 }
 

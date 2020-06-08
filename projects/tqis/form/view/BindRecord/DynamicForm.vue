@@ -1,6 +1,6 @@
 <template>
-  <a-form
-    :form="form"
+  <a-form-model
+    :model="form"
     layout="horizontal"
     self-update
     class="demo-dynamic-form form-column-split-compact form-column-align"
@@ -31,14 +31,20 @@
         >
           清空
         </a-button>
+        <a-button
+          :disabled="action"
+          @click="cache"
+        >
+          缓存
+        </a-button>
       </a-button-group>
     </a-row>
     <a-row :gutter="24">
       <!-- 备注清单 -->
       <a-col :span="formItemSpan * 2">
-        <a-form-item label="备注清单">
+        <a-form-model-item label="备注清单">
           <template
-            v-for="(value, index) in formRecord['备注清单'] || []"
+            v-for="(value, index) in form['备注清单'] || $set(form, '备注清单', [])"
           >
             <a-input-group
               :key="`input-${index}`"
@@ -46,34 +52,34 @@
               compact
             >
               <a-input
-                v-decorator="[`备注清单[${index}]`, { initialValue: value }]"
+                v-model="form['备注清单'][index]"
                 :placeholder="$t('form.input')"
                 allow-clear
               />
               <a-button
                 icon="plus-circle"
-                @click="() => add(formRecord['备注清单'], index + 1)"
+                @click="() => add(form['备注清单'], index + 1)"
               />
               <a-button
                 icon="minus-circle"
-                @click="() => remove(formRecord['备注清单'], index)"
+                @click="() => remove(form['备注清单'], index)"
               />
             </a-input-group>
           </template>
           <a-button
-            v-if="!formRecord['备注清单'] || !formRecord['备注清单'].length"
+            v-if="!form['备注清单'] || !form['备注清单'].length"
             class="add-form-item-btn"
             icon="plus"
             type="dashed"
             block
-            @click="(e) => add(formRecord['备注清单'], formRecord['备注清单'] ? formRecord['备注清单'].length : 0, null, e)"
+            @click="(e) => add(form['备注清单'], form['备注清单'] ? form['备注清单'].length : 0, null, e)"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <a-col :span="formItemSpan * 2">
-        <a-form-item label="联系人">
+        <a-form-model-item label="联系人">
           <template
-            v-for="(value, index) in formRecord['联系人'] || []"
+            v-for="(value, index) in form['联系人'] || $set(form, '联系人', [])"
           >
             <a-input-group
               :key="`input-${index}`"
@@ -81,67 +87,67 @@
               compact
             >
               <a-input
-                v-decorator="[`联系人[${index}.name]`, { initialValue: value.name }]"
+                v-model="form['联系人'][index].name"
                 placeholder="请输入姓名"
                 allow-clear
               />
               <a-input
-                v-decorator="[`联系人[${index}.phone]`, { initialValue: value.phone }]"
+                v-model="form['联系人'][index].phone"
                 placeholder="请输入电话"
                 allow-clear
               />
               <a-button
                 icon="plus-circle"
-                @click="() => add(formRecord['联系人'], index + 1, {})"
+                @click="() => add(form['联系人'], index + 1, {})"
               />
               <a-button
                 icon="minus-circle"
-                @click="() => remove(formRecord['联系人'], index)"
+                @click="() => remove(form['联系人'], index)"
               />
             </a-input-group>
           </template>
           <a-button
-            v-if="!formRecord['联系人'] || !formRecord['联系人'].length"
+            v-if="!form['联系人'] || !form['联系人'].length"
             class="add-form-item-btn"
             icon="plus"
             type="dashed"
             block
-            @click="(e) => add(formRecord['联系人'], formRecord['联系人'] ? formRecord['联系人'].length : 0, {}, e)"
+            @click="(e) => add(form['联系人'], form['联系人'] ? form['联系人'].length : 0, {}, e)"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
     </a-row>
     <a-row>
       <!-- 是否驳回 -->
       <a-col :span="formItemSpan * 4">
-        <a-form-item label="是否驳回">
+        <a-form-model-item label="是否驳回">
           <a-checkbox v-model="isReject"></a-checkbox>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 驳回理由 -->
       <a-col :span="formItemSpan * 2">
-        <a-form-item
+        <a-form-model-item
           v-if="isReject"
           label="驳回理由"
         >
           <v-textarea
-            v-decorator="['驳回理由']"
+            v-model="form['驳回理由']"
             :auto-size="{ minRows: 4 }"
             :limit="1000"
             row
             helper-out
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 附件 -->
       <a-col :span="formItemSpan * 2">
-        <a-form-item
+        <a-form-model-item
           v-if="isReject"
           label="附件"
         >
           <v-upload
-            v-decorator="['附件', { initialValue: formRecord.files }]"
+            v-model="form['附件']"
             :headers="headers"
             :multiple="true"
             :action="$store.getters.getUrl('/field-q/v1/file/upload?recType=30021001')"
@@ -151,14 +157,14 @@
               {{ $t('action.upload') }}
             </a-button>
           </v-upload>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
     </a-row>
-  </a-form>
+  </a-form-model>
 </template>
 
 <script>
-import formRecordMix from '@mix/form-record-mix.js';
+import formMix from '@mix/form-record.js';
 import attachmentMix from '@mix/attachment.js';
 
 const fields = ['备注清单', '联系人', '驳回理由', '附件'];
@@ -179,7 +185,7 @@ const demoData = {
 
 export default {
   mixins: [
-    formRecordMix('form', fields),
+    formMix('form', fields),
     attachmentMix,
   ],
   data () {
@@ -187,10 +193,6 @@ export default {
       formItemSpan: 6,
       isReject: false,
       action: false,
-      formRecord: {
-        备注清单: [],
-        联系人: [],
-      },
     };
   },
   methods: {
@@ -206,14 +208,14 @@ export default {
       if (!this.action) {
         this.action = true;
         this.$message.show({
-          content: this.formRecord,
+          content: this.form,
           duration: 2,
           onClose: () => {
             this.action = false;
           },
         });
-        console.log(this.formRecord);
-        console.log(this.form.getFieldsValue());
+        console.log(this.form);
+        // console.log(this.form.getFieldsValue());
       }
     },
     load () {
@@ -223,7 +225,7 @@ export default {
           content: '正在请求数据',
           duration: 2,
           onClose: () => {
-            this.form.set(demoData, true);
+            this.form.set(demoData);
             this.isReject = !!demoData['驳回理由'];
             this.action = false;
           },
@@ -235,6 +237,9 @@ export default {
     },
     clear () {
       this.form.clear();
+    },
+    cache () {
+      this.form.cache();
     },
   },
 };

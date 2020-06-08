@@ -91,8 +91,8 @@ export default {
   watch: {
     value: {
       immediate: true,
-      handler (files) {
-        this.previews = files.map(file2client);
+      handler (files = []) {
+        this.previews = (files || []).map(file2client);
       },
     },
   },

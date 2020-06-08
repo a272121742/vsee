@@ -1,5 +1,6 @@
 <template>
   <a-form-model
+    ref="form"
     :model="form"
     @submit.stop.self.prevent="handleSubmit"
   >
@@ -174,8 +175,8 @@ export default {
      * 提交数据
      */
     handleSubmit (e) {
-      this.form.validateFields((valid) => {
-        const userInfo = (typeof e === 'string') ? { ...loginInfo, username: e } : loginInfo;
+      this.$refs.form.validate((valid) => {
+        const userInfo = (typeof e === 'string') ? { ...this.form, username: e } : this.form;
         // this.$store.dispatch('logout');
         if (this.$store.state.isMock) {
           this.$store.commit('setToken', 'abc');
@@ -204,18 +205,6 @@ export default {
     // captchaChange () {
     //   this.record.uuid = getUUID();
     // },
-    /**
-     * 数据映射
-     */
-    mapPropsToFields () {
-      return createFormFields(this, ['username', 'password', 'captcha', 'uuid'], 'record');
-    },
-    /**
-     * 监听数据变更
-     */
-    onValuesChange (props, values) {
-      return autoUpdateFileds(this, 'record')(props, values);
-    },
   },
 };
 </script>

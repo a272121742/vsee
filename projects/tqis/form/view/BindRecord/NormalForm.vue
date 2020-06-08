@@ -1,6 +1,6 @@
 <template>
-  <a-form
-    :form="form"
+  <a-form-model
+    :model="form"
     layout="vertical"
     self-update
     class="form-column-split-compact"
@@ -31,79 +31,85 @@
         >
           清空
         </a-button>
+        <a-button
+          :disabled="action"
+          @click="cache"
+        >
+          缓存
+        </a-button>
       </a-button-group>
     </a-row>
     <a-row :gutter="24">
       <!-- 问题标题 -->
       <a-col :span="formItemSpan * 4">
-        <a-form-item label="问题标题">
+        <a-form-model-item :label="`问题标题/${form['问题标题']}`">
           <a-input
-            v-decorator="['问题标题']"
+            v-model="form['问题标题']"
             :placeholder="$t('form.input')"
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 所属系统 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="所属系统">
+        <a-form-model-item label="所属系统">
           <single-net-select
-            v-decorator="['所属系统']"
+            v-model="form['所属系统']"
             :placeholder="$t('form.select')"
             url="/masterdata/v1/pfscategory?p_id=0&page=1&limit=20&order=&orderField=&ids=&cds=&code=&name=&q="
             value-by="id"
             label-of="name"
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 所属功能 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="所属功能">
+        <a-form-model-item label="所属功能">
           <single-net-select
-            v-decorator="['所属功能']"
+            v-model="form['所属功能']"
             :placeholder="$t('form.select')"
-            :url="`/masterdata/v1/pfscategory?p_id=${formRecord['所属系统']}`"
-            :delay="!formRecord['所属系统']"
+            :url="`/masterdata/v1/pfscategory?p_id=${form['所属系统']}`"
+            :delay="!form['所属系统']"
             :cache="false"
-            :disabled="!formRecord['所属系统']"
+            :disabled="!form['所属系统']"
             value-by="id"
             label-of="name"
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 故障代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="故障代码">
+        <a-form-model-item label="故障代码">
           <single-net-select
-            v-decorator="['故障代码']"
+            v-model="form['故障代码']"
             :placeholder="$t('form.select')"
-            :url="`/masterdata/v1/pfsfault?psId=${formRecord['所属功能']}`"
-            :delay="!formRecord['所属功能']"
+            :url="`/masterdata/v1/pfsfault?psId=${form['所属功能']}`"
+            :delay="!form['所属功能']"
             :cache="false"
-            :disabled="!formRecord['所属功能']"
+            :disabled="!form['所属功能']"
             value-by="id"
             label-of="name"
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 创建日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="创建日期">
+        <a-form-model-item label="创建日期">
           <a-date-picker
-            v-decorator="['创建日期']"
+            v-model="form['创建日期']"
             :format="DATE_FORMAT"
             disabled
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 供应商代码 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="供应商代码">
+        <a-form-model-item label="供应商代码">
           <net-auto-complete
-            v-decorator="['供应商代码']"
+            v-model="form['供应商代码']"
             url="/masterdata/v1/supplier/supplierList"
             :placeholder="$t('form.input')"
             allow-clear
@@ -112,12 +118,12 @@
             value-by="supplierCode"
             search-by="name"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 所属分类 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="所属分类">
-          <a-checkbox-group v-decorator="['所属分类']">
+        <a-form-model-item label="所属分类">
+          <a-checkbox-group v-model="form['所属分类']">
             <a-row>
               <a-col :span="6">
                 <a-checkbox value="A">
@@ -141,24 +147,24 @@
               </a-col>
             </a-row>
           </a-checkbox-group>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 发生频次 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="发生频次">
+        <a-form-model-item label="发生频次">
           <a-input-number
-            v-decorator="['发生频次']"
+            v-model="form['发生频次']"
             :placeholder="$t('form.input')"
             :min="1"
             :max="10"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 问题等级 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="问题等级">
+        <a-form-model-item label="问题等级">
           <a-radio-group
-            v-decorator="['问题等级']"
+            v-model="form['问题等级']"
             button-style="solid"
           >
             <a-radio-button value="a">
@@ -177,64 +183,64 @@
               E
             </a-radio-button>
           </a-radio-group>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 压缩比 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="压缩比">
+        <a-form-model-item label="压缩比">
           <a-slider
-            v-decorator="['压缩比']"
+            v-model="form['压缩比']"
             :tip-formatter="value => `${value}°C`"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 里程范围 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="里程范围">
+        <a-form-model-item label="里程范围">
           <a-slider
-            v-decorator="['里程范围']"
+            v-model="form['里程范围']"
             range
             :tip-formatter="value => `${value} KM`"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- TOP问题 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="TOP问题">
+        <a-form-model-item label="TOP问题">
           <a-switch
-            v-decorator="['TOP问题', { valuePropName: 'checked' }]"
+            v-model="form['TOP问题']"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 发布日期 -->
       <a-col :span="formItemSpan">
-        <a-form-item label="发布日期">
+        <a-form-model-item label="发布日期">
           <a-range-picker
-            v-decorator="['发布日期']"
+            v-model="form['发布日期']"
             :format="DATE_FORMAT"
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 问题备注 -->
       <a-col :span="formItemSpan * 2">
-        <a-form-item label="问题备注">
+        <a-form-model-item label="问题备注">
           <v-textarea
-            v-decorator="['问题备注']"
+            v-model="form['问题备注']"
             :auto-size="{ minRows: 6 }"
             :limit="1000"
             row
             helper-out
             allow-clear
           />
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
       <!-- 附件 -->
       <a-col :span="formItemSpan * 2">
-        <a-form-item
+        <a-form-model-item
           label="附件"
         >
           <v-upload
-            v-decorator="['附件', { initialValue: formRecord.files }]"
+            v-model="form['附件']"
             :headers="headers"
             :multiple="true"
             :action="$store.getters.getUrl('/field-q/v1/file/upload?recType=30021001')"
@@ -244,19 +250,20 @@
               {{ $t('action.upload') }}
             </a-button>
           </v-upload>
-        </a-form-item>
+        </a-form-model-item>
       </a-col>
     </a-row>
-  </a-form>
+  </a-form-model>
 </template>
 
 <script>
-import formRecordMix from '@mix/form-record-mix.js';
+import formMix from '@mix/form-record.js';
 import attachmentMix from '@mix/attachment.js';
 import { GET_MOMENT } from '@util/datetime-helper.js';
 
-const fields = ['问题标题', '所属系统', '所属功能', '故障代码', '创建日期', '供应商代码', '所属分类', '发生频次', '问题等级', '压缩比', '里程范围', 'TOP问题', '发布日期', '问题备注', '附件'];
+// const fields = ['问题标题', '所属系统', '所属功能', '故障代码', '创建日期', '供应商代码', '所属分类', '发生频次', '问题等级', '压缩比', '里程范围', 'TOP问题', '发布日期', '问题备注', '附件'];
 
+// eslint-disable-next-line no-unused-vars
 const demoData = {
   问题标题: '问题质量管理',
   所属系统: '100000000000000001',
@@ -285,31 +292,34 @@ const demoData = {
 
 export default {
   mixins: [
-    formRecordMix('form', fields),
+    formMix('form'),
     attachmentMix,
   ],
   data () {
     return {
       formItemSpan: 6,
       action: false,
-      formRecord: {
-        创建日期: GET_MOMENT(new Date()),
+      form: {
+        问题标题: '默认标题',
+        创建日期: GET_MOMENT('2020-05-29T05:22:23.616Z'),
       },
     };
+  },
+  created () {
+    console.log(this);
   },
   methods: {
     commit () {
       if (!this.action) {
         this.action = true;
         this.$message.show({
-          content: this.formRecord,
+          content: this.form,
           duration: 2,
           onClose: () => {
             this.action = false;
           },
         });
-        console.log(this.formRecord);
-        console.log(this.form.getFieldsValue());
+        console.log(this.form);
       }
     },
     load () {
@@ -319,7 +329,8 @@ export default {
           content: '正在请求数据',
           duration: 2,
           onClose: () => {
-            this.form.set(demoData, true);
+            // this.form.set({}, true);
+            this.form.set(demoData);
             this.action = false;
           },
         });
@@ -330,6 +341,9 @@ export default {
     },
     clear () {
       this.form.clear();
+    },
+    cache () {
+      this.form.cache();
     },
   },
 };

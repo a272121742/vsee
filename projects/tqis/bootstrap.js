@@ -19,6 +19,7 @@ import {
   Drawer,
   Dropdown,
   Form,
+  FormModel,
   Input,
   Layout,
   ConfigProvider,
@@ -71,6 +72,7 @@ Vue.use(Divider);
 Vue.use(Drawer);
 Vue.use(Dropdown);
 Vue.use(Form);
+Vue.use(FormModel);
 Vue.use(Input);
 Vue.use(Layout);
 Vue.use(ConfigProvider);
