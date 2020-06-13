@@ -1,8 +1,8 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
-      title="同源互联"
-      sub-title="设置统一源头显示不同内容"
+      title="远程搜索"
+      sub-title="通过向服务端发送请求获取新的搜索结果"
     >
       <template slot="extra">
         <a-modal
@@ -54,50 +54,43 @@
       layout="vertical"
     >
       <a-row :gutter="24">
-        <a-col :span="formItemSpan">
-          <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件代码"
-          >
+        <a-col :span="formItemSpan * 2">
+          <a-form-item label="远程搜索-单选-车型">
             <single-net-select
-              v-model="record['祸首件ID']"
+              v-model="record['下拉单选']"
               :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="code"
-              allow-clear
-            >
-            </single-net-select>
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="formItemSpan">
-          <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件名称"
-          >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="name"
+              url="/masterdata/v1/vehicleseries/seriesCodeList"
+              value-by="vhclSeriesCode"
+              label-of="vhclSeriesCode"
+              search-by="name"
               allow-clear
             />
-          </a-form-model-item>
+          </a-form-item>
+        </a-col>
+        <a-col :span="formItemSpan * 2">
+          <a-form-item label="远程搜索-多选-车型">
+            <multiple-net-select
+              v-model="record['下拉多选']"
+              :placeholder="$t('form.select')"
+              url="/masterdata/v1/vehicleseries/seriesCodeList"
+              value-by="vhclSeriesCode"
+              label-of="vhclSeriesCode"
+              search-by="name"
+              allow-clear
+              :max-tag-count="2"
+            />
+          </a-form-item>
         </a-col>
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import code from './Remote.code.js';
 
-
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -118,7 +111,7 @@ export default {
       const commitValue = this.record.valueOf();
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -131,7 +124,8 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            祸首件ID: '1001100000000000006',
+            下拉单选: 'C11',
+            下拉多选: ['EL150', 'EU180', 'EC180'],
           });
           this.action = false;
           clearTimeout(id);
@@ -152,4 +146,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

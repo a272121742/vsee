@@ -26,7 +26,6 @@ module.exports = {
   chainWebpack: (config) => {
     // 修复HMR
     config.resolve.symlinks(true);
-    config.plugins.delete('prefetch');
     configs.forEach((fn) => fn(config));
   },
   // lintOnSave: process.env.NODE_ENV !== 'production',

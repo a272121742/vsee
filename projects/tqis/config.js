@@ -34,5 +34,14 @@ export default {
     id: 20000,
     name: '表格案例',
     url: 'table',
+  }, {
+    id: 30000,
+    name: '高级组件',
+    url: 'adcomp',
+    children: [{
+      id: 30001,
+      name: 'Echart',
+      url: 'echart',
+    }],
   }],
 };

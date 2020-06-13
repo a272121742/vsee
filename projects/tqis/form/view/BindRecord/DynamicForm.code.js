@@ -1,4 +1,4 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
       title="动态表单"
@@ -62,7 +62,7 @@
               v-for="(value, index) in record['备注清单'] || $set(record, '备注清单', [])"
             >
               <a-input-group
-                :key="`input-${index}`"
+                :key="\`input-\${index}\`"
                 class="demo-dynamic-form-single-input"
                 compact
               >
@@ -97,7 +97,7 @@
               v-for="(value, index) in record['联系人'] || $set(record, '联系人', [])"
             >
               <a-input-group
-                :key="`input-${index}`"
+                :key="\`input-\${index}\`"
                 class="demo-dynamic-form-double-input"
                 compact
               >
@@ -219,7 +219,7 @@ export default {
       });
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -264,11 +264,11 @@ export default {
       this.record.cache();
     },
   },
-};
-</script>
+  };
+  </script>
 
-<style lang="less" scoped>
-.demo-dynamic-form {
+  <style lang="less" scoped>
+  .demo-dynamic-form {
   .add-form-item-btn {
     width: calc(100% - 32px);
   }
@@ -295,4 +295,4 @@ export default {
     }
   }
 }
-</style>
+</style>`;

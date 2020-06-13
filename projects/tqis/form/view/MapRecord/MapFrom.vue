@@ -1,8 +1,8 @@
 <template>
   <div>
     <a-page-header
-      title="同源互联"
-      sub-title="设置统一源头显示不同内容"
+      title="赋值映射"
+      sub-title="将一组原始值通过映射设置到表单中"
     >
       <template slot="extra">
         <a-modal
@@ -94,8 +94,8 @@
 
 <script>
 import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
-
+// import { GET_MOMENT } from '@util/datetime-helper.js';
+import code from './MapFrom.code.js';
 
 export default {
   components: {
@@ -131,7 +131,7 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            祸首件ID: '1001100000000000006',
+            祸首件ID: '1001100000000000007',
           });
           this.action = false;
           clearTimeout(id);

@@ -1,4 +1,4 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
 
@@ -270,14 +270,14 @@
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import { GET_MOMENT } from '@util/datetime-helper.js';
-import code from './ColumnSplit.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import { GET_MOMENT } from '@util/datetime-helper.js';
+  import code from './ColumnSplit.code.js';
 
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -299,7 +299,7 @@ export default {
       const commitValue = this.record.valueOf();
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -344,4 +344,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

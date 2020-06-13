@@ -123,9 +123,15 @@
 @box-shadow-h: @global-shadow-h1;
 @box-shadow-v: @global-shadow-v1;
 
+:root {
+  .ant-modal-mask, .ant-modal-wrap {
+    z-index: @global-layer-modal;
+  }
+}
 #app {
-  .padding-left-24 {
-    padding-left: 24px;
+  .ant-page-header {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -179,11 +185,13 @@
 }
 
 // 解决下拉列表超出后无横向滚动条的问题
-.ant-select-dropdown-menu-root {
-  overflow: visible;
-  .ant-select-dropdown-menu-item {
-    display: block;
+.select-horizontal-scroll {
+  .ant-select-dropdown-menu-root {
     overflow: visible;
+    .ant-select-dropdown-menu-item {
+      display: block;
+      overflow: visible;
+    }
   }
 }
 
@@ -276,6 +284,9 @@
   /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
     opacity: 0;
   }
+}
+.table-container-fixed {
+  .table-container-fixed-defined(46px; 46px; 10);
 }
 
 // 表格单元格溢出隐藏并显示`...`

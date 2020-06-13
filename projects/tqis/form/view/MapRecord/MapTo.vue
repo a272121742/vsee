@@ -1,8 +1,8 @@
 <template>
   <div>
     <a-page-header
-      title="同源互联"
-      sub-title="设置统一源头显示不同内容"
+      title="取值映射"
+      sub-title="将表单值映射成可提交数据"
     >
       <template slot="extra">
         <a-modal
@@ -49,53 +49,13 @@
         </a-button-group>
       </template>
     </a-page-header>
-    <a-form-model
-      :model="record"
-      layout="vertical"
-    >
-      <a-row :gutter="24">
-        <a-col :span="formItemSpan">
-          <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件代码"
-          >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="code"
-              allow-clear
-            >
-            </single-net-select>
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="formItemSpan">
-          <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件名称"
-          >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="name"
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-    </a-form-model>
   </div>
 </template>
 
 <script>
 import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
-
+// import { GET_MOMENT } from '@util/datetime-helper.js';
+import code from './MapTo.code.js';
 
 export default {
   components: {
@@ -131,7 +91,7 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            祸首件ID: '1001100000000000006',
+            供应商名称: '河南省西峡汽车水泵股份有限公司',
           });
           this.action = false;
           clearTimeout(id);

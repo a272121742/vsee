@@ -1,4 +1,4 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
       title="同源互联"
@@ -52,6 +52,7 @@
     <a-form-model
       :model="record"
       layout="vertical"
+      self-update
     >
       <a-row :gutter="24">
         <a-col :span="formItemSpan">
@@ -90,14 +91,14 @@
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import code from './TribleCode.js';
 
 
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -118,7 +119,7 @@ export default {
       const commitValue = this.record.valueOf();
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -152,4 +153,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

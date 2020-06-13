@@ -35,6 +35,23 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 }
 ```
 
+### 下拉横向滚动
+
+下拉列表文案`label`过长时，显示滚动条
+
+```less
+// 解决下拉列表超出后无横向滚动条的问题
+.select-horizontal-scroll {
+  .ant-select-dropdown-menu-root {
+    overflow: visible;
+    .ant-select-dropdown-menu-item {
+      display: block;
+      overflow: visible;
+    }
+  }
+}
+```
+
 ### 紧凑模式
 
 紧凑模式仅仅适用于无需验证的表单，例如查询表单，由于无需验证，上下之间的间隔缩短，有效利用现有空间：
@@ -139,6 +156,12 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 表格中，固定表格高度以撑开容器，避免视图上数据突然被加载。
 
 ```less
+/**
+ * @table-header-height: 表头的高度，默认值`54px`，如果你的表头是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-height: 表格行高度，默认值`56px`，如果你的表格行是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-count: 表格最小显示行数，默认`10`，定义多少行，空表格将按照此高度固定；
+ * @addition-container-height: 增补高度，默认`0px`，此功能用来减去滚动条高度，如果想去掉滚动条高度，设置为`16px`即可；
+ */
 .table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
   @scroll-bar-height: 16px;
   @table-body-height: @table-row-height * @table-row-count;
@@ -173,6 +196,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
     opacity: 0;
   }
 }
+// 使用定义来生成新的`class`
 .table-container-fixed {
   .table-container-fixed-defined(38px; 38px; 5);
 }

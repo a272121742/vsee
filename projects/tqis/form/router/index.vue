@@ -8,7 +8,7 @@
       key="FormItemList"
       tab="表单项"
     >
-      <FormItemList />
+      <!-- <FormItemList /> -->
     </a-tab-pane>
     <a-tab-pane
       key="LinkageCombination"
@@ -17,7 +17,7 @@
       <LinkageCombination />
     </a-tab-pane>
     <a-tab-pane
-      key="QuerySearch"
+      key="QuerySelect"
       tab="搜索"
     >
       <QuerySelect />
@@ -34,24 +34,24 @@
     >
       <BindRecord />
     </a-tab-pane>
-    <!-- <a-tab-pane
-      key="SourceCode"
-      tab="源代码"
+    <a-tab-pane
+      key="MapRecord"
+      tab="映射"
     >
-      <SourceCode :code="code" />
-    </a-tab-pane> -->
+      <MapRecord />
+    </a-tab-pane>
   </a-tabs>
 </template>
 
 <script>
 export default {
   components: {
-    FormItemList: () => import('../view/FormItemList.vue'),
+    // FormItemList: () => import('../view/FormItemList.vue'),
     LinkageCombination: () => import('../view/LinkageCombination.vue'),
     QuerySelect: () => import('../view/QuerySelect.vue'),
     FormLayout: () => import('../view/FormLayout.vue'),
     BindRecord: () => import('../view/BindRecord.vue'),
-    // SourceCode: () => import('~~/comp/SourceCodeView.vue'),
+    MapRecord: () => import('../view/MapRecord.vue'),
   },
   data () {
     return {

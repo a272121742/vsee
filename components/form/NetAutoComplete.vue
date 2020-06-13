@@ -32,7 +32,7 @@
       <a-icon
         slot="suffix"
         :type="suffixType"
-        style="font-size: 12px;"
+        style="font-size: 12px; color: #BFBFBF"
       />
     </a-input>
   </a-auto-complete>

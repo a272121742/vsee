@@ -1,8 +1,8 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
-      title="同源互联"
-      sub-title="设置统一源头显示不同内容"
+      title="级联联动"
+      sub-title="具备上下级别的联动组合"
     >
       <template slot="extra">
         <a-modal
@@ -50,37 +50,63 @@
       </template>
     </a-page-header>
     <a-form-model
+      ref="form"
       :model="record"
       layout="vertical"
+      class="form-column-split-compact"
     >
       <a-row :gutter="24">
         <a-col :span="formItemSpan">
           <a-form-model-item
-            prop="祸首件ID"
+            prop="所属系统"
             :rules="[$v.required('不能为空')]"
-            label="祸首件代码"
+            label="所属系统"
           >
             <single-net-select
-              v-model="record['祸首件ID']"
+              v-model="record['所属系统']"
               :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
+              url="/masterdata/v1/pfscategory?p_id=0"
               value-by="id"
-              label-of="code"
+              label-of="name"
+              seary-by="name"
               allow-clear
-            >
-            </single-net-select>
+              @change="changeSystem"
+            />
           </a-form-model-item>
         </a-col>
         <a-col :span="formItemSpan">
           <a-form-model-item
-            prop="祸首件ID"
+            prop="所属功能"
             :rules="[$v.required('不能为空')]"
-            label="祸首件名称"
+            label="所属功能"
           >
             <single-net-select
-              v-model="record['祸首件ID']"
+              v-model="record['所属功能']"
               :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
+              :url="\`/masterdata/v1/pfscategory?p_id=\${record['所属系统']}\`"
+              :delay="!record['所属系统']"
+              :cache="false"
+              :disabled="!record['所属系统']"
+              value-by="id"
+              label-of="name"
+              allow-clear
+              @change="changeFeatures"
+            />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="formItemSpan">
+          <a-form-model-item
+            prop="故障代码"
+            :rules="[$v.required('不能为空')]"
+            label="故障代码"
+          >
+            <single-net-select
+              v-model="record['故障代码']"
+              :placeholder="$t('form.select')"
+              :url="\`/masterdata/v1/pfsfault?psId=\${record['所属功能']}\`"
+              :delay="!record['所属功能']"
+              :cache="false"
+              :disabled="!record['所属功能']"
               value-by="id"
               label-of="name"
               allow-clear
@@ -90,14 +116,14 @@
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import code from './TribleCode.js';
 
 
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -113,12 +139,31 @@ export default {
     };
   },
   methods: {
+    // 所属系统切换事件
+    changeSystem () {
+      // 方法一，清空法
+      this.record.clear(['所属功能', '故障代码']);
+      // 方法二，赋值法
+      // this.record.set({ 所属功能: null, 故障代码: null });
+      // 方法三，代理赋值法
+      // this.$set(this.record, '所属功能', null);
+      // this.$set(this.record, '故障代码', null);
+    },
+    // 所属功能切换事件
+    changeFeatures () {
+      // 方法一，清空法
+      this.record.clear(['故障代码']);
+      // 方法二，赋值法
+      // this.record.set({ 故障代码: null });
+      // 方法三，代理赋值法
+      // this.$set(this.record, '故障代码', null);
+    },
     // 提交数据
     commit () {
       const commitValue = this.record.valueOf();
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -131,7 +176,9 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            祸首件ID: '1001100000000000006',
+            所属系统: '100000000000000002',
+            所属功能: '100000000000000026',
+            故障代码: '100000000000000097',
           });
           this.action = false;
           clearTimeout(id);
@@ -152,4 +199,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

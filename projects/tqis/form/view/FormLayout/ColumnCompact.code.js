@@ -1,4 +1,4 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
       sub-title="搜索表单无需校验时可采用紧凑模式缩减空间"
@@ -103,7 +103,7 @@
             <single-net-select
               v-model="record['所属功能']"
               :placeholder="$t('form.select')"
-              :url="`/masterdata/v1/pfscategory?p_id=${record['所属系统']}`"
+              :url="\`/masterdata/v1/pfscategory?p_id=\${record['所属系统']}\`"
               :delay="!record['所属系统']"
               :cache="false"
               :disabled="!record['所属系统']"
@@ -123,7 +123,7 @@
             <single-net-select
               v-model="record['故障代码']"
               :placeholder="$t('form.select')"
-              :url="`/masterdata/v1/pfsfault?psId=${record['所属功能']}`"
+              :url="\`/masterdata/v1/pfsfault?psId=\${record['所属功能']}\`"
               :delay="!record['所属功能']"
               :cache="false"
               :disabled="!record['所属功能']"
@@ -177,14 +177,14 @@
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import { GET_MOMENT } from '@util/datetime-helper.js';
-import code from './ColumnCompact.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import { GET_MOMENT } from '@util/datetime-helper.js';
+  import code from './ColumnCompact.code.js';
 
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -220,7 +220,7 @@ export default {
         const commitValue = this.record.valueOf();
         if (!this.action) {
           this.action = true;
-          this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+          this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
             this.action = false;
           });
         }
@@ -261,4 +261,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

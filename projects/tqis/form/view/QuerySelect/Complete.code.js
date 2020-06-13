@@ -1,8 +1,8 @@
-<template>
+export default `<template>
   <div>
     <a-page-header
-      title="同源互联"
-      sub-title="设置统一源头显示不同内容"
+      title="联想输入"
+      sub-title="保留用户输入以提供外部列表模糊搜索功能"
     >
       <template slot="extra">
         <a-modal
@@ -54,50 +54,32 @@
       layout="vertical"
     >
       <a-row :gutter="24">
-        <a-col :span="formItemSpan">
+        <a-col :span="formItemSpan * 2">
           <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件代码"
+            prop="查询选项"
+            label="查询选项-供应商代码"
           >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
+            <net-auto-complete
+              v-model="record['查询选项']"
               url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="code"
+              :placeholder="$t('form.input')"
               allow-clear
-            >
-            </single-net-select>
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="formItemSpan">
-          <a-form-model-item
-            prop="祸首件ID"
-            :rules="[$v.required('不能为空')]"
-            label="祸首件名称"
-          >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="name"
-              allow-clear
+              dropdown-match-select-width
+              value-by="name"
+              search-by="name"
             />
           </a-form-model-item>
         </a-col>
       </a-row>
     </a-form-model>
   </div>
-</template>
+  </template>
 
-<script>
-import formRecord from '@mix/form-record.js';
-import code from './Trible.code.js';
+  <script>
+  import formRecord from '@mix/form-record.js';
+  import code from './CloseSearch.code.js';
 
-
-export default {
+  export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
@@ -118,7 +100,7 @@ export default {
       const commitValue = this.record.valueOf();
       if (!this.action) {
         this.action = true;
-        this.$message.loading(`正在提交数据${JSON.stringify(commitValue)}`, 2, () => {
+        this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
@@ -131,7 +113,7 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            祸首件ID: '1001100000000000006',
+            查询选项: '右装饰板总成',
           });
           this.action = false;
           clearTimeout(id);
@@ -152,4 +134,4 @@ export default {
     },
   },
 };
-</script>
+</script>`;

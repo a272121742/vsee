@@ -24,7 +24,6 @@
       ref="fixedContainerTable"
       :empty="fixedContainerDataEmpty"
       :fixed="fixedContainerHeight"
-      class="padding-left-24"
     >
     </fixedcontainer>
   </div>
