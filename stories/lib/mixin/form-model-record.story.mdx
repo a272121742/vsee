@@ -1,0 +1,362 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/表单记录器（新版）" />
+
+# 表单记录器
+
+> 添加版本： @vsee/1.1.41
+>
+> 维护记录：
+>
+>| 版本        | 更新说明 | 更新时间 |
+>| ---------- | -------- | -------- |
+>|   1.1.41   |    新增      |     2020年6月16日     |
+>
+
+该混入器可以很方便的为`ant-design-vue`表单添加数据记录，减少开发人员的配置。
+
+表单记录器是一个函数，他能为当前表单自动生成可用的表单记录数据`record`，并帮你缓存表单的组件内存。
+
+表单记录器（formModelRecordMix）参数是一个大对象，包含如下键：
+
+- record - `record`的名称，默认值即为`record`，此选项帮你生成一个记录器对象，记录器对象设有`clear`、`reset`、`set`、`cache`等方法，因此它即是一个双向绑定的对象（ViewModel），同时又是一个可操作的对象（Record）。
+- form - '$refs'的简写，默认值为`form`。此选项并不是自动生成一个表单视图，而是你定义的`ref`的一个简写。你应当正确的设置该值，并避免被占用。
+- map - 一个表单的映射函数，绑定`record`自身作为上下文且无返回的函数，你可以在`record`被设置前去修改它，让生成的`record`具备和`a-form-model`匹配的数据格式。后面会具体讲到它的用法和最佳实践。
+
+## 使用方法
+
+下面我们看一个完整的案例（**.vue**文件中混入，或[点击这里查看](http://106.75.63.69:8091/tqis/form?key=BindRecord)）：
+
+```html
+<template>
+  <!-- 1. 在视图中绑定`record`对象， `:model="record"`就是让表单实体绑定到`record`上 -->
+  <a-form-model
+    ref="form"
+    :model="record"
+  >
+    <!-- ... -->
+  </a-form-model>
+</template>
+<script>
+// 2. 引入混入器
+import formModelRecordMix from '@mix/form-model-record.js';
+// ...
+export default {
+  // 3. 混入分页器，生成名为`form`和`formRecord`两个数据，默认绑定`formRecord`所有字段
+  mixins: [ formRecordMix({
+    // 3.1 定义`record`的名称，默认值即为`record`，如果没有特殊冲突，可不设定以用默认值
+    // record: 'record',
+    // 3.2 告知混入器form的引用名称，默认为`form`，即上面`ref="form"`所给定的名称，它的作用仅仅是帮你生成一个`computed`属性，用`this.form`来替代`this.$refs.form`；
+    // form: 'form',
+    // 3.3 设值映射函数，该函数在设置`record`最终值时会自动使用，其上下文就是`record`自身，因此你绝对不能使用箭头函数。
+    map: function () {
+      this.xxx = 'xxx';
+    }
+  }) ],
+  // ...
+  created () {
+    this.fetch().then(res => {
+      // ...
+      // 4. 初始化表单值，或者不这么做也可以
+      this.record.load({ ...res });
+      // 或者使用
+      // this.record.set({ ...res });
+      // ...
+    });
+  },
+  methods: {
+    // 重置数据
+    reset () {
+      this.record.reset();
+    },
+    // 清空数据
+    clear () {
+      this.record.clear();
+    },
+    // 缓存数据
+    cache () {
+      this.record.cache();
+    },
+  }
+  // ...
+}
+</script>
+```
+
+## Record对象接口
+
+### cache([fields])
+
+缓存相关属性，或按照给定字段`fields`进行缓存；该方法为`reset`方法提供可供还原的缓存（后面讲解），需要注意的是：
+
+1. 是否缓存字段是一个业务问题，而并非组件问题，因为组件并不清楚这样的设置会有多少次，所以开发者需要手动进行缓存；
+2. 缓存是单向的，它并不记录之前的缓存，也无法获取之前的缓存，而仅仅是即存即取的；
+3. `set`和`load`方法中有便捷缓存配置（后面讲解）；
+
+### set(values[, cacheIt])
+
+设置`record`，该方法只会设置`values`给定的键：
+
+1. 如果设置前`record`不包含`values`的键，则内部会通过`$set`方式设置，以确保设置后该属性是`observer`的；
+2. 如果设置前`record`包含`values`的键，则内部会直接通过对象赋值方式进行设置；
+3. 如果`values`对应键不包含在`record`中，则`record`是不会处理其他不包含的键，你可以人为它是局部更新的函数；
+4. 如果配置了`cacheIt = true`（Boolean变量），则设置完后内部会调用`cache`函数对当前整个`record`进行缓存；
+
+例如：
+
+```javascript
+// set方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.set({c: 'c2', d: 'd2'}, true);
+// 调用后， record = {a: 'a', b: 'b', c: 'c2', d: 'd2'}，且该值会被缓存下来
+```
+
+### load(values[, cacheIt])
+
+载入`record`，该方法会将`record`重置为`values`，该方法区别于`set`方法是，他会清除其他属性。
+
+例如：
+
+```javascript
+// load方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.load({c: 'c2', d: 'd2'}, true);
+// 调用后， record = {c: 'c2', d: 'd2'}，且该值会被缓存下来
+```
+
+### clear([fields])
+
+清空相关属性，或按照给定字段`fields`进行清空；该方法会将所有已经绑定值设置为`null`（`null`值是为了保证数据可以提交，服务端接受到`null`后会做更新处理）；在回显时，这个方法也是安全的，它并不是单纯的将`record`设置为`{}`，而是将检测到的字段设置为`null`，当然在第一次提交时，它是可以将`record`设置为空对象的。
+
+例如：
+
+```javascript
+// clear方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.clear();
+// 调用后， record = {a: null, b: null, c: null}
+
+// clear方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.clear(['a', 'b']);
+// 调用后， record = {a: null, b: null, c: 'c'}
+```
+
+### reset([fields])
+
+重置相关属性，或按照给定字段`fields`进行重置；该方法区别于`clear`，会根据`cache`缓存进行还原，而不是重置为空对象或全部属性设置为`null`。
+
+例如： 
+
+```javascript
+// reset方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.load({a: 'a', b: 'b', c: 'c'}, true);
+this.record.set({a: 'a2'});
+this.record.reset();
+// 调用后， record =  {a: 'a', b: 'b', c: 'c'}
+
+// reset方法调用前，record = {a: 'a', b: 'b', c: 'c'};
+this.record.load({a: 'a', b: 'b', c: 'c'}, true);
+this.record.set({a: 'a2', b: 'b2', c: 'c2'});
+this.record.reset(['a']);
+// 调用后， record =  {a: 'a', b: 'b2', c: 'c2'}
+```
+
+### valueOf([mapping])
+
+获取`record`的转换值。一般情况下直接使用`record`是具备引用关系传递的，为了断开原始连接，我们更加建议你使用`valueOf`方法。不仅能断开连接，还能使用`mapping`函数直接转换成欲提交的值（后面讲解）。
+
+## 映射
+
+我们将表单分离出了UI模型和数据模型（form/record），`form`主要负责视图展示和验证，`record`就负责绑定值。但真实的业务中，`record`和`form`所需要的期望值是不一致的，`record`和提交值也不一致。这就需要进行数据映射来方便开发者自动对这些值进行转换。在这个处理过程中，我们更加推荐使用`seq`组合子来完成，代码看起来会更加的简洁优秀。
+
+[查看案例可点击这里](http://106.75.63.69:8091/tqis/form?key=MapRecord)
+
+### 赋值映射
+
+以时间为例，服务端返回的时间格式为`String`，但是UI组件中需要的数据类型为`Moment`。开发者需要手动去进行处理，他会遇到两个问题：
+
+1. 处理的过程重用率太低，在各处都要显示的去写处理代码；
+2. 某些属性是组合属性，合并或拆开后需要删掉原始属性；
+
+例如：
+
+```javascript
+import formRecord, { map2Moment, zip2MomentRange, deleteField } from '@mix/form-model-record.js';
+import { seq } from '@util/fnhelper.js';
+
+// 赋值映射
+const recordMapForm = seq(
+  // 将createTime，转换成Moment格式
+  map2Moment('createTime'),
+  // 将（breakTimeStart, breakTimeEnd）合并成breakTime的Moment数组格式
+  zip2MomentRange('breakTime'),
+  // 删除`breakTimeStart`、`breakTimeEnd`字段
+  deleteField(['breakTimeStart', 'breakTimeEnd']),
+);
+
+export default {
+  mixins: [
+    formRecord({
+      map: recordMapForm,
+    }),
+  ],
+  created: {
+    this.record.load({
+      // 原始值`createTime`从服务端获取的是一个字符串，会自动映射成`Moment`类型设置到`form`视图中
+      createTime: '2019-6-6',  // => { createTime: [Moment]}
+      // 原始值`breakTimeStart`和`breakTimeEnd`是从其他页面跳转传递过来的，会自动组合成`breakTime`，它是一个`Moment`数组格式
+      breakTimeStart: '2019-01-01',  // => { breakTime: [Moment, Moment]}
+      breakTimeEnd: '2020-12-31',
+    });
+  }
+}
+```
+
+并且，当你使用`load`和`set`方法时，也会自动做赋值映射处理。
+
+### 取值映射
+
+反之，当想要把值提交到服务端，或者传递给其他页面或组件时，我们也可以进行取值映射。它的定义形式和**赋值映射**完全一致，你可以人为它是一个逆运算。
+
+例如：
+
+```javascript
+import formRecord, { map2Datetime, split2DatetimeRange, deleteField } from '@mix/form-model-record.js';
+import { seq } from '@util/fnhelper.js';
+
+// 提交映射
+const recordMapTo = seq(
+  // 将`createTime`转换成Datetime的字符串
+  map2Datetime('createTime'),
+  // 切割`breakTime`为两个Datetime字段，分别是`breakTimeStart`、`breakTimeEnd`
+  split2DatetimeRange('breakTime'),
+  // 删除`breakTime`字段
+  deleteField('breakTime'),
+);
+export default {
+  methods: {
+    commit () {
+      // record = { createTime: Moment('2019-06-06'), breakTime: [Moment('2019-01-01'), Moment('2020-12-31')]}
+      const commitValue = this.record.valueOf(recordMapTo);
+      // commitValue = { createTime: '2019-06-06 00:00:00', breakTimeStart: '2019-01-01 00:00:00', breakTimeEnd: '2020-12-31 00:00:00'}
+      // this.record.valueOf() = { createTime: Moment('2019-06-06'), breakTime: [Moment('2019-01-01'), Moment('2020-12-31')]}, 它和this.record值保持一致，但断开了引用连接。
+    }
+  }
+}
+```
+
+## 转换函数
+
+从上面的映射的例子可以看到，`form-model-record.js`中内置了一些转换函数，这些转换函数的格式都是：
+
+```javascript
+const mapFunction = (function (field) {
+  return (function (record) {
+    // this === record
+    // 可直接对`record`进行修改
+    // 该函数是无返回值的
+  }).bind(this)
+}).bind(record);
+```
+
+因此，熟悉框架和函数式编程的可知，使用`seq`函数可以实现链式编程（案例见上面）。`form-model-record`内置定义的转换函数如下：
+
+```javascript
+// * -> Moment(*)
+function map2Moment (field, record) {};
+// * -> [Moment(*), Moment(*)]
+function map2MomentRange (field, record) {};
+// * -> { Start: Moment(*), End: Moment(*) }
+function split2MomentRange (field, record) {};
+// { Start: Moment(*), End: Moment(*) } -> [Moment(*), Moment(*)]
+function zip2MomentRange (field, record) {};
+
+// * -> DatetimeString(*)
+function map2Datetime (field, record) {};
+// * -> DateString(*)
+function map2Date (field, record) {};
+// * -> TimeString(*)
+function map2Time (field, record) {};
+// * -> [DatetimeString(*), DatetimeString(*)]
+function map2DatetimeRange (field, record) {};
+// * -> { Start: DatetimeString(*), End:  DatetimeString(*) }
+function split2DatetimeRange (field, record) {};
+// { Start: DatetimeString(*), End:  DatetimeString(*) } -> [DatetimeString(*), DatetimeString(*)]
+function zip2DatetimeRange (field, record) {};
+// * -> Boolean(*)
+function map2Boolean (field, record) {};
+// 删除字段, `field`可为单个`field`，也可以为数组`fields`
+function deleteField (field, record) {};
+```
+
+当然，你可以也可以自定义转换函数，例如，我们希望格式化字符串，你也应该参照上面`mapFunction`的方式去定义，但可以不用绑定上下文，因为绑定上下文是内部自动的。举一个简单的例子：
+
+```javascript
+import formRecord from '@mix/form-model-record.js';
+import { seq } from '@util/fnhelper.js';
+
+// 自定义映射，第一层是函数
+const filedFormat = (field) => {
+  // 第二层是返回一个函数
+  return (record) => {
+    // 第三层是修改上下文
+    record[field] = record[field] + '%';
+  };
+}
+// 注意，你不用去绑定上下文，上下文是由内部决定的，内部会自动进行绑定
+
+// 提交映射
+const recordMapTo = seq(
+  // 将成功率转换成字符串
+  filedFormat('successRate')
+);
+// 因此，传入的原值如果为`69`，则会自动转换为`69%`并设置到表单UI组件中.
+```
+
+> 注意： 今后如果有公共的需要添加的转换函数，会统计业务的特性追加，没有追加之前可以自行定义。
+
+## 表单验证
+
+表单验证属于`view`层面的事情，即`form`可执行的方法，`record`无法代理，因此，但我们不是提供了`form`配置么，如果你配置了，将可以使用省略的写法：
+
+```html
+<template>
+  <!-- 这里的`ref`值必须和下面的`form`定义一致 -->
+  <a-form-model
+    ref="form"
+    :model="record"
+  >
+    <!-- ... -->
+  </a-form-model>
+</template>
+<script>
+import formModelRecordMix from '@mix/form-model-record.js';
+// ...
+export default {
+  mixins: [ formRecordMix({
+    // 这里的`form`值必须和上面的`ref`定义一致，此时会生成一个`this.form`计算属性
+    form: 'form',
+  }) ],
+  // ...
+  methods: {
+    commit () {
+      // 等价于 this.$refs.form.validate
+      this.form.validate((valid) => {
+        if (valid) {
+          // 提交的业务逻辑
+        }
+        // 请注意，无论如何，都要返回这个，这个是为了提供给视图进行验证反馈的
+        return valid;
+      })
+    }
+  }
+  // ...
+}
+</script>
+```
+
+## 迁移意见
+
+`@mix/form-record.js`和`@mix/form-record-mix.js`仍然保留，但不再做维护，是今后一定会弃用的混入器。你可以选择继续使用，但要注意他无法保证表单可进行实时验证，你仍可以根据项目本身的进度进行替换成现有的方案。替换时需要注意：
+
+1. `a-form`和`a-form-item`都要替换成`a-form-model`和`a-form-model-item`；
+2. `form`组件中不再使用`v-decorator`而是使用`v-model`，并且`v-model`必须填写属性的完整路径，例如`v-model="record.createTime"`；
+3. 表单的验证的`API`也发生变更了，以前是`form.validate(err => {})`，现在是`form.validate(valid => valid)`，注意，回调函数必须返回`valid`，这个会交给`form`进行视图上错误信息的反馈；
+4. 验证信息也不再配置在`v-decorator`内，而是配置在`a-form-model-item`中，具体的请参考[官方API文档](https://www.antdv.com/components/form-model-cn/#components-form-model-demo-validation)；

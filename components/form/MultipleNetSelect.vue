@@ -347,6 +347,7 @@ export default {
         if (config) {
           url && $.get(url, { ...params, ...config }).then((res = []) => {
             const list = res.map((item) => ({
+              record: item,
               label: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
               value: item[valueBy],
             }));
@@ -368,9 +369,9 @@ export default {
       }
       this.labelValue = labelValue;
       if (labelValue && labelValue.length) {
-        this.$emit('change', labelValue.map(prop('key')), labelValue.map(prop('label')), VNode);
+        this.$emit('change', labelValue.map(prop('key')), labelValue.map(prop('label')), labelValue.map(prop('record')), VNode);
       } else {
-        this.$emit('change', null, null, VNode);
+        this.$emit('change', null, null, null, VNode);
       }
     },
   },

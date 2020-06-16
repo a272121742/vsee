@@ -278,7 +278,7 @@
 <script>
 import formRecord, {
   map2Moment, zip2MomentRange, map2Datetime, split2DatetimeRange, deleteField,
-} from '@mix/form-record.js';
+} from '@mix/form-model-record.js';
 import attachmentMix from '@mix/attachment.js';
 import {
   GET_MOMENT,
@@ -286,13 +286,20 @@ import {
 import { seq } from '@util/fnhelper.js';
 import code from './NormalForm.code.js';
 
+// 映射从哪来（从服务端来，所以服务端的数据要转换成客户端能显示的）
 const recordMapForm = seq(
+  // 将创建日期，转换成Moment格式
   map2Moment('创建日期'),
+  // 将（发布日期Start, 发布日期End）发布日期合并成Moment格式
   zip2MomentRange('发布日期'),
 );
+// 映射到哪去（到服务端去，所以客户端的数据要转换成服务端能接受的）
 const recordMapTo = seq(
+  // 将创建日期转换成Datetime的字符串
   map2Datetime('创建日期'),
+  // 切割发布日期为两个Datetime字段
   split2DatetimeRange('发布日期'),
+  // 删除掉发布日期这个字段
   deleteField('发布日期'),
 );
 
@@ -302,6 +309,8 @@ export default {
   },
   mixins: [
     formRecord({
+      record: 'record',
+      form: 'form',
       map: recordMapForm,
     }),
     attachmentMix,
@@ -327,6 +336,12 @@ export default {
     // 提交数据
     commit () {
       console.log(this.record);
+      this.form.validate((valid) => {
+        if (valid) {
+          this.commit();
+        }
+        return valid;
+      });
       const commitValue = this.record.valueOf(recordMapTo);
       if (!this.action) {
         this.action = true;

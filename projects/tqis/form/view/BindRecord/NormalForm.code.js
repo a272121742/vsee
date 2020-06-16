@@ -1,287 +1,307 @@
 export default `<template>
-  <div>
-    <a-page-header
-      title="表单绑值"
-      sub-title="使用内置form-record插件自动绑值"
-    >
-      <template slot="extra">
-        <a-modal
-          v-model="showSource"
-          centered
-          width="80%"
+<div>
+  <a-page-header
+    title="表单绑值"
+    sub-title="使用内置form-record插件自动绑值"
+  >
+    <template slot="extra">
+      <a-modal
+        v-model="showSource"
+        centered
+        width="80%"
+      >
+        <SourceCodeView :code="code"></SourceCodeView>
+      </a-modal>
+      <a-button-group>
+        <a-button @click="() => showSource = !showSource">
+          源码
+        </a-button>
+        <a-button
+          :disabled="action"
+          @click="commit"
         >
-          <SourceCodeView :code="code"></SourceCodeView>
-        </a-modal>
-        <a-button-group>
-          <a-button @click="() => showSource = !showSource">
-            源码
-          </a-button>
-          <a-button
-            :disabled="action"
-            @click="commit"
+          提交
+        </a-button>
+        <a-button
+          :disabled="action"
+          @click="load"
+        >
+          加载
+        </a-button>
+        <a-button
+          :disabled="action"
+          @click="reset"
+        >
+          重置
+        </a-button>
+        <a-button
+          :disabled="action"
+          @click="clear"
+        >
+          清空
+        </a-button>
+        <a-button
+          :disabled="action"
+          @click="cache"
+        >
+          缓存
+        </a-button>
+      </a-button-group>
+    </template>
+  </a-page-header>
+  <a-form-model
+    ref="form"
+    :model="record"
+    layout="vertical"
+    class="form-column-split-compact"
+  >
+    <a-row :gutter="24">
+      <!-- 问题标题 -->
+      <a-col :span="formItemSpan * 4">
+        <a-form-model-item
+          :label="\`{ 问题标题: \${record['问题标题']} }\`"
+        >
+          <a-input
+            v-model="record['问题标题']"
+            :placeholder="$t('form.input')"
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 所属系统 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 所属系统: \${record['所属系统']} }\`">
+          <single-net-select
+            v-model="record['所属系统']"
+            :placeholder="$t('form.select')"
+            url="/masterdata/v1/pfscategory?p_id=0&page=1&limit=20&order=&orderField=&ids=&cds=&code=&name=&q="
+            value-by="id"
+            label-of="name"
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 所属功能 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 所属功能: \${record['所属功能']} }\`">
+          <single-net-select
+            v-model="record['所属功能']"
+            :placeholder="$t('form.select')"
+            :url="\`/masterdata/v1/pfscategory?p_id=\${record['所属系统']}\`"
+            :delay="!record['所属系统']"
+            :cache="false"
+            :disabled="!record['所属系统']"
+            value-by="id"
+            label-of="name"
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 故障代码 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 故障代码: \${record['故障代码']} }\`">
+          <single-net-select
+            v-model="record['故障代码']"
+            :placeholder="$t('form.select')"
+            :url="\`/masterdata/v1/pfsfault?psId=\${record['所属功能']}\`"
+            :delay="!record['所属功能']"
+            :cache="false"
+            :disabled="!record['所属功能']"
+            value-by="id"
+            label-of="name"
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 创建日期 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 创建日期: \${record['创建日期']} }\`">
+          <a-date-picker
+            v-model="record['创建日期']"
+            :format="DATE_FORMAT"
+            disabled
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 供应商代码 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 供应商代码: \${record['供应商代码']} }\`">
+          <net-auto-complete
+            v-model="record['供应商代码']"
+            url="/masterdata/v1/supplier/supplierList"
+            :placeholder="$t('form.input')"
+            allow-clear
+            :get-popup-container="el => el.parentNode"
+            dropdown-match-select-width
+            value-by="supplierCode"
+            search-by="name"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 所属分类 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 所属分类: \${record['所属分类']} }\`">
+          <a-checkbox-group v-model="record['所属分类']">
+            <a-row>
+              <a-col :span="6">
+                <a-checkbox value="A">
+                  A
+                </a-checkbox>
+              </a-col>
+              <a-col :span="6">
+                <a-checkbox value="B">
+                  B
+                </a-checkbox>
+              </a-col>
+              <a-col :span="6">
+                <a-checkbox value="C">
+                  C
+                </a-checkbox>
+              </a-col>
+              <a-col :span="6">
+                <a-checkbox value="D">
+                  D
+                </a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+        </a-form-model-item>
+      </a-col>
+      <!-- 发生频次 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 发生频次: \${record['发生频次']} }\`">
+          <a-input-number
+            v-model="record['发生频次']"
+            :placeholder="$t('form.input')"
+            :min="1"
+            :max="10"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 问题等级 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 问题等级: \${record['问题等级']} }\`">
+          <a-radio-group
+            v-model="record['问题等级']"
+            button-style="solid"
           >
-            提交
-          </a-button>
-          <a-button
-            :disabled="action"
-            @click="load"
+            <a-radio-button value="a">
+              A
+            </a-radio-button>
+            <a-radio-button value="b">
+              B
+            </a-radio-button>
+            <a-radio-button value="c">
+              C
+            </a-radio-button>
+            <a-radio-button value="d">
+              D
+            </a-radio-button>
+            <a-radio-button value="e">
+              E
+            </a-radio-button>
+          </a-radio-group>
+        </a-form-model-item>
+      </a-col>
+      <!-- 压缩比 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 压缩比: \${record['压缩比']} }\`">
+          <a-slider
+            v-model="record['压缩比']"
+            :tip-formatter="value => \`\${value}°C\`"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 里程范围 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 里程范围: \${record['里程范围']} }\`">
+          <a-slider
+            v-model="record['里程范围']"
+            range
+            :tip-formatter="value => \`\${value} KM\`"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- TOP问题 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ TOP问题: \${record['TOP问题']} }\`">
+          <a-switch
+            v-model="record['TOP问题']"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 发布日期 -->
+      <a-col :span="formItemSpan">
+        <a-form-model-item :label="\`{ 发布日期: \${record['发布日期']} }\`">
+          <a-range-picker
+            v-model="record['发布日期']"
+            :format="DATE_FORMAT"
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 问题备注 -->
+      <a-col :span="formItemSpan * 2">
+        <a-form-model-item :label="\`{ 问题备注: \${record['问题备注']} }\`">
+          <v-textarea
+            v-model="record['问题备注']"
+            :auto-size="{ minRows: 6 }"
+            :limit="1000"
+            row
+            helper-out
+            allow-clear
+          />
+        </a-form-model-item>
+      </a-col>
+      <!-- 附件 -->
+      <a-col :span="formItemSpan * 2">
+        <a-form-model-item
+          :label="\`{ 附件: \${record['附件']} }\`"
+        >
+          <v-upload
+            v-model="record['附件']"
+            :headers="headers"
+            :multiple="true"
+            :action="$store.getters.getUrl('/field-q/v1/file/upload?recType=30021001')"
+            download="/oss/ossFile/download"
           >
-            加载
-          </a-button>
-          <a-button
-            :disabled="action"
-            @click="reset"
-          >
-            重置
-          </a-button>
-          <a-button
-            :disabled="action"
-            @click="clear"
-          >
-            清空
-          </a-button>
-          <a-button
-            :disabled="action"
-            @click="cache"
-          >
-            缓存
-          </a-button>
-        </a-button-group>
-      </template>
-    </a-page-header>
-    <a-form-model
-      ref="form"
-      :model="record"
-      layout="vertical"
-      class="form-column-split-compact"
-    >
-      <a-row :gutter="24">
-        <!-- 问题标题 -->
-        <a-col :span="formItemSpan * 4">
-          <a-form-model-item
-            :label="\`{ 问题标题: \${record['问题标题']} }\`"
-          >
-            <a-input
-              v-model="record['问题标题']"
-              :placeholder="$t('form.input')"
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 所属系统 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 所属系统: \${record['所属系统']} }\`">
-            <single-net-select
-              v-model="record['所属系统']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/pfscategory?p_id=0&page=1&limit=20&order=&orderField=&ids=&cds=&code=&name=&q="
-              value-by="id"
-              label-of="name"
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 所属功能 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 所属功能: \${record['所属功能']} }\`">
-            <single-net-select
-              v-model="record['所属功能']"
-              :placeholder="$t('form.select')"
-              :url="\`/masterdata/v1/pfscategory?p_id=\${record['所属系统']}\`"
-              :delay="!record['所属系统']"
-              :cache="false"
-              :disabled="!record['所属系统']"
-              value-by="id"
-              label-of="name"
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 故障代码 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 故障代码: \${record['故障代码']} }\`">
-            <single-net-select
-              v-model="record['故障代码']"
-              :placeholder="$t('form.select')"
-              :url="\`/masterdata/v1/pfsfault?psId=\${record['所属功能']}\`"
-              :delay="!record['所属功能']"
-              :cache="false"
-              :disabled="!record['所属功能']"
-              value-by="id"
-              label-of="name"
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 创建日期 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 创建日期: \${record['创建日期']} }\`">
-            <a-date-picker
-              v-model="record['创建日期']"
-              :format="DATE_FORMAT"
-              disabled
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 供应商代码 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 供应商代码: \${record['供应商代码']} }\`">
-            <net-auto-complete
-              v-model="record['供应商代码']"
-              url="/masterdata/v1/supplier/supplierList"
-              :placeholder="$t('form.input')"
-              allow-clear
-              :get-popup-container="el => el.parentNode"
-              dropdown-match-select-width
-              value-by="supplierCode"
-              search-by="name"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 所属分类 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 所属分类: \${record['所属分类']} }\`">
-            <a-checkbox-group v-model="record['所属分类']">
-              <a-row>
-                <a-col :span="6">
-                  <a-checkbox value="A">
-                    A
-                  </a-checkbox>
-                </a-col>
-                <a-col :span="6">
-                  <a-checkbox value="B">
-                    B
-                  </a-checkbox>
-                </a-col>
-                <a-col :span="6">
-                  <a-checkbox value="C">
-                    C
-                  </a-checkbox>
-                </a-col>
-                <a-col :span="6">
-                  <a-checkbox value="D">
-                    D
-                  </a-checkbox>
-                </a-col>
-              </a-row>
-            </a-checkbox-group>
-          </a-form-model-item>
-        </a-col>
-        <!-- 发生频次 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 发生频次: \${record['发生频次']} }\`">
-            <a-input-number
-              v-model="record['发生频次']"
-              :placeholder="$t('form.input')"
-              :min="1"
-              :max="10"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 问题等级 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 问题等级: \${record['问题等级']} }\`">
-            <a-radio-group
-              v-model="record['问题等级']"
-              button-style="solid"
-            >
-              <a-radio-button value="a">
-                A
-              </a-radio-button>
-              <a-radio-button value="b">
-                B
-              </a-radio-button>
-              <a-radio-button value="c">
-                C
-              </a-radio-button>
-              <a-radio-button value="d">
-                D
-              </a-radio-button>
-              <a-radio-button value="e">
-                E
-              </a-radio-button>
-            </a-radio-group>
-          </a-form-model-item>
-        </a-col>
-        <!-- 压缩比 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 压缩比: \${record['压缩比']} }\`">
-            <a-slider
-              v-model="record['压缩比']"
-              :tip-formatter="value => \`\${value}°C\`"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 里程范围 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 里程范围: \${record['里程范围']} }\`">
-            <a-slider
-              v-model="record['里程范围']"
-              range
-              :tip-formatter="value => \`\${value} KM\`"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- TOP问题 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ TOP问题: \${record['TOP问题']} }\`">
-            <a-switch
-              v-model="record['TOP问题']"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 发布日期 -->
-        <a-col :span="formItemSpan">
-          <a-form-model-item :label="\`{ 发布日期: \${record['发布日期']} }\`">
-            <a-range-picker
-              v-model="record['发布日期']"
-              :format="DATE_FORMAT"
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 问题备注 -->
-        <a-col :span="formItemSpan * 2">
-          <a-form-model-item :label="\`{ 问题备注: \${record['问题备注']} }\`">
-            <v-textarea
-              v-model="record['问题备注']"
-              :auto-size="{ minRows: 6 }"
-              :limit="1000"
-              row
-              helper-out
-              allow-clear
-            />
-          </a-form-model-item>
-        </a-col>
-        <!-- 附件 -->
-        <a-col :span="formItemSpan * 2">
-          <a-form-model-item
-            :label="\`{ 附件: \${record['附件']} }\`"
-          >
-            <v-upload
-              v-model="record['附件']"
-              :headers="headers"
-              :multiple="true"
-              :action="$store.getters.getUrl('/field-q/v1/file/upload?recType=30021001')"
-              download="/oss/ossFile/download"
-            >
-              <a-button icon="upload">
-                {{ $t('action.upload') }}
-              </a-button>
-            </v-upload>
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-    </a-form-model>
-  </div>
-  </template>
+            <a-button icon="upload">
+              {{ $t('action.upload') }}
+            </a-button>
+          </v-upload>
+        </a-form-model-item>
+      </a-col>
+    </a-row>
+  </a-form-model>
+</div>
+</template>
 
-  <script>
-  import formRecord from '@mix/form-record.js';
+<script>
+  import formRecord, {
+  map2Moment, zip2MomentRange, map2Datetime, split2DatetimeRange, deleteField,
+  } from '@mix/form-model-record.js';
   import attachmentMix from '@mix/attachment.js';
   import {
-  GET_MOMENT, GET_DATETIME_FORMAT, RANGE_TO_MAP_BY_FIELD, MAP_TO_RANGE_BY_FIELD,
+  GET_MOMENT,
   } from '@util/datetime-helper.js';
+  import { seq } from '@util/fnhelper.js';
   import code from './NormalForm.code.js';
+
+  // 映射从哪来（从服务端来，所以服务端的数据要转换成客户端能显示的）
+  const recordMapForm = seq(
+  // 将创建日期，转换成Moment格式
+  map2Moment('创建日期'),
+  // 将（发布日期Start, 发布日期End）发布日期合并成Moment格式
+  zip2MomentRange('发布日期'),
+  );
+  // 映射到哪去（到服务端去，所以客户端的数据要转换成服务端能接受的）
+  const recordMapTo = seq(
+  // 将创建日期转换成Datetime的字符串
+  map2Datetime('创建日期'),
+  // 切割发布日期为两个Datetime字段
+  split2DatetimeRange('发布日期'),
+  // 删除掉发布日期这个字段
+  deleteField('发布日期'),
+  );
 
   export default {
   components: {
@@ -289,10 +309,9 @@ export default `<template>
   },
   mixins: [
     formRecord({
-      map () {
-        this['创建日期'] = GET_MOMENT(this['创建日期']);
-        MAP_TO_RANGE_BY_FIELD(this, '发布日期');
-      },
+      record: 'record',
+      form: 'form',
+      map: recordMapForm,
     }),
     attachmentMix,
   ],
@@ -305,24 +324,32 @@ export default `<template>
       formItemSpan: 6,
       record: {
         创建日期: new Date(),
+        发布日期Start: '2017-12-12',
+        发布日期End: '2020-1-1',
       },
     };
+  },
+  mounted () {
+    console.log(this.record);
   },
   methods: {
     // 提交数据
     commit () {
-      const commitValue = this.record.valueOf(function map () {
-        this['创建日期'] = GET_DATETIME_FORMAT(this['创建日期']);
-        RANGE_TO_MAP_BY_FIELD(this, '发布日期');
-        delete this['发布日期'];
+      console.log(this.record);
+      this.form.validate((valid) => {
+        if (valid) {
+          this.commit();
+        }
+        return valid;
       });
+      const commitValue = this.record.valueOf(recordMapTo);
       if (!this.action) {
         this.action = true;
         this.$message.loading(\`正在提交数据\${JSON.stringify(commitValue)}\`, 2, () => {
           this.action = false;
         });
       }
-      console.log(commitValue);
+      console.log('提交的数据为', commitValue);
     },
     // 加载数据
     load () {

@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import formRecord from '@mix/form-record.js';
+import formRecord from '@mix/form-model-record.js';
 import code from './Trible.code.js';
 
 

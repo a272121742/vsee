@@ -352,6 +352,7 @@ export default {
             const list = res.map((item) => ({
               label: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
               value: item[valueBy],
+              record: item,
             }));
             resolve(uniqOption(list));
           }).catch(() => {
@@ -367,9 +368,9 @@ export default {
      */
     onChange (labelValue, VNode) {
       if (labelValue) {
-        this.$emit('change', labelValue.key || null, labelValue.label || null, VNode);
+        this.$emit('change', labelValue.key || null, labelValue.label || null, VNode.data.props.record, VNode);
       } else {
-        this.$emit('change', null, null, VNode);
+        this.$emit('change', null, null, null, VNode);
       }
       this.$nextTick(() => {
         this.labelValue = labelValue;

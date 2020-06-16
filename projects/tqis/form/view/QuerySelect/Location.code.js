@@ -91,7 +91,7 @@ export default `<template>
   </template>
 
   <script>
-  import formRecord from '@mix/form-record.js';
+  import formRecord from '@mix/form-model-record.js';
   import code from './Location.code.js';
 
   export default {

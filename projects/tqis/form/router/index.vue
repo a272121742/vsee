@@ -40,6 +40,12 @@
     >
       <MapRecord />
     </a-tab-pane>
+    <a-tab-pane
+      key="FormValidate"
+      tab="验证"
+    >
+      <FormValidate />
+    </a-tab-pane>
   </a-tabs>
 </template>
 
@@ -52,6 +58,7 @@ export default {
     FormLayout: () => import('../view/FormLayout.vue'),
     BindRecord: () => import('../view/BindRecord.vue'),
     MapRecord: () => import('../view/MapRecord.vue'),
+    FormValidate: () => import('../view/FormValidate.vue'),
   },
   data () {
     return {

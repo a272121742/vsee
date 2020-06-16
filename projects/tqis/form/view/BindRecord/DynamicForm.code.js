@@ -180,7 +180,7 @@ export default `<template>
 </template>
 
 <script>
-import formRecord from '@mix/form-record.js';
+import formRecord from '@mix/form-model-record.js';
 import attachmentMix from '@mix/attachment.js';
 import code from './DynamicForm.code.js';
 

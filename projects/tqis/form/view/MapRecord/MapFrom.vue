@@ -56,34 +56,23 @@
       <a-row :gutter="24">
         <a-col :span="formItemSpan">
           <a-form-model-item
-            prop="祸首件ID"
+            prop="创建时间"
             :rules="[$v.required('不能为空')]"
-            label="祸首件代码"
+            label="创建时间"
           >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="code"
-              allow-clear
-            >
-            </single-net-select>
+            <a-date-picker
+              v-model="record['创建时间']"
+            />
           </a-form-model-item>
         </a-col>
         <a-col :span="formItemSpan">
           <a-form-model-item
-            prop="祸首件ID"
+            prop="时间段"
             :rules="[$v.required('不能为空')]"
-            label="祸首件名称"
+            label="时间段"
           >
-            <single-net-select
-              v-model="record['祸首件ID']"
-              :placeholder="$t('form.select')"
-              url="/masterdata/v1/part/partList"
-              value-by="id"
-              label-of="name"
-              allow-clear
+            <a-range-picker
+              v-model="record['时间段']"
             />
           </a-form-model-item>
         </a-col>
@@ -93,16 +82,29 @@
 </template>
 
 <script>
-import formRecord from '@mix/form-record.js';
-// import { GET_MOMENT } from '@util/datetime-helper.js';
+import formRecord, {
+  map2Moment, zip2MomentRange, deleteField,
+} from '@mix/form-model-record.js';
+import { seq } from '@util/fnhelper.js';
 import code from './MapFrom.code.js';
+
+// 回显映射
+const recordMapForm = seq(
+  // 将创建日期，转换成Moment格式
+  map2Moment('创建时间'),
+  // 将（时间段Start, 时间段End）合并成时间段的Moment数组格式
+  zip2MomentRange('时间段'),
+  deleteField(['时间段Start', '时间段End']),
+);
 
 export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
   mixins: [
-    formRecord(),
+    formRecord({
+      map: recordMapForm,
+    }),
   ],
   data () {
     return {
@@ -110,6 +112,11 @@ export default {
       code,
       action: false,
       formItemSpan: 6,
+      // record: {
+      //   创建时间: '2019-6-6',
+      //   时间段Start: '2019-01-01',
+      //   时间段End: '2020-12-31',
+      // },
     };
   },
   methods: {
@@ -130,8 +137,10 @@ export default {
       if (!this.action) {
         this.action = true;
         const id = setTimeout(() => {
-          this.record.load({
-            祸首件ID: '1001100000000000007',
+          this.record.set({
+            创建时间: '2019-6-6',
+            时间段Start: '2019-01-01',
+            时间段End: '2020-12-31',
           });
           this.action = false;
           clearTimeout(id);
