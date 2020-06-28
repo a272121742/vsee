@@ -52,7 +52,7 @@ Vue.component('MultipleNetSelect', () => import('@comp/form/MultipleNetSelect.vu
 Vue.component('SingleNetSelect', () => import('@comp/form/SingleNetSelect.vue'));
 Vue.component('NetAutoComplete', () => import('@comp/form/NetAutoComplete.vue'));
 
-Vue.use(AIcon, { prefix: 'icon-', url: ['/static/icon/logo.js', '/static/icon/iconfont.js'] });
+Vue.use(AIcon, { prefix: 'icon-', url: ['/static/icon/iconfont.js'] });
 
 Vue.use(Col);
 Vue.use(Row);
