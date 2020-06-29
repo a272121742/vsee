@@ -15,8 +15,6 @@ export default {
   },
   DEV_PROXY: 'http://tqis-dev.autodev.aas/mojo-gateway/',
   DYNAMIC_TITLE: 'BJEV-TQIS',
-  CONTENT_HEAD: 'bread',
-  MENU_COLLAPSIBLE: true,
   DATETIME: {
     DATE_FORMAT: 'YYYY-MM-DD',
     TIME_FORMAT: 'HH:mm:ss',
@@ -25,6 +23,15 @@ export default {
     EMPTY_DATETIME_VALUE: null,
     START_FIELDNAME: (fieldname) => `${fieldname}Start`,
     END_FIELDNAME: (fieldname) => `${fieldname}End`,
+  },
+  THEME: {
+    DARK: false,
+    LAYOUT_TYPE: 'menu',
+    MENU_TYPE: void 0,
+    MENU_COLLAPSIBLE: true,
+    MENU_COLLAPSED: false,
+    CONTENT_HEAD: 'tab',
+    KEEP_ALIVE: true,
   },
   LOCATION_MENU: [{
     id: 10000,

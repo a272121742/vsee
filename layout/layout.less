@@ -1,3 +1,4 @@
+@app-min-width: 1366px;
 @app-layout-header-height: 64px;
 @app-layout-footer-height: 0px;
 @app-content-header-height: 48px;
@@ -30,6 +31,7 @@
   }
 }
 .app-layout {
+  min-width: @app-min-width;
   & > .app-layout-header {
     position: fixed;
     z-index: @app-layout-zindex + 3;
@@ -90,13 +92,13 @@
       & ~ .app-content-header {
         left: @app-content-sider-width;
         &.app-content-tab .app-tabs .ant-tabs-bar {
-          width: calc(100vw - @app-content-sider-width);
+          width: calc(100% - @app-content-sider-width);
         }
       }
       & ~ .app-content-warpper {
         margin-left: @app-content-sider-width;
         .app-content-spiner {
-          width: calc(100vw - @app-content-sider-width - 2*@app-content-border-width);
+          width: calc(100% - @app-content-sider-width - 2*@app-content-border-width);
         }
       }
       & ~ .app-content-footer {
@@ -106,9 +108,9 @@
         z-index: @app-layout-zindex + 2;
         height: @app-content-sider-trigger-height;
         bottom: @app-layout-footer-height;
-        // &:hover {
-        //   background: rgba(0, 0, 0, 0.05);
-        // }
+        &:hover {
+          background: fade(@app-background-color, 60%);
+        }
       }
       .ant-layout-sider-children {
         .ant-affix {
@@ -130,13 +132,13 @@
         & ~ .app-content-header {
           left: @app-content-sider-width-min;
           &.app-content-tab .app-tabs .ant-tabs-bar{
-            width: calc(100vw - @app-content-sider-width-min);
+            width: calc(100% - @app-content-sider-width-min);
           }
         }
         & ~ .app-content-warpper {
           margin-left: @app-content-sider-width-min;
           .app-content-spiner {
-            width: calc(100vw - @app-content-sider-width-min - 2*@app-content-border-width);
+            width: calc(100% - @app-content-sider-width-min - 2*@app-content-border-width);
           }
         }
         & ~ .app-content-footer {
@@ -162,27 +164,36 @@
       }
       &.app-content-tab {
         position: absolute;
-        & .app-tabs {
-          .ant-tabs-bar {
+        .app-tabs {
+          & > .ant-tabs-bar {
             position: fixed;
             background: white;
             z-index: @app-layout-zindex + 1;
             height: @app-content-header-height;
-            width: 100vw;
+            width: 100%;
             padding-right: 16px;
+            // border-bottom: none;
+            .ant-tabs-nav,
+            .ant-tabs-nav-container,
+            .ant-tabs-extra-content {
+              height: @app-content-header-height - 1px;
+              margin-bottom: 0;
+            }
+            .ant-tabs-tab, 
+            .ant-tabs-extra-content {
+              background: #FFFFFF;
+              border: none;
+              line-height: @app-content-header-height;
+            }
+            .ant-tabs-extra-content:hover {
+              background: fade(@app-background-color, 60%);
+            }
+            .ant-tabs-ink-bar {
+              visibility: visible;
+              bottom: 0;
+            }
           }
-          .ant-tabs-bar,
-          .ant-tabs-nav,
-          .ant-tabs-nav-container,
-          .ant-tabs-extra-content {
-            height: @app-content-header-height;
-            margin-bottom: 0;
-          }
-          .ant-tabs-tab, .ant-tabs-extra-content {
-            border: none;
-            line-height: @app-content-header-height;
-          }
-          .ant-tabs-content {
+          & > .ant-tabs-content {
             background: @app-background-color;
             min-height: calc(100vh -  @app-content-header-height - @app-layout-footer-height - @app-content-footer-height);
             margin-top: @app-content-header-height;
@@ -198,9 +209,6 @@
               }
             }
           }
-          .ant-tabs-ink-bar {
-            visibility: visible;
-          }
         }
       }
     }
@@ -215,7 +223,7 @@
         background: @app-content-background-color;
         box-shadow: @box-shadow-base;
         min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
-        width: calc(100vw - 2*@app-content-border-width);
+        width: calc(100% - 2*@app-content-border-width);
         & > .ant-spin-dot-spin {
           position: absolute;
           top: calc(50% - 10px);
@@ -248,11 +256,24 @@
 
   .app-layout-header .ant-menu {
     border: none;
-    .ant-menu-item, .ant-menu-submenu {
-      padding-left: 0;
-      padding-right: 0;
-      line-height: 60px;
-      top: 3px;
+    &.ant-menu-inline {
+      .ant-menu-item, .ant-menu-submenu {
+        padding-left: 0;
+        padding-right: 0;
+        line-height: 60px;
+        top: 3px;
+      }
+    }
+    &.ant-menu-horizontal {
+      .ant-menu-item, .ant-menu-submenu {
+        line-height: @app-layout-header-height;
+      }
+      &:not(.ant-menu-dark) {
+        .ant-menu-item, .ant-menu-submenu {
+          line-height: @app-layout-header-height - 4px;
+          top: 3px;
+        }
+      }
     }
   }
   .ant-breadcrumb {

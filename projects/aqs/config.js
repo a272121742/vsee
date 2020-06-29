@@ -17,8 +17,10 @@ export default {
     menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
     permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
   },
-  MENU_COLLAPSIBLE: true,
-  CONTENT_HEAD: 'bread',
+  THEME: {
+    MENU_COLLAPSIBLE: true,
+    CONTENT_HEAD: 'bread',
+  },
   HTTP_TIMEOUT: 60000,
   PORTAL_APTH: '/',
   DEV_PROXY: 'http://tqis-dev.autodev.aas/mojo-gateway/',

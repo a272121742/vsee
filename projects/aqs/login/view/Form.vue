@@ -1,25 +1,25 @@
 <template>
-  <a-form
-    :form="form"
+  <a-form-model
+    ref="form"
+    :model="form"
+    self-update
     @submit.stop.self.prevent="handleSubmit"
   >
     <!-- uuid -->
-    <a-form-item class="hidden">
+    <a-form-model-item class="hidden">
       <a-input
-        v-decorator="['uuid', {initialValue: record.uuid}]"
+        v-model="form.uuid"
         type="hidden"
       >
       </a-input>
-    </a-form-item>
+    </a-form-model-item>
     <!-- 用户名 -->
-    <a-form-item
-      self-update
+    <a-form-model-item
+      prop="username"
+      :rules="[$v.required($t('username.required_message'))]"
     >
       <a-input
-        v-decorator="['username', {
-          initialValue: record.username,
-          rules: [{type: 'string', required: true, message: $t('username.required_message')}]
-        }]"
+        v-model="form.username"
         :placeholder="$t('username.placeholder')"
         allow-clear
         autocomplete="off"
@@ -32,16 +32,14 @@
           style="color: rgba(0,0,0,.25)"
         />
       </a-input>
-    </a-form-item>
+    </a-form-model-item>
     <!-- 密码 -->
-    <a-form-item
-      self-update
+    <a-form-model-item
+      prop="password"
+      :rules="[$v.required($t('password.required_message'))]"
     >
-      <password
-        v-decorator="['password', {
-          initialValue: record.password,
-          rules: [{type: 'string', required: true, message: $t('password.required_message')}]
-        }]"
+      <a-input-password
+        v-model="form.password"
         :placeholder="$t('password.placeholder')"
         autocomplete="off"
         allow-clear
@@ -53,15 +51,15 @@
           type="lock"
           style="color: rgba(0,0,0,.25)"
         />
-      </password>
-    </a-form-item>
+      </a-input-password>
+    </a-form-model-item>
     <!-- 验证码 -->
-    <!-- <a-form-item>
+    <!-- <a-form-model-item>
       <captcha-input
         v-decorator="['captcha', {
           rules: [{type: 'string', required: true, message: $t('captcha.required_message')}]
         }]"
-        :url="`/auth/captcha?uuid=${record.uuid}`"
+        :url="`/auth/captcha?uuid=${form.uuid}`"
         :placeholder="$t('captcha.placeholder')"
         @click-captcha="captchaChange"
         autocomplete="off"
@@ -75,17 +73,18 @@
           style="color: rgba(0,0,0,.25)"
         />
       </captcha-input>
-    </a-form-item> -->
-    <!-- <a-form-item class=""> -->
+    </a-form-model-item> -->
+    <!-- <a-form-model-item> -->
     <a-checkbox
-      :checked="remember"
-      @change="e => remember = e.target.checked"
+      v-model="remember"
+      style="margin-bottom: 12px;"
     >
       {{ $t('remember.text') }}
     </a-checkbox>
-    <!-- </a-form-item> -->
-    <a-form-item>
+    <!-- </a-form-model-item> -->
+    <a-form-model-item>
       <a-button
+        :loading="logining"
         type="primary"
         size="large"
         block
@@ -93,33 +92,46 @@
       >
         {{ $t('login.submit') }}
       </a-button>
-    </a-form-item>
-  </a-form>
+    </a-form-model-item>
+    <a-form-model-item>
+      <div class="forget-pd-div-class">
+        <a @click="forgetPdClick">{{ $t('forgetPd') }}</a>
+      </div>
+    </a-form-model-item>
+    <force-changepd
+      v-if="showChangePassword"
+      :visible.sync="showChangePassword"
+      :oldpd="form.password"
+    >
+    </force-changepd>
+    <forget-pd
+      v-if="showForgetPd"
+      :visible.sync="showForgetPd"
+      :username-data="usernameData"
+    >
+    </forget-pd>
+  </a-form-model>
 </template>
 
 <script>
+import { validator } from '@util/formhelper.js';
 import { getUUID } from '@util/datahelper.js';
-import { createNamespacedHelpers } from 'vuex';
-import { createFormFields, autoUpdateFileds } from '@util/formhelper.js';
-
-const { mapActions } = createNamespacedHelpers('login');
 
 export default {
   components: {
-    Password: () => import('@comp/form/Password.vue'),
+    // VInput: () => import('@comp/form/VInput.vue'),
+    // CaptchaInput: () => import('@comp/form/CaptchaInput.vue'),
+    // Password: () => import('@comp/form/Password.vue'),
   },
+  mixins: [
+    validator,
+  ],
   data () {
     return {
       /**
-       * 表单
-       */
-      form: null,
-      /**
        * 表单数据
        */
-      record: {
-        username: null,
-        password: null,
+      form: {
         // captcha: null,
         uuid: getUUID(),
       },
@@ -129,18 +141,14 @@ export default {
       remember: false,
       showChangePassword: false,
       showForgetPd: false,
+      usernameData: '',
+      logining: false,
     };
   },
   created () {
     this.recovery();
-    const { mapPropsToFields, onValuesChange } = this;
-    this.form = this.$form.createForm(this, {
-      mapPropsToFields,
-      onValuesChange,
-    });
   },
   methods: {
-    ...mapActions(['login']),
     /**
      * 还原用户缓存
      */
@@ -148,41 +156,51 @@ export default {
       const cache = this.$store.getters.getLoginCache();
       if (cache) {
         this.remember = true;
-        this.record.username = cache.username;
-        this.record.password = cache.password;
+        // Object.assign(this.form, cache);
+        this.$set(this, 'form', { ...this.form, ...cache });
       }
     },
     /**
      * 提交数据
      */
     handleSubmit () {
-      this.form.validateFields((err, loginInfo) => {
-        if (!err) {
-          this.$store.dispatch('login', loginInfo).then((res) => {
+      if (!this.logining) {
+        this.logining = true;
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            const loginInfo = this.form;
+            this.$store.dispatch('login', loginInfo).then((res) => {
             // 强制修改密码状态
-            if (res.isNeedUpps === 1) {
-              this.showChangePassword = true;
-            } else if (res.token) {
-              const goPage = this.$route.query.redirect || '/';
-              if (this.$router.matcher.match(goPage).name === '404') {
-                this.$router.push({ path: '/' });
-              } else {
-                this.$router.push({ path: goPage });
+              if (res.isNeedUpps === 1) {
+                this.showChangePassword = true;
+              } else if (res.token) {
+                this.$store.commit('setLoginStatus', res.token);
+                const goPage = this.$route.query.redirect || '/';
+                if (this.$router.matcher.match(goPage).name === '404') {
+                  this.$router.push({ path: '/' });
+                } else {
+                  this.$router.push({ path: goPage });
+                }
+                if (this.remember) {
+                  this.$store.commit('cacheLoginInfo', loginInfo);
+                } else {
+                  this.$store.commit('cleanLoginInfo', loginInfo);
+                }
               }
-              if (this.remember) {
-                this.$store.commit('cacheLoginInfo', loginInfo);
-              } else {
-                this.$store.commit('cleanLoginInfo', loginInfo);
-              }
-            }
-          }).catch((errCode) => {
-            errCode && this.$message.error(this.$t(errCode));
-            this.record.captcha = null;
-            this.form.updateFields(this.mapPropsToFields());
+            }).catch((errCode) => {
+              errCode && this.$message.error(this.$t(errCode));
+            // this.form.captcha = null;
             // this.captchaChange();
-          });
-        }
-      });
+            }).finally(() => {
+              this.logining = false;
+            });
+          } else {
+            this.logining = false;
+          }
+          return valid;
+        });
+      }
+      return false;
     },
     /**
      * 记住用户名密码
@@ -194,23 +212,28 @@ export default {
      * 验证码更新
      */
     captchaChange () {
-      this.record.uuid = getUUID();
-    },
-    /**
-     * 数据映射
-     */
-    mapPropsToFields () {
-      return createFormFields(this, ['username', 'password', 'captcha', 'uuid'], 'record');
-    },
-    /**
-     * 监听数据变更
-     */
-    onValuesChange (props, values) {
-      return autoUpdateFileds(this, 'record')(props, values);
+      this.form.uuid = getUUID();
     },
     forgetPdClick () {
       this.showForgetPd = true;
+      this.usernameData = this.form.username;
     },
   },
 };
 </script>
+
+<style lang="less" scoped>
+  .background-white-50 {
+    /deep/ input {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
+  .forget-pd-confirm-modal {
+    width: 438px;
+    height: 164px;
+  }
+  .forget-pd-div-class {
+    float: right;
+    margin-top: -20px;
+  }
+</style>

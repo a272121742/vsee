@@ -7,7 +7,7 @@
       <a-layout-sider
         v-if="true"
         v-model="collapsed"
-        theme="light"
+        :theme="theme"
         class="app-content-sider"
         collapsible
       >
@@ -66,6 +66,9 @@ export default {
     };
   },
   computed: {
+    theme () {
+      return this.$store.state.config.dark ? 'dark' : 'light';
+    },
     refreshing () {
       return this.$store.state.refresh;
     },

@@ -12,22 +12,25 @@ export default {
    * 菜单过滤逻辑
    * 如果你希望服务端传过来的菜单要做一点业务上的处理，使用配置；
    * 过滤函数中的参数表示菜单项，采用的是树遍历机制。
+   * 默认值： R.identity
    */
   MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
   /**
    * 语言环境默认值
    * 语言设置会进行校验的，如果不满足设定要求，或者未设置，则按照`zh-CN`来定义。
+   * 默认值： `zh-CH`
    */
   LANGUAGE_DEFAULT: 'zh-CN',
   /**
    * 语言存储在cookie的键名
-   * 默认值`language`，当然为了应用安全性也可以自行进行加密
+   * 默认值：`language`，当然为了应用安全性也可以自行进行加密
    */
   LANGUAGE_KEY: 'language',
   /**
    * 语言环境重置开关
    * 如果设置为`true`，则应用打开时，每次都会设置语言为`LANGUAGE_DEFAULT`
    * 否则，会通过cookie已经存在的值进行语言环境的设置
+   * 默认值： `false`
    */
   LANGUAGE_RESET: false,
   /**
@@ -92,53 +95,70 @@ export default {
    */
   HOME_COMP: () => import('~/module/router/index.vue'),
   /**
-   * 布局类型，可设置为`menu`、`nav`、`anchor`
-   * menu - (默认)包括header（上）、sider（左）、content（右）
-   * nav - 包括header（上）、content（下）
-   * anchor - 同`menu`，但content是连续屏幕的
-   */
-  LAYOUT_TYPE: 'menu',
-  /**
-   * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
-   * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
-   * false - 不启用菜单
-   * sider - 边栏菜单
-   * anchor - 悬靠菜单
-   * nav - 导航菜单
-   * cust - 自定义菜单
-   * 该属性自动链接到`store.config.menu_type`。
-   */
-  MENU_TYPE: void 0,
-  /**
-   * 菜单是否可搜索
-   * truely - 可缩缩时，会启用默认收缩模式
-   * falsely - 不可收缩时，会启用手动收缩模式，如果不设置手动收缩，即为不收缩
-   * 该值直接影响`this.$store.state.config.menu_collapsible`
-   * 该属性链接到`store.config.menu_collapsible`。
-   */
-  MENU_COLLAPSIBLE: true,
-  /**
-   * 菜单收缩状态
-   * falsely - 非收缩状态，默认值；
-   * truely - 收缩状态；
-   * 该值直接影响`this.$store.state.config.menu_collapsed`
-   * 该属性链接到`store.config.menu_collapsed`。
-   */
-  MENU_COLLAPSED: false,
-  /**
-   * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
-   * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
-   * bread - 面包屑模式
-   * tab - 页签模式
-   * cust - 自定义模式
-   * 该属性链接到`store.config.content_head`。
-   */
-  CONTENT_HEAD: 'bread',
+   * 主题配置系列
+   * 1.1.42重新整理
+   */ 
+  THEME: {
+    /**
+     * 是否采用暗黑模式，目前仅仅用于菜单，其他地方的风格需要手动做样式穿透
+     * 默认值：`false`
+     */ 
+    DARK: false,
+    /**
+     * 布局类型，可设置为`menu`、`nav`、`anchor`
+     * menu - (默认)包括header（上）、sider（左）、content（右）
+     * nav - 包括header（上）、content（下）
+     * anchor - 同`menu`，但content是连续屏幕的
+     */
+    LAYOUT_TYPE: 'menu',
+    /**
+     * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
+     * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
+     * false - 不启用菜单
+     * sider - 边栏菜单
+     * anchor - 悬靠菜单
+     * nav - 导航菜单
+     * cust - 自定义菜单
+     * 该属性自动链接到`store.config.menu_type`。
+     */
+    MENU_TYPE: void 0,
+    /**
+     * 菜单是否可搜索
+     * truely - 可缩缩时，会启用默认收缩模式
+     * falsely - 不可收缩时，会启用手动收缩模式，如果不设置手动收缩，即为不收缩
+     * 该值直接影响`this.$store.state.config.menu_collapsible`
+     * 该属性链接到`store.config.menu_collapsible`。
+     */
+    MENU_COLLAPSIBLE: true,
+    /**
+     * 菜单收缩状态
+     * falsely - 非收缩状态，默认值；
+     * truely - 收缩状态；
+     * 该值直接影响`this.$store.state.config.menu_collapsed`
+     * 该属性链接到`store.config.menu_collapsed`。
+     */
+    MENU_COLLAPSED: false,
+    /**
+     * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
+     * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
+     * bread - 面包屑模式
+     * tab - 页签模式
+     * cust - 自定义模式
+     * 该属性链接到`store.config.content_head`。
+     */
+    CONTENT_HEAD: 'bread',
+    /**
+     * `content`区域是否缓存，默认`false`，设置为`true`则缓存
+     * 注意，`tab`模式下是强制`keep-alive`的，这本身就是符合`tab`的模式的。
+     */
+    CONTENT_KEEP_ALIVE: false,
+  },
   /**
    * 路由模式，默认history
    */
   ROUTER_MODE: 'history',
   /**
+   * 【慎用】未普及
    * 如果你使用的是自定义`router`行为，请设置此项为`true`
    */
   CUST_ROUTER: false,
@@ -160,6 +180,7 @@ export default {
     return titleList.join(' - ');
   },
   /**
+   * 【慎用】未普及
    * 跳过登录
    * 如果你的项目中包含了登录模块，都会被自动注册进去，但如果你希望绕过登录模块，可以使用此选项。
    */
@@ -178,6 +199,7 @@ export default {
    */
   AXIOS_CLOSE_MOCK_LOG: false,
   /**
+   * 【慎用】未普及
    * @TODO:
    * 重连目录，可为`falsely`或`String[]`
    * falsely - 不启用重连；
@@ -195,24 +217,6 @@ export default {
    * $xxx - 可以根据需要建立其他的代理
    */
   DEV_PROXY: 'http://dev.auto.aas/mojo-gateway/',
-  /**
-   * 日期格式化
-   */
-  DATE_FORMAT: 'YYYY-MM-DD',
-  /**
-   * 时间格式化
-   */
-  TEIME_FORMAT: 'HH:mm:ss',
-  /**
-   * 时间日期格式化
-   * 如果不给定，将会自动处理为`${DATE_FORMAT} ${TEIME_FORMAT}`的格式
-   */
-  DATETIME_FORMAT: void 0,
-  /**
-   * 空时间展示
-   * 如果时间为空，或者转换失败，或者转换后不是合法时间，则显示此项，默认值为空字符串`''`
-   */
-  EMPTY_DATETIME: '-',
   /**
    * 分页组件配置
    */
@@ -248,16 +252,13 @@ export default {
     password: /^\S$/,
   },
   /**
-   * `content`区域是否缓存，默认`false`，设置为`true`则缓存
-   * 注意，`tab`模式下是强制`keep-alive`的，这本身就是符合`tab`的模式的。
-   */
-  CONTENT_KEEP_ALIVE: false,
-  /**
+   * 【慎用】未普及
    * 是否启用根菜单索引
    * 在`anchor`模式下，一级目录如果包含二级目录时，一级目录是无法渲染和绘制的。如果希望一级目录也可以点击、渲染和绘制，请将此选项设置为`true`；
    */
   ENABLE_ROOT_MENUS: false,
   /**
+   * 【慎用】未普及
    * 是否启用本地菜单
    */ 
   LOCATION_MENU: true,

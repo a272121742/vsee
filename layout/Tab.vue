@@ -13,6 +13,7 @@
       slot="tabBarExtraContent"
       :trigger="['click']"
       placement="bottomRight"
+      :get-popup-container="el => el.parentNode"
     >
       <a-button
         icon="down"
@@ -46,12 +47,16 @@
           :spinning="$store.state.refresh"
         >
           <transition v-if="!$store.state.refresh">
-            <keep-alive>
+            <keep-alive v-if="$store.state.config.keep_alive">
               <router-view
                 v-if="tab.fullPath === currentTab"
                 class="content-child-view"
               />
             </keep-alive>
+            <router-view
+              v-else-if="tab.fullPath === currentTab"
+              class="content-child-view"
+            />
           </transition>
         </a-spin>
       </a-tab-pane>

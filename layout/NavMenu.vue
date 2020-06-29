@@ -3,6 +3,7 @@
     mode="horizontal"
     :selected-keys="openKeys"
     :open-keys.sync="openKeys"
+    :theme="theme"
     @select="jump"
     @openChange="openChange"
   >
@@ -48,6 +49,9 @@ export default {
     };
   },
   computed: {
+    theme () {
+      return this.$store.state.config.dark ? 'dark' : 'light';
+    },
     menus () {
       return this.$store.state.routers.map((item) => ({ ...item }));
     },

@@ -11,7 +11,7 @@
         <a-layout-sider
           v-if="[void 0, 'anchor', 'cust'].includes($store.state.config.menu_type)"
           v-model="collapsed"
-          theme="light"
+          :theme="theme"
           class="app-content-sider"
           collapsible
           :trigger="collapsible ? void 0 : null"
@@ -75,6 +75,9 @@ export default {
     };
   },
   computed: {
+    theme () {
+      return this.$store.state.config.dark ? 'dark' : 'light';
+    },
     collapsed: {
       get () {
         return this.$store.state.config.menu_collapsed;
