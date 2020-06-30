@@ -14,12 +14,7 @@
 @app-background-color: #F5F5F5;  // 背景底色
 @app-content-background-color: white;
 
-#app {
-  &.ant-spin .ant-spin-dot {
-    margin-top: calc(50vh - 10px);
-  }
-}
-.app-scroll {
+.app-root-scroll {
   .__rail-is-vertical, .__rail-is-horizontal{
     z-index: @app-layout-zindex + 3!important;
     .__bar-is-vertical, .__bar-is-horizontal {
@@ -28,6 +23,9 @@
         background: @primary-color!important;
       }
     }
+  }
+  .app-root-loading {
+    transform: translate(-50%, -50%) translate(50vw, 50vh);
   }
 }
 .app-layout {
@@ -62,7 +60,7 @@
           .app-content-spiner {
             width: 100%;
             min-height: calc(100vh - @app-layout-header-height -  @app-content-header-height - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
-            .ant-spin-dot-spin {
+            & > .ant-spin-dot-spin {
               position: absolute;
               top: 50vh;
             }
@@ -98,7 +96,7 @@
       & ~ .app-content-warpper {
         margin-left: @app-content-sider-width;
         .app-content-spiner {
-          width: calc(100% - @app-content-sider-width - 2*@app-content-border-width);
+          width: calc(100vw - @app-content-sider-width - 2*@app-content-border-width);
         }
       }
       & ~ .app-content-footer {
@@ -138,7 +136,7 @@
         & ~ .app-content-warpper {
           margin-left: @app-content-sider-width-min;
           .app-content-spiner {
-            width: calc(100% - @app-content-sider-width-min - 2*@app-content-border-width);
+            width: calc(100vw - @app-content-sider-width-min - 2*@app-content-border-width);
           }
         }
         & ~ .app-content-footer {
@@ -223,7 +221,7 @@
         background: @app-content-background-color;
         box-shadow: @box-shadow-base;
         min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
-        width: calc(100% - 2*@app-content-border-width);
+        width: calc(100vw - 2*@app-content-border-width);
         & > .ant-spin-dot-spin {
           position: absolute;
           top: calc(50% - 10px);

@@ -1,61 +1,67 @@
 <template>
   <vue-scroll
-    class="app-scroll"
+    class="app-root-scroll"
     :ops="$store.state.config.scroll_config"
   >
-    <a-layout class="app-layout">
-      <a-layout-header class="app-layout-header">
-        <Header />
-      </a-layout-header>
-      <a-layout class="app-layout-content">
-        <a-layout-sider
-          v-if="[void 0, 'anchor', 'cust'].includes($store.state.config.menu_type)"
-          v-model="collapsed"
-          :theme="theme"
-          class="app-content-sider"
-          collapsible
-          :trigger="collapsible ? void 0 : null"
-        >
-          <vue-scroll class="app-content-sider-scroll">
-            <component :is="isSider" />
-          </vue-scroll>
-        </a-layout-sider>
-        <a-layout-header
-          v-if="false"
-          class="app-content-header"
-        >
-        <!-- <Breadcrumb v-if="false" />
-        <Tab v-else /> -->
+    <a-spin
+      v-if="this.$store.state.reload"
+      class="app-root-loading"
+    />
+    <template v-else>
+      <a-layout class="app-layout">
+        <a-layout-header class="app-layout-header">
+          <Header />
         </a-layout-header>
-        <a-layout-content
-          ref="content"
-          class="app-content-warpper"
-        >
-          <a-spin
-            class="app-content-spiner"
-            :spinning="refreshing"
+        <a-layout class="app-layout-content">
+          <a-layout-sider
+            v-if="[void 0, 'anchor', 'cust'].includes($store.state.config.menu_type)"
+            v-model="collapsed"
+            :theme="theme"
+            class="app-content-sider"
+            collapsible
+            :trigger="collapsible ? void 0 : null"
           >
-            <transition v-if="false">
-              <keep-alive v-if="true">
+            <vue-scroll class="app-content-sider-scroll">
+              <component :is="isSider" />
+            </vue-scroll>
+          </a-layout-sider>
+          <a-layout-header
+            v-if="false"
+            class="app-content-header"
+          >
+            <!-- <Breadcrumb v-if="false" />
+        <Tab v-else /> -->
+          </a-layout-header>
+          <a-layout-content
+            ref="content"
+            class="app-content-warpper"
+          >
+            <a-spin
+              class="app-content-spiner"
+              :spinning="refreshing"
+            >
+              <transition v-if="false">
+                <keep-alive v-if="true">
+                  <router-view
+                    class="content-child-view"
+                  />
+                </keep-alive>
                 <router-view
+                  v-else
                   class="content-child-view"
                 />
-              </keep-alive>
-              <router-view
-                v-else
-                class="content-child-view"
-              />
-            </transition>
-            <AnchorContent v-else />
-          </a-spin>
-        </a-layout-content>
-        <a-layout-footer class="app-content-footer">
+              </transition>
+              <AnchorContent v-else />
+            </a-spin>
+          </a-layout-content>
+          <a-layout-footer class="app-content-footer">
+          </a-layout-footer>
+        </a-layout>
+        <a-layout-footer class="app-layout-footer">
         </a-layout-footer>
+        <component :is="isHelper"></component>
       </a-layout>
-      <a-layout-footer class="app-layout-footer">
-      </a-layout-footer>
-      <component :is="isHelper"></component>
-    </a-layout>
+    </template>
   </vue-scroll>
 </template>
 

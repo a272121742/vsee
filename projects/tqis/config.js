@@ -30,7 +30,7 @@ export default {
     MENU_TYPE: void 0,
     MENU_COLLAPSIBLE: true,
     MENU_COLLAPSED: false,
-    CONTENT_HEAD: 'tab',
+    CONTENT_HEAD: 'bread',
     KEEP_ALIVE: true,
   },
   LOCATION_MENU: [{

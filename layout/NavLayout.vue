@@ -1,67 +1,73 @@
 <template>
   <vue-scroll
-    class="app-scroll"
+    class="app-root-scroll"
     :ops="$store.state.config.scroll_config"
   >
-    <a-layout class="app-layout">
-      <a-layout-header class="app-layout-header">
-        <Header>
-          <template #nav>
+    <a-spin
+      v-if="this.$store.state.reload"
+      class="app-root-loading"
+    />
+    <template v-else>
+      <a-layout class="app-layout">
+        <a-layout-header class="app-layout-header">
+          <Header>
+            <template #nav>
+              <component
+                :is="isNav"
+                :current-directory="currentDirectory"
+              ></component>
+            </template>
+          </Header>
+        </a-layout-header>
+        <a-layout class="app-layout-content">
+          <a-layout-sider
+            v-if="false"
+            v-model="collapsed"
+            :theme="theme"
+            class="app-content-sider"
+            collapsible
+          >
+            <SiderMenu />
+          </a-layout-sider>
+          <a-layout-header
+            v-if="$store.state.config.content_head"
+            :class="{ 'app-content-header': true, 'app-content-tab': !!isTab}"
+          >
             <component
-              :is="isNav"
+              :is="isContentHeader"
               :current-directory="currentDirectory"
             ></component>
-          </template>
-        </Header>
-      </a-layout-header>
-      <a-layout class="app-layout-content">
-        <a-layout-sider
-          v-if="false"
-          v-model="collapsed"
-          :theme="theme"
-          class="app-content-sider"
-          collapsible
-        >
-          <SiderMenu />
-        </a-layout-sider>
-        <a-layout-header
-          v-if="$store.state.config.content_head"
-          :class="{ 'app-content-header': true, 'app-content-tab': !!isTab}"
-        >
-          <component
-            :is="isContentHeader"
-            :current-directory="currentDirectory"
-          ></component>
-        </a-layout-header>
-        <a-layout-content
-          v-if="!isTab"
-          class="app-content-warpper"
-        >
-          <a-spin
-            class="app-content-spiner"
-            :spinning="refreshing"
+          </a-layout-header>
+          <a-layout-content
+            v-if="!isTab"
+            class="app-content-warpper"
           >
-            <transition v-if="!refreshing">
-              <keep-alive v-if="$store.state.config.keep_alive">
+            <a-spin
+              class="app-content-spiner"
+              :spinning="refreshing"
+            >
+              <transition v-if="!refreshing">
+                <keep-alive v-if="$store.state.config.keep_alive">
+                  <router-view
+                    v-if="!isTab"
+                    class="content-child-view"
+                  />
+                </keep-alive>
                 <router-view
-                  v-if="!isTab"
+                  v-else
                   class="content-child-view"
                 />
-              </keep-alive>
-              <router-view
-                v-else
-                class="content-child-view"
-              />
-            </transition>
-          </a-spin>
-        </a-layout-content>
-        <a-layout-footer class="app-content-footer">
+              </transition>
+            </a-spin>
+          </a-layout-content>
+          <a-layout-footer class="app-content-footer">
+          </a-layout-footer>
+        </a-layout>
+        <a-layout-footer class="app-layout-footer">
         </a-layout-footer>
+        <component :is="isHelper"></component>
       </a-layout>
-      <a-layout-footer class="app-layout-footer">
-      </a-layout-footer>
-      <component :is="isHelper"></component>
-    </a-layout>
+    </template>
   </vue-scroll>
 </template>
 
