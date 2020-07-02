@@ -34,11 +34,11 @@
 <script>
 import { omit } from 'ramda';
 
-function hasProp (instance, selfProp) {
-  const $options = instance.$options || {};
-  const propsData = $options.propsData || {};
-  return selfProp in propsData;
-}
+// function hasProp (instance, selfProp) {
+//   const $options = instance.$options || {};
+//   const propsData = $options.propsData || {};
+//   return selfProp in propsData;
+// }
 function getLength (t = '', isZh = false) {
   const text = t || '';
   const transValue = text.replace(/[^\x00-\xff]/g, isZh ? '**' : '*');
@@ -111,8 +111,8 @@ export default {
     },
   },
   data () {
-    const value = this.value || '';
-    const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
+    // const value = this.value || '';
+    // const limitValue = this.zh ? zhSubString(value, this.limit) : value.substr(0, this.limit || void 0);
     return {
       exclude: omit,
     };

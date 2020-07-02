@@ -9,7 +9,7 @@
     <div class="header-comp">
       <a-icon
         class="logo"
-        type="icon-logo"
+        type="iconlogo"
         @click="$store.dispatch('gohome')"
       />
       <a-divider

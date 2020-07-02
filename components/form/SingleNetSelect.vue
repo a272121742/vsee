@@ -9,7 +9,8 @@
     :disabled="$attrs.disabled || rending"
     :get-popup-container="el => el.parentNode"
     show-arrow
-    v-bind="$options.exclude(['options', 'label-in-value'], $attrs)"
+    option-label-prop="title"
+    v-bind="$options.exclude(['options', 'label-in-value', 'option-label-prop'], $attrs)"
     v-on="$options.exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-import { omit, uniqWith } from 'ramda';
+import { omit, uniqWith, curry } from 'ramda';
 import { debounce } from 'lodash';
 import { renameKey } from '@util/datahelper.js';
 import $ from '@http';
@@ -54,6 +55,7 @@ const NAME_DEFAULT = '';
 const key2value = renameKey('key', 'value');
 // const value2key = renameKey('value', 'key');
 const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key));
+const mapField = curry((fnOrString, record) => (typeof fnOrString === 'function' ? fnOrString(record) : record[fnOrString]));
 
 // function hasProp (instance, selfProp) {
 //   const $options = instance.$options || {};
@@ -84,12 +86,33 @@ export default {
       type: String,
       required: true,
     },
+    // 回显值
+    label: {
+      type: [String, Function],
+      default () {
+        return this.labelOf;
+      },
+    },
     // 显示值
     labelOf: {
       type: [String, Function],
       default () {
         return this.valueBy;
       },
+    },
+    // 禁用值
+    disableOf: {
+      type: Function,
+      default: () => false,
+    },
+    // 移除值
+    filterOf: {
+      type: Function,
+      default: () => true,
+    },
+    classOf: {
+      type: Function,
+      default: () => '',
     },
     // 传递值
     valueBy: {
@@ -266,6 +289,7 @@ export default {
           const labelValue = this.options.find((item) => item.value === value);
           // 如果存在，则表示已经加载过，
           if (labelValue) {
+            labelValue.label = labelValue.title;
             this.labelValue = labelValue;
             this.rending = false;
           } else {
@@ -274,7 +298,11 @@ export default {
             const { valueBy } = this;
             config[valueBy] = value;
             this.fetch(config).then((list) => {
-              this.labelValue = list.find((item) => item.value === value);
+              const netLableValue = list.find((item) => item.value === value);
+              if (netLableValue) {
+                netLableValue.label = netLableValue.title;
+              }
+              this.labelValue = netLableValue;
             }).finally(() => {
               this.rending = false;
             });
@@ -343,16 +371,19 @@ export default {
      */
     fetch (config) {
       const {
-        url, valueBy, labelOf = valueBy, params,
+        url, valueBy, labelOf = valueBy, label = labelOf, disableOf, filterOf, classOf, params,
       } = this;
       // const query = transformQuery(this.query);
       return new Promise((resolve) => {
         if (config) {
           url && $.get(url, { ...params, ...config }).then((res = []) => {
-            const list = res.map((item) => ({
-              label: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
+            const list = res.filter(filterOf).map((item) => ({
+              label: mapField(labelOf, item),
+              title: mapField(label, item),
               value: item[valueBy],
+              disabled: !!mapField(disableOf, item),
               record: item,
+              class: mapField(classOf, item),
             }));
             resolve(uniqOption(list));
           }).catch(() => {

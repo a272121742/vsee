@@ -1,5 +1,6 @@
 <template>
   <div>
+    </a-form-model-item>
     <a-page-header
       title="本地搜索"
       sub-title="少量数据启用本地搜索模式"
@@ -64,7 +65,9 @@
               :placeholder="$t('form.select')"
               url="/masterdata/v1/part/partList"
               value-by="id"
-              label-of="name"
+              :label-of="item => `${item.name} - ${item.code}`"
+              :label="item => `${item.name}`"
+              :disable-of="item => item.id === '101100007'"
               allow-clear
             />
           </a-form-model-item>
@@ -80,7 +83,9 @@
               :max-tag-count="2"
               url="/masterdata/v1/part/partList"
               value-by="id"
-              label-of="name"
+              :label-of="item => `${item.name} - ${item.code}`"
+              :label="item => `${item.name}`"
+              :disable-of="item => item.id === '101100001'"
               allow-clear
             />
           </a-form-model-item>
@@ -103,6 +108,7 @@ export default {
   ],
   data () {
     return {
+      test: null,
       showSource: false,
       code,
       action: false,
@@ -128,8 +134,8 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
-            下拉单选: '1001100000000000002',
-            下拉多选: ['1001100000000000003', '1001100000000000005', '1001100000000000007'],
+            下拉单选: '101100002',
+            下拉多选: ['101100002', '101100005', '101100007'],
           });
           this.action = false;
           clearTimeout(id);

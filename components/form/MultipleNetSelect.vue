@@ -1,6 +1,5 @@
 <template>
   <a-select
-    v-bind="$options.exclude(['mode', 'options', 'label-in-value'], $attrs)"
     label-in-value
     mode="multiple"
     :value="labelValue"
@@ -11,6 +10,8 @@
     :disabled="$attrs.disabled || rending"
     :get-popup-container="el => el.parentNode"
     show-arrow
+    option-label-prop="title"
+    v-bind="$options.exclude(['mode', 'options', 'label-in-value', 'option-label-prop'], $attrs)"
     v-on="$options.exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
@@ -38,7 +39,9 @@
 </template>
 
 <script>
-import { omit, prop, uniqWith } from 'ramda';
+import {
+  omit, uniqWith, curry,
+} from 'ramda';
 import { debounce } from 'lodash';
 import { renameKey } from '@util/datahelper.js';
 import $ from '@http';
@@ -55,6 +58,7 @@ const NAME_DEFAULT = '';
 const key2value = renameKey('key', 'value');
 // const value2key = renameKey('value', 'key');
 const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key));
+const mapField = curry((fnOrString, record) => (typeof fnOrString === 'function' ? fnOrString(record) : record[fnOrString]));
 
 function hasProp (instance, selfProp) {
   const $options = instance.$options || {};
@@ -85,12 +89,33 @@ export default {
       type: String,
       required: true,
     },
+    // 回显值
+    label: {
+      type: [String, Function],
+      default () {
+        return this.labelOf;
+      },
+    },
     // 显示值
     labelOf: {
       type: [String, Function],
       default () {
         return this.valueBy;
       },
+    },
+    // 禁用值
+    disableOf: {
+      type: Function,
+      default: () => false,
+    },
+    // 移除值
+    filterOf: {
+      type: Function,
+      default: () => true,
+    },
+    classOf: {
+      type: Function,
+      default: () => '',
     },
     // 传递值
     valueBy: {
@@ -259,7 +284,7 @@ export default {
         // 如果值不为空数组
         if (value && value.length) {
           this.rending = true;
-          const labelValue = this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ key: item.value, label: item.label }));
+          const labelValue = this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ key: item.value, label: item.title }));
           if (labelValue && labelValue.length) {
             this.labelValue = labelValue;
             this.rending = false;
@@ -270,7 +295,7 @@ export default {
             //   config[valueKey] = value;
             // }
             this.fetch(config).then((list) => {
-              this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.label }));
+              this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.title }));
               this.options = list;
             }).finally(() => {
               this.rending = false;
@@ -340,16 +365,19 @@ export default {
      */
     fetch (config) {
       const {
-        url, valueBy, labelOf = valueBy, params,
+        url, valueBy, labelOf = valueBy, label = labelOf, disableOf, filterOf, classOf, params,
       } = this;
       // const query = transformQuery(this.query);
       return new Promise((resolve) => {
         if (config) {
           url && $.get(url, { ...params, ...config }).then((res = []) => {
-            const list = res.map((item) => ({
-              record: item,
-              label: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
+            const list = res.filter(filterOf).map((item) => ({
+              label: mapField(labelOf, item),
+              title: mapField(label, item),
               value: item[valueBy],
+              disabled: !!mapField(disableOf, item),
+              record: item,
+              class: mapField(classOf, item),
             }));
             resolve(uniqOption(list));
           }).catch(() => {
@@ -363,15 +391,15 @@ export default {
     /**
      * 必要的onChange事件，将`{ value, label }`类型值转换为`value`
      */
-    onChange (labelValue, VNode) {
+    onChange (labelValue, VNodes) {
       if (!hasProp(this, 'value')) {
         this.labelValue = labelValue;
       }
       this.labelValue = labelValue;
       if (labelValue && labelValue.length) {
-        this.$emit('change', labelValue.map(prop('key')), labelValue.map(prop('label')), labelValue.map(prop('record')), VNode);
+        this.$emit('change', labelValue.map((item) => item.key), labelValue.map((item) => item.label), VNodes.map((item) => item.data.props.record), VNodes);
       } else {
-        this.$emit('change', null, null, null, VNode);
+        this.$emit('change', null, null, null, VNodes);
       }
     },
   },
