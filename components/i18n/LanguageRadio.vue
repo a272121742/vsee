@@ -29,6 +29,7 @@ export default {
     updateLanguage (e) {
       const locale = this.locale[e.target.value];
       this.changeLanguage({ key: locale.lang }, { name: locale.name });
+      this.$emit('change', { ...locale });
     },
   },
 };

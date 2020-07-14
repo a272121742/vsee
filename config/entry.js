@@ -17,6 +17,7 @@ const proxy = (isProd && !process.env.npm_config_test) || (!isProd && !!process.
 
 module.exports = (config) => {
   const entry = config.entry('app').clear();
+  entry.add('@lib/pre-load.js');
   hasBootstrap && (entry.add(`~/bootstrap`));
   entry.add('@babel/polyfill').add('~/main');
   (!proxy && entry.add('@mock/inject'));

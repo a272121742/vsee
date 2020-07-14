@@ -7,7 +7,8 @@
     :filter-option="$attrs['filter-option'] || filterOption"
     :disabled="$attrs.disabled || rending"
     :get-popup-container="el => el.parentNode"
-    v-bind="$options.exclude(['data-source'], $attrs)"
+    option-label-prop="value"
+    v-bind="$options.exclude(['data-source', 'option-label-prop'], $attrs)"
     v-on="$options.exclude(['change'], $listeners)"
     @dropdownVisibleChange="dropdownVisibleChange"
     @search="onTextChange"
@@ -39,7 +40,7 @@
 </template>
 
 <script>
-import { omit, uniqWith } from 'ramda';
+import { omit, uniqWith, curry } from 'ramda';
 import { debounce } from 'lodash';
 import { renameKey } from '@util/datahelper.js';
 import $ from '@http';
@@ -55,6 +56,7 @@ const NAME_DEFAULT = '';
 
 const key2value = renameKey('key', 'value');
 const uniqOption = uniqWith((a, b) => (a.value || a.key) === (b.value || b.key));
+const mapField = curry((fnOrString, record) => (typeof fnOrString === 'function' ? fnOrString(record) : record[fnOrString]));
 
 export default {
   model: {
@@ -67,6 +69,11 @@ export default {
       type: String,
       required: true,
     },
+    // 传递值
+    valueBy: {
+      type: String,
+      required: true,
+    },
     // 显示值
     labelOf: {
       type: [String, Function],
@@ -74,10 +81,19 @@ export default {
         return this.valueBy;
       },
     },
-    // 传递值
-    valueBy: {
-      type: String,
-      required: true,
+    // 禁用值
+    disableOf: {
+      type: Function,
+      default: () => false,
+    },
+    // 移除值
+    filterOf: {
+      type: Function,
+      default: () => true,
+    },
+    classOf: {
+      type: Function,
+      default: () => '',
     },
     // 查询值
     searchBy: {
@@ -268,6 +284,9 @@ export default {
      */
     dropdownVisibleChange (visible) {
       if (visible) {
+        if (this.options && this.options.length && (this.cache || this.closeSearch)) {
+          return;
+        }
         this.options = [];
         this.fetching = true;
         this.fetch({}).then((list) => {
@@ -298,14 +317,17 @@ export default {
      */
     fetch (config) {
       const {
-        url, valueBy, labelOf = valueBy, params,
+        url, valueBy, labelOf = valueBy, disableOf, filterOf, classOf, params,
       } = this;
       return new Promise((resolve) => {
         if (config) {
           url && $.get(url, { ...params, ...config }).then((res = []) => {
-            const list = res.map((item) => ({
-              text: typeof labelOf === 'function' ? labelOf(item) : item[labelOf],
+            const list = res.filter(filterOf).map((item) => ({
+              text: mapField(labelOf, item),
               value: item[valueBy],
+              disabled: !!mapField(disableOf, item),
+              record: item,
+              class: mapField(classOf, item),
             }));
             resolve(uniqOption(list));
           }).catch(() => {

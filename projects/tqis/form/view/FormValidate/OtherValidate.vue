@@ -89,6 +89,24 @@
             />
           </a-form-model-item>
         </a-col>
+        <a-col :span="formItemSpan * 4">
+          <a-form-model-item
+            label="required验证"
+            prop="required"
+            :rules="[$v.required('上传文件不能为空')]"
+          >
+            <uploader
+              v-model="record.required"
+              :headers="headers"
+              :multiple="true"
+              :action="$store.getters.getUrl('/field-q/v1/file/upload?recType=30021001')"
+            >
+              <a-button icon="upload">
+                {{ $t('action.upload') }}
+              </a-button>
+            </uploader>
+          </a-form-model-item>
+        </a-col>
       </a-row>
     </a-form-model>
   </div>
@@ -96,14 +114,17 @@
 
 <script>
 import formRecord from '@mix/form-model-record.js';
+import attachmentMix from '@mix/attachment.js';
 import code from './OtherValidate.code.js';
 
 export default {
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
+    Uploader: () => import('@comp/form/Uploader'),
   },
   mixins: [
     formRecord(),
+    attachmentMix,
   ],
   data () {
     return {
@@ -137,6 +158,7 @@ export default {
         this.action = true;
         const id = setTimeout(() => {
           this.record.load({
+
           });
           this.action = false;
           clearTimeout(id);

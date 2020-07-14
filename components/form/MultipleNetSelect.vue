@@ -335,6 +335,9 @@ export default {
     dropdownVisibleChange (visible) {
       this.searchWord = '';
       if (visible) {
+        if (this.options && this.options.length && (this.cache || this.closeSearch)) {
+          return;
+        }
         this.options = [];
         this.fetching = true;
         this.fetch({}).then((list) => {

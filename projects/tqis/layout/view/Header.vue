@@ -26,6 +26,7 @@
     >
       <slot name="nav"></slot>
     </div>
+    <language-radio @change="languageChange" />
     <div class="header-user">
       <UserAvatar />
     </div>
@@ -37,6 +38,12 @@ export default {
   components: {
     UserAvatar: () => import('./UserAvatar.vue'),
     Banner: () => import('./Banner.vue'),
+    LanguageRadio: () => import('@comp/i18n/LanguageDropdown.vue'),
+  },
+  methods: {
+    languageChange (obj) {
+      console.log('语言变化', obj);
+    },
   },
 };
 </script>

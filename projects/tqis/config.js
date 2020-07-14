@@ -33,6 +33,19 @@ export default {
     CONTENT_HEAD: 'bread',
     KEEP_ALIVE: true,
   },
+  // 水印配置
+  WATER_MARK: {
+    enable: true,
+    width: 240,
+    height: 135,
+    fontSize: 14,
+    fontFamily: 'Arial',
+    fontWeight: 400,
+    color: 'rgba(0, 0, 0, 0.24)',
+    rotate: -15,
+    zIndex: 5,
+    content: '请勿外传',
+  },
   LOCATION_MENU: [{
     id: 10000,
     name: '表单案例',
@@ -49,6 +62,10 @@ export default {
       id: 30001,
       name: 'Echart',
       url: 'echart',
+    }, {
+      id: 30002,
+      name: 'WaterMark',
+      url: 'water-mark',
     }],
   }],
 };

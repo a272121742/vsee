@@ -36,4 +36,7 @@ export default {
     },
   },
   DYNAMIC_TITLE: 'BJEV-TQIS',
+  WATER_MARK: {
+    enable: true,
+  },
 };

@@ -10,7 +10,8 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 >
 >| 版本        | 更新说明 | 更新时间 |
 >| ---------- | -------- | -------- |
->|   1.1.41   |    新增      |     2020年6月16日     |
+>|   1.1.41   |    新增      |     2020年06月16日     |
+>|   1.1.42   | 1.重构表单验证<br/> 2.修复reset方法失效的bug | 2020年07月03日 |
 >
 
 该混入器可以很方便的为`ant-design-vue`表单添加数据记录，减少开发人员的配置。
@@ -354,7 +355,7 @@ export default {
 </script>
 ```
 
-下面通过列表列出所有的内部验证：
+下面通过列表列出所有的内部验证（[参考案例](http://106.75.63.69:8091/tqis/form?key=FormValidate)）：
 
 ### 字串验证
 
@@ -416,6 +417,7 @@ export default {
 
 | 方法                                    | 注入参数 | 功能说明                                         |
 | --------------------------------------- | -------- | ------------------------------------------------ |
+| required(msg)                           |          | 判断字段是否不为空，若为空则返回验证消息  |
 | custom(fn, msg)                         |          | 判断输入项目是否满足函数验证，若不则返回验证消息，参考[async-validator](https://github.com/yiminghe/async-validator#validator) |
 | remote({ url, query, success, trigger}) |          | 判断输入项目是否满足远程验证，若不则返回验证消息 |
 

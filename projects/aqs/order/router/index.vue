@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-water-mark>
     <order-search-form></order-search-form>
     <order-list-table></order-list-table>
   </div>

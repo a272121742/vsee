@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { find } from 'ramda';
+import { treeFind } from '@util/datahelper.js';
 import $ from '@http';
 
 // function hasProp (instance, selfProp) {
@@ -165,7 +165,7 @@ export default {
             }
             this.rending = true;
             this.fetch(config).then((list) => {
-              this.labelValue = find((item) => item.value === value, list);
+              this.labelValue = treeFind((item) => item.value === value, list);
             }).finally(() => {
               this.rending = false;
             });

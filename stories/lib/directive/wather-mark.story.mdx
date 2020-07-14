@@ -4,4 +4,133 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 # 水印
 
-该插件可以在任意组件或`DOM`中添加水印；
+该插件可以在任意组件（`Component`）或`DOM`中添加水印；该插件是以指令（`directive`）的方式使用，并且做了全局化配置。并且我们支持`canvas`、`svg`、`dom`三种模式。
+
+# 配置
+
+以前，我们是采用手工导入的方式，现在，我们是采用配置项启用模式，我们在`~/config.js`中增加`WATER_MARK`的配置项即可：
+
+## 参数
+
+```javascript
+// ~/config.js
+{
+  /**
+   * 水印配置，全局化配置，配置之后，所有水印命令将采用统一格式，以保持统一性
+   */ 
+  WATER_MARK: {
+    /**
+     * 是否启用水印；
+     * @type [Boolean]
+     * @default false - 默认不启用；
+     */ 
+    enable: true,
+    /**
+     * 水印容器的宽度；
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`240`或者`'240px'`或者`'20em'`；
+     * @default 240 - 默认`240px`，与高度保持`16:9`的比例；
+     */ 
+    width: 240,
+    /**
+     * 水印容器的高度；
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`135`或者`'135px'`或者`'16em'`；
+     * @default 135 - 默认`135px`，与高度保持`16:9`的比例；
+     */ 
+    height: 135,
+    /**
+     * 水印字体的大小
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`14`或者`'14px'`或者`'1em'`；
+     * @default 14 - 默认`14px`；
+     */ 
+    fontSize: 14,
+    /**
+     * 水印的字体集
+     * @type [String]
+     * @default 'Arial'
+     */
+    fontFamily: 'Arial',
+    /**
+     * 水印的字重
+     * @type [Number, String] - 支持`css:: font-weight`的配置项；
+     * @default 400
+     */ 
+    fontWeight: 400,
+    /**
+     * 水印字体的颜色
+     * @type [String]
+     * @default 'rgba(0, 0, 0, 0.24)'
+     */ 
+    color: 'rgba(0, 0, 0, 0.24)',
+    /**
+     * 水印字体的旋转角度
+     * @type [Number] - `-15`即为逆时针旋转'15度'，`15`即为顺时针旋转'15度'
+     * @default -15;
+     */ 
+    rotate: -15,
+    /**
+     * 水印的叠层
+     * @type [Number]
+     * @default 5
+     */ 
+    zIndex: 5,
+    /**
+     * 水印的文本内容
+     * @type [String]
+     * @default '请勿外传'
+     */ 
+    content: '请勿外传',
+  }
+}
+```
+
+## 使用
+
+启用`WATER_MARK: { enable: true }`后，就可以使用`v-water-mark`指令了。我们有如下三种模式：
+
+```html
+<!-- 默认模式（canvas） -->
+<div v-water-mark> <!-- ... --> </div>
+<!-- canvas模式（canvas） -->
+<div v-water-mark:canvas> <!-- ... --> </div>
+
+<!-- svg模式（svg） -->
+<div v-water-mark:svg> <!-- ... --> </div>
+
+<!-- dom模式（dom） -->
+<div v-water-mark:dom> <!-- ... --> </div>
+```
+
+当你的系统在不同的浏览器上时，可以选择相对合适的版本来使用。这些指令都会读取全局配置的值，但你也可以增加你的配置：
+
+```html
+<div v-water-mark="{content: '保密内容', color: 'rgba(255, 0, 0, 0.08)'}">
+  <!-- ... -->
+</div>
+```
+
+## 添加位置
+
+目前不支持全局自动挂载，你可以在`~/main.js`中这样做：
+
+```js
+{
+  render () {
+    return (
+      <a-config-provider id="app" locale={ this.$store.state.local4antd }>
+        <router-view v-water-mark />
+      </a-config-provider>
+    );
+  },
+}
+```
+
+## feature
+
+- [ ] 增加图片水印
+- [ ] 支持多行文本
+- [ ] 支持防删除功能
+- [ ] 内容文本支持注入`store`和`router`等信息
+- [ ] 支持别名
+- [ ] 支持空指令注册，防止`enable: false`后系统报错
+- [ ] 支持全局挂载
+

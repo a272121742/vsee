@@ -22,6 +22,9 @@
 import mixin from './mixin.js';
 
 export default {
+  components: {
+    'a-popover': () => import('ant-design-vue/lib/popover'),
+  },
   mixins: [mixin],
 };
 </script>

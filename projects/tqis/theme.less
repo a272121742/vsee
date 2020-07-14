@@ -205,7 +205,7 @@
       .ant-form-item-label {
         flex: 0 0 @form-label-fixed-width;
         & > label {
-          display: inline-flex;
+          display: flex;
           align-items: center;
           justify-content: flex-end;
           width: @form-label-fixed-width;
@@ -214,17 +214,21 @@
           white-space: initial;
           word-break: break-all;
           line-height: 1;
-          top: -4px;
+          top: 2px;
+          &.ant-form-item-required::before {
+            align-self: center;
+          }
           &::after {
             align-self: flex-end;
-            margin-bottom: 1px;
+            margin-bottom: 2px;
           }
         }
       }
       .ant-form-item-control-wrapper {
         flex-grow: 1;
         .ant-form-item-control {
-          line-height: 28px;
+          // line-height: 28px;
+          line-height: normal;
         }
       }
     }
