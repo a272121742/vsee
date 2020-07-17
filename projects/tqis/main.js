@@ -28,7 +28,7 @@ Vue.nextTick(() => {
     render () {
       return (
         <a-config-provider id="app" locale={ this.$store.state.local4antd }>
-          <router-view />
+          <router-view v-water-mark/>
         </a-config-provider>
       );
     },

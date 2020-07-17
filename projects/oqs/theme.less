@@ -1,0 +1,385 @@
+/** 规范定义 **/
+// 主字体集合
+@global-font-family: 'SYHT', 'roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+// 第一字体
+@global-font-face-t1: 'SYHT';
+// 第二字体
+@global-font-face-t2: 'roboto';
+// 正常字体大小
+@global-font-size-normal: 14px;
+// 标题字体大小
+@global-font-size-title: 20px;
+// 说明字体大小（用于一些较小字体场景）
+@global-font-size-desc: 12px;
+// 标识字体大小（用于一些较大字体场景）
+@global-font-size-banner: 28px;
+// 常规字重
+@global-font-weight-normal: 400;
+// 中文加粗字重
+@global-font-weight-bold-zh: 500;
+// 英文加粗字重
+@global-font-weight-bold-en: 600;
+// 文字行高
+@global-font-line-height: 1;
+
+// 品牌色
+@global-brand-color: #0097E0;
+// 【主题色】全局背景色
+@global-theme-bg-color: #FFFFFF;
+// 【主题色】页面背景色
+@page-theme-gb-color: #F5F5F5;
+// 【主题色】板块背景色
+@block-theme-gb-color-normal: transparent;
+// 【主题色】透明板块背景色
+@block-theme-gb-color-transparent: transparent;
+// 【主题色】主字色
+@global-font-color: #595959;
+// 【主题色】辅字色1
+@global-font-color-1: #262626;
+// 【主题色】辅字色2
+@global-font-color-2: #8C8C8C;
+// 【功能色】通行色
+@global-success-color: #32B700;
+// 【功能色】否定色
+@global-error-color: #D1291A;
+// 【功能色】警告色
+@global-warning-color: #FABE00;
+// 【功能色】失效色
+@global-disabled-color: #BFBFBF;
+// 【功能色】阴影色
+@global-shadow-color: rgba(0, 0, 0, .12);
+// 【功能色】边框色
+@global-border-color: #D9D9D9;
+
+// 【层次】应用层
+@global-layer-app: 0;
+// 【层次】内容展示层
+@global-layer-content: 1;
+// 【层次】下拉展示层
+@global-layer-overlay: 1000;
+// 【层次】导航层
+@global-layer-nav: 1050;
+// 【层次】辅助层
+@global-layer-helper: 1100;
+// 【层次】模态层
+@global-layer-modal: 1200;
+// 【层次】通知层
+@global-layer-notify: 1500;
+// 【层次】封顶层
+@global-layer-max: 2000;
+// 【阴影】横向1级
+@global-shadow-h1: 0 2px 4px 0 @global-shadow-color;
+// 【阴影】横向2级
+@global-shadow-h2: none;
+// 【阴影】纵向1级
+@global-shadow-v1: 2px 2px 4px 0 @global-shadow-color;
+// 【阴影】纵向2级
+@global-shadow-v2: none;
+// 【阴影】环绕1级
+@global-shadow-b1: 0 2px 8px @global-shadow-color;
+// 【阴影】环绕2级
+@global-shadow-b2: none;
+
+// 小间距
+@global-gap-small: 8px;
+// 普通间距
+@global-gap-normal: 16px;
+// 大间距
+@global-gap-large: 24px;
+
+// ant-design-vue 配置 https://github.com/vueComponent/ant-design-vue/blob/master/components/style/themes/default.less
+@font-family: @global-font-family;
+@primary-color: @global-brand-color; // 全局主色
+@link-color: @global-brand-color; // 链接色
+@success-color: @global-success-color; // 成功色
+@warning-color: @global-warning-color; // 警告色
+@error-color: @global-error-color; // 错误色
+@body-background: @global-theme-bg-color; // body背景色
+@heading-color: @global-font-color-1; // 标题色
+@text-color: @global-font-color; // 主文本色
+@border-color-base: @global-border-color; // 边框色
+@text-color-secondary: @global-font-color-2; // 次文本色
+@disabled-color: @global-disabled-color; // 失效色
+@box-shadow-base: @global-shadow-b1; // 浮层阴影
+
+// vsee 配置
+@app-layout-header-height: 64px;  // 应用布局头部高度
+@app-layout-footer-height: 0px;   // 应用布局底部高度
+@app-content-header-height: 48px; // 内容区域头部高度
+@app-content-footer-height: 0px;  // 内容区域底部高度
+@app-content-border-width: 16px;  // 内容区域外边距
+@app-content-sider-width: 250px;  // 内容菜单宽度
+@app-content-sider-width-min: 80px; // 内容菜单最小宽度
+@app-content-sider-trigger-height: 48px;  // 内容菜单控制器高度
+@app-content-padding: 0;  // 内容区域内边距
+@app-layout-zindex: @global-layer-nav;
+@app-content-zindex: @global-layer-content;
+@app-theme-color: @global-theme-bg-color;  //主题色
+@app-background-color: @page-theme-gb-color;  // 背景底色
+@app-content-background-color: transparent;
+@box-shadow-h: @global-shadow-h1;
+@box-shadow-v: @global-shadow-v1;
+
+
+// 修改所有工单表单的统一样式
+.ant-form {
+  .ant-form-item {
+    padding-bottom: 22px;
+    margin-bottom: 0;
+  }
+  .ant-form-explain {
+    margin-top: 0px;
+    margin-bottom: -22px;
+  }
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 时间类型组件长度100%
+  .ant-input-number,
+  .ant-calendar-picker,
+  .ant-time-picker {
+    width: 100%;
+  }
+}
+
+// 解决下拉列表超出后无横向滚动条的问题
+.ant-select-dropdown-menu-root {
+  overflow: visible;
+  .ant-select-dropdown-menu-item {
+    display: block;
+    overflow: visible;
+  }
+}
+
+// 表单列布局紧凑模式样式
+.form-column-split-compact {
+  .ant-form-item {
+    padding-bottom: 0;
+    margin-bottom: 4px;
+  }
+  // 垂直模式下做特殊处理
+  &.ant-form-vertical {
+    .ant-form-item-label {
+      padding-bottom: 2px;
+    }
+  }
+  // 滑块间距缩小
+  .ant-slider {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .ant-switch {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .ant-checkbox-group {
+    margin-top: 4px;
+  }
+}
+
+
+/**
+ * @form-label-fixed-width: 表单`label`的固定宽度，默认值`82px`，约等于4个汉字，该范围已经包括**必选符号**和**冒号**;
+ */
+ .form-column-align-defined(@form-label-fixed-width: 82px) {
+  &.ant-form-horizontal,
+  &.ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      .ant-form-item-label {
+        flex: 0 0 @form-label-fixed-width;
+        & > label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: @form-label-fixed-width;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: initial;
+          word-break: break-all;
+          line-height: 1;
+          top: -4px;
+          &::after {
+            align-self: flex-end;
+            margin-bottom: 1px;
+          }
+        }
+      }
+      .ant-form-item-control-wrapper {
+        flex-grow: 1;
+        .ant-form-item-control {
+          line-height: 28px;
+        }
+      }
+    }
+  }
+}
+.form-column-align {
+  .form-column-align-defined();
+}
+
+// 带操作区域的分列表单
+.form-column-action-right {
+  // 操作区域
+  .form-column-action {
+    padding-top: 23px;
+    float: right;
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+}
+
+/**
+ * @table-header-height: 表头的高度，默认值`54px`，如果你的表头是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-height: 表格行高度，默认值`56px`，如果你的表格行是固定高度，并且与此默认值高度不同，你应该调整此参数；
+ * @table-row-count: 表格最小显示行数，默认`10`，定义多少行，空表格将按照此高度固定；
+ * @addition-container-height: 增补高度，默认`0px`，此功能用来减去滚动条高度，如果想去掉滚动条高度，设置为`16px`即可；
+ */
+.table-container-fixed-defined(@table-header-height: 46px; @table-row-height: 41px; @table-row-count: 10; @addition-container-height: 0px) {
+  @scroll-bar-height: 16px;
+  @table-body-height: @table-row-height * @table-row-count;
+  @table-height: @table-header-height + @table-body-height;
+  @table-empty-height: @table-body-height;
+  // 修改加载区域
+  /deep/ .ant-spin-spinning {
+    min-height:  @table-height;
+  }
+  /deep/ .ant-table-scroll {
+    // 滚动区域的中心高度固定，并增加滚动条的高度
+    .ant-table-body {
+      min-height: @table-height + @scroll-bar-height - @addition-container-height;
+      & when (@addition-container-height >= @scroll-bar-height) {
+        overflow-x: unset!important;
+      }
+    }
+  }
+  // `暂无数据`悬浮到上层
+  /deep/ .ant-table-placeholder {
+    position: absolute;
+    top: @table-header-height;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: @table-empty-height;
+  }
+  // 加载过程中不显示`暂无数据`
+  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
+    opacity: 0;
+  }
+}
+.table-container-fixed {
+  .table-container-fixed-defined(46px; 41px; 10);
+}
+
+// 表格单元格溢出隐藏并显示`...`
+.table-cell-ellipsis {
+  th > div, td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+  // 设置单元格内填充
+  .ant-table-thead > tr > th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+  .ant-table-tbody > tr > td {
+    padding-top: 10px;
+    padding-bottom: 9px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+}
+
+.ant-message, .ant-popover {
+  z-index: @global-layer-notify;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  height: 16px;
+  width: 16px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 4px solid transparent; 
+  border-radius: 16px;
+  box-shadow: 8px 8px 0 fade(@primary-color, 66%) inset;
+}
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  box-shadow: 8px 8px 0 @primary-color inset;
+}
+
+
+//下钻页面样式改造
+.drill-downn {
+  width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1) !important;
+}
+
+// tab层级调整
+.app-layout .app-layout-content .app-content-header.app-content-tab .app-tabs .ant-tabs-bar{
+    z-index: 3;
+}
+
+// 菜单更改 到 250 
+.app-content-sider {
+  min-width: @app-content-sider-width!important;
+  max-width: @app-content-sider-width!important;
+  &.ant-layout-sider-collapsed {
+    min-width: @app-content-sider-width-min!important;
+    max-width: @app-content-sider-width-min!important;
+  }
+}
+
+// 自定义菜单
+.box {
+  background-color: #fff;
+  padding:16px 24px;
+  margin-top: 16px;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.12);
+  border-radius: 4px;
+  border-radius: 4px;
+}
+.fff {
+  background-color: #fff;
+}
+.mgb-0{
+  margin-bottom: 0;
+}
+.mgt-0{
+  margin-top: 0;
+}
+.pdb-0{
+  padding-bottom: 0;
+}
+.pdt-0{
+  padding-top: 0;
+}
+h2 {
+  font-size: 16px
+}
+
+// echarts 表格spinning
+.app-layout > .app-layout-header + .app-layout-content .app-content-header.app-content-tab .app-tabs .ant-tabs-content .app-content-spiner .ant-spin-dot-spin{
+  top:15vh
+}
+// tab模式下
+.app-layout .app-layout-content .app-content-header.app-content-tab .app-tabs .ant-tabs-content .app-content-spiner .content-child-view{
+  box-shadow:none
+}
+
+// 非tab模式下
+.app-layout .app-layout-content .app-content-warpper .app-content-spiner {
+  box-shadow:none
+}

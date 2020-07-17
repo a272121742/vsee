@@ -1,0 +1,12 @@
+{
+  "action":{
+    "manual":"用户手册",
+    "title":"修改密码",
+    "toPortal":"返回TQIS首页",
+    "logout":"退出系统"
+  },
+  "project":{
+    "title":"过程质量模块",
+    "testDesc":"本系统仅用于测试"
+  }
+}

@@ -39,8 +39,19 @@
 </template>
 
 <script>
-import { omit } from 'ramda';
+import { omit, map } from 'ramda';
 import $ from '@http';
+
+function treeFilter (arr, item) {
+  const [value, result] = arr;
+  if (value.includes(item.value)) {
+    result.push(item);
+  }
+  if (item.children && item.children.length) {
+    item.children.reduce(treeFilter, arr);
+  }
+  return arr;
+}
 
 function hasProp (instance, selfProp) {
   const $options = instance.$options || {};
@@ -157,7 +168,8 @@ export default {
         // 如果值不为空数组
         if (value && value.length) {
           this.rending = true;
-          const labelValue = this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ value: item.value, label: item.label }));
+          const labelValue = map((item) => ({ value: item.value, label: item.label }), this.options.reduce(treeFilter, [value, []])[1]);
+          // this.options.filter((opt) => ~value.indexOf(opt.value)).map((item) => ({ value: item.value, label: item.label }));
           if (labelValue && labelValue.length === value.length) {
             this.labelValue = labelValue;
             this.rending = false;
@@ -167,8 +179,9 @@ export default {
             if (valueKey) {
               config[valueKey] = value;
             }
-            this.fetch(config).then((list) => {
-              this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.label }));
+            this.fetch(config).then((list = []) => {
+              // this.labelValue = list.filter((item) => ~value.indexOf(item.value)).map((item) => ({ key: item.value, label: item.label }));
+              this.labelValue = map((item) => ({ value: item.value, label: item.label }), list.reduce(treeFilter, [value, []])[1]);
               this.options = list;
             }).finally(() => {
               this.rending = false;

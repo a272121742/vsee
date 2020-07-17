@@ -1,0 +1,99 @@
+{
+"info": {
+  "echarts-data-error":"图表数据异常!",
+  "table-data-error":"表格数据异常!",
+  "actualValue":"实际值",
+  "targetValue":"目标值"
+},
+
+"dr": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "station_nm":"站点点位",
+  "plant_nm":"工厂",
+  "kpi_value":"一次通过合格率",
+  "kpi_target":"一次通过目标值",
+  "nmrtr_value":"缺陷车辆数",
+  "dnmtr_value":"过站车辆数",
+  "id":"序号"
+},
+"drl": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "station_nm":"站点点位",
+  "plant_nm":"工厂",
+  "kpi_value":"一次通过率损失",
+  "kpi_target":"一次通过率损失目标值",
+  "nmrtr_value":"缺陷数",
+  "dnmtr_value":"过站车辆数",
+  "id":"序号"
+},
+"audit": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "dr_station_nm":"站点点位",
+  "plant_nm":"工厂",
+  "kpi_value":"Audit平均扣分",
+  "kpi_target":"Audit平均扣分目标值",
+  "nmrtr_value":"扣分值",
+  "dnmtr_value":"评审车辆数",
+  "id":"序号"
+},
+"pdiDdr": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "plant_nm":"工厂",
+  "kpi_value":"PDI入库直行率",
+  "kpi_target":"PDI入库直行率目标值",
+  "nmrtr_value":"一次报交通过车辆数",
+  "dnmtr_value":"当日新交检车辆台数",
+  "id":"序号"
+},
+"pdiFdr": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "plant_nm":"工厂",
+  "kpi_value":"PDI功能缺陷数",
+  "kpi_target":"PDI功能缺陷目标值",
+  "nmrtr_value":"一次检查功能的缺陷总数",
+  "dnmtr_value":"当日新交检车辆台数",
+  "id":"序号"
+},
+"ftq": {
+  "date_id":"日期",
+  "vhcl_model":"车型",
+  "ftq_workshop_nm":"车间",
+  "plant_nm":"工厂",
+  "kpi_value":"一次通过合格率",
+  "kpi_target":"一次通过合格率目标值",
+  "nmrtr_value":"缺陷车辆数",
+  "dnmtr_value":"过站车辆数",
+  "id":"序号"
+},
+
+"model":"车型",
+"date":"日期",
+"Date":"日期",
+"plant":"工厂",
+"station":"站点",
+"day":"天",
+"week":"周",
+"month":"月",
+"year":"年",
+"topNo":"排行数",
+"NoData":"暂无数据!",
+"finalInstall":"终装",
+"testing":"检测",
+"rain":"淋雨",
+"roadTest":"路试",
+"workshop":"车间",
+
+"top": {
+  "no":"序号",
+  "plant":"   工厂",
+  "paretoTitle":"缺陷帕累托分析",
+  "plantTitle":"缺陷分析by工厂",
+  "per":"累计占比",
+  "defectDes":"缺陷位置-缺陷描述"
+}
+}

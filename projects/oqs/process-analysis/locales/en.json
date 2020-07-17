@@ -1,0 +1,99 @@
+{
+  "info": {
+    "echarts-data-error":"Abnormal chart data!",
+    "table-data-error":"Abnormal table data!",
+    "actualValue":"actualValue",
+    "targetValue":"targetValue"
+  },
+  
+  "dr": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "station_nm":"Station",
+    "plant_nm":"Plant",
+    "kpi_value":"一次通过合格率",
+    "kpi_target":"一次通过目标值",
+    "nmrtr_value":"缺陷车辆数",
+    "dnmtr_value":"过站车辆数",
+    "id":"No"
+  },
+  "drl": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "station_nm":"Station",
+    "plant_nm":"Plant",
+    "kpi_value":"一次通过率损失",
+    "kpi_target":"一次通过率损失目标值",
+    "nmrtr_value":"缺陷数",
+    "dnmtr_value":"过站车辆数",
+    "id":"No"
+  },
+  "audit": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "dr_station_nm":"Station",
+    "plant_nm":"Plant",
+    "kpi_value":"Audit平均扣分",
+    "kpi_target":"Audit平均扣分目标值",
+    "nmrtr_value":"扣分值",
+    "dnmtr_value":"评审车辆数",
+    "id":"No"
+  },
+  "pdiDdr": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "plant_nm":"Plant",
+    "kpi_value":"PDI入库直行率",
+    "kpi_target":"PDI入库直行率目标值",
+    "nmrtr_value":"一次报交通过车辆数",
+    "dnmtr_value":"当日新交检车辆台数",
+    "id":"No"
+  },
+  "pdiFdr": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "plant_nm":"Plant",
+    "kpi_value":"PDI功能缺陷数",
+    "kpi_target":"PDI功能缺陷目标值",
+    "nmrtr_value":"一次检查功能的缺陷总数",
+    "dnmtr_value":"当日新交检车辆台数",
+    "id":"No",
+    "gate_cd":"质量门"
+  },
+  "ftq": {
+    "date_id":"Date",
+    "vhcl_model":"CarModel",
+    "ftq_workshop_nm":"车间",
+    "plant_nm":"Plant",
+    "kpi_value":"一次通过合格率",
+    "kpi_target":"一次通过合格率目标值",
+    "nmrtr_value":"缺陷车辆数",
+    "dnmtr_value":"过站车辆数",
+    "id":"No"
+  },
+  
+  
+  "model":"CarModel",
+  "date":"Date",
+  "plant":"Plant",
+  "station":"Station",
+  "day":"DAY",
+  "week":"WEEK",
+  "month":"MONTH",
+  "year":"YEAR",
+  "topNo":"Ranking",
+  "NoData":"No DATA!",
+  "finalInstall":"FinalInstall",
+  "testing":"Testing",
+  "rain":"Rain",
+  "roadTest":"RoadTest",
+  
+  "top": {
+    "no":"No",
+    "plant":"    Plant",
+    "paretoTitle":"缺陷帕累托分析",
+    "plantTitle":"缺陷分析byPlant",
+    "per":"Proportion",
+    "defectDes":"Location-Description"
+  }
+  }

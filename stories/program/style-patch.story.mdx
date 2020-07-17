@@ -99,30 +99,23 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
       display: flex;
       .ant-form-item-label {
         flex: 0 0 @form-label-fixed-width;
+        display: inline-flex;
+        max-height: 48px;
         & > label {
-          display: flex;
+          display: inline-flex;
           align-items: center;
           justify-content: flex-end;
           width: @form-label-fixed-width;
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: initial;
+          text-overflow: clip;
+          white-space: normal;
           word-break: break-all;
-          line-height: 1;
-          top: 2px;
-          &.ant-form-item-required::before {
-            align-self: center;
-          }
-          &::after {
-            align-self: flex-end;
-            margin-bottom: 2px;
-          }
+          line-height: 1.2;
         }
       }
       .ant-form-item-control-wrapper {
         flex-grow: 1;
         .ant-form-item-control {
-          // line-height: 28px;
           line-height: normal;
         }
       }
@@ -247,5 +240,11 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
   box-shadow: 8px 8px 0 @primary-color inset;
+}
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+::-webkit-resizer {
+  // 预留
 }
 ```

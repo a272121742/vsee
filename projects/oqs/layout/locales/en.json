@@ -1,0 +1,13 @@
+{
+  "action":{
+    "manual":"User manual",
+    "title":"Change Password",
+    "toPortal":"TQIS portal",
+    "logout":"Logout",
+    "bannerTitle":"Manufacturing Quality System"
+  },
+  "project":{
+    "title":"Manufacturing Quality System",
+    "testDesc": "Only For Test"
+  }
+}

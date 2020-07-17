@@ -38,7 +38,6 @@ import {
   Tag,
   message,
 } from 'ant-design-vue';
-import AIcon from '@comp/general/AIcon.js';
 
 import SingleMessage from '@comp/alert/SingleMessage.js';
 import AsyncComponent from '@comp/AsyncComponent';
@@ -51,8 +50,6 @@ Vue.component('VTextarea', () => import('@comp/form/VTextarea.vue'));
 Vue.component('MultipleNetSelect', () => import('@comp/form/MultipleNetSelect.vue'));
 Vue.component('SingleNetSelect', () => import('@comp/form/SingleNetSelect.vue'));
 Vue.component('NetAutoComplete', () => import('@comp/form/NetAutoComplete.vue'));
-
-Vue.use(AIcon, { prefix: 'icon-', url: ['/static/icon/iconfont.js'] });
 
 Vue.use(Col);
 Vue.use(Row);

@@ -14,7 +14,7 @@
       focusable="false"
       aria-hidden="true"
     >
-      <use :xlink:href="`#${type}`"></use>
+      <use :xlink:href="`#${type}`" />
     </svg>
   </i>
   <ant-icon
@@ -35,7 +35,7 @@ export default {
   props: Icon.props,
   computed: {
     isCustom () {
-      return this.type && !!~this.type.indexOf(this.$options.prefix);
+      return this.type && String.prototype.startsWith.call(this.type, this.$options.prefix);
     },
   },
 };

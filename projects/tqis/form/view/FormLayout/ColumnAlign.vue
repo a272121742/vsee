@@ -71,6 +71,7 @@
           >
             <a-input
               v-model="record['问题标题']"
+              :placeholder="$t('form.input')"
               allow-clear
             />
           </a-form-model-item>
@@ -84,6 +85,7 @@
           >
             <v-textarea
               v-model="record['问题责任详细描述']"
+              :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />
@@ -98,6 +100,7 @@
           >
             <v-textarea
               v-model="record['问题备注']"
+              :placeholder="$t('form.input')"
               :limit="1000"
               allow-clear
             />

@@ -30,12 +30,17 @@ export default {
     MENU_TYPE: void 0,
     MENU_COLLAPSIBLE: true,
     MENU_COLLAPSED: false,
-    CONTENT_HEAD: 'bread',
+    CONTENT_HEAD: 'tab',
     KEEP_ALIVE: true,
+  },
+  SCROLL: {
+    bar: {
+      keepShow: true,
+    },
   },
   // 水印配置
   WATER_MARK: {
-    enable: true,
+    enable: false,
     width: 240,
     height: 135,
     fontSize: 14,
@@ -45,6 +50,10 @@ export default {
     rotate: -15,
     zIndex: 5,
     content: '请勿外传',
+  },
+  ICON: {
+    prefix: 'icon-',
+    url: ['/static/icon/iconfont.js'],
   },
   LOCATION_MENU: [{
     id: 10000,
