@@ -64,7 +64,7 @@
 
 <script>
 import storeModuleMix from '@mix/store-module.js';
-import tableRowSelectionMix from '@mix/table-row-selection.js';
+import tableRowSelectionMix from '@mix/row-selection.js';
 import paginationMix from '@mix/pagination.js';
 import { clearObserver } from '@util/datahelper.js';
 import { orderListColumns } from '~~/model/order.js';
@@ -72,7 +72,7 @@ import { orderListColumns } from '~~/model/order.js';
 export default {
   mixins: [
     paginationMix(),
-    tableRowSelectionMix(),
+    tableRowSelectionMix({ rowKey: 'claimNo' }),
     storeModuleMix({
       name: 'order',
       action: ['getClaimOrderaPage', 'getClaimOrderaAllPage'],
@@ -87,9 +87,11 @@ export default {
       pagination: {
         pageSizeOptions: ['10', '20', '50', '100'],
       },
+
       rowSelection: {
         columnWidth: 68,
         hideDefaultSelections: true,
+        // selectedRowKeys: ['JS1507060294', 'JS1507060295'],
         selections: [
           {
             key: 'cur-data',
@@ -152,9 +154,12 @@ export default {
     const { ids } = this.$route.query;
     const idsSearch = ids ? { ids } : void 0;
     this.fetch(idsSearch);
+    this.$on('select', (selectedRowKeys, selectedRows) => {
+      console.log(selectedRowKeys, selectedRows);
+    });
+    this.rowSelection.push([{ claimNo: 'JS1507060294' }, { claimNo: 'JS1507060295' }]);
   },
   methods: {
-
     // 选本页
     onSelectCurret (data) {
       this.orderFlag = false;
