@@ -157,7 +157,7 @@ export default {
     this.$on('select', (selectedRowKeys, selectedRows) => {
       console.log(selectedRowKeys, selectedRows);
     });
-    this.rowSelection.push([{ claimNo: 'JS1507060294' }, { claimNo: 'JS1507060295' }]);
+    // this.rowSelection.push([{ claimNo: 'JS1507060294' }, { claimNo: 'JS1507060295' }]);
   },
   methods: {
     // 选本页
