@@ -10,6 +10,18 @@
     >
       <FixedTable />
     </a-tab-pane>
+    <a-tab-pane
+      key="RowSelection"
+      tab="行选择器"
+    >
+      <RowSelection />
+    </a-tab-pane>
+    <a-tab-pane
+      key="SortTable"
+      tab="排序"
+    >
+      <SortTable />
+    </a-tab-pane>
   </a-tabs>
 </template>
 
@@ -17,6 +29,8 @@
 export default {
   components: {
     FixedTable: () => import('../view/FixedTable.vue'),
+    RowSelection: () => import('../view/RowSelection.vue'),
+    SortTable: () => import('../view/SortTable.vue'),
   },
   data () {
     return {
