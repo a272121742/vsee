@@ -77,4 +77,20 @@ export default {
       url: 'water-mark',
     }],
   }],
+  SORTER: {
+    TYPES: {
+      ascend: 'asc',
+      descend: 'desc',
+    },
+    SERVER_PARAMS ({ field, type = '' } = {}) {
+      const result = {};
+      if (field) {
+        result.orderField = field;
+        if (type) {
+          result.order = type;
+        }
+      }
+      return result;
+    },
+  },
 };

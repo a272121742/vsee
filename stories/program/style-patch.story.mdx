@@ -157,7 +157,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
  * @table-header-height: 表头的高度，默认值`54px`，如果你的表头是固定高度，并且与此默认值高度不同，你应该调整此参数；
  * @table-row-height: 表格行高度，默认值`56px`，如果你的表格行是固定高度，并且与此默认值高度不同，你应该调整此参数；
  * @table-row-count: 表格最小显示行数，默认`10`，定义多少行，空表格将按照此高度固定；
- * @addition-container-height: 增补高度，默认`0px`，此功能用来减去滚动条高度，如果想去掉滚动条高度，设置为`16px`即可；
+ * @addition-container-height: 增补高度，默认`0px`，如果有额外的高度需要增减，可使用此配置；
  */
 .table-container-fixed-defined(@table-header-height: 54px; @table-row-height: 56px; @table-row-count: 10; @addition-container-height: 0px) {
   @scroll-bar-height: 16px;
@@ -168,12 +168,20 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
   /deep/ .ant-spin-spinning {
     min-height:  @table-height;
   }
-  /deep/ .ant-table-scroll {
-    // 滚动区域的中心高度固定，并增加滚动条的高度
-    .ant-table-body {
-      min-height: @table-height + @scroll-bar-height - @addition-container-height;
-      & when (@addition-container-height >= @scroll-bar-height) {
-        overflow-x: unset!important;
+  /deep/ .ant-table {
+    .ant-table-content {
+      & > .ant-table-body {
+        min-height: @table-height - @addition-container-height;
+      }
+      .ant-table-scroll {
+        // 带横向滚动条
+        & > .ant-table-body {
+          min-height: @table-height + @scroll-bar-height - @addition-container-height;
+        }
+        // 带纵向滚动条
+        .ant-table-header ~ .ant-table-body {
+          min-height: @table-body-height + @scroll-bar-height - @addition-container-height;
+        }
       }
     }
   }
@@ -189,7 +197,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
     min-height: @table-empty-height;
   }
   // 加载过程中不显示`暂无数据`
-  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal{
+  /deep/ .ant-table-spin-holder .ant-empty.ant-empty-normal {
     opacity: 0;
   }
 }

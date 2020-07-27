@@ -24,9 +24,9 @@
           </a-button>
           <a-button
             :disabled="action"
-            @click="removeSelected()"
+            @click="resetSorter"
           >
-            清空
+            重置
           </a-button>
         </a-button-group>
       </template>
@@ -40,10 +40,12 @@
       :scroll="{ x: 'max-content' }"
       @change="handleTableChange"
     >
-      <template v-for="(col, index) in columns">
+      <template v-for="(col, index) in $options.columns">
         <a-table-column
           :key="index"
-          v-bind="{ ...col, ...($options.sortFields.includes(col.dataIndex) ? { sorter: true, sortOrder: sortedInfo.orderField === col.dataIndex && sortedInfo.order } : {})}"
+          v-bind="col"
+          :sorter="col | sortable"
+          :sort-order="col | orderby"
         >
           <span slot="title">
             {{ col.dataIndex }}
@@ -64,31 +66,29 @@
 
 <script>
 import paginationMix from '@mix/pagination.js';
+import sorterMix from '@mix/sorter.js';
 import $ from '@http';
 import { vehicleListColumns } from '~~/model/vehicle.js';
 import code from './ConfigSort.code.js';
 
 
 export default {
-  sortFields: ['dealerCode'],
   components: {
     SourceCodeView: () => import('~~/comp/SourceCodeView.vue'),
   },
   mixins: [
     paginationMix(),
+    sorterMix(),
   ],
+  columns: vehicleListColumns,
   data () {
     return {
-      columns: vehicleListColumns,
       list: [],
       loading: false,
       showSource: false,
       code,
       action: false,
-      sortedInfo: {
-        order: false,
-        orderField: 'dealerCode',
-      },
+      sortField: ['dealerCode'],
     };
   },
   watch: {
@@ -103,7 +103,7 @@ export default {
     fetch (config = {}) {
       this.list = [];
       this.loading = true;
-      $.get('/masterdata/v1/vehicle/page', { ...config, ...this.serverPagination }).then(this.load).finally(this.reset);
+      $.get('/masterdata/v1/vehicle/page', { ...config, ...this.serverPagination, ...this.serverSorter }).then(this.load).finally(this.reset);
     },
     load (res) {
       this.list = this.empty ? [] : res.list;
@@ -113,9 +113,8 @@ export default {
       this.$message.loading('正在添加假数据', 0.8);
       if (!this.action) {
         this.action = true;
-        const data = [this.list[0], this.list[3]];
         const id = setTimeout(() => {
-          this.rowSelection.load(data);
+          this.sorter.set('custCode', 'ascend');
           this.action = false;
           clearTimeout(id);
         }, 800);
@@ -124,9 +123,12 @@ export default {
     reset () {
       this.loading = false;
     },
+    resetSorter () {
+      this.sorter.reset();
+      this.fetch();
+    },
     handleTableChange (pagination, filters, sorter) {
-      this.sortedInfo.order = sorter.order;
-      this.sortedInfo.orderField = sorter.columnKey;
+      this.sorter.set(sorter.field, sorter.order);
       this.fetch();
     },
     removeSelected (selected) {

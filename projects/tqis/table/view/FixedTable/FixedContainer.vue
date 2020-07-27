@@ -5,7 +5,7 @@
     :data-source="list"
     :pagination="pagination"
     :loading="loading"
-    :scroll="{ x: 2500 }"
+    :scroll="{ x: false, y: pagination.pageSize > 10 ? 460 : false }"
   >
     <template v-for="(col, index) in columns">
       <a-table-column
@@ -50,7 +50,7 @@ export default {
   },
   data () {
     return {
-      columns: vehicleListColumns,
+      columns: vehicleListColumns.slice(0, 7),
       list: [],
       loading: false,
     };
@@ -67,7 +67,7 @@ export default {
     fetch () {
       this.list = [];
       this.loading = true;
-      $.get('/masterdata/v1/vehicle/page').then(this.load).finally(this.reset);
+      $.get('/masterdata/v1/vehicle/page', { ...this.serverPagination }).then(this.load).finally(this.reset);
     },
     load (res) {
       this.list = this.empty ? [] : res.list;
