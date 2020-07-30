@@ -66,7 +66,7 @@
                 :label-of="(item) => item.vhclModelCode"
                 delay
                 allow-clear
-                show-search
+                search-by="code"
               />
             </a-form-item>
           </a-col>

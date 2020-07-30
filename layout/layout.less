@@ -302,11 +302,24 @@
     margin: 0;
     min-height: calc(100vh - @app-layout-header-height - @app-content-header-height - @app-content-footer-height - @app-layout-footer-height - 2*@app-content-border-width);
   }
+  .app-result-container {
+    & > :first-child {
+      margin-top: calc((100vh - @app-layout-header-height - @app-content-header-height - @app-content-footer-height - @app-layout-footer-height - 2*@app-content-border-width - 552px) / 2);
+    }
+  }
 }
 
 // 以下是补丁
 .ant-menu-inline .ant-menu-item, 
 .ant-menu-inline .ant-menu-submenu-title {
   width: calc(100% + 0px);
+}
+
+#app {
+  &.app-result-container {
+    & > :first-child {
+      margin-top: calc((100vh - 552px) / 2);
+    }
+  }
 }
 

@@ -37,7 +37,6 @@ import {
   Upload,
   Popconfirm,
 } from 'ant-design-vue';
-import AIcon from '@comp/general/AIcon.js';
 import SingleMessage from '@comp/alert/SingleMessage.js';
 import AsyncComponent from '@comp/AsyncComponent';
 import DATETIME_HELPER from '@util/datetime-helper.js';
@@ -49,7 +48,6 @@ Vue.component('v-textarea', () => import('@comp/form/VTextarea.vue'));
 Vue.component('multiple-net-select', () => import('@comp/form/MultipleNetSelect.vue'));
 Vue.component('single-net-select', () => import('@comp/form/SingleNetSelect.vue'));
 Vue.component('net-auto-complete', () => import('@comp/form/NetAutoComplete.vue'));
-Vue.use(AIcon, { prefix: 'icon', url: ['/static/icon/logo.js', '/static/icon/iconfont.js', '/static/icon/iconfont-new.js'] });
 Vue.use(Col);
 Vue.use(Row);
 Vue.use(Switch);

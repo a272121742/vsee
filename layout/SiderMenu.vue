@@ -9,9 +9,9 @@
   >
     <template v-for="menu in menus">
       <a-menu-item
-        v-if="!menu.children || !menu.children.length || !menu.leaf"
+        v-if="(!menu.children || !menu.children.length || !menu.dir) && !menu.hide"
         :key="menu.fullPath"
-        :title="menu.meta.title"
+        :title="menu.name"
       >
         <a-icon
           v-if="menu.icon"
@@ -19,10 +19,10 @@
           style="font-size: 16px;"
           :type="menu.icon"
         />
-        <span>{{ menu.meta.title }}</span>
+        <span>{{ menu.name }}</span>
       </a-menu-item>
       <sub-menu
-        v-else
+        v-else-if="!menu.hide"
         :key="menu.fullPath"
         :menu-info="menu"
       />
@@ -51,10 +51,10 @@ export default {
       return this.$store.state.config.dark ? 'dark' : 'light';
     },
     menus () {
-      return this.$store.state.routers.map((item) => ({ ...item }));
+      return this.$store.state.appMenus.map((item) => ({ ...item }));
     },
     menuKeys () {
-      return this.$store.state.routers.map((item) => item.fullPath);
+      return this.$store.state.routers.map((item) => item.path);
     },
   },
   watch: {
@@ -65,38 +65,20 @@ export default {
       },
     },
   },
+  // beforeCreate () {
+  //   const listen = this.$store.watch((state) => state.isLogin, (isLogin) => {
+  //     if (isLogin) {
+  //       this.$store.dispatch('fetchMenus');
+  //       listen && listen();
+  //     }
+  //   }, { immediate: true });
+  // },
   methods: {
     jump ({ key }) {
       this.$router.push({ path: key });
     },
     getOpenKeys () {
-      // const { matched } = this.$route;
-      // let openKeys = [matched[matched.length - 1].path];
-      // const last = matched[matched.length - 1];
-      // if (last) {
-      //   const splitList = last.path.split('/').reduce((arr, item) => {
-      //     const len = arr.length;
-      //     if (/^https?%3A%2F%2F/.test(item)) {
-      //       if (arr._added_) {
-      //         arr[len - 1] = `${arr[len - 1]}/${item}`;
-      //       } else {
-      //         arr.push(item);
-      //         arr._added_ = true;
-      //       }
-      //     } else {
-      //       arr.push(item);
-      //     }
-      //     return arr;
-      //   }, []);
-      //   const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-      //   openKeys = [...result];
-      //   if (result.length === 3 && !(/\?\/$/.test(result[2]))) {
-      //     openKeys[2] = result[2].replace(result[1], result[0]);
-      //     openKeys.splice(1, 1);
-      //   }
-      // }
-      // return openKeys;
-      return this.currentDirectory.map((item) => item.path);
+      return this.currentDirectory.map((item) => item.fullPath);
     },
     openChange (openKeys) {
       const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);

@@ -1,5 +1,5 @@
 export default {
-  MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
+  MENU_FILTER: (item) => item.appCode === 'FT' && !!item.url,
   LANGUAGE_DEFAULT: 'zh-CN',
   LANGUAGE_KEY: 'language',
   TOKEN_KEY: 'login_token',
@@ -13,9 +13,9 @@ export default {
     PARAMS: {}, // 接口参数
   },
   GLOBAL_API_LIST: {
-    user: ['/sys/user/info', { appCode: 'AQS' }, {}],
-    menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
-    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
+    user: ['/sys/user/info', { appCode: 'ADMIN' }, {}],
+    menus: ['/sys/menu/nav', { appCode: 'ADMIN' }, []],
+    permissions: ['/sys/menu/permissions', { appCode: 'TF' }, []],
   },
   THEME: {
     MENU_COLLAPSIBLE: true,
@@ -38,5 +38,9 @@ export default {
   DYNAMIC_TITLE: 'BJEV-TQIS',
   WATER_MARK: {
     enable: true,
+  },
+  ICON: {
+    prefix: 'icon-',
+    url: ['/static/icon/iconfont.js'],
   },
 };

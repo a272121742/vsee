@@ -2,11 +2,12 @@
   <a-anchor
     ref="anchor"
     wrapper-class="anchor-menu-wrapper"
-    :bounds="80"
+    :get-container="getContainer"
+    :bounds="16"
     :offset-top="80"
   >
     <template v-for="menu in menus">
-      <a-anchor-link
+      <!-- <a-anchor-link
         :key="menu.id"
         :href="`#${menu.fullPath}`"
       >
@@ -17,47 +18,33 @@
             style="font-size: 16px;"
             :type="menu.icon"
           />
-          {{ menu.meta.title }}
+          {{ menu.name }}
         </template>
-        <template v-if="menu.children && menu.children.length && menu.leaf">
-          <!-- eslint-disable vue/no-template-shadow -->
-          <a-anchor-link
-            v-for="menu in menu.children"
-            :key="menu.id"
-            :href="`#${menu.fullPath}`"
-          >
-            <template #title>
-              <a-icon
-                v-if="menu.icon"
-                class="anticon"
-                style="font-size: 16px;"
-                :type="menu.icon"
-              />
-              {{ menu.meta.title }}
-            </template>
-          </a-anchor-link>
-        </template>
-      </a-anchor-link>
+        <template v-if="menu.children && menu.children.length && menu.dir"> -->
+      <sub-anchor
+        :key="menu.id"
+        :menu-info="menu"
+      />
+      <!-- </template>
+      </a-anchor-link> -->
     </template>
   </a-anchor>
 </template>
 
 <script>
 export default {
+  components: {
+    'sub-anchor': () => import('./SubAnchor.vue'),
+  },
   computed: {
     menus () {
-      return this.$store.state.routers.map((item) => ({ ...item }));
+      return this.$store.state.appMenus.map((item) => ({ ...item }));
     },
   },
-  mounted () {
-    // const vm = this;
-    // const { anchor } = this.$refs;
-    // if (anchor && anchor.$watch) {
-    //   anchor.$watch('activeLink', (value) => {
-    //     // window.location.hash = value || '#';
-    //     vm.$emit('change', value);
-    //   });
-    // }
+  methods: {
+    getContainer () {
+      return document.querySelector('.app-root-scroll > .__panel');
+    },
   },
 };
 </script>

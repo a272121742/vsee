@@ -92,8 +92,6 @@ export default {
         },
         legend: {
           data: ['扭矩值', '角度值'],
-          orient: 'horizontal',
-          show: true,
         },
         grid: {
           left: 60,
@@ -137,7 +135,7 @@ export default {
     },
   },
   created () {
-    // this.fetch();
+    this.fetch();
   },
   methods: {
     // 图表渲染

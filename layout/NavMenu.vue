@@ -11,9 +11,9 @@
       v-for="menu in menus"
     >
       <a-menu-item
-        v-if="!menu.children || !menu.children.length || !menu.leaf"
+        v-if="(!menu.children || !menu.children.length || !menu.dir) && !menu.hide"
         :key="menu.fullPath"
-        :title="menu.meta.title"
+        :title="menu.name"
       >
         <a-icon
           v-if="menu.icon"
@@ -21,10 +21,10 @@
           style="font-size: 16px;"
           :type="menu.icon"
         />
-        <span>{{ menu.meta.title }}</span>
+        <span>{{ menu.name }}</span>
       </a-menu-item>
       <sub-menu
-        v-else
+        v-else-if="!menu.hide"
         :key="menu.fullPath"
         :menu-info="menu"
       />
@@ -53,10 +53,10 @@ export default {
       return this.$store.state.config.dark ? 'dark' : 'light';
     },
     menus () {
-      return this.$store.state.routers.map((item) => ({ ...item }));
+      return this.$store.state.appMenus.map((item) => ({ ...item }));
     },
     menuKeys () {
-      return this.$store.state.routers.map((item) => item.fullPath);
+      return this.$store.state.routers.map((item) => item.path);
     },
   },
   watch: {
@@ -98,7 +98,7 @@ export default {
       //   }
       // }
       // return openKeys;
-      return this.currentDirectory.map((item) => item.path);
+      return this.currentDirectory.map((item) => item.fullPath);
     },
     openChange (openKeys) {
       const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);

@@ -178,32 +178,7 @@ export default {
         /**
          * 渲染series
          */
-
-        // const serLength = echartsData.length;
-        // times(serLength, (i) => {
-        //   if (i > 0) {
-        //     this.seriesData.push(
-        //       {
-        //         name: echartsData[i][0],
-        //         type: 'line',
-        //         data: echartsData[i].splice(1),
-        //         symbol: 'circle',
-        //         symbolSize: 10,
-        //         zlevel: 1,
-        //         label: {
-        //           normal: {
-        //             show: true,
-        //           },
-        //         },
-        //       },
-        //     );
-        //   }
-        // });
-
         this.seriesData = echartsData.reduce((array, colList, index) => {
-          console.log('array', array);
-          console.log('colList', colList);
-          console.log('index', index);
           if (index) {
             array.push(colList.reduce((json, item, index1) => {
               if (index1) {

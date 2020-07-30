@@ -7,27 +7,27 @@
         style="font-size: 16px;"
         :type="props.menuInfo.icon"
       />
-      <span>{{ props.menuInfo.meta.title }}</span>
+      <span>{{ props.menuInfo.name }}</span>
     </span>
     <template v-if="props.menuInfo.children && props.menuInfo.children.length">
-      <template v-for="item in props.menuInfo.children">
+      <template v-for="menu in props.menuInfo.children">
         <a-menu-item
-          v-if="!item.children || !item.children.length"
-          :key="item.fullPath"
-          :title="item.meta.title"
+          v-if="(!menu.children || !menu.children.length || !menu.dir) && !menu.hide"
+          :key="menu.fullPath"
+          :title="menu.name"
         >
           <a-icon
-            v-if="item.icon"
+            v-if="menu.icon"
             class="anticon"
             style="font-size: 16px;"
-            :type="item.icon"
+            :type="menu.icon"
           />
-          <span>{{ item.meta.title }}</span>
+          <span>{{ menu.name }}</span>
         </a-menu-item>
         <sub-menu
-          v-else
-          :key="item.fullPath"
-          :menu-info="item"
+          v-else-if="!menu.hide"
+          :key="menu.fullPath"
+          :menu-info="menu"
         />
       </template>
     </template>

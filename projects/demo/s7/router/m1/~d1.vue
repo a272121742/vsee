@@ -9,8 +9,24 @@
           <router-link :to="{ path: '/s7/m1' }">
             返回
           </router-link>
+          <a-button
+            type="text"
+            @click="todestory"
+          >
+            关闭
+          </a-button>
         </li>
       </ul>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    todestory () {
+      this.$emit('destory');
+    },
+  },
+};
+</script>

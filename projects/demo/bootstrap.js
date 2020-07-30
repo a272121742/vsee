@@ -22,7 +22,7 @@ import {
   Icon,
   Input,
   Layout,
-  LocaleProvider,
+  ConfigProvider,
   Menu,
   Spin,
   Tabs,
@@ -30,6 +30,7 @@ import {
   Checkbox,
   Alert,
   DatePicker,
+  Result,
   message,
 } from 'ant-design-vue';
 
@@ -59,7 +60,7 @@ Vue.use(Form);
 Vue.use(Icon);
 Vue.use(Input);
 Vue.use(Layout);
-Vue.use(LocaleProvider);
+Vue.use(ConfigProvider);
 Vue.use(Menu);
 Vue.use(Spin);
 Vue.use(Tabs);
@@ -67,6 +68,7 @@ Vue.use(Anchor);
 Vue.use(Checkbox);
 Vue.use(Alert);
 Vue.use(DatePicker);
+Vue.use(Result);
 
 // Vue.component('a-icon', Icon.createFromIconfontCN({
 //   scriptUrl: '/static/icon/iconfont.js',

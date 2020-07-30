@@ -19,7 +19,7 @@ export default {
   // 其他顶层API集合
   GLOBAL_API_LIST: {
     user: ['/sys/user/info', { appCode: 'OQS' }],
-    menus: ['/sys/menu/nav', { appCode: 'OQS' }],
+    menus: ['/sys/menu/list', { appCode: 'ADMIN', type: 0 }],
     permissions: ['/sys/menu/permissions', { appCode: 'OQS' }],
   },
   EXCLUDE_MODULES: [], // 排除不加载的模块
@@ -28,7 +28,7 @@ export default {
     MENU_TYPE: void 0,
     MENU_COLLAPSIBLE: true,
     MENU_COLLAPSED: false,
-    CONTENT_HEAD: 'tab',
+    CONTENT_HEAD: 'bread',
     KEEP_ALIVE: true,
   },
   PORTAL_APTH: '/',
@@ -48,5 +48,9 @@ export default {
   VALIDATION: {
     vin: /^[A-Z0-9]{8,17}$/,
     milageVer: /^\+?[1-9][0-9]*$/,
+  },
+  ICON: {
+    prefix: 'icon-',
+    url: ['/static/icon/iconfont.js'],
   },
 };

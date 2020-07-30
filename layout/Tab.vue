@@ -35,11 +35,11 @@
     </a-dropdown>
 
     <template
-      v-for="tab in tabs"
+      v-for="(tab, index) in tabs"
     >
       <a-tab-pane
-        :key="tab.fullPath"
-        :tab="tab.meta.title"
+        :key="index"
+        :tab="tab.name"
         :closable="totalTab > 1"
       >
         <a-spin
@@ -49,25 +49,43 @@
           <transition v-if="!$store.state.refresh">
             <keep-alive v-if="$store.state.config.keep_alive">
               <router-view
-                v-if="tab.fullPath === currentTab"
+                v-if="tab.cachePath === currentTab"
                 class="content-child-view"
+                @destory="destory(currentTab)"
               />
             </keep-alive>
             <router-view
-              v-else-if="tab.fullPath === currentTab"
+              v-else-if="tab.cachePath === currentTab"
               class="content-child-view"
+              @destory="destory(currentTab)"
             />
           </transition>
         </a-spin>
       </a-tab-pane>
     </template>
+    <a-tab-pane
+      v-if="totalTab <= 0"
+      key="404"
+      style="background: white;"
+      tab="404"
+      :closable="false"
+    >
+      <result-404></result-404>
+    </a-tab-pane>
   </a-tabs>
 </template>
 
 <script>
 // import { uniqWith } from 'ramda';
+import config from '~/config.js';
+
+const { THEME = {} } = config;
+const { TAB_TYPE = 0 } = THEME;
 
 export default {
+  components: {
+    'result-404': () => import('~/result/view/404.vue'),
+  },
   props: {
     currentDirectory: {
       type: Array,
@@ -77,71 +95,78 @@ export default {
   data () {
     return {
       tabs: {},
-      currentTab: '',
+      currentTab: '404',
       totalTab: 0,
     };
   },
-  // computed: {
-  //   currentDirectory () {
-  //     const { matched } = this.$route;
-  //     const last = matched[matched.length - 1];
-  //     if (last) {
-  //       const splitList = last.path.split('/').reduce((arr, item) => {
-  //         const len = arr.length;
-  //         if (/^https?%3A%2F%2F/.test(item)) {
-  //           if (arr._added_) {
-  //             arr[len - 1] = `${arr[len - 1]}/${item}`;
-  //           } else {
-  //             arr.push(item);
-  //             arr._added_ = true;
-  //           }
-  //         } else {
-  //           arr.push(item);
-  //         }
-  //         return arr;
-  //       }, []);
-  //       let result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-  //       result = uniqWith((a, b) => a.meta.title === b.meta.title, result.map((item) => this.$router.matcher.match(item)));
-  //       if (result.length === 1 && result[0].meta.title !== last.meta.title) {
-  //         result.push(last);
-  //       }
-  //       return result.filter((item) => item.meta.title);
-  //     }
-  //     return [];
-  //   },
-  // },
   watch: {
+    // $route: {
+    //   immediate: true,
+    //   handler () {
+    //     const { fullPath } = this.$route;
+    //     const isHideComponent = /~/.test(this.$route.matched[this.$route.matched.length - 1].components.default.__file);
+    //     const len = this.currentDirectory.length;
+    //     const dirs = this.currentDirectory.slice(0, isHideComponent ? len - 1 : len);
+    //     const module = dirs[1] || dirs[0];
+    //     if (module) {
+    //       const moduleFullPath = module.fullPath;
+    //       if (!this.tabs[moduleFullPath]) {
+    //         const tabKeys = Object.keys(this.tabs);
+    //         const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
+    //         const component = matchedCompontents[matchedCompontents.length - 1];
+    //         this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
+    //       }
+    //       this.tabs[moduleFullPath].cachePath = fullPath;
+    //       this.currentTab = moduleFullPath;
+    //       this.totalTab = Object.keys(this.tabs).length;
+    //       this.$forceUpdate();
+    //     }
+    //   },
+    // },
     $route: {
       immediate: true,
       handler () {
         const { fullPath } = this.$route;
-        const isHideComponent = /~/.test(this.$route.matched[this.$route.matched.length - 1].components.default.__file);
-        const len = this.currentDirectory.length;
-        const dirs = this.currentDirectory.slice(0, isHideComponent ? len - 1 : len);
-        const module = dirs[1] || dirs[0];
-        if (module) {
-          const moduleFullPath = module.fullPath;
+        const module = TAB_TYPE === 0 ? this.currentDirectory[0] : this.currentDirectory[this.currentDirectory.length - 1];
+        const matched = this.$route.matched[this.$route.matched.length - 1];
+        if (module && module.url) {
+          const moduleFullPath = TAB_TYPE === 2 ? fullPath : module.fullPath;
           if (!this.tabs[moduleFullPath]) {
             const tabKeys = Object.keys(this.tabs);
-            const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
-            const component = matchedCompontents[matchedCompontents.length - 1];
+            const component = matched.components.default;
             this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
           }
-          this.tabs[moduleFullPath].cachePath = fullPath;
+          this.tabs[moduleFullPath].cachePath = moduleFullPath;
+          this.tabs[moduleFullPath].name = this.currentDirectory[this.currentDirectory.length - 1].name;
           this.currentTab = moduleFullPath;
           this.totalTab = Object.keys(this.tabs).length;
-          this.$forceUpdate();
+          // this.$forceUpdate();
         }
       },
     },
-    currentTab (value) {
-      const catchPath = this.tabs[value].cachePath || value;
-      this.$router.push({ path: catchPath });
-    },
+    // currentTab (value) {
+    //   console.log('watch crrentTab', value);
+    //   const catchPath = this.tabs[value].cachePath || value;
+    //   console.log(catchPath);
+    //   // if (!this.$store.state.config.keep_alive) {
+    //   //   this.$router.push({ path: catchPath });
+    //   // }
+    //   // this.$router.push({ path: catchPath });
+    // },
   },
   methods: {
+    destory (currentTab) {
+      const tabKeys = Object.keys(this.tabs);
+      if (tabKeys.length > 1) {
+        this.onTabEdit(currentTab, 'remove');
+      }
+    },
     onTabChange (activeKey) {
       this.currentTab = activeKey;
+      const catchPath = this.tabs[activeKey].cachePath || activeKey;
+      if (!this.$store.state.config.keep_alive) {
+        this.$router.push({ path: catchPath });
+      }
     },
     onTabEdit (targetKey, action) {
       if (action === 'remove') {
@@ -151,6 +176,10 @@ export default {
           this.totalTab = tabKeys.length;
           if (!Object.hasOwnProperty.call(this.tabs, this.currentTab)) {
             this.currentTab = tabKeys[tabKeys.length - 1];
+            if (!this.$store.state.config.keep_alive) {
+              const catchPath = this.tabs[this.currentTab].cachePath || this.currentTab;
+              this.$router.push({ path: catchPath });
+            }
           }
         });
       }

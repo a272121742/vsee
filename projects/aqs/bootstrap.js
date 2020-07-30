@@ -33,6 +33,7 @@ import {
   Upload,
   InputNumber,
   Empty,
+  Result,
   message,
 } from 'ant-design-vue';
 
@@ -80,6 +81,7 @@ Vue.use(DatePicker);
 Vue.use(Upload);
 Vue.use(InputNumber);
 Vue.use(Empty);
+Vue.use(Result);
 
 Vue.config.productionTip = false;
 message.config({

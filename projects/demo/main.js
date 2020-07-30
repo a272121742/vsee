@@ -14,6 +14,7 @@ Vue.nextTick(() => {
       const listen = store.watch((state) => state.isLogin, (isLogin) => {
         if (isLogin) {
           this.$store.dispatch('fetchUser');
+          this.$store.dispatch('fetchMenus');
           listen && listen();
         }
       }, { immediate: true });
@@ -26,9 +27,9 @@ Vue.nextTick(() => {
     },
     render () {
       return (
-        <a-locale-provider id="app" locale={ this.$store.state.local4antd }>
+        <a-config-provider id="app" locale={ this.$store.state.local4antd }>
           <router-view />
-        </a-locale-provider>
+        </a-config-provider>
       );
     },
   });

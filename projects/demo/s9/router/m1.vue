@@ -114,7 +114,7 @@ export default {
     };
   },
   created () {
-    console.log(this);
+    // console.log(this);
     // this.formRecord.muselect = ['EX2'];
     // this.formRecord = { names: ['123'], test: '123' };
     /**

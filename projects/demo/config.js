@@ -4,7 +4,7 @@ export default {
    * 如果你希望服务端传过来的菜单要做一点业务上的处理，使用配置；
    * 过滤函数中的参数表示菜单项，采用的是树遍历机制。
    */
-  MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
+  MENU_FILTER: (item) => item.appCode === 'AQS',
   LANGUAGE_DEFAULT: 'zh-CN', // 语言默认值
   LANGUAGE_KEY: 'language', // 语言存储cookie的key
   LANGUAGE_RESET: false, // 语言是否每次启动都重置
@@ -35,45 +35,16 @@ export default {
    * 如果主页组件不生效，则按照权限配置获取第一个菜单；
    */
   // HOME_COMP: () => import('~/s1/router/index.vue'),
-  /**
-   * 布局类型，可设置为`menu`、`nav`、`anchor`
-   * menu - (默认)包括header（上）、sider（左）、content（右）
-   * nav - 包括header（上）、content（下）
-   * anchor - 同`menu`，但content是连续屏幕的
-   */
-  LAYOUT_TYPE: 'menu',
-  /**
-   * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
-   * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
-   * false - 不启用菜单
-   * sider - 边栏菜单
-   * anchor - 悬靠菜单
-   * nav - 导航菜单
-   * cust - 自定义菜单
-   */
-  MENU_TYPE: void 0,
-  /**
-   * 菜单是否可搜索
-   * truely - 可缩缩时，会启用默认收缩模式
-   * falsely - 不可收缩时，会启用手动收缩模式，如果不设置手动收缩，即为不收缩
-   * 该值直接影响`this.$store.state.config.menu_collapsible`
-   */
-  MENU_COLLAPSIBLE: true,
-  /**
-   * 菜单收缩状态
-   * falsely - 非收缩状态，默认值；
-   * truely - 收缩状态；
-   * 该值直接影响`this.$store.state.config.menu_collapsed`
-   */
-  MENU_COLLAPSED: false,
-  /**
-   * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
-   * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
-   * bread - 面包屑模式
-   * tab - 页签模式
-   * cust - 自定义模式
-   */
-  CONTENT_HEAD: 'bread',
+  THEME: {
+    LAYOUT_TYPE: 'menu',
+    MENU_TYPE: void 0,
+    MENU_COLLAPSIBLE: true,
+    MENU_COLLAPSED: false,
+    CONTENT_HEAD: 'tab',
+    KEEP_ALIVE: false,
+    // 0-inner 1-outer 2-repeat
+    TAB_TYPE: 2,
+  },
   /**
    * 动态标题配置，可设置为`falsely`、`String`、`Function`
    * falsely - 自动标题模式，默认值，包括[false, 0, undefined, null, '', NaN]
@@ -125,5 +96,10 @@ export default {
    */
   PROXY: {
     $api: 'http://106.75.63.69:8091/mojo-gateway',
+  },
+  ROUTER: {
+    MODE: 'history',
+    CUSTOM: false,
+    INJECT: [],
   },
 };

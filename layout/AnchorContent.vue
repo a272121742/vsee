@@ -2,8 +2,8 @@
   <main>
     <template v-for="(block, index) in blocks">
       <a-row
-        v-if="block.componentPath || (block.component && block.report)"
-        :id="block.fullPath"
+        v-if="block.path && block.component"
+        :id="block.path"
         :key="index"
         class="content-child-view-item"
       >
@@ -14,15 +14,11 @@
               slot-scope="scope"
             >
               <keep-alive>
-                <async-component
-                  v-if="block.componentPath"
-                  :path="block.componentPath"
-                />
                 <component
                   :is="block.component"
-                  v-else-if="block.report"
-                  v-bind="block.props"
-                ></component>
+                  v-if="block.props"
+                  v-bind="Object.keys(block.props).length ? block.props : void 0"
+                />
               </keep-alive>
             </template>
             <a-spin

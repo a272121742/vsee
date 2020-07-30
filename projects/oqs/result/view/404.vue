@@ -1,36 +1,28 @@
 <template>
-  <div class="error404">
-    <div class="error404-body-con">
-      <a-card>
-        <div class="error404-body-con-title">
-          404
-        </div>
-        <p class="error404-body-con-message">
-          您所查找的页面已丢失！
-        </p>
-        <div class="error404-btn-con">
-          <a-button
-            size="large"
-            style="width: 200px;"
-            @click="goHome"
-          >
-            返回首页
-          </a-button>
-          <a-button
-            size="large"
-            style="width: 200px;margin-left: 40px;"
-            type="primary"
-            @click="goBack"
-          >
-            返回上一页
-          </a-button>
-        </div>
-      </a-card>
-    </div>
-  </div>
+  <a-result
+    status="404"
+    title="404"
+    :sub-title="$t('request.404')"
+  >
+    <template #extra>
+      <a-button
+        type="primary"
+        @click="goHome"
+      >
+        {{ $t('action.go_home') }}
+      </a-button>
+      <a-button @click="goBack">
+        {{ $t('action.back') }}
+      </a-button>
+    </template>
+  </a-result>
 </template>
 
 <script>
+import Vue from 'vue';
+import { Result } from 'ant-design-vue';
+
+Vue.use(Result);
 export default {
   name: 'Error404',
   methods: {
@@ -45,5 +37,4 @@ export default {
 </script>
 
 <style lang="less">
-@import "404.less";
 </style>
