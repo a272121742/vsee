@@ -8,13 +8,13 @@ const authUrl = 'http%3A%2F%2F106.75.63.69%3A37799%2F%2FWebReport%2FReportServer
 mock.get('/sys/menu/nav', () => mock.result({
   code: 0,
   data: [{
-    id: 100000000,
-    appCode,
-    name: '测试案例',
-    url: 'demo',
-    icon: 'unordered-list',
-    pid: null,
-  }, {
+  //   id: 100000000,
+  //   appCode,
+  //   name: '测试案例',
+  //   url: 'demo',
+  //   icon: 'unordered-list',
+  //   pid: null,
+  // }, {
     id: 1000,
     appCode,
     name: '一级菜单(独立)',
@@ -173,15 +173,15 @@ mock.get('/sys/menu/nav', () => mock.result({
     id: 10000,
     appCode,
     name: '报表进阶',
-    url: 's10',
+    url: antd,
     icon: 'unordered-list',
-    children: [{
-      id: 10001,
-      appCode,
-      name: '报表进阶',
-      url: antd,
-      pid: 10000,
-    }],
+    // children: [{
+    //   id: 10001,
+    //   appCode,
+    //   name: '报表进阶',
+    //   url: antd,
+    //   pid: 10000,
+    // }],
   }, {
     id: 11000,
     appCode,

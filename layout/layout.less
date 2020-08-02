@@ -98,8 +98,11 @@
       }
       & ~ .app-content-warpper {
         margin-left: @app-content-sider-width;
+        // TODO:
+        width: calc(100vw - @app-content-sider-width);
         .app-content-spiner {
-          width: calc(100vw - @app-content-sider-width - 2*@app-content-border-width);
+          // // TODO:
+          // width: calc(100% - 2*@app-content-border-width);
         }
       }
       & ~ .app-content-footer {
@@ -138,8 +141,11 @@
         }
         & ~ .app-content-warpper {
           margin-left: @app-content-sider-width-min;
+          // TODO:
+          width: calc(100vw - @app-content-sider-width-min);
           .app-content-spiner {
-            width: calc(100vw - @app-content-sider-width-min - 2*@app-content-border-width);
+            // // TODO:
+            // width: calc(100% - 2*@app-content-border-width);
           }
         }
         & ~ .app-content-footer {
@@ -218,13 +224,16 @@
       margin-top: 0;
       margin-bottom: @app-content-footer-height;
       overflow-x: visible;
+      // TODO:
+      width: calc(100vw - 2*@app-content-border-width);
       .app-content-spiner {
         position: relative;
         margin: @app-content-border-width;
         background: @app-content-background-color;
         box-shadow: @app-content-shadown;
         min-height: calc(100vh - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
-        width: calc(100vw - 2*@app-content-border-width);
+        // // TODO:
+        // width: calc(100%- 2*@app-content-border-width);
         & > .ant-spin-dot-spin {
           position: absolute;
           top: calc(50% - 10px);

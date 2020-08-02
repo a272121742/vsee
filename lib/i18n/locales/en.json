@@ -1,4 +1,9 @@
 {
+  "app": {
+    "home": "Home",
+    "homepage": "Homepage",
+    "404": "404"
+  },
   "action": {
     "add": "Add",
     "new": "New",

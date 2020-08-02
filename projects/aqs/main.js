@@ -15,7 +15,10 @@ Vue.nextTick(() => {
       const listen = store.watch((state) => state.isLogin, (isLogin) => {
         if (isLogin) {
           this.$store.dispatch('fetchUser');
-          this.$store.dispatch('fetchMenus');
+          setTimeout(() => {
+            this.$store.dispatch('fetchMenus');
+          }, 2000);
+
           listen && listen();
         }
       }, { immediate: true });

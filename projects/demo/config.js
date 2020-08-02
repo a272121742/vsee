@@ -98,6 +98,7 @@ export default {
     $api: 'http://106.75.63.69:8091/mojo-gateway',
   },
   ROUTER: {
+    HOME_COMP: () => import('~/demo/router/index.vue'),
     MODE: 'history',
     CUSTOM: false,
     INJECT: [],

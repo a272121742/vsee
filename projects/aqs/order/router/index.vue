@@ -11,5 +11,8 @@ export default {
     'order-search-form': () => import('../view/order-search-form.vue'),
     'order-list-table': () => import('../view/order-list-table.vue'),
   },
+  created () {
+    console.log(this);
+  },
 };
 </script>

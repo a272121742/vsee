@@ -21,12 +21,20 @@
         style="color: rgba(0, 0, 0, 0.45)"
       ></a-button>
       <a-menu slot="overlay">
-        <a-menu-item key="0">
+        <a-menu-item
+          v-if="tabs.home"
+          key="close-all"
+        >
+          <a @click="closeAll">
+            {{ $t('action.close_all') }}
+          </a>
+        </a-menu-item>
+        <a-menu-item key="close-other">
           <a @click="closeOther">
             {{ $t('action.close_other') }}
           </a>
         </a-menu-item>
-        <a-menu-item key="1">
+        <a-menu-item key="close-current">
           <a @click="closeCurrent">
             {{ $t('action.close_current') }}
           </a>
@@ -34,13 +42,21 @@
       </a-menu>
     </a-dropdown>
 
+    <!-- <a-tab-pane
+      v-if="home"
+      key="home"
+      :tab="$t('app.home')"
+      :closable="false"
+    >
+      <component :is="home" />
+    </a-tab-pane> -->
     <template
       v-for="(tab, index) in tabs"
     >
       <a-tab-pane
-        :key="index"
-        :tab="tab.name"
-        :closable="totalTab > 1"
+        :key="tab.home ? 'home' : index"
+        :tab="tab.home ? $t(tab.title || tab.name) : (tab.title || tab.name)"
+        :closable="!tab.home && totalTab > 1"
       >
         <a-spin
           class="app-content-spiner"
@@ -51,13 +67,15 @@
               <router-view
                 v-if="tab.cachePath === currentTab"
                 class="content-child-view"
-                @destory="destory(currentTab)"
+                @destory="destory(tab.cachePath)"
+                @tabTitle="(title) => changeTitle(tab, title)"
               />
             </keep-alive>
             <router-view
               v-else-if="tab.cachePath === currentTab"
               class="content-child-view"
-              @destory="destory(currentTab)"
+              @destory="destory(tab.cachePath)"
+              @tabTitle="(title) => changeTitle(tab, title)"
             />
           </transition>
         </a-spin>
@@ -65,9 +83,8 @@
     </template>
     <a-tab-pane
       v-if="totalTab <= 0"
-      key="404"
-      style="background: white;"
-      tab="404"
+      key="undefined"
+      :tab="$t('app.404')"
       :closable="false"
     >
       <result-404></result-404>
@@ -79,8 +96,9 @@
 // import { uniqWith } from 'ramda';
 import config from '~/config.js';
 
-const { THEME = {} } = config;
+const { THEME = {}, ROUTER = {} } = config;
 const { TAB_TYPE = 0 } = THEME;
+const { HOME_COMP } = ROUTER;
 
 export default {
   components: {
@@ -94,8 +112,15 @@ export default {
   },
   data () {
     return {
-      tabs: {},
-      currentTab: '404',
+      tabs: HOME_COMP ? {
+        home: {
+          home: true,
+          title: 'app.home',
+          cachePath: 'home',
+          component: HOME_COMP,
+        },
+      } : {},
+      currentTab: HOME_COMP ? 'home' : '404',
       totalTab: 0,
     };
   },
@@ -129,32 +154,47 @@ export default {
         const { fullPath } = this.$route;
         const module = TAB_TYPE === 0 ? this.currentDirectory[0] : this.currentDirectory[this.currentDirectory.length - 1];
         const matched = this.$route.matched[this.$route.matched.length - 1];
-        if (module && module.url) {
+        if (['home', 'undefined'].includes(matched.name)) {
+          this.currentTab = matched.name;
+          this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = 'app.home');
+        } else if ((module && module.url)) {
           const moduleFullPath = TAB_TYPE === 2 ? fullPath : module.fullPath;
           if (!this.tabs[moduleFullPath]) {
             const tabKeys = Object.keys(this.tabs);
             const component = matched.components.default;
             this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
+            this.tabs[moduleFullPath].name = this.currentDirectory[this.currentDirectory.length - 1].name;
           }
           this.tabs[moduleFullPath].cachePath = moduleFullPath;
-          this.tabs[moduleFullPath].name = this.currentDirectory[this.currentDirectory.length - 1].name;
+          // this.tabs[moduleFullPath].title = this.tabs[moduleFullPath].name ? this.tabs[moduleFullPath].name : this.currentDirectory[this.currentDirectory.length - 1].name;
           this.currentTab = moduleFullPath;
-          this.totalTab = Object.keys(this.tabs).length;
+          HOME_COMP && (this.tabs.home.title = 'app.home');
           // this.$forceUpdate();
+        } else {
+          this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = '404');
         }
+        this.totalTab = Object.keys(this.tabs).length;
       },
     },
-    // currentTab (value) {
-    //   console.log('watch crrentTab', value);
-    //   const catchPath = this.tabs[value].cachePath || value;
-    //   console.log(catchPath);
-    //   // if (!this.$store.state.config.keep_alive) {
-    //   //   this.$router.push({ path: catchPath });
-    //   // }
-    //   // this.$router.push({ path: catchPath });
-    // },
+    currentTab (value) {
+      if (!['home'].includes(value)) {
+        const catchPath = this.tabs[value].cachePath || value;
+        // if (!this.$store.state.config.keep_alive) {
+        this.$router.push({ path: catchPath });
+        // }
+        // this.$router.push({ path: catchPath });
+      } else {
+        this.$router.push({ name: value });
+      }
+    },
   },
   methods: {
+    changeTitle (tab, title = '') {
+      if (tab && tab.cachePath) {
+        this.tabs[tab.cachePath].title = title.replace('{{title}}', this.tabs[tab.cachePath].name);
+      }
+      this.$forceUpdate();
+    },
     destory (currentTab) {
       const tabKeys = Object.keys(this.tabs);
       if (tabKeys.length > 1) {
@@ -163,24 +203,32 @@ export default {
     },
     onTabChange (activeKey) {
       this.currentTab = activeKey;
-      const catchPath = this.tabs[activeKey].cachePath || activeKey;
-      if (!this.$store.state.config.keep_alive) {
-        this.$router.push({ path: catchPath });
-      }
+      // const catchPath = this.tabs[activeKey].cachePath || activeKey;
+      // if (!this.$store.state.config.keep_alive) {
+      //   this.$router.push({ path: catchPath });
+      // }
     },
     onTabEdit (targetKey, action) {
-      if (action === 'remove') {
+      if (action === 'remove' && targetKey !== 'home') {
         this.$delete(this.tabs, targetKey);
         this.$nextTick(() => {
           const tabKeys = Object.keys(this.tabs);
           this.totalTab = tabKeys.length;
           if (!Object.hasOwnProperty.call(this.tabs, this.currentTab)) {
             this.currentTab = tabKeys[tabKeys.length - 1];
-            if (!this.$store.state.config.keep_alive) {
-              const catchPath = this.tabs[this.currentTab].cachePath || this.currentTab;
-              this.$router.push({ path: catchPath });
-            }
+            // if (!this.$store.state.config.keep_alive) {
+            //   const catchPath = this.tabs[this.currentTab].cachePath || this.currentTab;
+            //   this.$router.push({ path: catchPath });
+            // }
           }
+        });
+      }
+    },
+    closeAll () {
+      const tabKeys = Object.keys(this.tabs).filter((key) => key !== 'home');
+      if (tabKeys.length > 0) {
+        tabKeys.forEach((key) => {
+          this.onTabEdit(key, 'remove');
         });
       }
     },

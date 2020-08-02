@@ -19,7 +19,11 @@ export default {
   },
   THEME: {
     MENU_COLLAPSIBLE: true,
-    CONTENT_HEAD: 'bread',
+    CONTENT_HEAD: 'tab',
+    // 0 - inner
+    // 1 - outer
+    // 2 - repeat
+    TAB_TYPE: 2,
   },
   HTTP_TIMEOUT: 60000,
   PORTAL_APTH: '/',
@@ -42,5 +46,15 @@ export default {
   ICON: {
     prefix: 'icon-',
     url: ['/static/icon/iconfont.js'],
+  },
+  ROUTER: {
+    HOME_COMP: () => import('~~/home.vue'),
+    MODE: 'history',
+    CUSTOM: false,
+    INJECT: {
+      '/aaa': function (store, i18n, router, info) {
+        console.log('hello word', store, i18n, router, info);
+      },
+    },
   },
 };

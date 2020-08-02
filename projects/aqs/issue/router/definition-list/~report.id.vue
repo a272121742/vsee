@@ -148,6 +148,7 @@ export default {
         this.orderAboutData = res.orderAboutData;
         // 下载
         this.downId = res.asqIssueDefnData.id;
+        this.$emit('tabTitle', `{{title}}: ${res.asqIssueDefnData.asqIssueRptCode}`);
       });
     },
     /*
