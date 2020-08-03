@@ -65,14 +65,14 @@
           <transition v-if="!$store.state.refresh">
             <keep-alive v-if="$store.state.config.keep_alive">
               <router-view
-                v-if="tab.cachePath === currentTab"
+                v-if="tab.cachePath === currentTab || ['home', 'undefined'].includes(currentTab)"
                 class="content-child-view"
                 @destory="destory(tab.cachePath)"
                 @tabTitle="(title) => changeTitle(tab, title)"
               />
             </keep-alive>
             <router-view
-              v-else-if="tab.cachePath === currentTab"
+              v-else-if="tab.cachePath === currentTab || ['home', 'undefined'].includes(currentTab)"
               class="content-child-view"
               @destory="destory(tab.cachePath)"
               @tabTitle="(title) => changeTitle(tab, title)"
@@ -117,10 +117,9 @@ export default {
           home: true,
           title: 'app.home',
           cachePath: 'home',
-          component: HOME_COMP,
         },
       } : {},
-      currentTab: HOME_COMP ? 'home' : '404',
+      currentTab: HOME_COMP ? 'home' : '',
       totalTab: 0,
     };
   },
@@ -154,15 +153,14 @@ export default {
         const { fullPath } = this.$route;
         const module = TAB_TYPE === 0 ? this.currentDirectory[0] : this.currentDirectory[this.currentDirectory.length - 1];
         const matched = this.$route.matched[this.$route.matched.length - 1];
-        if (['home', 'undefined'].includes(matched.name)) {
+        if (['home'].includes(matched.name)) {
           this.currentTab = matched.name;
           this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = 'app.home');
         } else if ((module && module.url)) {
           const moduleFullPath = TAB_TYPE === 2 ? fullPath : module.fullPath;
           if (!this.tabs[moduleFullPath]) {
             const tabKeys = Object.keys(this.tabs);
-            const component = matched.components.default;
-            this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
+            this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length };
             this.tabs[moduleFullPath].name = this.currentDirectory[this.currentDirectory.length - 1].name;
           }
           this.tabs[moduleFullPath].cachePath = moduleFullPath;
@@ -171,7 +169,15 @@ export default {
           HOME_COMP && (this.tabs.home.title = 'app.home');
           // this.$forceUpdate();
         } else {
-          this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = '404');
+          const routerLength = this.$store.state.routers.length;
+          if (routerLength) {
+            this.currentTab = 'undefined';
+            this.tabs[this.currentTab] = {
+              ...module, title: '404', closable: true, cachePath: fullPath,
+            };
+          } else {
+            this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = 'app.home');
+          }
         }
         this.totalTab = Object.keys(this.tabs).length;
       },
@@ -185,6 +191,9 @@ export default {
         // this.$router.push({ path: catchPath });
       } else {
         this.$router.push({ name: value });
+      }
+      if (value !== 'undefined' && Object.keys(this.tabs).includes('undefined')) {
+        this.$delete(this.tabs, 'undefined');
       }
     },
   },
