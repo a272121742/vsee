@@ -1,0 +1,107 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/分页器" />
+
+# 分页器
+
+该插混入器可以很方便的为`ant-design-vue`表格添加分页器，减少开发人员的配置。
+
+## 使用
+
+使用简单的四步曲混入此分页器（**.vue**文件中混入）：
+
+```html
+<template>
+  <!-- 1. 在视图中直接引入`pagination`变量 -->
+  <a-table
+    :pagination="pagination"
+  >
+    <!-- ... -->
+  </a-table>
+</template>
+<script>
+// 2. 引入混入器
+import paginationMix from '@mix/pagination.js';
+// ...
+export default {
+  // 3. 混入分页器，传入参数，参数见后面讲解
+  mixins: [ paginationMix({ current: 'page', pageSize: 'limit' }) ],
+  // ...
+  created () {
+    this.fetch().then(res => {
+      // ...
+      // 4. 网络获取数据时，将`total`值设置在`pagination`对象上即可
+      this.pagination.total = res.total;
+      // ...
+    });
+  },
+  methods: {
+    // 5. 重置分页器数据
+    reset () {
+      this.pagination.reset();
+    }
+  }
+  // ...
+}
+</script>
+```
+
+## 属性和方法
+
+混入器混入成功后，会注入一个`pagination`分页器对象和`serverPagination`计算属性。
+
+`pagination`包含如下属性：
+
+- `current`：当前页数，可读写，可通过设置改变其值；
+- `pageSize`：每页显示总数，可读写，可通过设置改变其值；
+- `total`：数据总数，可读写，可通过设置改变其值；
+- `pageSizeOptions`：每页可显示数，例如`['10', '20', '50', '100']`；
+- `showQuickJumper`：是否显示快捷跳转功能，可读写；
+- `showSizeChanger`：是否可调配每页可显示数
+- `showTotal`：总数渲染函数
+- `disabled`：是否禁用分页
+
+当然，你可以参考[ant-design-vue 分页器](https://www.antdv.com/components/pagination-cn/)组件进行额外配置。
+
+`pagination`包含如下方法：
+
+- `reset`：重置分页信息（当前页和每页显示数值都会还原为最初始状态）。
+
+`serverPagination`是一个计算属性，将返回可直接用于提交给服务端的分页数据模型，其结果映射参考下面。
+
+## 混入器参数
+
+分页器的参数为对象，对象中包含如下参数键：
+
+1. current - 当前页对应服务端的名称，默认值`'page'`；
+2. pageSize - 分页数对应服务端的名称，默认值`'limit'`；
+
+配置这个参数有什么好处，这是专门为服务端转换分页数据用的，例如以上默认配置，传递给服务端时，将变为`page=1&limit=10`。当分页器数据变化时，`serverPagination`会自动按照这个映射表生成对应的对象，发送分页请求时不需要再做转换，直接从这里获取即可。
+
+## 全局配置
+
+我们在`~/config.js`中公开了`PAGINATION`配置，包含如下两个属性，案例如下:
+
+```javascript
+// ~/config.js
+{
+  PAGINATION: {
+    /**
+     * 分页数的选项
+     */ 
+    PAGESIZE_OPTIONS: ['10', '20', '50', '100'],
+    /**
+     * 返回结果形如 `{ begin, length }`结构，并做了传递字段的逻辑处理。
+     */
+    SERVER_PARAMS ({ page, limit }) {
+      return {
+        begin: page - 1,
+        length: limit,
+      };
+    },
+  }
+}
+```
+
+`SERVER_PARAMS`是一个函数配置，包含参数`{ page（当前页）, limit（每页总数） }`。该案例中将字段进行了重新映射，发送给服务端的字段为`{ begin, length }`。
+

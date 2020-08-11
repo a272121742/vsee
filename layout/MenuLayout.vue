@@ -168,7 +168,7 @@ export default {
       return null;
     },
     isHelper () {
-      if (this.$store.state.isDev) {
+      if (this.$store.state.isDev || this.$store.state.isDebug) {
         return () => import('@comp/helper/Helper.vue');
       }
       return null;

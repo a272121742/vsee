@@ -1,0 +1,68 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import NetMultipleSelect from '@comp/form/NetMultipleSelect.vue';
+
+<Meta title="组件库|Form表单/NetMultipleSelect网络下拉多选框（新）" />
+
+# 网络下拉多选框
+
+注意： 原有的`MultipleNetSelect`即将废弃，更名为`NetMultipleSelect`，其完全按照原有思路设计，但是做了内部的很多调整，从API到组件内的逻辑等。并且已经适配了`Ant-Design-Vue`中的`FormModel`组件。
+
+## 组件说明
+
+按照`mojo`平台所定义的规范，要求实现一套基于领域化模型所试用的数据加载组件，必须包含如下字段：
+
+```javascript
+const domain = {
+  page,           // 查询页，默认`1`
+  limit,          // 分页数，默认`10`
+  order,          // 排序方式，`'asc'`或者`'desc'`，默认`'asc'`
+  orderField,     // 排序字段，默认`''`
+  id,             // id回显查询，单选模式，默认`undefined`
+  ids,            // id回显查询，多选模式，默认`[]`
+  code,           // code回显查询，单选模式，默认`undefined`
+  cds,            // code回显查询，多选模式，默认`[]`
+  name,           // name查询，单选模式，默认`''`
+  q,              // 额外查询条件，用于区分领域模型的相关业务字段
+}
+```
+
+## 相关属性
+
+> 继承：Ant Design Vue [Select](https://www.antdv.com/components/select-cn/)
+
+> 混入：[]
+
+> 排除属性： ['mode', 'options', 'label-in-value', 'option-label-prop']
+
+> 拓展属性： ['url', 'valueOf', 'labelOf', 'itemOf', 'disableOf', 'filterOf', 'classOf', 'searchBy', 'orderField', 'order', 'value', 'closeSearch', 'query', 'cache', 'delay'] 见下方
+
+<Props of={ NetMultipleSelect } />
+
+## 属性说明
+
+1. url: 请求接口的地址，可以完全不带参数`/api/getData`，也可以带参数`/api/getData?name=a`；与`query`参数的区别是，`query`里的参数会被封装成为`q`发送给服务端，但这里的不会。
+2. valueOf: 提交给服务端的数据字段，只能是字符串。
+3. labelOf：显示字段的名称，可以是字段，也可以是函数。例如我希望渲染查询到的数据的`name`，可以设置为`label-of="name"`，或者我希望它是一个组合，就变成`:label-of="(data) => data.no + '_' + data.name"`，这样，显示值将由编号和名称组成。
+4. itemOf：下拉选项显示的内容，可以是字段，也可以是函数，与`labelOf`相区别的是，`itemOf`是指定下拉选项的格式化内容，`labelOf`是指定选择后显示的内容；
+5. disableOf: 禁用字段或函数，如果为函数，则通过函数逻辑处理来判断该项是否禁用；
+6. filterOf: 过滤函数，用于过滤哪些项目即使从服务端加载到了，但不做任何显示；
+7. classOf: 赋予下拉项不同的样式名称，可以是字符串或者函数；
+8. searchBy：按照哪个字段进行查询，必须是字符串；
+9. orderField：排序字段；
+10. order：排序方式；
+11. closeSearch：是否强制关闭搜索，为`true`关闭，关闭后变为`commobox`模式，只能下拉不能输入；
+12. query：额外的查询参数，该查询参数会写入到领域模型`q`中去，要与`url`带的参数所区分。
+13. delay：延迟策略，即点击后才加载数据；
+14. cache: 缓存策略，即加载的数据会被缓存下来；
+
+
+## 事件
+
+### change(value, label, record, vnode)
+
+`change`事件返回四个值： `values`、 `labels`、 `records`、 `vnodes`；
+
+- values: 提交值，与配置的`valueOf`相关，结果集为数组；
+- labels: 选择项的label, 与配置的`labelOf`相关，结果集为数组；
+- records: 选择项所在的完整数据记录，结果集为数组；
+- vnodes：选择项所在的节点组件，结果集为数组；

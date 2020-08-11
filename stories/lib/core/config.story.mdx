@@ -6,6 +6,362 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 每个独立的项目中，都有一个`config.js`文件，这个文件非常的关键，下面公布这个文件中的所有配置：
 
+以下为`vsee@1.2.x`的配置。在`1.2.x`版本中，我们对配置中心进行了大量的重构，以下是全部配置（已公开配置为可用配置，其他未公开配置请联系作者）：
+
+```javascript
+export default {
+  /**
+   * 菜单过滤逻辑
+   * 如果你希望服务端传过来的菜单要做一点业务上的处理，使用配置；
+   * 过滤函数中的参数表示菜单项，采用的是树遍历机制。
+   * 默认值： R.identity
+   */
+  MENU_FILTER: (item) => item.appCode === 'AQS' && !!item.url,
+  /**
+   * 用于登录授权使用的接口
+   */
+  AUTH_LOGIN_API: {
+    URL: '/auth/login', // 接口地址
+    PARAMS: { appCode: 'ADMIN' }, // 接口参数
+  },
+  /**
+   * 用于登出授权使用的接口
+   */
+  AUTH_LOGOUT_API: {
+    URL: '/auth/logout', // 接口地址
+    PARAMS: {}, // 接口参数
+  },
+  /**
+   * 顶层API集合，顶层API会加载到顶层`store`中心。
+   * 参数数组解构类型：
+   *  0 - 接口地址
+   *  1 - 接口参数
+   *  2 - 返回默认值
+   */
+  GLOBAL_API_LIST: {
+    user: ['/sys/user/info', { appCode: 'AQS' }, {}],
+    menus: ['/sys/menu/nav', { appCode: 'AQS' }, []],
+    permissions: ['/sys/menu/permissions', { appCode: 'AQS' }, []],
+  },
+  /**
+   * 主题配置系列
+   */ 
+  THEME: {
+    /**
+     * 是否采用暗黑模式，目前仅仅用于菜单，其他地方的风格需要手动做样式穿透
+     * 默认值：`false`
+     */ 
+    DARK: false,
+    /**
+     * 布局类型，可设置为`menu`、`nav`、`anchor`
+     * menu - (默认)包括header（上）、sider（左）、content（右）
+     * nav - 包括header（上）、content（下）
+     * anchor - 同`menu`，但content是连续屏幕的
+     */
+    LAYOUT_TYPE: 'menu',
+    /**
+     * 自定义菜单，可设置为`undefined`、`false`、`sider`、`anchor`、`nav`、`cust`
+     * undefined - 默认值继承`LAYOUT_TYPE`，除非手动设置为`false`
+     * false - 不启用菜单
+     * sider - 边栏菜单
+     * anchor - 悬靠菜单
+     * nav - 导航菜单
+     * cust - 自定义菜单
+     * 该属性自动链接到`store.config.menu_type`。
+     */
+    MENU_TYPE: void 0,
+    /**
+     * 菜单是否可搜索
+     * truely - 可缩缩时，会启用默认收缩模式
+     * falsely - 不可收缩时，会启用手动收缩模式，如果不设置手动收缩，即为不收缩
+     * 该值直接影响`this.$store.state.config.menu_collapsible`
+     * 该属性链接到`store.config.menu_collapsible`。
+     */
+    MENU_COLLAPSIBLE: true,
+    /**
+     * 菜单收缩状态
+     * falsely - 非收缩状态，默认值；
+     * truely - 收缩状态；
+     * 该值直接影响`this.$store.state.config.menu_collapsed`
+     * 该属性链接到`store.config.menu_collapsed`。
+     */
+    MENU_COLLAPSED: false,
+    /**
+     * 内容区域顶部模式，可设置为`falsely`、`breadcrumb`、`tab`
+     * falsely - 默认值，包括[false, 0, undefined, null, '', NaN]
+     * bread - 面包屑模式
+     * tab - 页签模式
+     * cust - 自定义模式
+     * 该属性链接到`store.config.content_head`。
+     */
+    CONTENT_HEAD: 'bread',
+    /**
+     * `content`区域是否缓存，默认`true`，设置为`true`则缓存
+     */
+    KEEP_ALIVE: true,
+    /**
+     * TAB组件的处理逻辑
+     * 0 - inner，依据模块的不同进行切换，模块相同时内部切换页面；
+     * 1 - outer，依据路由的不同进行切换，路由相同时内部切换页面；
+     * 2 - repeat，依据连接的不同进行切换，连接相同时自动激活；
+     */ 
+    TAB_TYPE: 0,
+  },
+  /**
+   * 动态标题配置，可设置为`false`、`falsely`、`String`、`Function`
+   * false - 不设置标题，该标题会以`public/index.html`中设置的为准
+   * falsely - 自动标题模式，默认值，包括[false, 0, undefined, null, '', NaN]
+   * String - 固定标题文字
+   * Function - 动态标题函数，函数参数按顺序为：route、i18n
+   */
+  DYNAMIC_TITLE: (route, i18n) => {
+    const titleList = [];
+    if (i18n && i18n.te('project.title')) {
+      titleList.push(i18n.t('project.title'));
+    }
+    if (route && route.meta && route.meta.title) {
+      titleList.push(route.meta.title);
+    }
+    return titleList.join(' - ');
+  },
+  /**
+   * 项目的根目录，即门户的地址，登出时需要
+   */
+  PORTAL_PATH: '/',
+  /**
+   * 代理，支持多重代理
+   * $api - 核心代理，必须存在
+   * $xxx - 可以根据需要建立其他的代理
+   */
+  DEV_PROXY: 'http://dev.auto.aas/mojo-gateway/',
+  /**
+   * 图标的全局配置
+   * 该图标方案已经和原生的`ant-design-vue#AIcon`进行了同构
+   */ 
+  ICON: {
+    /**
+     * 图标的前缀，用于区别`ant-design-vue`的默认标识，自定义的图标都会生成`${prefix}`的前缀
+     */ 
+    prefix: 'icon-',
+    /**
+     * 外部引用图标的地址，可以是字符串，也可以是个数组
+     */ 
+    url: []
+  },
+  /**
+   * 应用滚动条配置，详见：https://vuescrolljs.yvescoding.org/zh/guide/
+   */
+  SCROLL: {
+    bar: {
+      keepShow: true,
+    },
+  },
+  /**
+   * 表单相关配置
+   */ 
+  FORM: {
+    /**
+     * 验证器的触发条件，默认配置为`['change', 'blur']`；
+     * 如果希望移开鼠标时验证，可以配置为`['blur']；
+     * 如果希望取消自动验证，改为手动验证（即由`validate`函数进行验证），可配置为`[]`
+     */ 
+    TRIGGER: ['change', 'blur'],
+    /**
+     * 重写业务验证器
+     * 架构中内置了['idcard', 'phone', 'mobile', 'username', 'password']验证规则，你可以选择重写，以覆盖原有规则（$v中还有其他其他规则，除了这几个，其他的是无法重写的）；
+     * 除了重写，你还可以追加，追加之后的规则可以直接使用`$v.xxx`；
+     */
+    VALIDATION: {
+      idcard: /^\S$/,
+      phone: /^\S$/,
+      mobile: /^\S$/,
+      username: /^\S$/,
+      password: /^\S$/,
+    },
+  }
+  /**
+   * 时间格式化配置对象
+   */ 
+  DATETIME: {
+    /**
+     * 是否启用时间日期内置的过滤器和扩展函数
+     * 如果启用，将为整个应用程序提供`Vue.prototype`的扩展时间处理常量和过滤器，导出内容如下：
+     * DATE_FORMAT - 【过滤器/拓展属性】日期格式化
+     * TIME_FORMAT - 【过滤器/拓展属性】时间格式化
+     * DATETIME_FORMAT - 【过滤器/拓展属性】时间日期格式化
+     * RANGE_PICKER_VALUE - 【扩展属性】时间日期范围选择模式，可能值为`[null, moment()]`或`[moment(), null]`，其值由下面的配置`RANGE_END`决定;
+     */ 
+    enable: true;
+    /**
+     * 时间范围选择器是否指定当前日期放在结束日期中； 
+     * 该配置影响上面的`RANGE_PICKER_VALUE`，如果为`true`，则当前日期在结束日期选择面板中，即`[null, moment()]`；
+     * 反之默认当前日期在开始日期面板中，即`[moment(), null]`;
+     * 但面板的范围仍然可以自定义为其他范围，这都是由业务所决定的。
+     */
+    RANGE_END = false,
+    // 日期格式化，默认`YYYY-MM-DD`;
+    DATE_FORMAT: 'YYYY-MM-DD',
+    // 时间格式化，默认`HH:mm:ss`;
+    TIME_FORMAT: 'HH:mm:ss',
+    // 时间日期格式化，默认`YYYY-MM-DD HH:mm:ss`，可以为字符串，或函数，函数会返回已经定义的**日期格式化**和**时间格式化**配置，我们约定时间日期格式化应该和日期格式化、时间格式化保持一致。
+    DATETIME_FORMAT: (DATE_FORMAT, TIME_FORMAT) => `${DATE_FORMAT} ${TIME_FORMAT}`,
+    // 空时间格式化
+    EMPTY_DATETIME_FORMAT: '-',
+    // 空时间的传递值，可以为[void 0, null, '']三选一，不在可选范围内时，选择为`null`；
+    EMPTY_DATETIME_VALUE: null,
+    // 开时时间命名规则，必须为函数，是一个拼接字段名的函数；
+    START_FIELDNAME: (fieldname) => `${fieldname}Start`,
+    // 结束时间命名规则，必须为函数，是一个拼接字段名的函数；
+    END_FIELDNAME: (fieldname) => `${fieldname}End`,
+    // 时间范围输入时，弹出框的当前日期是否在结束日期弹出框中，默认的，当前时间是出现在开始日期框里的。
+    RANGE_END: false,
+  },
+  /**
+   * 水印配置，全局化配置，配置之后，所有水印命令将采用统一格式，以保持统一性
+   */ 
+  WATER_MARK: {
+    /**
+     * 是否启用水印；
+     * @type [Boolean]
+     * @default false - 默认不启用；
+     */ 
+    enable: true,
+    /**
+     * 水印容器的宽度；
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`240`或者`'240px'`或者`'20em'`；
+     * @default 240 - 默认`240px`，与高度保持`16:9`的比例；
+     */ 
+    width: 240,
+    /**
+     * 水印容器的高度；
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`135`或者`'135px'`或者`'16em'`；
+     * @default 135 - 默认`135px`，与高度保持`16:9`的比例；
+     */ 
+    height: 135,
+    /**
+     * 水印字体的大小
+     * @type [Number, String] - 支持数字或者带像素单位的值，例如`14`或者`'14px'`或者`'1em'`；
+     * @default 14 - 默认`14px`；
+     */ 
+    fontSize: 14,
+    /**
+     * 水印的字体集
+     * @type [String]
+     * @default 'Arial'
+     */
+    fontFamily: 'Arial',
+    /**
+     * 水印的字重
+     * @type [Number, String] - 支持`css:: font-weight`的配置项；
+     * @default 400
+     */ 
+    fontWeight: 400,
+    /**
+     * 水印字体的颜色
+     * @type [String]
+     * @default 'rgba(0, 0, 0, 0.24)'
+     */ 
+    color: 'rgba(0, 0, 0, 0.24)',
+    /**
+     * 水印字体的旋转角度
+     * @type [Number] - `-15`即为逆时针旋转'15度'，`15`即为顺时针旋转'15度'
+     * @default -15;
+     */ 
+    rotate: -15,
+    /**
+     * 水印的叠层
+     * @type [Number]
+     * @default 5
+     */ 
+    zIndex: 5,
+    /**
+     * 水印的文本内容
+     * @type [String]
+     * @default '请勿外传'
+     */ 
+    content: '请勿外传',
+  },
+  /**
+   * 排序器配置
+   */ 
+  SORTER: {
+    /**
+     * 定义排序字段
+     */ 
+    TYPES: {
+      ascend: 'asc',
+      descend: 'desc',
+    },
+    /**
+     * 定义返回服务端的结果是如何由客户端进行处理的
+     */ 
+    SERVER_PARAMS ({ field, type = '' } = {}) {
+      const result = {};
+      if (field) {
+        result.orderField = field;
+        if (type) {
+          result.order = type;
+        }
+      }
+      return result;
+    },
+  },
+  /**
+   * 路由配置
+   */
+  ROUTER: {
+    /**
+     * 指定首页，如果不指定，则会选取注册路由的首个； 如果指定，则首页将会始终定位到该组件中。
+     * @type [false, Component]
+     * @default false
+     */ 
+    HOME_COMP: () => import('~/home/router/index.vue'),
+    /**
+     * @type [String],
+     * @default 'history'
+     */ 
+    MODE: 'history',
+    /**
+     * 原`CUST_ROUTER`配置挪到此处
+     * @type [Boolean]
+     * @default false
+     */ 
+    CUSTOM: false,
+    /**
+     * 注入的非视图路由，可以做一些纯数据处理服务
+     * @type [Object<path, function>],
+     * @default nothing
+     */ 
+    INJECT: {
+      '/aaa': function ({store, i18n, router, info, from, to, next, env}) {
+        console.log('hello word', {store, i18n, router, info, from, to, next, env});
+      },
+    },
+  }, 
+  /**
+   * 分页器配置 
+   */
+  PAGINATION: {
+    /**
+     * 分页数的选项
+     */ 
+    PAGESIZE_OPTIONS: ['10', '20', '50', '100'],
+    /**
+     * 返回结果形如 `{ begin, length }`结构，并做了传递字段的逻辑处理。
+     */
+    SERVER_PARAMS ({ page, limit }) {
+      return {
+        begin: page - 1,
+        length: limit,
+      };
+    },
+  }
+};
+
+```
+
+以下为`vsee@1.1.x`的配置：
+
 ```javascript
 export default {
   /**

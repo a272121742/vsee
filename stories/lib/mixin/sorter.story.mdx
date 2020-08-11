@@ -1,0 +1,145 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架|混入器（Mixin）/排序器" />
+
+# 排序器
+
+可以用于进行表格排序的简易混入器。
+
+## 使用
+
+我们可以在配置表格`columns`时，配置`sorter`、`sortOrder`时，即可启用字段的排序。但这会引发一个问题，在开发过程中，我们的模型大部分是公用的，然而有些时候我们并不希望某些列在某些场景中被开启。因此，我们开发应用在内部的排序器，使用方式如下；
+
+```html
+<template>
+  <a-table>
+      <template v-for="(col, index) in $options.columns">
+        <!-- 4. 使用内置的`sortable`和`orderby`过滤器 -->
+        <a-table-column
+          :key="index"
+          v-bind="col"
+          :sorter="col | sortable"
+          :sort-order="col | orderby"
+        >
+          <span slot="title">
+            {{ $t(col.dataIndex) }}
+          </span>
+          <template slot-scope="text">
+            {{ text }}
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
+</template>
+
+<script>
+// 1. 引入`排序器`;
+import sorterMix from '@mix/sorter.js';
+import columns from '~~/model.js';
+
+export default {
+  columns,
+  mixins: [
+    // 2. 混入`排序器`
+    sorterMix(),
+  ],
+  data () {
+    return {
+      // 3. 配置当前表格可用于排序的字段
+      sortField: ['name'],
+    };
+  },
+}
+</script>
+```
+
+## 属性和方法
+
+混入器注入之后，将会在当前视图组件中生成名为`sorter`的排序器对象，和一个`sortField`字段，同时也会生成一个`serverSorter`的计算属性。
+
+`sorter`包含两个属性：
+
+- `field`： 排序字段的名称，例如你是按照用户名进行排序，那他的返回值就是`username`，如果不设置，将返回`null`；
+- `type`： 排序类型，其类型将从配置中心读取，映射规则为`{ ascend: 'asc', descend: 'descend' }`，如果不设置，将返回`null`；
+
+`sorter`包含如下方法：
+
+- `setField`：设置**排序器**要排序的字段名称，例如`sorter.setField('username')`；
+- `setType`：设置**排序器**的排序方式，例如`sorter.setType`；
+- `set`：设置以上两种，顺序为`field, type`，例如`sorter.set('username', 'desc')`；
+- `reset`：重置排序器，缓存值来源于`sorter`的`data`配置；
+- `valueOf`：获取排序器的对象值，该值会断开与原有数据的连接；
+
+`sortField`是一个数组，配置当前页面允许排序的字段集合。如果你配置了此项，在`columns`的配置中，就不要在设置排序选项了。这两种配置模式必须是互斥的。
+
+`serverSorter`是一个计算属性，将返回可直接用于提交给服务端的排序数据模型，其结果映射参考下面。
+
+## 过滤器
+
+为了让当前列能展示排序的UI视图，你还需要在`<a-table-column>`标签中加入过滤器才能显示动态切换效果。
+
+- `sortable`： 用于判断当前列是否可以用来排序，若能排序，会出现排序的按钮组件；
+- `orderby`：用于判断当前排序的方式，会根据`ascend`、`descend`的方式自动切换排序按钮的状态；
+
+例如：
+
+```html
+<!-- 4. 使用内置的`sortable`和`orderby`过滤器 -->
+<a-table-column
+  :key="index"
+  v-bind="col"
+  :sorter="col | sortable"
+  :sort-order="col | orderby"
+>
+```
+
+## 全局配置
+
+排序器在`~/config.js`中公开了两个全局配置，配置对象为`SORTER`，配置如下：
+
+### TYPES
+
+用于定义排序字段的映射规则，UI内部定义的排序分别是`ascend`(正序)、`descend`(倒序)，然而，实际开发中，可能用的不是这两个值，我们允许开发者用其他值来代替这两个值，只需要配置：
+
+```javascript
+// ~/config.js
+{
+  SORTER: {
+    TYPES: {
+      ascend: 'asc',
+      descend: 'desc',
+    }
+  }
+}
+```
+
+经过此配置后，你可以使用`asc`来代替`ascend`，使用`desc`来代替`descend`了。这个配置并不改变排序UI内部的名称，该配置仅仅影响返回服务端的数据结果。见后面的`SERVER_PARAMS`。
+
+### SERVER_PARAMS
+
+当排序字段需要和服务端进行交互时，不同的服务端接受到的数据结构是不一样的，因此我们可以配置此函数来解释提交给服务端的结果做何映射，例如：
+
+```javascript
+// ~/config.js
+{
+  SORTER: {
+    /**
+     * 返回结果形如 `{ order, orderField }`结构，并做了传递字段的逻辑处理。
+     */
+    SERVER_PARAMS ({ field, type = '' } = {}) {
+      const result = {};
+      if (field) {
+        result.orderField = field;
+        if (type) {
+          result.order = type;
+        }
+      }
+      return result;
+    },
+  }
+}
+```
+
+`SERVER_PARAMS`是一个函数配置，包含参数`{ field（排序字段）, type（排序类型） }`。该案例中将字段进行了重新映射，发送给服务端的字段为`{ order, orderField }`。
+
+
