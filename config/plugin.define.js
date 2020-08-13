@@ -44,7 +44,7 @@ module.exports = (config) => {
           branch: branch.sync(),
         });
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
       return args;
     });

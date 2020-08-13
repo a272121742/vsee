@@ -170,6 +170,8 @@
     "sure2Delete": "Sure To Delete?"
   },
   "request": {
+    "RESPONSE_DATA_ERROR": "Response Data Error",
+    "Network Error": "Network Error",
     "ECONNABORTED": "Software Caused Connection Abort",
     "ECONNRESET": "Connection Reset By Peer",
     "EPIPE": "Broken Pipe",

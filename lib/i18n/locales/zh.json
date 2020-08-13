@@ -170,6 +170,8 @@
     "sure2Delete": "是否确认删除？"
   },
   "request": {
+    "RESPONSE_DATA_ERROR": "响应数据错误",
+    "Network Error": "网络错误",
     "ECONNABORTED": "软件引起的连接中止",
     "ECONNRESET": "对方复位连接",
     "EPIPE": "通讯管道破裂",
