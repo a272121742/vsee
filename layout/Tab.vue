@@ -42,14 +42,6 @@
       </a-menu>
     </a-dropdown>
 
-    <!-- <a-tab-pane
-      v-if="home"
-      key="home"
-      :tab="$t('app.home')"
-      :closable="false"
-    >
-      <component :is="home" />
-    </a-tab-pane> -->
     <template
       v-for="(tab, index) in tabs"
     >
@@ -67,14 +59,12 @@
               <router-view
                 v-if="tab.cachePath === currentTab || ['home', 'undefined'].includes(currentTab)"
                 class="content-child-view"
-                @destory="destory(tab.cachePath)"
                 @tabTitle="(title) => changeTitle(tab, title)"
               />
             </keep-alive>
             <router-view
               v-else-if="tab.cachePath === currentTab || ['home', 'undefined'].includes(currentTab)"
               class="content-child-view"
-              @destory="destory(tab.cachePath)"
               @tabTitle="(title) => changeTitle(tab, title)"
             />
           </transition>
@@ -93,7 +83,6 @@
 </template>
 
 <script>
-// import { uniqWith } from 'ramda';
 import config from '~/config.js';
 
 const { THEME = {}, ROUTER = {} } = config;
@@ -111,6 +100,10 @@ export default {
     },
   },
   data () {
+    const { destory, open } = this;
+    if (!this.$router.constructor.prototype.tabs) {
+      this.$router.constructor.prototype.tabs = { destory, open };
+    }
     return {
       tabs: HOME_COMP ? {
         home: {
@@ -124,62 +117,10 @@ export default {
     };
   },
   watch: {
-    // $route: {
-    //   immediate: true,
-    //   handler () {
-    //     const { fullPath } = this.$route;
-    //     const isHideComponent = /~/.test(this.$route.matched[this.$route.matched.length - 1].components.default.__file);
-    //     const len = this.currentDirectory.length;
-    //     const dirs = this.currentDirectory.slice(0, isHideComponent ? len - 1 : len);
-    //     const module = dirs[1] || dirs[0];
-    //     if (module) {
-    //       const moduleFullPath = module.fullPath;
-    //       if (!this.tabs[moduleFullPath]) {
-    //         const tabKeys = Object.keys(this.tabs);
-    //         const matchedCompontents = this.$router.getMatchedComponents(moduleFullPath);
-    //         const component = matchedCompontents[matchedCompontents.length - 1];
-    //         this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length, component };
-    //       }
-    //       this.tabs[moduleFullPath].cachePath = fullPath;
-    //       this.currentTab = moduleFullPath;
-    //       this.totalTab = Object.keys(this.tabs).length;
-    //       this.$forceUpdate();
-    //     }
-    //   },
-    // },
     $route: {
       immediate: true,
       handler () {
-        const { fullPath } = this.$route;
-        const module = TAB_TYPE === 0 ? this.currentDirectory[0] : this.currentDirectory[this.currentDirectory.length - 1];
-        const matched = this.$route.matched[this.$route.matched.length - 1];
-        if (['home'].includes(matched.name)) {
-          this.currentTab = matched.name;
-          this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = 'app.home');
-        } else if ((module && module.url)) {
-          const moduleFullPath = TAB_TYPE === 2 ? fullPath : module.fullPath;
-          if (!this.tabs[moduleFullPath]) {
-            const tabKeys = Object.keys(this.tabs);
-            this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length };
-            this.tabs[moduleFullPath].name = this.currentDirectory[this.currentDirectory.length - 1].name;
-          }
-          this.tabs[moduleFullPath].cachePath = moduleFullPath;
-          // this.tabs[moduleFullPath].title = this.tabs[moduleFullPath].name ? this.tabs[moduleFullPath].name : this.currentDirectory[this.currentDirectory.length - 1].name;
-          this.currentTab = moduleFullPath;
-          HOME_COMP && (this.tabs.home.title = 'app.home');
-          // this.$forceUpdate();
-        } else {
-          const routerLength = this.$store.state.routers.length;
-          if (routerLength) {
-            this.currentTab = 'undefined';
-            this.tabs[this.currentTab] = {
-              ...module, title: '404', closable: true, cachePath: fullPath,
-            };
-          } else {
-            this.tabs[this.currentTab] && (this.tabs[this.currentTab].title = 'app.home');
-          }
-        }
-        this.totalTab = Object.keys(this.tabs).length;
+        this.open();
       },
     },
     currentTab (value) {
@@ -204,10 +145,43 @@ export default {
       }
       this.$forceUpdate();
     },
+    open (currentTab, jump = true) {
+      const fullPath = currentTab || this.$route.fullPath;
+      const module = TAB_TYPE === 0 ? this.currentDirectory[0] : this.currentDirectory[this.currentDirectory.length - 1];
+      const matchedList = currentTab ? this.$router.resolve(currentTab).resolved.matched : this.$route.matched;
+      const matched = matchedList[matchedList.length - 1];
+      if (['home'].includes(matched.name)) {
+        jump && (this.currentTab = matched.name);
+        this.tabs[matched.name] && (this.tabs[matched.name].title = 'app.home');
+      } else if (module && module.url) {
+        const moduleFullPath = TAB_TYPE === 2 ? fullPath : module.fullPath;
+        if (!this.tabs[moduleFullPath]) {
+          const tabKeys = Object.keys(this.tabs);
+          this.tabs[moduleFullPath] = { ...module, closable: !!tabKeys.length };
+          this.tabs[moduleFullPath].name = matched.meta.title || '404';
+        }
+        this.tabs[moduleFullPath].cachePath = moduleFullPath;
+        // this.tabs[moduleFullPath].title = this.tabs[moduleFullPath].name ? this.tabs[moduleFullPath].name : this.currentDirectory[this.currentDirectory.length - 1].name;
+        jump && (this.currentTab = moduleFullPath);
+        HOME_COMP && (this.tabs.home.title = 'app.home');
+        // this.$forceUpdate();
+      } else {
+        const routerLength = this.$store.state.routers.length;
+        if (routerLength) {
+          jump && (this.currentTab = 'undefined');
+          this.tabs.undefined = {
+            ...module, title: '404', closable: true, cachePath: fullPath,
+          };
+        } else {
+          this.tabs.undefined && (this.tabs.undefined.title = 'app.home');
+        }
+      }
+      this.totalTab = Object.keys(this.tabs).length;
+    },
     destory (currentTab) {
       const tabKeys = Object.keys(this.tabs);
       if (tabKeys.length > 1) {
-        this.onTabEdit(currentTab, 'remove');
+        this.onTabEdit(currentTab || this.currentTab, 'remove');
       }
     },
     onTabChange (activeKey) {
