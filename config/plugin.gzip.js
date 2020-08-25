@@ -11,7 +11,7 @@ module.exports = (config) => {
         test: /\.(js|css|svg|woff|otf|ttf|json|png)$/,
         compressionOptions: { level: 9 },
         threshold: 10240,
-        minRatio: 1,
+        minRatio: 0.8,
         deleteOriginalAssets: true, // 删除原文件
       }])
       .end();

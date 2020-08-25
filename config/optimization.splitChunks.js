@@ -4,7 +4,7 @@ const unzip = !!process.env.npm_config_unzip;
 module.exports = (config) => {
   isProd && !unzip
     && config.optimization.splitChunks({
-      chunks: 'async',
+      chunks: 'all',
       minSize: 30000,
       minChunks: 1,
       maxAsyncRequests: 3,
@@ -41,8 +41,8 @@ module.exports = (config) => {
         },
         antD: {
           name: 'chunk-antd',
-          test: /[\\/]node_modules[\\/]ant-design[\\/]/,
-          chunks: 'initial',
+          test: /[\\/]node_modules[\\/]ant-design-vue[\\/]/,
+          chunks: 'all',
           priority: 1,
           reuseExistingChunk: true,
           enforce: true,

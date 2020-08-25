@@ -1,9 +1,18 @@
 module.exports = {
   presets: [
-    ['@vue/cli-plugin-babel/preset', {
-      polyfills: [
-      ],
-    }],
+    [
+      '@vue/app',
+      {
+        polyfills: [],
+      },
+    ],
+    [
+      '@babel/preset-env',
+      {
+        corejs: 3,
+        useBuiltIns: 'entry',
+      },
+    ],
   ],
   plugins: [
     [

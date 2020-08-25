@@ -22,7 +22,7 @@ module.exports = (config) => {
     args[0].js = js;
     args[0].css = css;
     // 修复 Lazy loading routes Error
-    args[0].chunksSortMode = 'none';
+    args[0].chunksSortMode = 'dependency';
     return args;
   });
 };

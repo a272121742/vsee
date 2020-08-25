@@ -23,9 +23,11 @@ const proxy = (isProd && !process.env.npm_config_test) || (!isProd && !!process.
 console.log('【当前模式】：', isProd ? '生产' : '开发', proxy ? '代理模式' : '本地模拟', uselib ? '测试lib' : '正式lib');
 
 module.exports = {
+  filenameHashing: false,
   chainWebpack: (config) => {
     // 修复HMR
     config.resolve.symlinks(true);
+    config.plugins.delete('prefetch');
     configs.forEach((fn) => fn(config));
   },
   // lintOnSave: process.env.NODE_ENV !== 'production',
