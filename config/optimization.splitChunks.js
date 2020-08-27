@@ -5,45 +5,37 @@ module.exports = (config) => {
   isProd && !unzip
     && config.optimization.splitChunks({
       chunks: 'all',
-      minSize: 30000,
-      minChunks: 1,
-      maxAsyncRequests: 3,
+      maxSize: 200000,
       maxInitialRequests: Infinity,
       cacheGroups: {
-        default: {
-          minChunks: 1,
-          priority: -20,
-          reuseExistingChunk: true,
+        styles: {
+          name: 'styles',
+          test: /\.(le|c)ss$/,
+          chunks: 'all',
+          priority: 100,
+          enforce: true,
         },
-        common: {
-          name: 'chunk-common',
-          chunks: 'initial',
-          minChunks: 1,
-          maxInitialRequests: 1,
-          minSize: 0,
-          priority: 3,
+        vsee: {
+          name: 'chunk-core',
+          test: /[\\/]node_modules[\\/]vsee[\\/]/,
+          chunks: 'async',
+          priority: 80,
           reuseExistingChunk: true,
           enforce: true,
         },
-        vendors: {
-          name (module) {
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `npm.${packageName.replace('@', '')}`;
-          },
-          test: /[\\/]node_modules[\\/]/,
-          priority: 4,
-          chunks: 'initial',
-          minChunks: 1,
-          maxInitialRequests: 1,
-          minSize: 0,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        antD: {
+        antd: {
           name: 'chunk-antd',
           test: /[\\/]node_modules[\\/]ant-design-vue[\\/]/,
           chunks: 'all',
-          priority: 1,
+          priority: 80,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+        antv: {
+          name: 'chunk-antv',
+          test: /[\\/]node_modules[\\/]*?antv[\\/]/,
+          chunks: 'all',
+          priority: 80,
           reuseExistingChunk: true,
           enforce: true,
         },
@@ -51,21 +43,21 @@ module.exports = (config) => {
           name: 'chunk-echarts',
           test: /[\\/]node_modules[\\/](vue-)?echarts[\\/]/,
           chunks: 'all',
-          priority: 2,
+          priority: 80,
           reuseExistingChunk: true,
           enforce: true,
         },
-        utils: {
-          test: /\.js$/,
+        commons: {
+          name: 'commons',
           chunks: 'initial',
-          name: 'common-utils',
-          maxSize: 20000,
+          minChunks: 2,
+          priority: 10,
+          reuseExistingChunk: true,
         },
-        styles: {
-          name: 'styles',
-          test: /\.(le|c)ss$/,
-          chunks: 'all',
-          enforce: true,
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
         },
       },
     });
