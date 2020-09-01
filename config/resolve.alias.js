@@ -23,6 +23,7 @@ module.exports = (config) => {
     .set('@i18n', innerModule ? 'vsee/lib/i18n' : resolve('lib/i18n'))
     .set('@util', innerModule ? 'vsee/lib/utils' : resolve('lib/utils'))
     .set('@mix', innerModule ? 'vsee/lib/mixins' : resolve('lib/mixins'))
+    .set('@aop', innerModule ? 'vsee/lib/aop' : resolve('lib/aop'))
     .set('@dir', innerModule ? 'vsee/lib/directives' : resolve('lib/directives'))
     .set('@static', resolve('public/static'))
     .set('@mock', innerModule ? 'vsee/lib/mock' : resolve('lib/mock'));
