@@ -1,7 +1,10 @@
 import Notification from 'ant-design-vue/lib/vc-notification';
 import Vue from 'vue';
+import { MESSAGE } from '@lib/config.js';
 import Message from './Message.vue';
 import AIcon from './AIcon.vue';
+
+const { TOP, GLOBAL } = MESSAGE;
 
 /**
  * 三种弹出机制，
@@ -13,7 +16,7 @@ import AIcon from './AIcon.vue';
 // 默认不自动关闭
 const defaultDuration = null;
 
-const defaultTop = '12px';
+const defaultTop = `${TOP}px`;
 // 消息实例
 let messageInstance;
 const prefixCls = 'ant-message';
@@ -155,11 +158,12 @@ function notice (args) {
   result.promise = closePromise;
   return result;
 }
-
-if (Vue.prototype.$message) {
-  Object.assign(Vue.prototype.$message, api);
-} else {
-  Vue.prototype.$message = api;
+if (GLOBAL) {
+  if (Vue.prototype.$message) {
+    Object.assign(Vue.prototype.$message, api);
+  } else {
+    Vue.prototype.$message = api;
+  }
 }
 
 export default api;
