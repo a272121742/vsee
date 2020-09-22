@@ -22,16 +22,17 @@ module.exports = async ({ config }) => {
   config.resolve.alias['@'] = resolve('./');
   
   config.resolve.alias['@comp'] = resolve('components');
-  config.resolve.alias['@lib'] = resolve('lib');
-  config.resolve.alias['@http'] = resolve('lib/http');
-  config.resolve.alias['@store'] = resolve('lib/store');
-  config.resolve.alias['@i18n'] = resolve('lib/i18n');
-  config.resolve.alias['@router'] = resolve('lib/router');
-  config.resolve.alias['@util'] = resolve('lib/utils');
-  config.resolve.alias['@mix'] = resolve('lib/mixins');
-  config.resolve.alias['@dir'] = resolve('lib/directives');
-  config.resolve.alias['@mock'] = resolve('lib/mock');
-  // config.resolve.alias['@story'] = resolve('.storybook');
+  config.resolve.alias['@lib'] = ('vsee/lib');
+  config.resolve.alias['@http'] = ('vsee/lib/http');
+  config.resolve.alias['@store'] = ('vsee/lib/store');
+  config.resolve.alias['@i18n'] = ('vsee/lib/i18n');
+  config.resolve.alias['@router'] = ('vsee/lib/router');
+  config.resolve.alias['@util'] = ('vsee/lib/utils');
+  config.resolve.alias['@mix'] = ('vsee/lib/mixins');
+  config.resolve.alias['@dir'] = ('vsee/lib/directives');
+  config.resolve.alias['@aop'] = ('vsee/lib/aop');
+  config.resolve.alias['@mock'] = ('vsee/lib/mock');
+  config.resolve.alias['@layout'] = ('vsee/layout');
   config.resolve.alias['~'] = resolve('.storybook/src');
   return config;
 };

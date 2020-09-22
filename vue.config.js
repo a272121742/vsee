@@ -49,14 +49,20 @@ module.exports = {
       errors: true,
     },
     proxy: {
-      '/api': {
+      '/api/': {
         target: 'http://tqis-dev.autodev.aas/mojo-gateway/',
         changeOrigin: true,
-        // 关闭https安全证书
         secure: false,
-        // 重写接口
         pathRewrite: {
-          '^/api': '', // ，将"以/api开头"的字符串替换为“”
+          '^/api/': '/', // ，将"以/api开头"的字符串替换为“”
+        },
+      },
+      '/\\$github/': {
+        target: 'https://github.com/',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/\\$github/': '/', // ，将"以/github开头"的字符串替换为“”
         },
       },
     },

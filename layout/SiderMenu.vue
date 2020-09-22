@@ -54,7 +54,8 @@ export default {
       return this.$store.state.appMenus.map((item) => ({ ...item }));
     },
     menuKeys () {
-      return this.$store.state.routers.map((item) => item.path);
+      // return this.$store.state.routers.map((item) => item.path);
+      return this.menus.map((item) => item.fullPath);
     },
   },
   watch: {
@@ -78,17 +79,20 @@ export default {
       this.$router.push({ path: key });
     },
     getOpenKeys () {
-      return this.currentDirectory.map((item) => item.fullPath);
+      return this.currentDirectory.map((item) => item.fullPath).reverse();
     },
     openChange (openKeys) {
-      const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
+      const latestOpenKey = openKeys.find((key) => !this.openKeys.includes(key));
       if (!this.menuKeys.includes(latestOpenKey)) {
         this.openKeys = openKeys;
       } else {
-        const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
-        if (index >= 0 && openKeys.length > 2) {
+        const index = openKeys.findIndex((item) => this.menuKeys.includes(item) && item !== latestOpenKey);
+        if (openKeys.length > 1) {
           this.openKeys = openKeys;
-        } else {
+          if (this.$store.state.config.menu_current && index !== -1) {
+            this.openKeys.splice(index, 1);
+          }
+        } else if (latestOpenKey) {
           this.openKeys.push(latestOpenKey);
         }
       }

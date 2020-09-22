@@ -56,7 +56,8 @@ export default {
       return this.$store.state.appMenus.map((item) => ({ ...item }));
     },
     menuKeys () {
-      return this.$store.state.routers.map((item) => item.path);
+      // return this.$store.state.routers.map((item) => item.path);
+      return this.menus.map((item) => item.fullPath);
     },
   },
   watch: {
@@ -72,43 +73,20 @@ export default {
       this.$router.push({ path: key });
     },
     getOpenKeys () {
-      // const { matched } = this.$route;
-      // let openKeys = [matched[matched.length - 1].path];
-      // const last = matched[matched.length - 1];
-      // if (last) {
-      //   const splitList = last.path.split('/').reduce((arr, item) => {
-      //     const len = arr.length;
-      //     if (/^https?%3A%2F%2F/.test(item)) {
-      //       if (arr._added_) {
-      //         arr[len - 1] = `${arr[len - 1]}/${item}`;
-      //       } else {
-      //         arr.push(item);
-      //         arr._added_ = true;
-      //       }
-      //     } else {
-      //       arr.push(item);
-      //     }
-      //     return arr;
-      //   }, []);
-      //   const result = splitList.map((item, index, arr) => arr.slice(0, 1 + index).join('/')).slice(1);
-      //   openKeys = [...result];
-      //   if (result.length === 3 && !(/\?\/$/.test(result[2]))) {
-      //     openKeys[2] = result[2].replace(result[1], result[0]);
-      //     openKeys.splice(1, 1);
-      //   }
-      // }
-      // return openKeys;
-      return this.currentDirectory.map((item) => item.fullPath);
+      return this.currentDirectory.map((item) => item.fullPath).reverse();
     },
     openChange (openKeys) {
-      const latestOpenKey = openKeys.find((key) => this.openKeys.indexOf(key) === -1);
+      const latestOpenKey = openKeys.find((key) => !this.openKeys.includes(key));
       if (!this.menuKeys.includes(latestOpenKey)) {
         this.openKeys = openKeys;
       } else {
-        const index = openKeys.findIndex((item) => this.menuKeys.includes(item));
-        if (index >= 0 && openKeys.length > 2) {
-          this.openKeys[index] = latestOpenKey;
-        } else {
+        const index = openKeys.findIndex((item) => this.menuKeys.includes(item) && item !== latestOpenKey);
+        if (openKeys.length > 1) {
+          this.openKeys = openKeys;
+          if (this.$store.state.config.menu_current && index !== -1) {
+            this.openKeys.splice(index, 1);
+          }
+        } else if (latestOpenKey) {
           this.openKeys.push(latestOpenKey);
         }
       }

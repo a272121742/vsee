@@ -17,8 +17,10 @@ import {
   Drawer,
   Dropdown,
   Form,
+  FormModel,
   Icon,
   Input,
+  Checkbox,
   Layout,
   LocaleProvider,
   Menu,
@@ -30,15 +32,12 @@ import {
 import 'ant-design-vue/dist/antd.css';
 import Vuex from 'vuex';
 import i18n from '@i18n';
-import { configure, addParameters, addDecorator } from '@storybook/vue';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 import '~/mock.js';
 import VTextarea from '@comp/form/VTextarea.vue';
 import CaptchaInput from '@comp/form/CaptchaInput.vue';
-import NetSelect from '@comp/form/NetSelect.vue';
-import AsyncComponent from '@comp/AsyncComponent';
-import SingleMessage from '@comp/alert/SingleMessage.js';
 import LocaleTable from '@comp/helper/LocaleTable.vue';
+import smessage from  '@layout/components/Message.js';
 
 Vue.use(Col);
 Vue.use(Row);
@@ -57,8 +56,10 @@ Vue.use(Divider);
 Vue.use(Drawer);
 Vue.use(Dropdown);
 Vue.use(Form);
+Vue.use(FormModel);
 Vue.use(Icon);
 Vue.use(Input);
+Vue.use(Checkbox);
 Vue.use(Layout);
 Vue.use(LocaleProvider);
 Vue.use(Menu);
@@ -68,13 +69,11 @@ Vue.use(Anchor);
 Vue.use(Vuex);
 Vue.component('v-textarea', VTextarea);
 Vue.component('captcha-input', CaptchaInput);
-Vue.component('net-select', NetSelect);
-Vue.component('async-component', AsyncComponent);
-Vue.component('locale-table', LocaleTable)
-message.show = SingleMessage.show;
-message.close = SingleMessage.close;
+Vue.component('locale-table', LocaleTable);
 
-addParameters({ 
+Vue.prototype.$message = { ...message, ...smessage };
+
+export const parameters = { 
   viewMode: 'docs',
   options: {
     name: '模式库',
@@ -85,8 +84,12 @@ addParameters({
     container: DocsContainer,
     page: DocsPage,
   },
-});
-addDecorator(() => ({
+  options: {
+    sortySort: {
+    }
+  }
+};
+export const decorators = [() => ({
   template: '<story/>',
   i18n,
-}));
+})];

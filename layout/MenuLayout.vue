@@ -71,12 +71,20 @@
         <component :is="isHelper"></component>
       </a-layout>
     </template>
+    <a-back-top
+      v-if="$store.state.config.back_top"
+      :target="getScrollContainer"
+      style="right: 12px; bottom: 12px;"
+    />
   </vue-scroll>
 </template>
 
 <script>
-// import { uniqWith } from 'ramda';
+import Vue from 'vue';
+import { BackTop } from 'ant-design-vue';
 import './layout.less';
+
+Vue.use(BackTop);
 
 export default {
   components: {
@@ -180,6 +188,9 @@ export default {
   methods: {
     contentScroll (vertical, horizontal, event) {
       this.$root.contentScroll && this.$root.contentScroll(event, vertical, horizontal);
+    },
+    getScrollContainer () {
+      return document.querySelector('.app-root-scroll > .__panel');
     },
   },
 };
