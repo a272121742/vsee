@@ -41,7 +41,7 @@
           </a-layout-header>
           <a-layout-content
             v-if="!isTab"
-            class="app-content-warpper"
+            class="app-content-wrapper"
           >
             <a-spin
               class="app-content-spiner"

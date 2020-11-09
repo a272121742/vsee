@@ -11,7 +11,24 @@ module.exports = async ({ config }) => {
   // }]));
   config.module.rules.push({
     test: /\.less$/,
-    loader: "style-loader!css-loader!less-loader?javascriptEnabled=true",
+    // loader: "style-loader!css-loader!less-loader?javascriptEnabled=true",
+    use: ['style-loader', 'css-loader', {
+      loader: 'less-loader',
+      options: {
+        javascriptEnabled: true,
+        lessOptions: {
+          javascriptEnabled: true,
+        }
+      }
+    }, {
+      loader: 'style-resources-loader',
+      options: {
+        patterns: [ // 只有一条时也可以写成对象形式
+          path.resolve(__dirname, 'theme.less'),
+        ],
+        injector: 'prepend' // 如果在样式文件之后导入就加此行配置
+      }
+    }]
   });
   config.module.rules.push({
     resourceQuery: /blockType=i18n/,
@@ -34,5 +51,6 @@ module.exports = async ({ config }) => {
   config.resolve.alias['@mock'] = ('vsee/lib/mock');
   config.resolve.alias['@layout'] = ('vsee/layout');
   config.resolve.alias['~'] = resolve('.storybook/src');
+  config.resolve.alias['~~'] = resolve('.storybook/src/common');
   return config;
 };

@@ -1,0 +1,175 @@
+{
+  "name": "问题名称超长超长超长超长超长超长超长超长超长超长超长",
+  "id": "0",
+  "important": 0,
+  "level": 0,
+  "pid": null,
+  "children": [
+    {
+      "name": "人",
+      "id": "0-0",
+      "level": 1,
+      "pid": "0",
+      "important": 1,
+      "children": [
+        {
+          "name": "原因1.1",
+          "id": "0-0-0",
+          "important": 0,
+          "level": 2,
+          "pid": "0-0",
+          "children": null
+        },
+        {
+          "name": "原因1.2",
+          "id": "0-0-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-0",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "机",
+      "id": "0-1",
+      "important": 0,
+      "level": 1,
+      "pid": "0",
+      "children": [
+        {
+          "name": "原因2.1",
+          "id": "0-1-0",
+          "important": 0,
+          "level": 2,
+          "pid": "0-1",
+          "children": null
+        },
+        {
+          "name": "原因2.2",
+          "id": "0-1-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-1",
+          "children": null
+        },
+        {
+          "name": "原因2.3",
+          "id": "0-1-2",
+          "important": 0,
+          "level": 2,
+          "pid": "0-1",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "料",
+      "id": "0-2",
+      "important": 0,
+      "level": 1,
+      "pid": "0",
+      "children": [
+        {
+          "name": "原因3.1",
+          "id": "0-2-0",
+          "important": 0,
+          "level": 2,
+          "pid": "0-2",
+          "children": null
+        },
+        {
+          "name": "原因3.2",
+          "id": "0-2-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-2",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "法",
+      "id": "0-3",
+      "important": 0,
+      "level": 1,
+      "pid": "0",
+      "children": [
+        {
+          "name": "原因4.1",
+          "id": "0-3-0",
+          "important": 0,
+          "level": 2,
+          "pid": "0-3",
+          "children": null
+        },
+        {
+          "name": "原因4.2",
+          "id": "0-3-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-3",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "环",
+      "id": "0-4",
+      "important": 0,
+      "level": 1,
+      "pid": "0",
+      "children": [
+        {
+          "name": "原因5.1",
+          "id": "0-4-0",
+          "important": 1,
+          "level": 2,
+          "pid": "0-4",
+          "children": null
+        },
+        {
+          "name": "原因5.2",
+          "id": "0-4-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-4",
+          "children": null
+        },
+        {
+          "name": "原因5.3",
+          "id": "0-4-2",
+          "important": 0,
+          "level": 2,
+          "pid": "0-4",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "测",
+      "id": "0-5",
+      "important": 0,
+      "level": 1,
+      "pid": "0",
+      "children": [
+        {
+          "name": "原因6.1",
+          "id": "0-5-0",
+          "important": 0,
+          "level": 2,
+          "pid": "0-5",
+          "children": null
+        },
+        {
+          "name": "原因6.2",
+          "id": "0-5-1",
+          "important": 0,
+          "level": 2,
+          "pid": "0-5",
+          "children": null
+        }
+      ]
+    }
+  ]
+}

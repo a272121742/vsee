@@ -21,7 +21,7 @@
         <Breadcrumb v-if="false" />
         <Tab v-else />
       </a-layout-header>
-      <a-layout-content class="app-content-warpper">
+      <a-layout-content class="app-content-wrapper">
         <a-spin
           class="app-content-spiner"
           :spinning="refreshing"

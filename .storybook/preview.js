@@ -27,9 +27,10 @@ import {
   Spin,
   Tabs,
   Anchor,
+  Tree,
   message,
 } from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css';
+import 'ant-design-vue/dist/antd.less';
 import Vuex from 'vuex';
 import i18n from '@i18n';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
@@ -66,6 +67,7 @@ Vue.use(Menu);
 Vue.use(Spin);
 Vue.use(Tabs);
 Vue.use(Anchor);
+Vue.use(Tree);
 Vue.use(Vuex);
 Vue.component('v-textarea', VTextarea);
 Vue.component('captcha-input', CaptchaInput);

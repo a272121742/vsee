@@ -69,7 +69,8 @@
     "test": "Test",
     "more": "More",
     "link": "Link",
-    "ref": "Reference"
+    "ref": "Reference",
+    "config": "Config"
   },
   "page": {
     "total": "Total",

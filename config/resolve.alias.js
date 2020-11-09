@@ -26,5 +26,6 @@ module.exports = (config) => {
     .set('@aop', innerModule ? 'vsee/lib/aop' : resolve('lib/aop'))
     .set('@dir', innerModule ? 'vsee/lib/directives' : resolve('lib/directives'))
     .set('@static', resolve('public/static'))
-    .set('@mock', innerModule ? 'vsee/lib/mock' : resolve('lib/mock'));
+    .set('@mock', innerModule ? 'vsee/lib/mock' : resolve('lib/mock'))
+    .set('@api', innerModule ? 'vsee/lib/api' : resolve('lib/api'));
 };

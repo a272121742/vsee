@@ -1,4 +1,4 @@
-@app-min-width: 1366px;
+@app-min-width: 1280px;
 @app-layout-header-height: 64px;
 @app-layout-footer-height: 0px;
 @app-content-header-height: 48px;
@@ -46,16 +46,20 @@
     & + .app-layout-content {
       margin-top: @app-layout-header-height;
       .app-content-sider {
+        flex: 0 0 @app-content-sider-width !important;
+        max-width: @app-content-sider-width !important;
+        min-width: @app-content-sider-width !important;
+        width: @app-content-sider-width !important;
         top: @app-layout-header-height;
       }
-      .app-content-warpper {
+      .app-content-wrapper {
         .app-content-spiner {
           min-height: calc(100vh - @app-layout-header-height -  @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         }
       }
       .app-content-header {
         top: @app-layout-header-height;
-        & + .app-content-warpper .app-content-spiner {
+        & + .app-content-wrapper .app-content-spiner {
           min-height: calc(100vh - @app-layout-header-height - @app-content-header-height -  @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
         }
         &.app-content-tab > .app-tabs > .ant-tabs-content {
@@ -96,7 +100,7 @@
           width: calc(100% - @app-content-sider-width);
         }
       }
-      & ~ .app-content-warpper {
+      & ~ .app-content-wrapper {
         margin-left: @app-content-sider-width;
         // TODO:
         width: calc(100vw - @app-content-sider-width);
@@ -139,7 +143,7 @@
             width: calc(100% - @app-content-sider-width-min);
           }
         }
-        & ~ .app-content-warpper {
+        & ~ .app-content-wrapper {
           margin-left: @app-content-sider-width-min;
           // TODO:
           width: calc(100vw - @app-content-sider-width-min);
@@ -163,7 +167,7 @@
       height: @app-content-header-height;
       background: white;
       box-shadow: @app-content-header-shadow;
-      & ~ .app-content-warpper {
+      & ~ .app-content-wrapper {
         margin-top: @app-content-header-height;
         .app-content-spiner {
           min-height: calc(100vh -  @app-content-header-height - @app-layout-footer-height - @app-content-footer-height - 2*@app-content-border-width);
@@ -219,9 +223,10 @@
         }
       }
     }
-    .app-content-warpper {
+    .app-content-wrapper {
       padding: 0;
       margin-top: 0;
+      margin: auto;
       margin-bottom: @app-content-footer-height;
       overflow-x: visible;
       // TODO:

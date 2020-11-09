@@ -35,7 +35,7 @@
           </a-layout-header>
           <a-layout-content
             ref="content"
-            class="app-content-warpper"
+            class="app-content-wrapper"
           >
             <a-spin
               class="app-content-spiner"
