@@ -1,7 +1,49 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|混入器（Mixin）/下载器" />
+<Meta title="框架/混入器（Mixin）/附件" />
 
-# 下载器
+# 附件
 
-可以用于进行数据下载
+附件的混入器提供了附件上传或静态资源下载所需的配置。
+
+## 使用方法
+
+```html
+<template>
+  <!-- 3. 直接在上传器中配置`headers` -->
+  <v-upload
+    :headers="headers"
+  >
+    上传
+  </v-upload>
+  <a-button @click="download">下载附件</a-button>
+</template>
+
+<script>
+// 1. 引入`排序器`;
+import attachmentMix from '@mix/attachment.js';
+
+export default {
+  mixins: [
+    // 2. 混入`附件`
+    attachmentMix,
+  ],
+  methods: {
+    download () {
+      this.static('/static/filepath.js');
+    }
+  }
+}
+</script>
+```
+
+## 导出变量
+
+- `headers` - 持久在内部的请求头，该请求头无法被修改，是经过冻结的常量；
+- `static` - 一个静态资源文件下载的简洁接口；
+
+## 说明
+
+为什么这里不配置动态资源的下载？
+
+动态资源文件是需要请求服务端接口，我们更希望开发者将所有的服务端请求统一配置在`@module/api.js`下面。而不是随意的写在一个组件或者视图的内部。这样将不利于前后端进行接口的对比。但反过来你希望下载静态资源文件时，地址就不应该配置在接口列表中，因为静态资源本身就是任意可访问资源，是脱离服务之外的。

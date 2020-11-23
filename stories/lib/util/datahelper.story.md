@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|工具（Util）/数据助理（datahelper）" />
+<Meta title="框架/工具（Util）/数据助理（datahelper）" />
 
 # 数据助理
 

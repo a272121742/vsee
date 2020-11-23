@@ -1,0 +1,77 @@
+import { Story, Preview, Meta, Props, Canvas, ArgsTable } from '@storybook/addon-docs/blocks';
+import DropCheckbox from '@comp/display/DropCheckbox.vue';
+
+<Meta title="组件库/Display显示/DropCheckbox下拉复选框" />
+
+# 下拉复选框 DropCheckbox
+
+仅用于提供全选、反选、全取消功能。需要关联数据之后实现联动效果。
+
+> 继承：Ant Design Vue [Checkbox](https://www.antdv.com/components/checkbox-cn/)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： [] 见下方
+
+## 属性列表
+
+<Props of={ DropCheckbox } />
+
+## 使用说明
+
+下拉复选框继承至`Ant Design Vue`原生的`Checkbox`，额外的扩展了全选、全不选和反选功能。他仅仅是一个展示型组件，可以通过传入数据进行数据联动。并且他不提供自动化数据处理，而是通过事件进行相应关联。开发者可以像`Checkbox`一样进行配置，并且捕获他的两个额外补充事件：
+
+1. select(selectedAll) - 全选，或者全不选时触发的事件。如果为全选，则`selectedAll = true`，如果为全不选，则`selectedAll = false`；
+2. reverse() - 反选，反选时无任何参数，只进行事件通知，由开发者自行根据当前数值和数据源进行匹配做去反操作；
+
+具体的代码可以参看下面的案例。
+
+## 案例
+
+<Canvas withToolbar>
+<Story name="案例">
+{{
+  components: {
+    DropCheckbox: () => import('@comp/display/DropCheckbox.vue'),
+  },
+  template: `
+    <div class="checkbox-list-wrapper">
+      请选择爱好：<br />
+      <drop-checkbox
+        :checked="value && value.length === options.length"
+        :indeterminate="![0, options.length].includes(value ? value.length : 0)"
+        :disabled="$attrs.disabled"
+        @select="onSelect"
+        @reverse="onReverse"
+      />
+      <a-checkbox-group
+        :value="value"
+        :options="options"
+        @change="onChange"
+      />
+    </div>
+  `,
+  data () {
+    return {
+      value: void 0,
+      options: ['抽烟', '喝酒', '烫头', '游戏', '游泳', '电影', '音乐'],
+    }
+  },
+  methods: {
+    onChange (checkedList) {
+      this.value = checkedList;
+    },
+    onSelect (selected) {
+      this.value = selected ? this.options : void 0;
+    },
+    onReverse () {
+      const { value = [], options = [] } = this;
+      console.log(options);
+      this.value = options.filter((item) => !value.includes(item));
+    }
+  }
+}}
+</Story>
+</Canvas>

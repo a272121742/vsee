@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { tree2list } from '@util/datahelper.js';
+import { tree2list } from '@util/data-helper.js';
 
 export default {
   components: {

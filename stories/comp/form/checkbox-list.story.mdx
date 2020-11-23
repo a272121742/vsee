@@ -1,0 +1,99 @@
+import { Story, Preview, Meta, Props, Canvas, ArgsTable } from '@storybook/addon-docs/blocks';
+import CheckboxList from '@comp/form/CheckboxList.vue';
+
+<Meta title="组件库/Form表单/CheckboxList复选框列表" />
+
+# 复选框列表 CheckboxList
+
+用于提供全选、反选、全取消功能。配置数据源后可展示为列表模式，可关联表单进行数据录入和修改。
+
+> 继承：DropCheckbox (?path=/docs/组件库-display显示-dropcheckbox下拉复选框)
+
+> 混入：[]
+
+> 排除属性： []
+
+> 拓展属性： ['value', 'options'] 见下方
+
+## 属性列表
+
+<Props of={ CheckboxList } />
+
+## 使用说明
+
+区别与`DropCheckbox`，他是一个包含录入和数据同步功能的表单组件。在值列表发生变化时，会触发`change`事件：
+
+- change(value) - value（已选值）发生变化时，触发`change`事件，并将当前更新值回执给事件函数；
+
+在使用时，只需要绑定数据源和数据模型即可：
+
+```html
+<!-- `v-model`绑定数据模型，`options`绑定数据源 -->
+<checkbox-list
+  v-model="value"
+  :options="options"
+/>
+<br/>
+{{ value }}
+```
+
+该组件属于**表单组件**，可以直接配合表单`Form`或`ModelForm`进行数据自动关联和动态修改。
+
+## 案例1
+
+<Canvas withToolbar>
+<Story name="基本使用">
+{{
+  components: {
+    CheckboxList: () => import('@comp/form/CheckboxList.vue'),
+  },
+  template: `
+    <div style="width: 240px">
+      个人爱好
+      <checkbox-list
+        v-model="value"
+        :options="options"
+      />
+      <br/>
+      {{ value }}
+    </div>
+  `,
+  data () {
+    return {
+      value: void 0,
+      options: ['抽烟', '喝酒', '烫头', '游戏', '游泳', '电影', '音乐'],
+    }
+  },
+}}
+</Story>
+</Canvas>
+
+## 案例2
+
+<Canvas withToolbar>
+<Story name="隐藏选项">
+{{
+  components: {
+    CheckboxList: () => import('@comp/form/CheckboxList.vue'),
+  },
+  template: `
+    <div style="width: 240px">
+      个人爱好
+      <checkbox-list
+        v-model="value"
+        show-eye
+        :options="options"
+      />
+      <br/>
+      {{ value }}
+    </div>
+  `,
+  data () {
+    return {
+      value: void 0,
+      options: ['抽烟', '喝酒', '烫头', '游戏', '游泳', '电影', '音乐'],
+    }
+  },
+}}
+</Story>
+</Canvas>

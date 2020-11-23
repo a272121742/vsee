@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|混入器（Mixin）/表单记录器（新版）" />
+<Meta title="框架/混入器（Mixin）/表单记录器（新版）" />
 
 # 表单记录器
 
@@ -419,16 +419,19 @@ export default {
 | --------------------------------------- | -------- | ------------------------------------------------ |
 | required(msg)                           |          | 判断字段是否不为空，若为空则返回验证消息  |
 | custom(fn, msg)                         |          | 判断输入项目是否满足函数验证，若不则返回验证消息，参考[async-validator](https://github.com/yiminghe/async-validator#validator) |
-| remote({ url, query, success, trigger}) |          | 判断输入项目是否满足远程验证，若不则返回验证消息 |
+| remote({ url, query, success, callback, trigger}) | {{value}} | 判断输入项目是否满足远程验证，若不则返回验证消息 |
 
 远程验证`remote`的参数如下：
 
 - url - 验证地址（发起get请求）
 - query - 验证参数对象
-- success - 成功后的回调函数，函数中能拿到服务端传回的数据（`response.body.data`）
+- validate - 异步验证回调函数，函数中能拿到服务端传回的数据（`response.body.data`）
+- callback - 回调函数，该回调函数发生在向服务端发起请求之后，无论是否成功，都将触发
 - trigger - 触发方式，默认为`blur`，可选值`change`，不建议修改
 
-远程验证时，向服务端发起验证的请求和整个平台的请求是一致的，`response.body`的返回结果一定`{data, code, msg}`，并且都会对`code`做拦截处理。如果成功返回了正确的结果，都会在`succuess`函数中捕获到，反之错误信息会在内部通过`asyncValidator.callback`的方式返回给视图，作为开发者不需要拿到错误信息。
+远程验证时，向服务端发起验证的请求和整个平台的请求是一致的，`response.body`的返回结果一定`{data, code, msg}`，并且都会对`code`做拦截处理。如果成功返回了正确的结果，都会在`validate`函数中捕获到，反之错误信息会在内部通过`asyncValidator.callback`的方式返回给视图，作为开发者不需要拿到错误信息。最后，如果你还有什么其他的时间要处理，可以在`callback`中定义`finally`回调。
+
+总结一下：整个的过程是一个`Promise`，成功后可再次使用`validate`对服务端返回数据进行本地校验。如果服务端返回错误，内部会自行`reject`，但都会执行一次`finally`，开发者通过`callback`定义最终执行函数即可。
 
 ### 业务验证
 

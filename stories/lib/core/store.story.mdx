@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/状态树（Store）" />
+<Meta title="框架/核心（Core）/状态树（Store）" />
 
 ## 状态树
 
@@ -385,3 +385,21 @@ GLOBAL_API_LIST: {
   }
 }
 ```
+
+## 状态拓展
+
+现在我们再来梳理一下`store`仓储的结构特点：
+
+```
+- rootState
+  - layoutState
+  - module1State
+  - module2State
+  - ...
+  - ...
+  - ...
+```
+
+如果希望拓展模块的数据仓库，可以在所在模块中拓展即可。由于我们的自动化引入特性，当整个模块被迁移时，仍然能保持模块的独立特性。但如果希望修订和拓展`root`应该怎么做？
+
+我们并不希望开发者去修改根的状态甚至是拓展，因为`root`当然已经包办了很多对于业务来说以及一些`global components`所用有的不可或缺的封装和规范。但如果你仍然希望去在整体状态下自定义自己的模块，或许可以尝试使用`layout`模块。所有的项目中都必须内置`layout`模块，他和其他的业务模块一样是平行的，这是从逻辑上来说，但从视图的层面，`layout`依然可以成为所有模块的上层模块。在使用时，你可以在`layout`上定义`state`、`getters`、`mutataions`、`actions`，然后引入到你所需要的`module`中去使用，这就可以制造另一个公共数据仓库，这比起使用`event-bus`即有他的好处，同时也解决了`event-bus`自身的不足。

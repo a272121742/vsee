@@ -1,0 +1,118 @@
+import { Story, Preview, Meta, Props, Canvas, ArgsTable } from '@storybook/addon-docs/blocks';
+import ContextMenuTree from '@comp/display/ContextMenuTree.vue';
+
+<Meta title="组件库/Display显示/ContextMenuTree右键菜单树" />
+
+# 右键菜单树 ContextMenuTree
+
+> 继承：Ant Design Vue [Tree](https://www.antdv.com/components/tree-cn/)
+
+> 混入：[]
+
+> 排除属性： ['block-node', 'tree-data', 'replace-fields']
+
+> 拓展属性： ['dataSource'] 见下方
+
+## 属性列表
+
+<Props of={ ContextMenuTree } />
+
+## 使用说明
+
+右键菜单树的内核模型已经封装相对完整，对于开发者来说，只需要实现两个部分的功能：
+
+1. `title`插槽，即每一个节点项的标题获取源头。如果不设置`title`插槽，将自动从数据源的`title`属性中获取标题信息。
+2. `menu`插槽，即每一个节点项的右键菜单配置。
+
+`title`插槽和`menu`插槽都会去分解`dataSource`数据配置，将数组中的每一个项做为`record`发放给插槽，实现插槽的数据上下文。例如：
+
+```html
+<!-- 实现一个title插槽，并从`slot-scope`中获取上下文`record` -->
+<template
+  slot="title"
+  slot-scope="{ record }"
+>
+  <!-- 获取`record.name`作为节点项的标题，你也可以使用其他字符串属性作为标题 -->
+  {{ record.name }}
+</template>
+
+<!-- 实现一个`menu`插槽，并从`slot-scope`中获取`record`、`vnode`、`events`作为上下文数据 -->
+<template
+  slot="menu"
+  slot-scope="{ record, vnode, events }"
+  >
+  <!-- `events`是一个`slot`监听集合，是内部定义的事件函数，`menu`必须实现此事件，否则内部的运转逻辑会出错 -->
+  <a-menu v-on="events">
+    <a-menu-item>
+      编辑
+    </a-menu-item>
+  </a-menu>
+</template>
+```
+
+## 案例
+
+<Canvas withToolbar>
+<Story name="案例">
+{{
+  components: {
+    ContextMenuTree: () => import('@comp/display/ContextMenuTree.vue'),
+  },
+  template: `
+    <ContextMenuTree
+      :data-source="nodes"
+      default-expand-all
+    >
+      <template
+        slot="title"
+        slot-scope="{ record }"
+      >
+        {{ record.name }}
+      </template>
+      <template
+        slot="menu"
+        slot-scope="{ record, vnode, events }"
+      >
+        <a-menu v-on="events">
+          <a-menu-item
+            key="1"
+            @click="(e) => action('edit', record, vnode, e)"
+          >
+            编辑
+          </a-menu-item>
+          <a-menu-item
+            v-if="record && record.children && record.children.length"
+            key="2"
+            @click="(e) => action('add', record, vnode, e)"
+          >
+            添加
+          </a-menu-item>
+          <a-menu-item
+            v-else
+            key="3"
+            @click="(e) => action('delete', record, vnode, e)"
+          >
+            删除
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </ContextMenuTree>
+  `,
+  data () {
+    return {
+      nodes: []
+    }
+  },
+  created () {
+    import('~~/json/tree.json').then(res => {
+      this.nodes = [res.default];
+    });
+  },
+  methods: {
+    action (type, record, vnode, e) {
+      this.$message.show({ content: `${type}: ${JSON.stringify(record)}` });
+    }
+  }
+}}
+</Story>
+</Canvas>

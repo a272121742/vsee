@@ -1,0 +1,86 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架/工具（Util）/逻辑助理（logic-helper）" />
+
+# 逻辑助理【新】
+
+主要负责逻辑验证，内部的验证器都将返回`boolean`类型的返回值。这些函数通常都是大规模使用的。
+
+## hasOwnProperty(property, obj) - curry
+
+判断对象是否包含自有属性（不查询原型链）。
+
+```javascript
+import { hasOwnProperty } from '@util/logic-helper.js';
+
+const arr = [];
+
+hasOwnProperty('length', arr);  // => true
+hasOwnProperty('prototype', arr);  // => false
+hasOwnProperty('forEach', arr);  // => false
+hasOwnProperty('constructor', arr); // => false
+
+hasOwnProperty('length', Array);  // => true
+hasOwnProperty('prototype', Array);  // => true
+hasOwnProperty('forEach', Array);  // => false
+hasOwnProperty('constructor', Array); // => false
+
+const emptyJson = Object.create(null);
+const json = {};
+
+hasOwnProperty('hasOwnProperty', emptyJson); // => false
+hasOwnProperty('hasOwnProperty', json);  // => true
+```
+
+## hasProperty
+
+判断对象是否包含属性。
+
+区别与`hasOwnProperty`，他能判断所有能调用的原型链条；
+
+```javascript
+import { hasProperty } from '@util/logic-helper.js';
+
+const arr = [];
+
+hasProperty('length', arr);  // => true
+hasProperty('prototype', arr);  // => false
+hasProperty('forEach', arr);  // => true
+hasProperty('constructor', arr); // => true
+
+hasProperty('length', Array);  // => true
+hasProperty('prototype', Array);  // => true
+hasProperty('forEach', Array);  // => true
+hasProperty('constructor', Array); // => true
+
+const emptyJson = Object.create(null);
+const json = {};
+
+hasProperty('hasOwnProperty', emptyJson); // => true
+hasProperty('hasOwnProperty', json);  // => true
+```
+
+## isSafeArray(arr)
+
+判断对象是否是安全可遍历的数组。
+
+```javascript
+import { isSafeArray } from '@util/logic-helper.js';
+
+isSafeArray(); // => false
+isSafeArray([]); // => false
+isSafeArray([1,2]); // => true
+```
+
+## hasSafeChildren(property, obj)
+
+判断对象的属性是否是安全可遍历的数组
+
+```javascript
+import { hasSafeChildren } from '@util/logic-helper.js';
+
+hasSafeChildren('children', { }); // => false
+hasSafeChildren('children', { children: null }); // => false
+hasSafeChildren('children', { children: [] }); // => false
+hasSafeChildren('children', { children: [1, 2}); // => false
+```

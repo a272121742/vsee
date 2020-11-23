@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/配置中心（config）" />
+<Meta title="框架/核心（Core）/配置中心（config）" />
 
 # 配置中心
 
@@ -355,6 +355,46 @@ export default {
         length: limit,
       };
     },
+  },
+  /**
+   * 网络相关配置
+   */
+  HTTP: {
+    /**
+     * 超时时间，默认值`6000`
+     */ 
+    TIMEOUT: 6000,
+    /**
+     * 附加请求头，默认值`{}`；
+     * 注意，附加请求头不代表会替换所有请求头内容，有一部分的请求头内容是计算之后得到的，无法覆盖；
+     */ 
+    HEADER: {},
+    /**
+     * 主代理，用于切换到其他代理服务器上进行代理联调
+     */ 
+    PROXY: null,
+    /**
+     * GET请求的附加参数，例如可以增加统一的时间戳
+     * 默认值`{}`
+     */ 
+    GET_PARAMS: {},
+    /**
+     * 是否开启模拟日志，默认`true`
+     */ 
+    MOCK_LOG: true,
+    /**
+     * 重连地址，如果主连接无法连接，会尝试使用`RETRY_LIST`所配置列表进行连接
+     */ 
+    RETRY_LIST: [],
+    /**
+     * `params`参数格式化，这是应用在`get`、`delete`请求中的。
+     * 默认值`{}`
+     */ 
+    PARAMS_SERIALIZER: {},
+    /**
+     * `axios`的注入函数，用于配置额外的注入
+     */ 
+    INTERCEPTORS: {},
   }
 };
 

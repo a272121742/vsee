@@ -1,0 +1,703 @@
+import { Story, Preview, Meta, Props, Canvas } from '@storybook/addon-docs/blocks';
+import recordMix from '@mix/form-model-record.js';
+import aop from '@aop';
+
+<Meta title="框架/核心（Core）/面向切面（AOP）" />
+
+import aop01 from './aop01.png';
+import aop02 from './aop02.png';
+import aop03 from './aop03.png';
+
+# AOP
+
+`AOP`中有三个很重要的话术： `AOP`、`IoC`、`DI`。我们先从`IoC/DI`说起。
+
+## 什么是IoC
+
+**IoC(Inversion of Control)控制反转**，是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。一般来说，**IoC**需要借助于第三方容器，实现对具体依赖关系进行的解耦操作。
+
+要想理解这个概念，需要搞清楚四个问题：谁控制谁？控制什么？何为反转？反转了什么？
+
+- 谁控制谁：传统程序设计中，对象的构造是由自身的构造器产生，即**主程序**控制**依赖对象**；而**IoC**中，由专门的**IoC容器**来控制这些对象的产生。
+- 控制什么：控制外部资源，即依赖对象的产生。
+- 何为反转：“反转”的概念相对于“正转”，“正转”是指依赖对象由主程序控制产生，那么“反转”就是由容器产生后注入到所需要的程序中。
+- 为何反转：松散主程序与依赖对象之间的耦合。
+
+## 什么是DI
+
+**DI(Dependency Injection)依赖注入**，是控制反转中一种常见的实现方式。由于**IoC**的概念相对比较模糊，只能理解为容器控制对象，但很难想想到谁来维护依赖关系，而**DI**则明确了依赖关系以及注入的时机。
+
+同样的，DI也需要搞清楚五个问题：谁依赖谁？为何依赖？谁注入谁？注入什么？何时注入？
+
+- 谁依赖谁：主程序依赖IoC容器。
+- 为何依赖：应用程序需要IoC容器来提供外部资源（包括对象、资源、常量、数据等）。
+- 谁注入谁：IoC容器向主程序注入。
+- 注入什么：注入程序所需要的外部资源，即依赖对象。
+- 何时注入：需要时注入。
+
+## IoC/DI
+
+可以看出，两种概念只是同一种概念的不同描述。我们可以发现，IoC描述了依赖对象与主程序和容器之间的关系，由原先的主程序控制依赖反转为容器控制依赖，但并没有说清楚何时控制，控制之后做什么。但DI却很清晰的描述了当依赖对象被需要时会由容器主动控制并注入。
+
+那么问题来了，以上都是像`Java`这种纯面向对象语言才有的特性，他们都是基于`OOP`的，前端有`IoC/DI`吗？
+
+答案是肯定的。例如：
+
+```javascript
+// 控制反转
+const hasOwnProperty = (obj, key) => [].hasOwnProperty.call(obj, key);
+
+const err = (msg) => { throw new Error(msg) };
+const invoke = (method, ...args) => (obj) => obj && method && obj[method] ? obj[method].apply(obj, args) : err('对象不存在'+method+'方法');
+
+// 控制反转
+const getNow = invoke('now');
+```
+
+未使用`IoC/DI`时：
+
+<img src={aop01} />
+
+使用`Ioc/DI`后：
+
+<img src={aop02} />
+
+## 什么是AOP
+
+**AOP(Aspect Oriented Programming)面向切面编程**是与**OOP(Object Oriented Programming)面向对象编程**并列的编程思想。相对于**IoC(依赖注入)**而言，AOP是一种可以在不修改源代码的情况下给程序动态添加功能的一种方式。
+
+使用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性，同时提高了开发的效率。
+
+面向切面的编程中，**Aspect（切面）**是一个非常重要的关键点。比如验证业务，对于数据录入或者数据提交，都需要对数据进行验证。然而验证的过程是业务化的，即不是固定，会因为业务特性而变化的。但如果把验证在函数中写死，将变得耦合过高，不灵活。如何在不改变原函数的逻辑下做到自动变化呢？通常我们会在需要验证的函数中提前写好验证的接入点，或者称之为**埋点**，从服务端获取动态验证内容接入到函数中。但这样有两个问题：
+
+1. 手动接入的函数过多，且可能每个函数的配置信息不一样；又或者多个函数接入的验证信息是一样的，但仍然会被多次请求。
+2. 无法保证函数的原始特性，函数与外部业务仍然耦合。
+
+这时候通常都会使用`AOP`来解决，通过拦截函数来实现业务拓展的能力。
+
+## 通知
+
+**通知**是 AOP 中一个很重要的概念，所谓通知指的就是在拦截到方法之后要执行的代码。通知分为前置(before)、后置(after)、异常(afterThrowing)、最终(afterReturning)、环绕(around)通知五类：
+
+- 前置通知（before）：在目标方法`exec`之前执行
+- 环绕通知（around）：在最开始调用时执行，会将目标方法作为参数传入，可对目标方法进行拦截
+- 后置通知（after）：在目标方法之后执行
+- 异常通知（afterThrowing）：当执行目标方法出现异常时调用
+- 最终通知（afterReturning）：当目标方法有返回值之后执行，在后置通知之后
+
+如果目标函数执行称之为`exec`，那么该函数注册全部通知后，只会发生如下两种顺序的结果：
+
+1. 执行成功：before -> exec -> around -> after -> afterReturning
+2. 抛出异常：before -> exec -> after -> afterThrowing
+
+但需要注意的是，环绕通知的切入点是在`before`之前到`after`之前，其他的几个通知切入的都是点，唯独`around`环绕通知切入的是一个很大范围的面。如下图：
+
+<img src={aop03} style={{"textAlign": "center"}} />
+
+通过这张图，我们可以概括的认为，`AOP`的思路就是将原函数的执行过程进行了延长，以便于我们对原逻辑进行额外的业务扩展。有了对通知概念的了解，就可以深入了解`vsee`内内置的`AOP`工具了。
+
+## 使用
+
+在`vsee`框架内，内置了`$aop`的包，你可以直接引入并使用。该模块包含内容如下：
+
+```javascript
+import aop, { before, after, around, returning, throwing, cflow, monitor } from '@aop';
+```
+
+### aop
+
+一个实现`AOP`机制的容器，同时也是一个工具对象，他包含如下方法：
+
+```javascript
+aop = {
+  /**
+   * 注册通知，其目的就是将通知`advice`注入到`obj`所对应的`method`中；
+   * @param Object obj - 通知对象；
+   * @param String|RegExp method - 注入的目标函数，可以为正则表达式，例如`/^set/`注入到所有的`set`开头的方法中；
+   * @param Aspect advice - 通知函数或通知集合
+   * @return adviceHandler 返回通知句柄，用于注销通知
+   */ 
+  advise (obj, method, advice) {},
+  /**
+   *  注销通知，移除某个特定的通知
+   * @param Object adviceHandler - 通知句柄，是注册通知后的一个返回值
+   */ 
+  unadvise (adviceHandler) {},
+  /**
+   * 获取上下文对象`Context`，详见下文
+   */ 
+  getContext () {},
+  /**
+   * 获取上下文堆栈信息`ContextStack`，详见下文
+   */ 
+  getContextStack () {},
+  /**
+   * 原点，获取当前执行函数句柄，详见下文
+   */ 
+  proceed () {},
+}
+```
+
+我们可以先用一个简单的例子来看看他会实现什么样的效果：
+
+```javascript
+// 1. 定义对象和方法
+const obj = {
+  exec () {
+    console.log('exec');
+  }
+}
+// 2. 注册通知，拦截上下文
+const adviseHandler = aop.advise(obj, 'exec', () => {
+  console.log('advice');
+});
+// 3. 执行对象方法
+obj.exec();  // advice -> exec
+// 4. 移除通知
+aop.unadvise(adviceHandler);
+// 5. 再次执行对象方法
+obj.exec();  // exec
+```
+
+### Aspect
+
+`Aspect`即前面提到过的切入点，`aop.advise`的第三个参数就必须是一个`Aspect`类型。该对象有两种形式：**函数式**和**对象式**。
+
+如果`Aspect`是一个函数，那么他所表示的就是`around_in`，他会在函数执行前运行，但不会拿到任何参数，签名如下：
+
+```javascript
+aspect = function (context) {
+  // around_in
+  // 可有返回值或无返回
+}
+// 例如
+aop.advise(Math, 'log10', (context) => {
+  console.log('context', context); // 此时可以在函数执行前获取函数通知的上下文对象`Context`；
+})
+```
+
+`Aspect`为函数时，也可以返回新的通知，但此时返回的通知仅限为通知`Aspect`对象：
+
+```javascript
+// 例如
+aop.advise(Math, 'log10', (context) => {
+  console.log('context', context); // 此时可以在函数执行前获取函数通知的上下文对象`Context`；
+  return { 
+    before (value) { 
+      console.log('拦截参数', value);
+    }
+  }
+})
+```
+
+如果`Aspect`是一个对象，那么他根据对象的键来注册所对应的通知，格式和签名如下：
+
+```javascript
+aspect = {
+  /**
+   * 前置通知
+   * @param arguments args - 参数列表
+   */ 
+  before (...args) {},
+  /**
+   * 环绕通知
+   * @param arguments args - 参数列表
+   * @return ret - 返回值，必须传，否则后置通知无法获得
+   */ 
+  around (...args) {},
+  /**
+   * 后置通知，后置通知只通知函数执行完成，无法获取参数和返回值；
+   */ 
+  after () {},
+  /**
+   * 最终通知，可获取返回值
+   * @param {*} ret - 返回值
+   */ 
+  afterReturning (ret) {},
+  /**
+   * 异常通知，可获取异常信息
+   * @param Exception excp - 异常信息
+   */ 
+  afterThrowing (excp) {},
+}
+```
+
+在使用时，你可以选择注册一个函数，也可以选择注册一个对象，对象中注册了几个键，就会分别对应几个通知。如果注册同名通知，则会按照注册的顺序执行。下面举例说明：
+
+```javascript
+// 注册一个通知
+aop.advise(Math, 'log10', (context) => {
+  console.log('context', context); // 此时可以在函数执行前获取函数通知的上下文对象`Context`；
+});
+// 注册一个`before`通知
+aop.advise(Math, 'random', {
+  before (...args) {
+    console.log('before', ...args);
+  }
+});
+// 注册一个`afterReturning`通知
+aop.advise(Date, 'now', {
+  afterReturning (ret) {
+    console.log('afterReturning', ret);
+  }
+});
+// 同时注册`before`和`afterReturning`通知
+aop.advise(Math, 'log10', {
+  before (...args) {
+    console.log('before', ...args);
+  },
+  afterReturning (ret) {
+    console.log('afterReturning', ret);
+  },
+});
+// 上面的同时注册可以改写成数组模式，下面的写法是等价的
+aop.advise(Math, 'log10', [{
+  before (...args) {
+    console.log('before', ...args);
+  },
+}, {
+  afterReturning (ret) {
+    console.log('afterReturning', ret);
+  },
+}]);
+// 注册全部通知
+aop.advise(JSON, 'parse', {
+  before (...args) {
+    console.log('before', ...args);
+  },
+  around (...args) {
+    const context = aop.getContext();
+    return aop.proceed.apply(context.instance, args)
+  },
+  after () {
+    console.log('after');
+  },
+  afterReturning (ret) {
+    console.log('afterReturning', ret);
+  },
+  afterThrowing (excp) {
+    console.log('afterThrowing', excp);
+  } 
+});
+```
+
+> 注意，`around`环绕通知是一个比较特殊的通知，由于他包裹了整个函数，从`before`之前到即将抵达`after`，因此他相当于是函数执行完成时的那个点，此时**必须将返回值返回给后续通知，否则将导致返回值无法被正确返回**。是的，你没有听错，`around`的切入的不是一个点，而是一个块，所以他是可以改变函数原有逻辑的特定通知。切记**环绕通知必须有返回值，否则将导致整个函数无返回值**。
+
+上面的例子中，我们不难发现几件事：
+
+1. `around`必须有返回，在编写通知时要相当注意，返回值是从原点`proceed`获取的；
+2. 截获参数和返回值在某些情况下需要根据上下文环境才能捕获到，其编写的复杂度较高；
+3. 这里仅仅是做了一些日志功能，通知的用处不应该仅仅是做日志；
+
+是的，`AOP`本质上是一种非常难理解的，为了降低开发人员学习成本，简便的使用，我们还额外的提供了已经预设好的`Aspect`。回到我们之前导入`@aop`包的代码：
+
+```javascript
+import aop, { before, after, around, returning, throwing, cflow, monitor } from '@aop';
+```
+
+我们已经内置了这么多的`Aspect`，每一个`Aspect`只有一个回调函数作为参数，回调中会返回当前通知所能回传的信息，包括
+
+- `instance` - 函数被调用的实例对象
+- `method` - 函数的方法名
+- `args` - 参数集合
+- `ret` - 函数执行后的返回值
+- `excp` - 异常信息内容
+
+下面举一个简单的例子：
+
+```javascript
+aop.advise(Math, 'ramdom', [
+  // 前置通知
+  before(({ instance, method, args }) => {
+    console.log('before -> ', instance, method, args);
+  }),
+  // 环绕通知
+  around(({ instance, method, args, ret }) => {
+    console.log('around -> ', instance, method, args, ret);
+  }),
+  // 后置通知
+  after(({ instance, method }) => {
+    console.log('after -> ', instance, method);
+  }),
+  // 返回通知
+  returning(({ instance, method, ret }) => {
+    console.log('returning -> ', instance, method, ret);
+  }),
+  // 异常通知
+  throwing(({ instance, method, excp }) => {
+    console.log('throwing -> ', instance, method, excp);
+  }),
+]);
+```
+
+另外，我们还实现了一些常用的辅助通知，例如`monitor`，请看如下代码：
+
+```javascript
+aop.advise(console, 'error', [
+  monitor(({ calls, errors, times }) => {
+    console.log('调用次数', calls);
+    console.log('异常次数', errors);
+    console.log('调用时长', times);
+  })
+]);
+```
+
+现在我们来尝试运行如下的案例：
+
+```javascript
+const util = {
+  sum (value, ...args) {
+    if (!args.length) {
+      return value;
+    }
+    const [first, ...others] = args;
+    return util.sum(value + first, ...others);
+  },
+};
+
+aop.advise(util, 'sum', [{
+  before (...args) {
+    console.log('before 拦截参数:', ...args);
+  },
+}]);
+
+console.log(util.sum(1, 2, 3, 4));
+// 执行结果
+// before 拦截参数: 1 2 3 4
+// before 拦截参数: 3 3 4
+// before 拦截参数: 6 4
+// before 拦截参数: 10
+// 10
+```
+
+可以看到，对于递归函数，由于自身重复调用自身，因此会被通知拦截器重复拦截。为了解决这样的问题，你有两种解决办法。第一种是大家常见的命名函数映射：
+
+```javascript
+function sum (value, ...args) {
+  if (!args.length) {
+    return value;
+  }
+  const [first, ...others] = args;
+  return sum(value + first, ...others);
+}
+
+const util = { sum };
+```
+
+通过代码我们看出，`sum`函数被独立出来了，并且映射到了`util`对象上。在做AOP注入通知时，必须指定通知所属对象和方法签名。在调用`util.sum`方法时，是能够触发通知拦截器拦截函数的运行过程，但他并没有拦截`sum函数`，或者说我们可以把`const util = { sum };`方法改写为`const util = { getSum: sum };`并通过`aop.advise(util, 'getSum', ...)`的方式注入通知，最后的结果是一致的，其本质是通知拦截器拦截的就是`util.getSum`函数，而没有拦截无对象函数`sum`。
+
+但在实际应用中，有些场景不适用于这种写法时，可以采取我们提供的第二种辅助通知功能：
+
+```javascript
+aop.advise(util, 'sum', cflow(() => ({
+  before (...args) {
+    console.log('before', ...args);
+  },
+})));
+```
+
+`cflow`是一个通知栈计器器，用于计算通知是否是**栈顶**通知，即**第一次调用的函数**，这个第一次是针对递归调用的，并不是所有的。除了以上的方式，他还可以和其他的通知组合起来使用：
+
+```javascript
+aop.advise(util, 'sum', before(cflow((res) => {
+  console.log('before', ...res.args);
+})));
+```
+
+其实现效果和上面是一摸一样的，当然，我们对所有的基础类通知都加入了额外的配置，你完全可以不基于`cflow`去进行扩展：
+
+```javascript
+aop.advise(util, 'sum', before((res) => {
+  console.log('before', ...res.args);
+}, true));
+```
+
+其他的辅助`Aspect`将在后续陆续给出文档。
+
+### Context
+
+在上面的代码中，`around_in`进入时会在函数中得到一个`context`变量，此变量为通知的上下文对象。然而在具名的通知中，回调函数中是不包含上下文信息的，我们需要使用`aop.getContext()`方法来获得。我们现在说说`Context`对象的结构：
+
+```javascript
+context = {
+  instance,   // 通知对象的实例
+  joinPoint,  // 切入点，切入点可以通知的函数、函数名等信息
+  depth,      // 堆栈深度，默认值`0`，表示第一层，在递归调用中会逐次增加
+};
+```
+
+为什么要用一个回调参数来做上下文，而不是用`this`来代替呢？这是因为`this`容易被改写，且在`es6`的体系中他是容易被箭头函数重新指向新的上下文的。而`aop`对象，同时又作为`AOP`设计思路的容器，他就可以缓存当前执行函数的上下文以及注册的所有通知。所有，当你想要注册一个复杂通知时，又要保证通知函数的唯一性，就需要使用这种底层接口进行设计。现在我们来手动实现一个`monitor`。
+
+首先，为了节省注册的通知函数，我们将`monitor`导出为一个对象，他具备三种通知：
+
+```javascript
+let calls = 0;
+let errors = 0;
+let times = 0;
+monitor = {
+  before () {
+    times = window.performance.now();
+  },
+  after () {
+    ++calls;
+  },
+  afterThrowing () {
+    ++errors;
+  }
+}
+```
+
+但是，我们暴露了`calls`、`errors`、`times`这三个变量。我们使用函数闭包将变量包裹在函数内部。
+
+```javascript
+const monitor = (() => {
+  let calls = 0;
+  let errors = 0;
+  let times = 0;
+  return {
+    before () {
+      times = window.performance.now();
+    },
+    after () {
+      ++calls;
+    },
+    afterThrowing () {
+      ++errors;
+    },
+  }
+})();
+```
+
+现在，monitor是一个经过私有化封装的对象，但是我们无法得到`calls`、`errors`、`times`这三个变量。现在，我们给这个`IIFE`变为函数定义，并传递一个回调函数`callback`，用于接受这三个值：
+
+```javascript
+const monitor = (callback) => {
+  let calls = 0;
+  let errors = 0;
+  let times = 0;
+  return {
+    before () {
+      times = window.performance.now();
+    },
+    after () {
+      ++calls;
+      callback({ calls, errors, times: window.performance.now() - times });
+    },
+    afterThrowing () {
+      ++errors;
+    },
+  }
+};
+```
+
+现在，我们就可以像刚才一样使用此辅助`monitor`，然后我们来扩展一下，把更多东西回传给回调函数：
+
+
+```javascript
+const monitor = (callback) => {
+  let calls = 0;
+  let errors = 0;
+  let times = 0;
+  return {
+    before () {
+      times = window.performance.now();
+    },
+    after () {
+      ++calls;
+      const context = aspect.getContext();
+      const { instance, joinPoint } = context;
+      callback({ instance, method: joinPoint.targetName, calls, errors, times: window.performance.now() - times });
+    },
+    afterThrowing () {
+      ++errors;
+    },
+  }
+};
+```
+
+现在我们连通知所对应的**对象**和**方法**都能够回传了。使用方式和之前的示例一致，当然这仅仅是一种简单的写法，目的是告诉你`context`是如何使用的。而具体的`aop.getContext`为何能获得所执行函数的上下文，这些都是比较复杂的算法，由`aop`容器内部所决定，我们不需要有过多的了解，你只需要知道他一定能得到即可。
+
+### JoinPoint
+
+`JoinPoint`切入点表示通知切入的时机，每一个通知都是有其切入时机的。
+
+面向切面的编程用一个简单的例子就可以概括，假设有一个执行函数：
+
+```javascript
+const obj = {
+  exec: value => value,
+}
+```
+
+当我们调用`obj.exec('hello')`的时候，函数快速的接受参数、快速的执行、快速的将数据返回、快速的进行内存回收。一切都是那么的快，以至于你都不知道如何去区分这些阶段。但是，在刚才的描述中，你会发现，函数的执行其实分为如下阶段的：
+
+1. 开始解析函数（定义并且进行预编译，但并没有执行）；
+2. 接受参数，准备执行；
+3. 执行函数；
+4. 函数执行完毕，接受返回值；
+5. 抛出返回值，执行结束
+
+当这个看似极快的速度被放慢时，我们发现，简简单单的一句执行函数原来有那么多步骤。注意了，这些步骤就是`AOP`所要拦截的切入点，即`JoinPoint`。结合之前的图，拦截的顺序为：
+
+- `around_in`拦截**阶段1**，并生成`around`通知；
+- `before`拦截**阶段2**，并执行`before`通知；
+- `after`拦截**阶段4**，先执行`around`通知，再执行`after`通知；
+- `afterReturning`拦截**阶段5**，并执行`afterReturning`通知；
+- `afterThrowing`拦截**阶段3**，如果有异常，会先执行`after`通知，再执行`afterThrowing`通知；
+
+至此，每一个通知都能响应到所对应的切入点`JoinPoint`，切入点我们可以获取如下对象：
+
+```javascript
+joinPoint = {
+  // 函数主体
+  target,
+  // 函数名
+  targetName,
+};
+```
+
+### proceed
+
+`proceed`原点是上述`joinPoint`中的**阶段3**，对于`around`通知，他必须有返回值，此时我们可以拿到`aop.proceed()`以退回到函数的真正执行阶段。你可以理解为`proceed`就是原函数的克隆，`aop`是将一个函数拆解成了上上下下多个通知，并将真正执行的函数替换成了其克隆版本。这里为啥要克隆呢？如果不克隆，将意味他自运行的结构又会被`aop`容器所拦截到，然后就是无限的递归了。
+
+> 至此，我们对`AOP`的相关内容都已经梳理完毕，当然，`AOP`在其他面向对象的语言体系中还有其他的名词词汇，这里我们就不多说了。以上的所有内容都是基于`ES5`的实现，如果使用`ES6`，还可以使用注解的方式来实现，其方便程度更加直观。后续我们还会提供`TypeScript`版本的`AOP`功能，就让我们拭目以待。
+
+
+## 案例
+
+我们以商品优惠为例，实现如下：
+
+<Canvas>
+<Story name="案例">
+{{
+  template: `
+    <a-form-model :model="record">
+      <a-form-model-item label="购买清单">
+        <template
+          v-for="(order, index) in record['orderList'] || $set(record, 'orderList', [])"
+        >
+          <span :key="index">
+            {{ index + 1 }} - {{ order.name }}(¥{{ order.price }}) x {{ order.total }} = ¥{{ order.price * order.total }}
+            <a-icon
+              type="plus-circle"
+              @click="plus(order)"
+            />
+            &nbsp;&nbsp;
+            <a-icon
+              type="minus-circle"
+              @click="minus(order)"
+            />
+            <br :key="index" />
+          </span>
+        </template>
+      </a-form-model-item>
+      <a-form-model-item label="优惠政策">
+        <a-checkbox
+          v-for="(discount, index) in record['discountList'] || $set(record, 'discountList', [])"
+          :key="index"
+          v-model="discount.checked"
+        >
+          {{ discount.name }}
+        </a-checkbox>
+      </a-form-model-item>
+      总价： {{ result.total }}
+      到手价：{{ result.final }}
+    </a-form-model>
+  `,
+  PayDiscount (discount) {
+    return {
+      afterReturning (payResultInfo) {
+        payResultInfo.final *= discount;
+      },
+    };
+  },
+  PayReduce () {
+    return {
+      afterReturning (payResultInfo) {
+        if (payResultInfo.total >= 1000) {
+          payResultInfo.final -= 200;
+        }
+      },
+    };
+  },
+  Result: {
+    computed (orderList) {
+      const total = orderList.reduce((price, order) => price + order.price * order.total, 0);
+      return { total, final: total };
+    },
+  },
+  data () {
+    const op = this.$options;
+    return {
+      record: {
+        orderList: [{
+          name: '钢笔',
+          price: 10,
+          total: 0,
+        }, {
+          name: 'LV包',
+          price: 3000,
+          total: 0,
+        }, {
+          name: 'macbook',
+          price: 20000,
+          total: 0,
+        }, {
+          name: '抽纸',
+          price: 3,
+          total: 0,
+        }],
+        discountList: [{
+          name: '满1000减200',
+          advice: op.PayReduce(),
+          checked: false,
+        }, {
+          name: '折扣',
+          advice: op.PayDiscount(0.88),
+          checked: false,
+        }],
+      },
+      tracer: null,
+    }
+  },
+  computed: {
+    result () {
+      return this.$options.Result.computed(this.record.orderList);
+    },
+  },
+  watch: {
+    record: {
+      deep: true,
+      handler () {
+        if (this.tracer) {
+          aop.unadvise(this.tracer);
+          this.tracer = null;
+        }
+        this.tracer = aop.advise(this.$options.Result, 'computed', this.record.discountList.filter((item) => item.checked).map((item) => item.advice));
+      },
+    },
+  },
+  methods: {
+    plus (order) {
+      order.total += 1;
+    },
+    minus (order) {
+      if (order.total > 0) {
+        order.total -= 1;
+      }
+    },
+  }
+}}
+</Story>
+</Canvas>
+
+
+
+
+
+
+
+
+
+
+

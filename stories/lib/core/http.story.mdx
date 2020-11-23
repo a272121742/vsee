@@ -1,10 +1,20 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|核心（Core）/网络请求（http）" />
+<Meta title="框架/核心（Core）/网络请求（http）" />
 
 # 网络请求
 
 我们将所有的资源请求都封装成一个`@http`模块，这是一个对`axios`的封装。
+
+在网络请求器内部，我们有多套`axios`的实例，例如：
+
+- core - 对接主业务服务的资源请求器；
+- mock - 对接模拟数据的网络请求器；
+- proxy - 对接其他代理服务器，该代理无任何主业务特性，可用于请求外部数据；
+- static - 对接静态资源服务的下载器；
+- download - 对接业务主服务的下载器，该下载器是`core`的拓展实例；
+
+但作为开发者并不需要知道这些。而是直接使用公开的方法去调用即可。
 
 ## 请求规范
 
@@ -43,6 +53,7 @@ import $ from '@http';
 ```javascript
 const $ = {
   /**
+   * axios.core实例
    * 使用`GET`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} params - `query`参数
@@ -50,6 +61,7 @@ const $ = {
    */ 
   get (url, params, config) {},
   /**
+   * axios.core实例
    * 使用`DELETE`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} params - `query`参数
@@ -57,6 +69,7 @@ const $ = {
    */ 
   delete (url, params, config) {},
   /**
+   * axios.core实例
    * 使用`HEAD`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} params - `query`参数
@@ -64,6 +77,7 @@ const $ = {
    */ 
   head (url, params, config) {},
   /**
+   * axios.core实例
    * 使用`POST`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} data - `body`参数
@@ -71,6 +85,7 @@ const $ = {
    */ 
   post (url, data, config) {},
   /**
+   * axios.core实例
    * 使用`PUT`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} data - `body`参数
@@ -78,6 +93,7 @@ const $ = {
    */ 
   put (url, data, config) {},
   /**
+   * axios.core实例
    * 使用`PATCH`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} data - `body`参数
@@ -85,6 +101,7 @@ const $ = {
    */ 
   patch (url, data, config) {},
   /**
+   * axios.core实例
    * 使用`OPTIONS`方式提交数据请求
    * @param {String} url - 请求地址
    * @param {*} params - `query`参数
@@ -92,17 +109,39 @@ const $ = {
    */ 
   options (url, params, config) {},
   /**
-   * 使用`axios`自定义方式请求数据
+   * axios.proxy实例
+   * 使用代理进行自定义方式请求数据
+   * 注意，该请求不是用来对接后台的主服务，是用来请求其他跨域或外部站点的
    * @param {Object} config - 请求配置，参考http://www.axios-js.com/zh-cn/docs/#%E8%AF%B7%E6%B1%82%E9%85%8D%E7%BD%AE
    */ 
   request (config) {},
   /**
+   * axios.proxy实例
    * 使用`jsonp`方式请求数据
    * @param {String} url - 请求地址
    * @param {*} params - `query`参数
    * @param {*} callback - 非同源资源请求的回调函数名称，默认值`callback`
    */ 
   jsonp (url, params, callback = 'callback') {},
+  /**
+   * axios.static实例
+   * 使用静态资源的方式下载文件
+   * @param {String} url - 请求地址，可以是内部站点，也可以是外部站点。如果为外部站点，请注意跨域问题。
+   */
+  static (url) {}, 
+  /**
+   * axios.download实例
+   * 使用动态资源的方式下载文件，区分于`静态资源`，该服务是一个受限的内部服务。
+   * @param {String} url - 请求地址
+   * @param {*} params - `query`参数
+   * @param {*} config - 额外的配置，其结构为`{
+   *    filename: '文件名称', // 文件名称
+   *    nameCallback: name => `preifx_${name}`, // 文件名称函数
+   *    headers: {}, // 请求头
+   *    method: 'POST, // 请求方式
+   * }`
+   */ 
+  download (url, params, config) {}
 }
 ```
 
@@ -148,7 +187,7 @@ npm run build:sit --project=idm --test  // 生产环境下启用代理模式来�
 
 我们对请求成功的数据，也做了进一步处理：
 
-1. 如果响应数据为`Blob`，自动实现下载，并返回文件名；
+1. 如果响应数据为`Blob`，自动实现下载，并返回文件名（已经废除，改为开发者自行调用`$.download`进行下载）；
 2. 如果响应数据为二进制，则返回二进制数据供前端展现（例如服务端验证码）；
 3. 如果响应数据中`code`为`401`，则在生产环境下直接跳转到登录页；
 4. 如果响应数据为合法数据，则直接传递给上层组件；否则异常处理；
@@ -161,11 +200,72 @@ npm run build:sit --project=idm --test  // 生产环境下启用代理模式来�
 2. 如果包含登录模块，则登录模块的会被拦截请求数据，并将`token`信息注入到今后的所有资源请求中；
 3. 请求前检测`token`，如果没有，则退出系统并跳转到登录模块；
 
+## 公开配置
+
+我们为`@http`公开了部分配置，你可以在`~/config.js`文件中追加，配置内容如下：
+
+```javascript
+/**
+ * 网络相关配置
+ */
+HTTP: {
+  /**
+   * 超时时间，默认值`6000`
+   */ 
+  TIMEOUT: 6000,
+  /**
+   * 附加请求头，默认值`{}`；
+   * 注意，附加请求头不代表会替换所有请求头内容，有一部分的请求头内容是计算之后得到的，无法覆盖；
+   */ 
+  HEADER: {},
+  /**
+   * 主代理，用于切换到其他代理服务器上进行代理联调
+   */ 
+  PROXY: null,
+  /**
+   * GET请求的附加参数，例如可以增加统一的时间戳
+   * 默认值`{}`
+   */ 
+  GET_PARAMS: {},
+  /**
+   * 是否开启模拟日志，默认`true`
+   */ 
+  MOCK_LOG: true,
+  /**
+   * 重连地址，如果主连接无法连接，会尝试使用`RETRY_LIST`所配置列表进行连接
+   */ 
+  RETRY_LIST: [],
+  /**
+   * `params`参数格式化，这是应用在`get`、`delete`请求中的。
+   * 默认值`{}`
+   */ 
+  PARAMS_SERIALIZER: {},
+  /**
+   * `axios`的注入函数，用于配置额外的注入
+   */ 
+  INTERCEPTORS: {},
+}
+```
+
+其中`INTERCEPTORS`配置案例为：
+
+```javascript
+INTERCEPTORS: {
+  request (req) {
+    req.headers.xxx = 'xxx';
+  },
+  response (res) {
+    res.headers.yyy = 'yyy';
+  }
+}
+```
+
 ## feature
 
-- [ ] 文件下载（静态下载、外域资源下载以及下载兼容性解决，考虑使用`FileSaver.js`）
-- [ ] 请求重连（已完成未配置）
-- [ ] 公开更多配置
+- [ ] 下载兼容性（考虑接入`FileSaver.js`源码思路）
+- [x] 文件下载（静态下载、外域资源下载）
+- [x] 请求重连（已完成未配置）
+- [x] 公开更多配置
 
 
 

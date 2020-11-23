@@ -1,6 +1,6 @@
-import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+import { Story, Preview, Meta, Props, Canvas, ArgsTable } from '@storybook/addon-docs/blocks';
 
-<Meta title="组件库|Alert告示/SingleMessage单例消息" />
+<Meta title="组件库/Alert告示/SingleMessage单例消息" />
 
 # 单例消息 SingleMessage
 
@@ -12,24 +12,19 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 > 拓展属性： [] 
 
-> 备注： 使用底层代码拓展，拓展到`Vue.prototype.$message`中；
+> 备注： 使用底层代码拓展，拓展到`Vue.prototype.$message`中；你在项目中，无论是否导入过`Vue.prototype.$message (import { message } from 'ant-design-vue';)`，我们都会为你生成这个对象，因为他在`vsee`的框架内是内置的。
 
 产生原因： 由于AntDesign中不存在单例的消息框，这在某些场合下使用非常的不方便。例如在工作流处理中，提交数据前会经过很多数据处理，但是每一次处理的时候都会弹出各种弹窗，消息弹窗过程中缺乏自然的流动性，因此设计出一个单例弹窗，以确保系统消息的唯一性。
 
-## 引入方法
+## 引入
 
-```js
-import Vue from 'vue';
-// 先引入Ant Design Vue并注册
-import Antd from 'ant-design-vue';
-Vue.use(Antd);
-// 注册成功后，引入该组件，并挂载拓展属性
-import SingleMessage from '@comp/alert/SingleMessage.js';
-Vue.prototype.$message.show = SingleMessage.show;
-Vue.prototype.$message.close = SingleMessage.close;
-```
+该实例已经内置到`vsee`框架内部，不再提供外部引入机制。内部代码可以直接使用`this.$message`对象。
 
-## 属性文档
+`this.$message`有两个方法——`show`和`close`。如果项目中引入了消息对象，那么这两个方法是属于扩展的，反之这两个方法将构成消息对象。
+
+## $message.show({ type, content, duration, onClose })
+
+开启消息
 
 | 配置     | 中文     | 说明                                                         |
 | -------- | -------- | ------------------------------------------------------------ |
@@ -38,8 +33,9 @@ Vue.prototype.$message.close = SingleMessage.close;
 | duration | 延迟时间 | 1. 如果是**loading模式**，设置为`null`时，无限加载，可通过调用函数关闭；设置为数字时，计时器归零后自动出现关闭按钮<br />2. 如果是**info模式**（包含**info**、**warning**、**success**、**error**），设置为null时，可手动点击关闭按钮进行关闭操作；否则，计时器归零后自动关闭； |
 | onClose  | 关闭回调 | 关闭之后执行的回调函数                                       |
 
+## $message.close()
 
-
+关闭消息
 
 ## 方法指引
 
@@ -69,7 +65,7 @@ this.$message.show({
 
 单例的消息框永远只会弹出一个，即便你多次连续调用，仍然只会出现这一个，并且不会出现闪烁现象。该案例中“批处理”将展示一个连续调用的模拟。
 
-<Preview>
+<Canvas>
 <Story name="基本用法">
 {{
   template: `
@@ -119,11 +115,11 @@ this.$message.show({
   }
 }}
 </Story>
-</Preview>
+</Canvas>
 
 ### 倒计时
 
-<Preview>
+<Canvas>
 <Story name="倒计时">
 {{
   template: `
@@ -146,7 +142,7 @@ this.$message.show({
   }
 }}
 </Story>
-</Preview>
+</Canvas>
 
 ### 手动关闭
 

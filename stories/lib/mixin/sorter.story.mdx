@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|混入器（Mixin）/排序器" />
+<Meta title="框架/混入器（Mixin）/排序器" />
 
 # 排序器
 
@@ -12,7 +12,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 ```html
 <template>
-  <a-table>
+  <a-table @change="tableChangeHandle">
       <template v-for="(col, index) in $options.columns">
         <!-- 4. 使用内置的`sortable`和`orderby`过滤器 -->
         <a-table-column
@@ -49,6 +49,20 @@ export default {
       sortField: ['name'],
     };
   },
+  created () {
+    this.fetch();
+  },
+  methods: {
+    fetch () {
+      // 6. 将变更后的`sorter`提交给服务端，请自行实现`request`请求
+      request({ ...this.serverSorter });
+    },
+    // 5. 监听表格`change`事件
+    tableChangeHandle (pagination, filters, sorter) {
+      this.sorter.set(sorter.field, sorter.order);
+      this.fetch();
+    },
+  }
 }
 </script>
 ```
@@ -142,4 +156,15 @@ export default {
 
 `SERVER_PARAMS`是一个函数配置，包含参数`{ field（排序字段）, type（排序类型） }`。该案例中将字段进行了重新映射，发送给服务端的字段为`{ order, orderField }`。
 
+## 说明
+
+为什么`sorter`的使用如此的麻烦？
+
+是的，相对于`pagination`、`selection`来说，他的使用的确是很麻烦，他们都是`table`组件的附属组件，但相对其他组件来说，多了如下几个部分：
+
+1. 额外的属性配置`sortField`，他是`sorter`对象以外的字段配置；
+2. 额外的过滤器`sortable`和`orderby`；
+3. 额外的表格监听，在监听需要手动设置`sorter`；
+
+是的，这么做是相当有原因的，因为原生的`table`组件和`pagination`、`rowSelection`本身就是有联动的。以`pagination`为例，当用户切换分页时，本身是触发`pagination`的`change`事件，再触发到`table`的`change`事件。然而`sorter`本身并没有和`table`产生联动，甚至`sorter`都不是`table`的一个附属组件，所以所谓的`sorter`法身变化，只是出发了`table`的一个属性变化。`sorter`所谓属性来说，并不知道自己是被哪个表格所绑定，因此只能被动的接受`table`的change事件传递的新排序信息来手动进行更新。
 

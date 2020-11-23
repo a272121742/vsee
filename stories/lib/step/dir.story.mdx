@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|起步（Step）/目录结构" />
+<Meta title="框架/起步（Step）/目录结构" />
 
 ## 工程化
 
@@ -8,20 +8,7 @@ import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
 ## 平台
 
-`vsee`是构建在`vue-cli`基础上的，并对整个项目进行了一个简单的分层，你可以很容易分别他们：
-
-```sh
-- vsee          // 框架的根目录
-  - .storybook  // storybook的配置目录
-  - components  // 项目的组件包
-  - config      // vue-cli的相关配置包
-  - lib         // 项目的插件库
-  - projects    // 项目集
-  - public      // 静态资源包
-  - stoires     // 故事书目录
-  - test        // 测试目录
-  ...           // 其他 配置文件
-```
+`vsee`是构建在`vue-cli`基础上的，并对整个项目进行了一个简单的分层，所有的分层将会在自动化模块中得以体现，这些自动化模块是`vsee`框架的核心。
 
 在这个框架中，大部分的配置文件和`vue-cli`是极其相似的，只是目录的分解不一样而已。但`vsee`仍然集成了很多有用的环境，这里不仅可以开发多套项目，同时可以将自己构建项目的过程、心得、组件等书写成故事书，让你在一个平台中的多个项目共享一个生态环境，同时发布一个可以让大家直观可见的组件库和知识库。
 
@@ -51,7 +38,17 @@ import { getUUID } from '@util/datahelper.js'; // 加载数据助理中的一个
 // ...
 ```
 
-后续会有更多的文档分享如何去使用他们。
+除了这些工具型的组件，我们还有更多的组件例如：
+
+```sh
+- @router    // 自动化路由
+- @store     // 模块化数据存储中心
+- @http      // 网络数据加载器
+- @i18n      // 国际化中心
+- @mock      // 数据模拟器
+```
+
+等等组件，除此以外，还包含有组册好的别名路径，方便开发者进行快速定位。
 
 ## 项目
 

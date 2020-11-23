@@ -1,0 +1,91 @@
+import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
+
+<Meta title="框架/助手（Helper）/颜色" />
+
+
+# 颜色助理【新】
+
+主要负责进行颜色处理或转换，主要使用的`tinycolor2`作为基础算法库。如果你需要的函数不在一下范围内，可自行引用[tinycolor2](https://github.com/bgrins/TinyColor)进行使用（`import tinycolor from 'tinycolor2'`）。
+
+# 颜色模型
+
+颜色模型分类有很多，这里我们依据`tinycolor`库所能处理的颜色范围和框架自身颜色处理方式，仅包含如下集中模型：
+
+1. `Name`模型，例如`red`、`blue`、`pink`等；
+2. `Hex`模型，例如`#00FF00`、`#369C94`等；
+3. `RGB`模型，例如`rgba(66, 0, 0)`、`rgba(0, 0, 66)`等；
+4. `RGBA`模型，例如`rgba(128, 0, 0, 0.4)`、`rgba(0, 0, 128, 0.14)`等；
+
+## generate(color)
+
+生成一组`ant-design`风格的色值色盘（1到10号颜色），该算法从`ant-desing`源码中摘录，返回一组`Hex`颜色，数组长度为10。
+
+```javascript
+import { generate } from '@util/color-helper.js';
+
+generate('red'); // => ["#ffeae6", "#ffafa3", "#ff887a", "#ff5d52", "#ff3029", "#ff0000", "#d90007", "#b3000c", "#8c000e", "#66000e"]
+generate('#0097e0'); // => ["#e6fbff", "#a3edff", "#7ae0ff", "#50cdfa", "#26b1ed", "#0097e0", "#0076ba", "#005994", "#003e6e", "#002647"]
+```
+
+## colorPalette(color, level = 6)
+
+`generate`函数的快速选择器，返回值为`Hex`模型，`colorPalette('red', 6)`等价于`generate('red')[6 - 1]`;
+
+> `level`的范围是`1到10`。因此6号色对应`generate`生成的数组下标为5
+
+## color2rgb(sourceColor) 
+
+将任意颜色通过背景叠加换算得到纯的`RGB`模型数值；
+
+```javascript
+import { color2rgb } from './color-helper.js';
+
+color2rgb('rgba(112,39,85, 0.65)'); // => rgb(162, 115, 145)
+```
+
+## color2rgba(sourceColor)
+
+将任意颜色通过背景叠加运算逆运算得到`RGBA`模型数值，该运算是`color2rgb`的逆运算。
+
+```javascript
+import { color2rgba } from './color-helper.js';
+
+color2rgba('rgb(162, 115, 145)'); // => rgba(112,39,85, 0.65)
+```
+
+## gradient(colors)
+
+渐变生成器，生成一个渐变函数，该渐变函数传入一个`0~1`的浮点数字，得到该数值百分比位置所在渐变色盘下的颜色色值。`colors`是一个颜色数组，最少传入两个，如果：
+
+1. 不传入颜色或传入颜色非法，生成函数无论传入何值，终将返回`#000000`黑色；
+2. 如果传入`color`或`[color]`，生成函数无论传入何值，终将返回`color`所对应颜色色值的16进制表达式；
+3. 传入[color1, ..., colorN]，将生成一个正常的生成器函数，该函数输入`0~1`的任何值将返回`color1`到`colorN`中间百分比所在颜色的色值。
+
+生成器返回结果均为`Hex`颜色模型。
+
+```javascript
+import { gradient } from './color-helper.js';
+
+const gradientBlack = gradient();
+const gradientSingleColor = gradient('red');
+const gradientColor = gradient(['red', 'blue']);
+
+gradientBlack();  // => #000000
+gradientSingleColor(); // => #ff0000
+gradientColor(0);  // => #bf0040
+gradientColor(0.25);  // => #b3004d
+gradientColor(0.5);  // => #800080
+gradientColor(0.75);  // => #4000bf
+gradientColor(1);  // => #0000ff
+```
+
+## fade(color, opacity)
+
+方法同`less-api`中的`fade`算法，计算颜色`color`对应透明度`opacity`的`RGBA`色值，如果颜色本身就是`RGBA`类型的，并非叠加透明度，而是修改透明度。
+
+```javascript
+import { fade } from './color-helper.js';
+
+fade('red', 0.65);  // => rgba(255, 0, 0, 0.65)
+fade('rgba(124, 244, 4, 0.4)', 0.65); // => rgba(124, 244, 4, 0.65)
+```

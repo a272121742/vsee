@@ -1,7 +1,159 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|助手（Helper）/数据" />
+<Meta title="框架/助手（Helper）/数据" />
 
-# 数据助手
+# 数据助理【新】
 
-可以用于进行数据处理
+主要负责进行数据转换，虽然我们推荐直接使用函数式编程中的经典库`Ramda`和`lodash`，但我们仍然补充了一些常见的方法以弥补他们的不足。
+
+> 新版本的数据处理，移除了`tree`相关的处理函数，交给独立的`tree-helper.js`进行，并做了数据处理的重构；
+
+## string2any(str)
+
+`string`通过`JSON.parse`进行转换，如果转换失败，将返回一个`void 0`；
+
+```javascript
+import { string2any } from '@util/data-helper.js';
+
+string2any('["a", "b"]');  // => ['a', 'b']
+string2any('{ "key": 1 }');  // => { key: 1 }
+string2any('123');  // => 123
+string2any('"abc"'); // => 'abc'
+string2any('true');  // => true
+stirng2any('{key: 1}'); // => void 0
+```
+
+## string2json(str)
+
+类json的`string`，以`json`格式为转换目标，将原有字符串转换成`json`格式，如果转换失败，将返回一个**空对象**`{}`；
+
+```javascript
+import { string2json } from '@util/data-helper.js';
+
+string2json('{ "key": 1 }');  // => { key: 1}
+string2json();  // => {}
+```
+
+## string2array(str)
+
+类array的`string`，以`Array`格式为转换目标，将原有字符串转换成`Array`格式，如果转换失败，将返回一个**空数组**`[]`；
+
+```javascript
+import { string2array } from '@util/data-helper.js';
+
+string2array('["a", "b"]');  // => ['a', 'b']
+string2array();  // => []
+```
+
+## convert(fn, source) - curry
+
+通过任意函数`fn`进行数据抓换，`fn`函数接受一个`source`参数作为转换前的数据。
+
+```javascript
+import { convert } from '@util/data-helper.js';
+
+const converter = (before) => ({
+  id: parseInt(before.id),
+  items: before.children,
+});
+
+const source = { id: '123', children: [ 1, 2, 3 ] };
+
+// 直接调用 converter(source)， 或者
+convert(converter, source); // => { id: 123, items: [1, 2, 3]}
+// 或者分步骤调用
+const parser = convert(converter);
+parser(source);  // 效果与之前等价
+```
+
+通过案例发现，使用`converter`和使用`convert(converter)`效果完全等价，但他们的区别是：
+
+1. convert函数是`curry`的，是可选延迟操作或者一次性操作的；
+2. convert函数是`immutability`的，`converter`即使对`source`进行了引用修改也不会影响原始数据，是安全的；
+
+## freeze(obj)
+
+深度冻结对象及其属性，是`Object.freeze`的递归级封装，如果对象属性仍然是一个对象，无论是`Object`还是`Array`，都会进行深度冻结，保持整体的数据对象的不可变性。由于进行了深度递归，因此是比较消耗性能的操作，在没有特别需求的时候，可使用`Object.freeze`进行浅冻结。
+
+```javascript
+import { freeze } from '@util/data-helper.js';
+
+const freezedObjct = freeze({
+  id: 1,
+  name: 'item',
+  children: [{ id: 2, name: 'node1'}, { id: 3, name: 'node2' }],
+});  // freezedObjct内部属性将无法进行修改和删除
+
+```
+
+## clearObserver(obj)
+
+深度清理对象的观察者对象，将已经进行双向绑定的对象进行解除后返回，原有绑定关系不变。
+
+
+```javascript
+import Vue from 'vue';
+import { clearObserver } from '@util/data-helper.js';
+
+const vm = new Vue({
+  data: {
+    id: 1,
+    name: 'item',
+    children: [{ id: 2, name: 'node1'}, { id: 3, name: 'node2' }],
+  }
+});
+
+vm.$data; // 被观察对象
+
+const clearedObject = clearObserver(vm.$data);  // => 获取到一份克隆数据，该数据是未双向绑定的对象
+```
+
+## ck(sourceKey, targetKey) - curry
+
+复制对象某个键值（copy-key），并作为新键的值。新建的键值和原来没有引用关系。主要用途在数据对象如果不符合预期的格式时，可用此方法进行`key`的克隆操作，并保留原始数据以作对比或参考。
+
+```javascript
+import { ck } from '@util/data-helper.js';
+
+const types = { id: '1', label: 'label' };
+
+ck('label', 'title');  // => { id: '1', label: 'label', title: 'label' };
+```
+
+## ck(sourceKey, targetKey) - curry
+
+修改对象某个键值的键（rename-key），新建的键值和原来没有引用关系。主要用途就是为`key`改名。区别与`ck`，他是先调用`ck`后删除原有键。
+
+```javascript
+import { rk } from '@util/data-helper.js';
+
+const types = { id: '1', label: 'label' };
+
+rk('label', 'title');  // => { id: '1', title: 'label' };
+```
+
+## ckPath(sourceKeyPath, targetKeyPath)
+
+`ck`函数的路径版本，即复制`sourceKeyPath`路径上的值到新的`targetKeyPath`路径上。
+
+```javascript
+import { ckPath } from '@util/data-helper.js';
+
+const types = { id: '1', label: { fontSize: 14, fontColor: 'red'} };
+
+ckPath(['label', 'fontColor'], ['label', 'color']);  // => { id: '1', label: { fontSize: 14, fontColor: 'red', color: 'red'} };
+```
+
+## rkPath(sourceKeyPath, targetKeyPath)
+
+`rk`函数的路径版本，即将对象`sourceKeyPath`路径上的值更改为`targetKeyPath`，原路径上的值将删除，如果原路径上的值在被删除后，所在路径为空，则路径也将逐步被删除。
+
+```javascript
+import { rkPath } from '@util/data-helper.js';
+
+const types = { id: '1', label: { fontSize: 14, fontColor: 'red'} };
+
+rkPath(['label', 'fontColor'], ['label', 'color']);  // => { id: '1', label: { fontSize: 14, color: 'red'} };
+```
+
+

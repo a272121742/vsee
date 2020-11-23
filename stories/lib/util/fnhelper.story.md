@@ -1,6 +1,6 @@
 import { Story, Preview, Meta, Props } from '@storybook/addon-docs/blocks';
 
-<Meta title="框架|工具（Util）/函数助理（fnhelper）" />
+<Meta title="框架/工具（Util）/函数助理（fnhelper）" />
 
 # 函数助理
 
