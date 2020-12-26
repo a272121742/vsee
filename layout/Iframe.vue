@@ -52,7 +52,8 @@ export default {
       if (!this.loaded) {
         this.$nextTick(() => {
           this.loaded = true;
-          setTimeout(() => {
+          const id = setTimeout(() => {
+            clearTimeout(id);
             this.opacity = 1;
           }, 200);
         });
