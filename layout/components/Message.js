@@ -1,116 +1,128 @@
-import Notification from 'ant-design-vue/lib/vc-notification';
 import Vue from 'vue';
+import Notification from 'ant-design-vue/lib/vc-notification';
 import { MESSAGE } from '@lib/config.js';
 import Message from './Message.vue';
 import AIcon from './AIcon.vue';
 
-const { TOP, GLOBAL } = MESSAGE;
+const { TOP = 64, GLOBAL } = MESSAGE;
 
-/**
- * 三种弹出机制，
- * 1. 不显示倒计时，但显示关闭；
- * 2. 不显示关闭，显示倒计时，有loading状态；
- * 3. 显示loading，但不显示时间和关闭
- */
+let defaultDuration = null;
 
-// 默认不自动关闭
-const defaultDuration = null;
-
-const defaultTop = `${TOP}px`;
+let defaultTop = `${TOP}px`;
 // 消息实例
 let messageInstance;
-const prefixCls = 'ant-message';
-const transitionName = 'move-up';
-const getContainer = () => document.body;
+let prefixCls = 'ant-message';
+let transitionName = 'move-up';
+let getContainer = () => document.body;
 const containerID = 'GLOBAL_MESSAGE_KEY';
 
 /**
- * 创建单例实例
- * @param {*} callback
+ * 获取消息框实例
+ * @param {*} callback 回调函数
  */
 function getMessageInstance (callback) {
-  if (messageInstance) {
-    callback(messageInstance);
-    return;
-  }
-  Notification.newInstance({
-    prefixCls,
-    transitionName,
-    style: { top: defaultTop }, // 覆盖原来的样式
-    getContainer,
-  }, (instance) => {
-    if (messageInstance) {
-      callback(messageInstance);
-      return;
-    }
-    messageInstance = instance;
-    callback(instance);
-  });
+  return messageInstance
+    ? callback(messageInstance)
+    : Notification.newInstance(
+      {
+        prefixCls,
+        transitionName,
+        style: {},
+        getContainer,
+      },
+      (instance) => {
+        callback((messageInstance = instance));
+      },
+    );
 }
-
-// type NoticeType = 'info' | 'success' | 'error' | 'warning';
 
 let timer;
 let argsDefault;
 
+function run (args) {
+  const hide = notice(args);
+  const isNumber = typeof args.duration === 'number';
+  if (isNumber) {
+    args.duration -= 1;
+    if (args.duration < 0) {
+      if (timer) {
+        clearInterval(timer);
+      }
+      if (args.type === 'loading') {
+        args.close = true;
+        return false;
+      }
+      if (args.onClose && args.onClose instanceof Function) {
+        args.onClose();
+      }
+      hide();
+      args.duration = null;
+    }
+  } else {
+    args.close = true;
+  }
+  return args.duration > 0;
+}
+
 const api = {
-  show: (args) => {
+  config (options) {
+    if (options.top !== undefined) {
+      defaultTop = options.top;
+    }
+    if (options.duration !== undefined) {
+      defaultDuration = options.duration;
+    }
+    if (options.prefixCls !== undefined) {
+      ({ prefixCls } = options);
+    }
+    if (options.getContainer !== undefined) {
+      ({ getContainer } = options);
+    }
+    if (options.transitionName !== undefined) {
+      ({ transitionName } = options);
+    }
+    messageInstance = null;
+  },
+  show (args) {
+    clearInterval(timer);
     argsDefault = { ...args };
     if (!(argsDefault.duration >= 0)) {
       argsDefault.duration = null;
+      argsDefault.close = true;
     }
-    if (timer) {
-      clearInterval(timer);
-    }
-    function run () {
-      const hide = notice(argsDefault);
-      const isNumber = typeof argsDefault.duration === 'number';
-      if (isNumber) {
-        argsDefault.duration -= 1;
-      }
-      if (isNumber && argsDefault.duration < 0) {
-        if (timer) {
-          clearInterval(timer);
-        }
-        if (argsDefault.type === 'loading') {
-          argsDefault.close = true;
-          return false;
-        }
-        if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
-          argsDefault.onClose();
-        }
-        hide();
-        argsDefault.duration = null;
-      }
-      return argsDefault.duration > 0;
-    }
-    timer = run() && setInterval(run, 1000);
+    timer = run(argsDefault) && setInterval(run, 1e3, argsDefault);
   },
   close: () => {
-    if (timer) {
-      clearInterval(timer);
-    }
+    clearInterval(timer);
     if (messageInstance) {
-      messageInstance.removeNotice(containerID);
       if (argsDefault.onClose && argsDefault.onClose instanceof Function) {
-        argsDefault.onClose();
+        argsDefault.onClose(true);
       }
+      messageInstance.removeNotice(containerID);
     }
   },
 };
 
+const MESSAGE_TYPES = {
+  info: 'info',
+  success: 'success',
+  error: 'error',
+  warning: 'warning',
+  loading: 'loading',
+};
+const DEFAULT_MESSAGE_TYPE = MESSAGE_TYPES.info;
+const MESSAGE_ICONS = {
+  info: 'info-circle',
+  success: 'check-circle',
+  error: 'close-circle',
+  warning: 'exclamation-circle',
+  loading: 'loading',
+};
+
 function notice (args) {
-  // // 停留时间，默认一直停留
-  const duration = (args.duration !== undefined) ? args.duration : defaultDuration;
-  // 获取类型
-  const type = ~['info', 'success', 'error', 'warning', 'loading'].indexOf(args.type) ? args.type : 'info';
-  const iconType = {
-    info: 'info-circle',
-    success: 'check-circle',
-    error: 'close-circle',
-    warning: 'exclamation-circle',
-    loading: 'loading',
-  }[type];
+  const duration = args.duration !== undefined ? args.duration : defaultDuration;
+  const type = MESSAGE_TYPES[args.type] || DEFAULT_MESSAGE_TYPE;
+  const iconType = MESSAGE_ICONS[type];
   const isLoadingMode = type === 'loading';
   // 关闭回调
   const closePromise = new Promise((resolve) => {
@@ -125,7 +137,7 @@ function notice (args) {
       instance.notice({
         key: containerID,
         duration: null,
-        style: {},
+        style: { top: defaultTop },
         content: (createElement) => createElement(Message, {
           AIcon,
           prefixCls,
@@ -134,10 +146,10 @@ function notice (args) {
           isLoadingMode,
           duration,
           content: args.content,
-          close: (args.duration < 0 && isLoadingMode) || (!isLoadingMode && args.duration === null),
+          close: args.duration === null || (!(args.duration >= 0) && isLoadingMode),
           closeHandler: () => {
             if (args.onClose && args.onClose instanceof Function) {
-              args.onClose();
+              args.onClose(true);
               if (timer) {
                 clearInterval(timer);
               }
